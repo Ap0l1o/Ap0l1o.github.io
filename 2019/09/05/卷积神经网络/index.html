@@ -1,0 +1,772 @@
+<!DOCTYPE html>
+
+
+
+
+
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 3.9.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=7.4.0">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32.jpg?v=7.4.0">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16.jpg?v=7.4.0">
+  <link rel="mask-icon" href="/images/logo.svg?v=7.4.0" color="#222">
+
+<link rel="stylesheet" href="/css/main.css?v=7.4.0">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css?v=4.7.0">
+  <link rel="stylesheet" href="/lib/pace/pace-theme-minimal.min.css?v=1.0.2">
+  <script src="/lib/pace/pace.min.js?v=1.0.2"></script>
+
+
+<script id="hexo-configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Mist',
+    version: '7.4.0',
+    exturl: false,
+    sidebar: {"position":"left","display":"post","offset":12,"onmobile":false},
+    copycode: {"enable":true,"show_result":true,"style":null},
+    back2top: {"enable":true,"sidebar":false,"scrollpercent":false},
+    bookmark: {"enable":false,"color":"#222","save":"auto"},
+    fancybox: false,
+    mediumzoom: false,
+    lazyload: false,
+    pangu: false,
+    algolia: {
+      appID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    },
+    localsearch: {"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},
+    path: 'search.xml',
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    translation: {
+      copy_button: '复制',
+      copy_success: '复制成功',
+      copy_failure: '复制失败'
+    },
+    sidebarPadding: 40
+  };
+</script>
+
+  <meta name="description" content="整体结构全连接的神经网络全连接的神经网络中，Affine层（仿射层，全连接层）后面跟着激活函数ReLU层或者Sigmoid层，相邻层的所有神经元之间都有连接。卷积神经网络（CNN）CNN中新增了Convoluting层（卷积层）和Pooling层（池化层）。CNN的连接顺序是“Convoluting—ReLU—Pooling”，Pooling层有时会被省略。">
+<meta name="keywords" content="DL">
+<meta property="og:type" content="article">
+<meta property="og:title" content="卷积神经网络">
+<meta property="og:url" content="http://yoursite.com/2019/09/05/卷积神经网络/index.html">
+<meta property="og:site_name" content="Komorebi">
+<meta property="og:description" content="整体结构全连接的神经网络全连接的神经网络中，Affine层（仿射层，全连接层）后面跟着激活函数ReLU层或者Sigmoid层，相邻层的所有神经元之间都有连接。卷积神经网络（CNN）CNN中新增了Convoluting层（卷积层）和Pooling层（池化层）。CNN的连接顺序是“Convoluting—ReLU—Pooling”，Pooling层有时会被省略。">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:image" content="https://s2.ax1x.com/2019/07/23/eF8ejx.md.gif">
+<meta property="og:image" content="https://s2.ax1x.com/2019/07/23/eF3v3n.png">
+<meta property="og:image" content="https://s2.ax1x.com/2019/07/23/eF89BT.png">
+<meta property="og:updated_time" content="2019-09-05T08:28:30.014Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="卷积神经网络">
+<meta name="twitter:description" content="整体结构全连接的神经网络全连接的神经网络中，Affine层（仿射层，全连接层）后面跟着激活函数ReLU层或者Sigmoid层，相邻层的所有神经元之间都有连接。卷积神经网络（CNN）CNN中新增了Convoluting层（卷积层）和Pooling层（池化层）。CNN的连接顺序是“Convoluting—ReLU—Pooling”，Pooling层有时会被省略。">
+<meta name="twitter:image" content="https://s2.ax1x.com/2019/07/23/eF8ejx.md.gif">
+  <link rel="canonical" href="http://yoursite.com/2019/09/05/卷积神经网络/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome: false,
+    isPost: true,
+    isPage: false,
+    isArchive: false
+  };
+</script>
+
+  <title>卷积神经网络 | Komorebi</title>
+  
+
+
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .logo,
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-CN">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-meta">
+
+    <div>
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Komorebi</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+  </div>
+
+  <div class="site-nav-toggle">
+    <button aria-label="切换导航栏">
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+
+<nav class="site-nav">
+  
+  <ul id="menu" class="menu">
+      
+      
+      
+        
+        <li class="menu-item menu-item-home">
+      
+    
+
+    <a href="/" rel="section"><i class="menu-item-icon fa fa-fw fa-home"></i> <br>首页</a>
+
+  </li>
+      
+      
+      
+        
+        <li class="menu-item menu-item-categories">
+      
+    
+
+    <a href="/categories/" rel="section"><i class="menu-item-icon fa fa-fw fa-th"></i> <br>分类</a>
+
+  </li>
+      
+      
+      
+        
+        <li class="menu-item menu-item-archives">
+      
+    
+
+    <a href="/archives/" rel="section"><i class="menu-item-icon fa fa-fw fa-archive"></i> <br>归档</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a href="javascript:;" class="popup-trigger">
+        
+          <i class="menu-item-icon fa fa-search fa-fw"></i> <br>搜索</a>
+      </li>
+    
+  </ul>
+
+    
+
+</nav>
+  <div class="site-search">
+    <div class="popup search-popup">
+    <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocorrect="off" autocapitalize="none"
+           placeholder="搜索..." spellcheck="false"
+           type="text" id="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result"></div>
+
+</div>
+<div class="search-pop-overlay"></div>
+
+  </div>
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+      <article itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block post">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/09/05/卷积神经网络/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Komorebi">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar_gif.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Komorebi">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">卷积神经网络
+
+          
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              
+                
+              
+
+              <time title="创建时间：2019-09-05 16:23:12 / 修改时间：16:28:30" itemprop="dateCreated datePublished" datetime="2019-09-05T16:23:12+08:00">2019-09-05</time>
+            </span>
+          
+            
+
+            
+          
+
+          
+            <span id="/2019/09/05/卷积神经网络/" class="post-meta-item leancloud_visitors" data-flag-title="卷积神经网络" title="阅读次数">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              <span class="post-meta-item-text">阅读次数：</span>
+              <span class="leancloud-visitors-count"></span>
+            </span>
+          
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="fa fa-comment-o"></i>
+      </span>
+        
+      
+      <span class="post-meta-item-text">Valine：</span>
+    
+    <a title="valine" href="/2019/09/05/卷积神经网络/#comments" itemprop="discussionUrl"><span class="post-comments-count valine-comment-count" data-xid="/2019/09/05/卷积神经网络/" itemprop="commentCount"></span></a>
+  </span>
+  
+  
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h4 id="整体结构"><a href="#整体结构" class="headerlink" title="整体结构"></a>整体结构</h4><h5 id="全连接的神经网络"><a href="#全连接的神经网络" class="headerlink" title="全连接的神经网络"></a>全连接的神经网络</h5><p>全连接的神经网络中，Affine层（仿射层，全连接层）后面跟着激活函数ReLU层或者Sigmoid层，相邻层的所有神经元之间都有连接。</p><h5 id="卷积神经网络（CNN）"><a href="#卷积神经网络（CNN）" class="headerlink" title="卷积神经网络（CNN）"></a>卷积神经网络（CNN）</h5><p>CNN中新增了Convoluting层（卷积层）和Pooling层（池化层）。CNN的连接顺序是“Convoluting—ReLU—Pooling”，Pooling层有时会被省略。</p><a id="more"></a>
+
+<p>在CNN中，有时将卷积层的输入输出数据成为特征图。</p>
+<h4 id="卷积层"><a href="#卷积层" class="headerlink" title="卷积层"></a>卷积层</h4><h5 id="全连接层存在的问题"><a href="#全连接层存在的问题" class="headerlink" title="全连接层存在的问题"></a>全连接层存在的问题</h5><p>全连接层会忽视形状，将全部的输入数据作为相同的神经元（同一纬度的神经元，例如一般都会将多维数据拉平为一维数据）处理，无法利用与形状相关的信息。</p>
+<h5 id="卷积运算"><a href="#卷积运算" class="headerlink" title="卷积运算"></a>卷积运算</h5><p>卷积层的处理就是进行卷积运算。</p>
+<p>卷积运算对输入数据应用滤波器。对于输入数据，卷积运算以一定间隔滑动滤波器的窗口并应用。<strong>所谓的应用是指，将各个位置上滤波器的元素和输入的对应元素相乘，然后再求和（有时将这计算称为乘积累加运算）</strong>，然后将这个结果保存到输出对应的位置。在CNN中也存在偏置，偏置通常只有一个数据，这个值会被加到应用了滤波器的所有元素上。</p>
+<h5 id="填充与步幅"><a href="#填充与步幅" class="headerlink" title="填充与步幅"></a>填充与步幅</h5><p>在进行卷积层的处理之前，有时要向输入数据的周围填入固定的数据，这称为填充，填充是为了调整输出的大小。</p>
+<p>应用滤波器的位置间隔称为步幅。假设输入大小为（H， W），滤波器大小为（FH，FW），输出大小为（OH，OW），填充为P，步幅为S。输出大小可按下式计算：<br>$$<br>OH = \frac{H + 2P - FH}{S} +1  \\<br>OW = \frac{W + 2P - FW}{S} +1<br>$$</p>
+<h5 id="多维数据的卷积运算"><a href="#多维数据的卷积运算" class="headerlink" title="多维数据的卷积运算"></a>多维数据的卷积运算</h5><p>输入数据和滤波器的通道数必须相同。通道方向上有多个特征图时，会按通道进行输入数据和滤波器的卷积运算，并将结果相加，从而得到输出。</p>
+<p>使用多个滤波器可在通道方向上也拥有多个卷积运算的输出。<br>$$<br>(C, H, W) \ \bigotimes \ (FN, C, FH, FW) \ = \ (FN, FH, FW)<br>$$</p>
+<p>通过应用FN个滤波器，输出特征图也生成了FN个。</p>
+<p><img src="https://s2.ax1x.com/2019/07/23/eF8ejx.md.gif" alt="image"></p>
+<h4 id="池化层"><a href="#池化层" class="headerlink" title="池化层"></a>池化层</h4><p>池化是缩小高、长方向上的空间的运算。例如：进行按2 x 2 的区域集约成1个元素的处理，缩小空间大小。一般来说，池化的窗口大小会和步幅设定成相同的值。Max池化是获取区域最大值的运算，图像识别领域主要使用Max池化，此外还有Average池化。</p>
+<p>池化层的特征：</p>
+<ul>
+<li>没有要学习的参数</li>
+<li>通道数不发生变化</li>
+<li>对微小的位置变化具有鲁棒性<ul>
+<li>输入数据发生微小偏差时，池化仍会返回相同的结果</li>
+</ul>
+</li>
+</ul>
+<h4 id="卷积层和池化层的实现"><a href="#卷积层和池化层的实现" class="headerlink" title="卷积层和池化层的实现"></a>卷积层和池化层的实现</h4><h5 id="基于im2col的展开"><a href="#基于im2col的展开" class="headerlink" title="基于im2col的展开"></a>基于im2col的展开</h5><p>im2col（image to column）是一个函数。</p>
+<ul>
+<li>对于输入数据，将其展开以适合滤波器的权重</li>
+<li>对于滤波器，将其展开为一列</li>
+</ul>
+<p>im2col代码：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># image to column, 即从图像到矩阵函数，将数据转成二维矩阵以适合滤波器</span></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">im2col</span><span class="params">(input_data, filter_h, filter_w, stride=<span class="number">1</span>, pad=<span class="number">0</span>)</span>:</span></span><br><span class="line">    <span class="string">"""</span></span><br><span class="line"><span class="string">    Parameters</span></span><br><span class="line"><span class="string">    ----------</span></span><br><span class="line"><span class="string">    input_data : 由(数据量, 通道, 高, 长)的4维数组构成的输入数据</span></span><br><span class="line"><span class="string">    filter_h : 滤波器的高</span></span><br><span class="line"><span class="string">    filter_w : 滤波器的长</span></span><br><span class="line"><span class="string">    stride : 步幅</span></span><br><span class="line"><span class="string">    pad : 填充</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">    Returns</span></span><br><span class="line"><span class="string">    -------</span></span><br><span class="line"><span class="string">    col : 2维数组</span></span><br><span class="line"><span class="string">    """</span></span><br><span class="line">    N, C, H, W = input_data.shape</span><br><span class="line">    out_h = (H + <span class="number">2</span>*pad - filter_h)//stride + <span class="number">1</span>  <span class="comment"># 计算输出的高度</span></span><br><span class="line">    out_w = (W + <span class="number">2</span>*pad - filter_w)//stride + <span class="number">1</span>  <span class="comment"># 计算输出的宽度</span></span><br><span class="line"></span><br><span class="line">    img = np.pad(input_data, [(<span class="number">0</span>,<span class="number">0</span>), (<span class="number">0</span>,<span class="number">0</span>), (pad, pad), (pad, pad)], <span class="string">'constant'</span>) <span class="comment"># 填充</span></span><br><span class="line">    col = np.zeros((N, C, filter_h, filter_w, out_h, out_w))</span><br><span class="line"></span><br><span class="line">    <span class="keyword">for</span> y <span class="keyword">in</span> range(filter_h):</span><br><span class="line">        y_max = y + stride*out_h</span><br><span class="line">        <span class="keyword">for</span> x <span class="keyword">in</span> range(filter_w):</span><br><span class="line">            x_max = x + stride*out_w</span><br><span class="line">            col[:, :, y, x, :, :] = img[:, :, y:y_max:stride, x:x_max:stride]</span><br><span class="line"></span><br><span class="line">    col = col.transpose(<span class="number">0</span>, <span class="number">4</span>, <span class="number">5</span>, <span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>).reshape(N*out_h*out_w, <span class="number">-1</span>) <span class="comment"># 将输出转为合适的形状</span></span><br><span class="line">    <span class="keyword">return</span> col</span><br></pre></td></tr></table></figure>
+
+<p>输入数据的展开：</p>
+<p><img src="https://s2.ax1x.com/2019/07/23/eF3v3n.png" alt="image"></p>
+<p>对于滤波器：</p>
+<p><img src="https://s2.ax1x.com/2019/07/23/eF89BT.png" alt="image"></p>
+<h5 id="卷积层的实现"><a href="#卷积层的实现" class="headerlink" title="卷积层的实现"></a>卷积层的实现</h5><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 卷积层的实现</span></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Convolution</span>:</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">__init__</span><span class="params">(self, W, b, stride=<span class="number">1</span>, pad=<span class="number">0</span>)</span>:</span></span><br><span class="line">        <span class="string">"""</span></span><br><span class="line"><span class="string">        W: 权重</span></span><br><span class="line"><span class="string">        b：偏置</span></span><br><span class="line"><span class="string">        stride：步幅</span></span><br><span class="line"><span class="string">        pad：填充</span></span><br><span class="line"><span class="string">        """</span></span><br><span class="line">        self.W = W</span><br><span class="line">        self.b = b</span><br><span class="line">        self.stride = stride</span><br><span class="line">        self.pad = pad</span><br><span class="line">    </span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">forward</span><span class="params">(self, x)</span>:</span></span><br><span class="line">        <span class="string">"""</span></span><br><span class="line"><span class="string">        x: 输入数据</span></span><br><span class="line"><span class="string">        """</span></span><br><span class="line">        FN, C, FH, FW = self.W.shape <span class="comment"># 权重的数量，通道数目，高，宽</span></span><br><span class="line">        N, C, H, W = x.shape <span class="comment"># 输入数据的数量，通道数目，高，宽</span></span><br><span class="line">        out_h = int(<span class="number">1</span> + (H + <span class="number">2</span>*self.pad - FH) / self.stride)</span><br><span class="line">        out_w = int(<span class="number">1</span> + (W + <span class="number">2</span>*self.pad - FW) / self.stride)</span><br><span class="line"></span><br><span class="line">        col = im2col(x, FH, FW, self.stride, self.pad) <span class="comment"># 将数据展开以适应滤波器</span></span><br><span class="line">        col_W = self.W.reshape(FN, <span class="number">-1</span>).T <span class="comment"># 滤波器的展开</span></span><br><span class="line">        </span><br><span class="line">        out = np.dot(col, col_W) + self.b</span><br><span class="line">        out = out.reshape(N, out_h, out_w, <span class="number">-1</span>).transpose(<span class="number">0</span>, <span class="number">3</span>, <span class="number">1</span>, <span class="number">2</span>) <span class="comment"># 将输出大小转为合适的形状</span></span><br><span class="line"></span><br><span class="line">        <span class="keyword">return</span> out</span><br></pre></td></tr></table></figure>
+
+<h5 id="池化层的实现"><a href="#池化层的实现" class="headerlink" title="池化层的实现"></a>池化层的实现</h5><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 池化层的实现</span></span><br><span class="line"><span class="comment"># 池化层的展开与卷积层有不同之处，在于池化的应用区域按通道单独展开</span></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Pooling</span>:</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">__init__</span><span class="params">(self, pool_h, pool_w, stride = <span class="number">1</span>, pad = <span class="number">0</span>)</span>:</span></span><br><span class="line">        <span class="string">"""</span></span><br><span class="line"><span class="string">        pool_h: 池化高度</span></span><br><span class="line"><span class="string">        pool_w: 池化宽度</span></span><br><span class="line"><span class="string">        stride: 步幅</span></span><br><span class="line"><span class="string">        pad: 填充</span></span><br><span class="line"><span class="string">        """</span></span><br><span class="line">        self.pool_h = pool_h</span><br><span class="line">        self.pool_w = pool_w</span><br><span class="line">        self.stride = stride</span><br><span class="line">        self.pad = pad</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">forward</span><span class="params">(self, x)</span>:</span></span><br><span class="line">        N, C, H, W = x.shape <span class="comment"># 输入数据的数量，通道数目，高度，宽度</span></span><br><span class="line">        out_h = int(<span class="number">1</span> + (H - self.pool_h) / self.stride)</span><br><span class="line">        out_w = int(<span class="number">1</span> + (W - self.pool_w) / self.stride)</span><br><span class="line"></span><br><span class="line">        <span class="comment"># 1. 展开输入数据</span></span><br><span class="line">        col = im2col(x, self.pool_h, self.pool_w, self.stride, self.pad)</span><br><span class="line">        col = col.reshape(<span class="number">-1</span>, self.pool_h * self.pool_w)</span><br><span class="line"></span><br><span class="line">        <span class="comment"># 2. 取各行的最大值， Max池化</span></span><br><span class="line">        out = np.max(col, axis = <span class="number">1</span>)</span><br><span class="line"></span><br><span class="line">        <span class="comment"># 3. 转换为合适的输出大小, transpose 会更改多维数组的轴的顺序</span></span><br><span class="line">        out = out.reshape(N, out_h, out_w, C).transpose(<span class="number">0</span>, <span class="number">3</span>, <span class="number">1</span>, <span class="number">2</span>)</span><br><span class="line"></span><br><span class="line">        <span class="keyword">return</span> out</span><br></pre></td></tr></table></figure>
+
+<p>注：图片均来自网络</p>
+
+    </div>
+
+    
+    
+    
+        
+      
+        <div id="reward-container">
+  <div>Donate~</div>
+  <button id="reward-button" disable="enable" onclick="var qr = document.getElementById(&quot;qr&quot;); qr.style.display = (qr.style.display === 'none') ? 'block' : 'none';">
+    打赏
+  </button>
+  <div id="qr" style="display: none;">
+        
+      
+      <div style="display: inline-block">
+        <img src="/images/alipay.jpg" alt="Komorebi 支付宝">
+        <p>支付宝</p>
+      </div>
+
+  </div>
+</div>
+
+      
+
+      <footer class="post-footer">
+          
+            
+          
+          <div class="post-tags">
+            
+              <a href="/tags/DL/" rel="tag"># DL</a>
+            
+          </div>
+        
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-next post-nav-item">
+              
+                <a href="/2019/09/05/hello-world/" rel="next" title="Hello World">
+                  <i class="fa fa-chevron-left"></i> Hello World
+                </a>
+              
+            </div>
+
+            <span class="post-nav-divider"></span>
+
+            <div class="post-nav-prev post-nav-item">
+              
+            </div>
+          </div>
+        
+      </footer>
+    
+  </div>
+  
+  
+  
+  </article>
+
+  </div>
+
+
+          </div>
+          
+    
+    <div class="comments" id="comments"></div>
+  
+
+        </div>
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+        
+        
+        
+        
+      
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-4"><a class="nav-link" href="#整体结构"><span class="nav-number">1.</span> <span class="nav-text">整体结构</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#全连接的神经网络"><span class="nav-number">1.1.</span> <span class="nav-text">全连接的神经网络</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#卷积神经网络（CNN）"><span class="nav-number">1.2.</span> <span class="nav-text">卷积神经网络（CNN）</span></a></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#卷积层"><span class="nav-number">2.</span> <span class="nav-text">卷积层</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#全连接层存在的问题"><span class="nav-number">2.1.</span> <span class="nav-text">全连接层存在的问题</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#卷积运算"><span class="nav-number">2.2.</span> <span class="nav-text">卷积运算</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#填充与步幅"><span class="nav-number">2.3.</span> <span class="nav-text">填充与步幅</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#多维数据的卷积运算"><span class="nav-number">2.4.</span> <span class="nav-text">多维数据的卷积运算</span></a></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#池化层"><span class="nav-number">3.</span> <span class="nav-text">池化层</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#卷积层和池化层的实现"><span class="nav-number">4.</span> <span class="nav-text">卷积层和池化层的实现</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#基于im2col的展开"><span class="nav-number">4.1.</span> <span class="nav-text">基于im2col的展开</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#卷积层的实现"><span class="nav-number">4.2.</span> <span class="nav-text">卷积层的实现</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#池化层的实现"><span class="nav-number">4.3.</span> <span class="nav-text">池化层的实现</span></a></li></ol></li></ol></div>
+        
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image"
+      src="/images/avatar_gif.gif"
+      alt="Komorebi">
+  <p class="site-author-name" itemprop="name">Komorebi</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+  <nav class="site-state motion-element">
+      <div class="site-state-item site-state-posts">
+        
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">2</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+    
+      
+      
+      <div class="site-state-item site-state-tags">
+        
+          
+            <a href="/tags/">
+          
+        
+        <span class="site-state-item-count">2</span>
+        <span class="site-state-item-name">标签</span>
+        </a>
+      </div>
+    
+  </nav>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+      
+      
+        
+      
+      
+        
+      
+        <a href="https://github.com/7oDo" title="GitHub &rarr; https://github.com/7oDo" rel="noopener" target="_blank"><i class="fa fa-fw fa-github"></i>GitHub</a>
+      </span>
+    
+  </div>
+
+
+  <div class="links-of-blogroll motion-element">
+    <div class="links-of-blogroll-title">
+      <i class="fa fa-fw fa-link"></i>
+      Links
+    </div>
+    <ul class="links-of-blogroll-list">
+        <li class="links-of-blogroll-item">
+          <a href="https://www.cnblogs.com/Jie-Fei/" title="https://www.cnblogs.com/Jie-Fei/" rel="noopener" target="_blank">cnblogs</a>
+        </li>
+      
+    </ul>
+  </div>
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2019</span>
+  <span class="with-love" id="animate">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Komorebi</span>
+</div>
+
+        
+
+
+
+
+
+
+  
+  <script>
+  function leancloudSelector(url) {
+    return document.getElementById(url).querySelector('.leancloud-visitors-count');
+  }
+  if (CONFIG.page.isPost) {
+    function addCount(Counter) {
+      var visitors = document.querySelector('.leancloud_visitors');
+      var url = visitors.getAttribute('id').trim();
+      var title = visitors.getAttribute('data-flag-title').trim();
+
+      Counter('get', `/classes/Counter?where=${JSON.stringify({ url })}`)
+        .then(response => response.json())
+        .then(({ results }) => {
+          if (results.length > 0) {
+            var counter = results[0];
+            Counter('put', '/classes/Counter/' + counter.objectId, { time: { '__op': 'Increment', 'amount': 1 } })
+              .then(response => response.json())
+              .then(() => {
+                leancloudSelector(url).innerText = counter.time + 1;
+              })
+            
+              .catch(error => {
+                console.log('Failed to save visitor count', error);
+              })
+          } else {
+              leancloudSelector(url).innerText = 'Counter not initialized! More info at console err msg.';
+              console.error('ATTENTION! LeanCloud counter has security bug, see how to solve it here: https://github.com/theme-next/hexo-leancloud-counter-security. \n However, you can still use LeanCloud without security, by setting `security` option to `false`.');
+            
+          }
+        })
+        .catch(error => {
+          console.log('LeanCloud Counter Error', error);
+        });
+    }
+  } else {
+    function showTime(Counter) {
+      var visitors = document.querySelectorAll('.leancloud_visitors');
+      var entries = [...visitors].map(element => {
+        return element.getAttribute('id').trim();
+      });
+
+      Counter('get', `/classes/Counter?where=${JSON.stringify({ url: { '$in': entries } })}`)
+        .then(response => response.json())
+        .then(({ results }) => {
+          if (results.length === 0) {
+            document.querySelectorAll('.leancloud_visitors .leancloud-visitors-count').forEach(element => {
+              element.innerText = 0;
+            });
+            return;
+          }
+          for (var i = 0; i < results.length; i++) {
+            var item = results[i];
+            var url = item.url;
+            var time = item.time;
+            leancloudSelector(url).innerText = time;
+          }
+          for (var i = 0; i < entries.length; i++) {
+            var url = entries[i];
+            var element = leancloudSelector(url);
+            if (element.innerText == '') {
+              element.innerText = 0;
+            }
+          }
+        })
+        .catch(error => {
+          console.log('LeanCloud Counter Error', error);
+        });
+    }
+  }
+
+  fetch('https://app-router.leancloud.cn/2/route?appId=6I3i4U3wh9KIPOi55NTP6g2Y-gzGzoHsz')
+    .then(response => response.json())
+    .then(({ api_server }) => {
+      var Counter = (method, url, data) => {
+        return fetch(`https://${api_server}/1.1${url}`, {
+          method: method,
+          headers: {
+            'X-LC-Id': '6I3i4U3wh9KIPOi55NTP6g2Y-gzGzoHsz',
+            'X-LC-Key': '9TiVVrkObL1VH2ksTWL0qt71',
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(data)
+        });
+      };
+      if (CONFIG.page.isPost) {
+        const localhost = /http:\/\/(localhost|127.0.0.1|0.0.0.0)/;
+        if (localhost.test(document.URL)) return;
+        addCount(Counter);
+      } else if (document.querySelectorAll('.post-title-link').length >= 1) {
+        showTime(Counter);
+      }
+    });
+  </script>
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+  </div>
+
+  
+
+
+  <script src="/lib/anime.min.js?v=3.1.0"></script>
+  <script src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  <script src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+<script src="/js/utils.js?v=7.4.0"></script><script src="/js/motion.js?v=7.4.0"></script>
+<script src="/js/schemes/muse.js?v=7.4.0"></script>
+
+<script src="/js/next-boot.js?v=7.4.0"></script>
+
+
+
+  
+
+
+
+
+
+
+
+
+  <script src="/js/local-search.js?v=7.4.0"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+    
+      
+<script type="text/x-mathjax-config">
+    MathJax.Ajax.config.path['mhchem'] = '//cdn.jsdelivr.net/npm/mathjax-mhchem@3';
+
+  MathJax.Hub.Config({
+    tex2jax: {
+      inlineMath: [ ['$', '$'], ['\\(', '\\)'] ],
+      processEscapes: true,
+      skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+    },
+    TeX: {
+        extensions: ['[mhchem]/mhchem.js'],
+      equationNumbers: {
+        autoNumber: 'AMS'
+      }
+    }
+  });
+
+  MathJax.Hub.Register.StartupHook('TeX Jax Ready', function() {
+    MathJax.InputJax.TeX.prefilterHooks.Add(function(data) {
+      if (data.display) {
+        var next = data.script.nextSibling;
+        while (next && next.nodeName.toLowerCase() === '#text') {
+          next = next.nextSibling;
+        }
+        if (next && next.nodeName.toLowerCase() === 'br') {
+          next.parentNode.removeChild(next);
+        }
+      }
+    });
+  });
+
+  MathJax.Hub.Queue(function() {
+    var all = MathJax.Hub.getAllJax(), i;
+    for (i = 0; i < all.length; i += 1) {
+      element = document.getElementById(all[i].inputID + '-Frame').parentNode;
+      if (element.nodeName.toLowerCase() == 'li') {
+        element = element.parentNode;
+      }
+      element.classList.add('has-jax');
+    }
+  });
+</script>
+<script>
+  NexT.utils.getScript('//cdn.jsdelivr.net/npm/mathjax@2/MathJax.js?config=TeX-AMS-MML_HTMLorMML', () => {
+    MathJax.Hub.Typeset();
+  }, window.MathJax);
+</script>
+
+    
+  
+
+  
+
+  
+
+
+<script>
+NexT.utils.getScript('//unpkg.com/valine/dist/Valine.min.js', () => {
+  var GUEST = ['nick', 'mail', 'link'];
+  var guest = 'nick,mail,link';
+  guest = guest.split(',').filter(item => {
+    return GUEST.includes(item);
+  });
+  new Valine({
+    el: '#comments',
+    verify: false,
+    notify: false,
+    appId: '6I3i4U3wh9KIPOi55NTP6g2Y-gzGzoHsz',
+    appKey: '9TiVVrkObL1VH2ksTWL0qt71',
+    placeholder: 'Just go go',
+    avatar: 'mm',
+    meta: guest,
+    pageSize: '10' || 10,
+    visitor: false,
+    lang: 'zh-CN' || 'zh-cn',
+    path: location.pathname
+  });
+}, window.Valine);
+</script>
+
+</body>
+</html>

@@ -57,19 +57,16 @@
   };
 </script>
 
-  <meta name="description" content="为各台PC配置IP地址和网关1234PC0      192.168.10.10   192.168.10.1PC1      192.168.20.10   192.168.20.1PC2      192.168.30.10   192.168.30.1PC3      192.168.40.10   192.168.40.1">
-<meta name="keywords" content="网络">
+  <meta name="keywords" content="网络">
 <meta property="og:type" content="article">
 <meta property="og:title" content="Packet Tracer - 记一次作业">
 <meta property="og:url" content="http://yoursite.com/2019/11/03/第一次作业/index.html">
 <meta property="og:site_name" content="Ap0l1o">
-<meta property="og:description" content="为各台PC配置IP地址和网关1234PC0      192.168.10.10   192.168.10.1PC1      192.168.20.10   192.168.20.1PC2      192.168.30.10   192.168.30.1PC3      192.168.40.10   192.168.40.1">
 <meta property="og:locale" content="zh-CN">
 <meta property="og:image" content="https://s2.ax1x.com/2019/04/25/Eeksa9.png">
-<meta property="og:updated_time" content="2019-11-03T08:23:36.292Z">
+<meta property="og:updated_time" content="2019-11-03T09:12:05.817Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Packet Tracer - 记一次作业">
-<meta name="twitter:description" content="为各台PC配置IP地址和网关1234PC0      192.168.10.10   192.168.10.1PC1      192.168.20.10   192.168.20.1PC2      192.168.30.10   192.168.30.1PC3      192.168.40.10   192.168.40.1">
 <meta name="twitter:image" content="https://s2.ax1x.com/2019/04/25/Eeksa9.png">
   <link rel="canonical" href="http://yoursite.com/2019/11/03/第一次作业/">
 
@@ -250,7 +247,7 @@
                 
               
 
-              <time title="创建时间：2019-11-03 16:39:27 / 修改时间：16:23:36" itemprop="dateCreated datePublished" datetime="2019-11-03T16:39:27+08:00">2019-11-03</time>
+              <time title="创建时间：2019-11-03 16:39:27 / 修改时间：17:12:05" itemprop="dateCreated datePublished" datetime="2019-11-03T16:39:27+08:00">2019-11-03</time>
             </span>
           
             
@@ -304,8 +301,10 @@
     <div class="post-body" itemprop="articleBody">
 
       
-        <p><img src="https://s2.ax1x.com/2019/04/25/Eeksa9.png" alt="image"></p><h2 id="为各台PC配置IP地址和网关"><a href="#为各台PC配置IP地址和网关" class="headerlink" title="为各台PC配置IP地址和网关"></a>为各台PC配置IP地址和网关</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">PC0      192.168.10.10   192.168.10.1</span><br><span class="line">PC1      192.168.20.10   192.168.20.1</span><br><span class="line">PC2      192.168.30.10   192.168.30.1</span><br><span class="line">PC3      192.168.40.10   192.168.40.1</span><br></pre></td></tr></table></figure><a id="more"></a>
+        <p><img src="https://s2.ax1x.com/2019/04/25/Eeksa9.png" alt="image"></p>
+<a id="more"></a>
 
+<h2 id="为各台PC配置IP地址和网关"><a href="#为各台PC配置IP地址和网关" class="headerlink" title="为各台PC配置IP地址和网关"></a>为各台PC配置IP地址和网关</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">PC0      192.168.10.10   192.168.10.1</span><br><span class="line">PC1      192.168.20.10   192.168.20.1</span><br><span class="line">PC2      192.168.30.10   192.168.30.1</span><br><span class="line">PC3      192.168.40.10   192.168.40.1</span><br></pre></td></tr></table></figure>
 
 <h2 id="在所有二层和三层交换机上划分VLAN-并打开VLAN"><a href="#在所有二层和三层交换机上划分VLAN-并打开VLAN" class="headerlink" title="在所有二层和三层交换机上划分VLAN, 并打开VLAN"></a>在所有二层和三层交换机上划分VLAN, 并打开VLAN</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">Switch(config-if)#inter vlan 10</span><br><span class="line">Switch(config-vlan)#inter vlan 10</span><br><span class="line">%LINK-5-CHANGED: Interface Vlan10, changed state to up</span><br><span class="line"></span><br><span class="line">Switch(config-if)#vlan 20</span><br><span class="line">Switch(config-if)#inter vlan 20</span><br><span class="line">%LINK-5-CHANGED: Interface Vlan20, changed state to up</span><br><span class="line"></span><br><span class="line">Switch(config-if)#vlan 30</span><br><span class="line">Switch(config-vlan)#inter vlan 30</span><br><span class="line">%LINK-5-CHANGED: Interface Vlan30, changed state to up</span><br><span class="line"></span><br><span class="line">Switch(config-if)#vlan 40</span><br><span class="line">Switch(config-vlan)#inter vlan 40</span><br><span class="line">%LINK-5-CHANGED: Interface Vlan40, changed state to up</span><br></pre></td></tr></table></figure>
 
@@ -465,7 +464,7 @@
         
           <a href="/archives/">
         
-          <span class="site-state-item-count">29</span>
+          <span class="site-state-item-count">26</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
@@ -506,7 +505,7 @@
       
         
       
-        <a href="https://github.com/7oDo" title="GitHub &rarr; https://github.com/7oDo" rel="noopener" target="_blank"><i class="fa fa-fw fa-github"></i>GitHub</a>
+        <a href="https://github.com/Ap0l1o" title="GitHub &rarr; https://github.com/Ap0l1o" rel="noopener" target="_blank"><i class="fa fa-fw fa-github"></i>GitHub</a>
       </span>
     
   </div>

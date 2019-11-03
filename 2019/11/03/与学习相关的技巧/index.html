@@ -57,18 +57,18 @@
   };
 </script>
 
-  <meta name="description" content="参数的更新神经网络学习的目的是找到使损失函数的值尽可能小的参数，这是寻找最优参数的问题，解决这个问题的过程称为最优化。随机梯度下降（SGD）使用参数的梯度，沿梯度方向更新参数，并重复这个步骤多次，从而逐渐靠近最优参数，这个过程称为随机梯度下降法（SGD）代码示例：123456class SGD:    def __init__(self, lr = 0.01):        self.lr =">
+  <meta name="description" content="参数的更新神经网络学习的目的是找到使损失函数的值尽可能小的参数，这是寻找最优参数的问题，解决这个问题的过程称为最优化。">
 <meta name="keywords" content="DL">
 <meta property="og:type" content="article">
 <meta property="og:title" content="0x05 与学习相关的技巧">
 <meta property="og:url" content="http://yoursite.com/2019/11/03/与学习相关的技巧/index.html">
 <meta property="og:site_name" content="Ap0l1o">
-<meta property="og:description" content="参数的更新神经网络学习的目的是找到使损失函数的值尽可能小的参数，这是寻找最优参数的问题，解决这个问题的过程称为最优化。随机梯度下降（SGD）使用参数的梯度，沿梯度方向更新参数，并重复这个步骤多次，从而逐渐靠近最优参数，这个过程称为随机梯度下降法（SGD）代码示例：123456class SGD:    def __init__(self, lr = 0.01):        self.lr =">
+<meta property="og:description" content="参数的更新神经网络学习的目的是找到使损失函数的值尽可能小的参数，这是寻找最优参数的问题，解决这个问题的过程称为最优化。">
 <meta property="og:locale" content="zh-CN">
-<meta property="og:updated_time" content="2019-11-03T08:09:15.841Z">
+<meta property="og:updated_time" content="2019-11-03T09:13:09.008Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="0x05 与学习相关的技巧">
-<meta name="twitter:description" content="参数的更新神经网络学习的目的是找到使损失函数的值尽可能小的参数，这是寻找最优参数的问题，解决这个问题的过程称为最优化。随机梯度下降（SGD）使用参数的梯度，沿梯度方向更新参数，并重复这个步骤多次，从而逐渐靠近最优参数，这个过程称为随机梯度下降法（SGD）代码示例：123456class SGD:    def __init__(self, lr = 0.01):        self.lr =">
+<meta name="twitter:description" content="参数的更新神经网络学习的目的是找到使损失函数的值尽可能小的参数，这是寻找最优参数的问题，解决这个问题的过程称为最优化。">
   <link rel="canonical" href="http://yoursite.com/2019/11/03/与学习相关的技巧/">
 
 
@@ -248,7 +248,7 @@
                 
               
 
-              <time title="创建时间：2019-11-03 16:09:33 / 修改时间：16:09:15" itemprop="dateCreated datePublished" datetime="2019-11-03T16:09:33+08:00">2019-11-03</time>
+              <time title="创建时间：2019-11-03 16:09:33 / 修改时间：17:13:09" itemprop="dateCreated datePublished" datetime="2019-11-03T16:09:33+08:00">2019-11-03</time>
             </span>
           
             
@@ -302,10 +302,10 @@
     <div class="post-body" itemprop="articleBody">
 
       
-        <h4 id="参数的更新"><a href="#参数的更新" class="headerlink" title="参数的更新"></a>参数的更新</h4><p>神经网络学习的目的是找到使损失函数的值尽可能小的参数，这是寻找最优参数的问题，解决这个问题的过程称为最优化。</p><h4 id="随机梯度下降（SGD）"><a href="#随机梯度下降（SGD）" class="headerlink" title="随机梯度下降（SGD）"></a>随机梯度下降（SGD）</h4><p>使用参数的梯度，沿梯度方向更新参数，并重复这个步骤多次，从而逐渐靠近最优参数，这个过程称为<strong>随机梯度下降法（<code>SGD</code>）</strong></p><p>代码示例：</p><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">SGD</span>:</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">__init__</span><span class="params">(self, lr = <span class="number">0.01</span>)</span>:</span></span><br><span class="line">        self.lr = lr <span class="comment"># 学习率</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">update</span><span class="params">(slef, params, grads)</span>:</span></span><br><span class="line">        <span class="keyword">for</span> key <span class="keyword">in</span> params.keys():</span><br><span class="line">            params[key] -= self.lr * grads[key] <span class="comment"># 梯度下降</span></span><br></pre></td></tr></table></figure><a id="more"></a>
-
-
-
+        <h4 id="参数的更新"><a href="#参数的更新" class="headerlink" title="参数的更新"></a>参数的更新</h4><p>神经网络学习的目的是找到使损失函数的值尽可能小的参数，这是寻找最优参数的问题，解决这个问题的过程称为最优化。<a id="more"></a></p>
+<h4 id="随机梯度下降（SGD）"><a href="#随机梯度下降（SGD）" class="headerlink" title="随机梯度下降（SGD）"></a>随机梯度下降（SGD）</h4><p>使用参数的梯度，沿梯度方向更新参数，并重复这个步骤多次，从而逐渐靠近最优参数，这个过程称为<strong>随机梯度下降法（<code>SGD</code>）</strong></p>
+<p>代码示例：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">SGD</span>:</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">__init__</span><span class="params">(self, lr = <span class="number">0.01</span>)</span>:</span></span><br><span class="line">        self.lr = lr <span class="comment"># 学习率</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">update</span><span class="params">(slef, params, grads)</span>:</span></span><br><span class="line">        <span class="keyword">for</span> key <span class="keyword">in</span> params.keys():</span><br><span class="line">            params[key] -= self.lr * grads[key] <span class="comment"># 梯度下降</span></span><br></pre></td></tr></table></figure>
 
 <h4 id="SGD-的缺点"><a href="#SGD-的缺点" class="headerlink" title="SGD 的缺点"></a>SGD 的缺点</h4><p>梯度指向的是函数值降低最快的方向而不是最小值的方向。</p>
 <h4 id="Momentum-方法"><a href="#Momentum-方法" class="headerlink" title="Momentum 方法"></a>Momentum 方法</h4><p>$$<br>\vec{v} = \alpha\vec{v} - \eta\frac{\partial\vec{L}}{\partial\vec{W}} \\<br>\vec{W} = \vec{W} + \vec{v}<br>$$</p>
@@ -475,7 +475,7 @@
         
           <a href="/archives/">
         
-          <span class="site-state-item-count">29</span>
+          <span class="site-state-item-count">26</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
@@ -516,7 +516,7 @@
       
         
       
-        <a href="https://github.com/7oDo" title="GitHub &rarr; https://github.com/7oDo" rel="noopener" target="_blank"><i class="fa fa-fw fa-github"></i>GitHub</a>
+        <a href="https://github.com/Ap0l1o" title="GitHub &rarr; https://github.com/Ap0l1o" rel="noopener" target="_blank"><i class="fa fa-fw fa-github"></i>GitHub</a>
       </span>
     
   </div>

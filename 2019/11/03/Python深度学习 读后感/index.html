@@ -57,13 +57,13 @@
   };
 </script>
 
-  <meta name="description" content="数据预处理数据预处理的目的是使原始数据更适于用神经网络处理，包括向量化、标准化、处理缺失值和特征提取。数据向量化不能将整数序列直接输入网络，需要将列表转换为张量。转换方法有两种： 填充列表，使其具有相同的长度，再将列表转换为(samples, word_indices)的整数张量，然后网络第一层使用能处理这种整数张量的层，即Embedding层。 词嵌入是先将单词与整数序列构成映射，再对整数序列进">
+  <meta name="description" content="数据预处理数据预处理的目的是使原始数据更适于用神经网络处理，包括向量化、标准化、处理缺失值和特征提取。">
 <meta name="keywords" content="DL">
 <meta property="og:type" content="article">
 <meta property="og:title" content="&lt;&lt;Python深度学习&gt;&gt;笔记">
 <meta property="og:url" content="http://yoursite.com/2019/11/03/Python深度学习 读后感/index.html">
 <meta property="og:site_name" content="Ap0l1o">
-<meta property="og:description" content="数据预处理数据预处理的目的是使原始数据更适于用神经网络处理，包括向量化、标准化、处理缺失值和特征提取。数据向量化不能将整数序列直接输入网络，需要将列表转换为张量。转换方法有两种： 填充列表，使其具有相同的长度，再将列表转换为(samples, word_indices)的整数张量，然后网络第一层使用能处理这种整数张量的层，即Embedding层。 词嵌入是先将单词与整数序列构成映射，再对整数序列进">
+<meta property="og:description" content="数据预处理数据预处理的目的是使原始数据更适于用神经网络处理，包括向量化、标准化、处理缺失值和特征提取。">
 <meta property="og:locale" content="zh-CN">
 <meta property="og:image" content="https://s2.ax1x.com/2019/07/29/e3k7jJ.png">
 <meta property="og:image" content="https://s2.ax1x.com/2019/07/29/e3A9jH.jpg">
@@ -71,10 +71,10 @@
 <meta property="og:image" content="https://s2.ax1x.com/2019/07/29/e33rOx.png">
 <meta property="og:image" content="https://s2.ax1x.com/2019/07/29/e3356I.png">
 <meta property="og:image" content="https://s2.ax1x.com/2019/07/29/e3Y0UK.png">
-<meta property="og:updated_time" content="2019-11-03T08:00:57.140Z">
+<meta property="og:updated_time" content="2019-11-03T09:13:54.250Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="&lt;&lt;Python深度学习&gt;&gt;笔记">
-<meta name="twitter:description" content="数据预处理数据预处理的目的是使原始数据更适于用神经网络处理，包括向量化、标准化、处理缺失值和特征提取。数据向量化不能将整数序列直接输入网络，需要将列表转换为张量。转换方法有两种： 填充列表，使其具有相同的长度，再将列表转换为(samples, word_indices)的整数张量，然后网络第一层使用能处理这种整数张量的层，即Embedding层。 词嵌入是先将单词与整数序列构成映射，再对整数序列进">
+<meta name="twitter:description" content="数据预处理数据预处理的目的是使原始数据更适于用神经网络处理，包括向量化、标准化、处理缺失值和特征提取。">
 <meta name="twitter:image" content="https://s2.ax1x.com/2019/07/29/e3k7jJ.png">
   <link rel="canonical" href="http://yoursite.com/2019/11/03/Python深度学习 读后感/">
 
@@ -255,7 +255,7 @@
                 
               
 
-              <time title="创建时间：2019-11-03 16:11:13 / 修改时间：16:00:57" itemprop="dateCreated datePublished" datetime="2019-11-03T16:11:13+08:00">2019-11-03</time>
+              <time title="创建时间：2019-11-03 16:11:13 / 修改时间：17:13:54" itemprop="dateCreated datePublished" datetime="2019-11-03T16:11:13+08:00">2019-11-03</time>
             </span>
           
             
@@ -309,7 +309,9 @@
     <div class="post-body" itemprop="articleBody">
 
       
-        <h2 id="数据预处理"><a href="#数据预处理" class="headerlink" title="数据预处理"></a>数据预处理</h2><p>数据预处理的目的是使原始数据更适于用神经网络处理，包括向量化、标准化、处理缺失值和特征提取。</p><h4 id="数据向量化"><a href="#数据向量化" class="headerlink" title="数据向量化"></a>数据向量化</h4><p>不能将整数序列直接输入网络，需要将列表转换为张量。转换方法有两种：</p><ul>
+        <h2 id="数据预处理"><a href="#数据预处理" class="headerlink" title="数据预处理"></a>数据预处理</h2><p>数据预处理的目的是使原始数据更适于用神经网络处理，包括向量化、标准化、处理缺失值和特征提取。<a id="more"></a></p>
+<h4 id="数据向量化"><a href="#数据向量化" class="headerlink" title="数据向量化"></a>数据向量化</h4><p>不能将整数序列直接输入网络，需要将列表转换为张量。转换方法有两种：</p>
+<ul>
 <li><p>填充列表，使其具有相同的长度，再将列表转换为<code>(samples, word_indices)</code>的整数张量，然后网络第一层使用能处理这种整数张量的层，即Embedding层。</p>
 <p>词嵌入是先将单词与整数序列构成映射，再对整数序列进行处理，<code>one-hot</code>编码是二进制的、高维的、稀疏的，而词嵌入是从数据中学习到的，是低维的浮点数向量。</p>
 <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> keras.layers <span class="keyword">import</span> Embedding</span><br><span class="line"><span class="comment"># 1000是索引的数量，64是嵌入维度，20是最大输入长度，将在此长度后截断文本。</span></span><br><span class="line">embedding_layer = Embedding(<span class="number">1000</span>, <span class="number">64</span>, input_length = <span class="number">20</span>)</span><br></pre></td></tr></table></figure>
@@ -318,9 +320,7 @@
 <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 此方法适用于无序性的整数列表</span></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">vectorize_sequences</span><span class="params">(sequences, dimension = <span class="number">10000</span>)</span>:</span></span><br><span class="line">    results = np.zeros((len(sequences), dimension))</span><br><span class="line">    <span class="keyword">for</span> i, sequence <span class="keyword">in</span> sequences:</span><br><span class="line">        results[i, sequence] = <span class="number">1</span></span><br><span class="line">    <span class="keyword">return</span> results</span><br><span class="line">x = np.array([[<span class="number">1</span>,<span class="number">2</span>,<span class="number">3</span>,<span class="number">4</span>],[<span class="number">4</span>,<span class="number">3</span>,<span class="number">2</span>,<span class="number">1</span>]])</span><br><span class="line">vec_x = vectorize_sequences(x, <span class="number">10</span>)</span><br><span class="line"><span class="comment">#array([[0., 1., 1., 1., 1.， 0., 0., 0., 0., 0.],</span></span><br><span class="line"><span class="comment">#       [0., 1., 1., 1., 1.， 0., 0., 0., 0., 0.]])</span></span><br><span class="line">      </span><br><span class="line"><span class="comment"># 有序性的列表可用 keras 内置的to_categorical方法</span></span><br><span class="line"><span class="keyword">from</span> keras.utils <span class="keyword">import</span> to_categorical</span><br><span class="line">labels = array([<span class="number">0</span>, <span class="number">2</span>, <span class="number">1</span>, <span class="number">2</span>, <span class="number">0</span>])</span><br><span class="line">one_host_labels = to_categorical(labels)</span><br><span class="line"></span><br><span class="line"><span class="comment">#array([[ 1.,  0.,  0.],</span></span><br><span class="line"><span class="comment">#       [ 0.,  0.,  1.],</span></span><br><span class="line"><span class="comment">#       [ 0.,  1.,  0.],</span></span><br><span class="line"><span class="comment">#       [ 0.,  0.,  1.],</span></span><br><span class="line"><span class="comment">#       [ 1.,  0.,  0.]], dtype=float32)</span></span><br></pre></td></tr></table></figure>
 
 </li>
-</ul><a id="more"></a>
-
-
+</ul>
 <h4 id="值标准化"><a href="#值标准化" class="headerlink" title="值标准化"></a>值标准化</h4><p>一般来说，将取值相对较大的数据（比如多位整数，比网络权重的初始值大很多）或异质数据（比如数据的一个特征在<code>0~1</code>范围内，另一个特征在<code>100~200</code>内）输入到神经网络中是不安全的。这么可能导致较大的梯度更新，进而导致网络无法收敛。所以输入数据应该具有以下特征：</p>
 <ul>
 <li><p>取值较小：大部分值应该在0~1范围内</p>
@@ -583,7 +583,7 @@
         
           <a href="/archives/">
         
-          <span class="site-state-item-count">29</span>
+          <span class="site-state-item-count">26</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
@@ -624,7 +624,7 @@
       
         
       
-        <a href="https://github.com/7oDo" title="GitHub &rarr; https://github.com/7oDo" rel="noopener" target="_blank"><i class="fa fa-fw fa-github"></i>GitHub</a>
+        <a href="https://github.com/Ap0l1o" title="GitHub &rarr; https://github.com/Ap0l1o" rel="noopener" target="_blank"><i class="fa fa-fw fa-github"></i>GitHub</a>
       </span>
     
   </div>

@@ -57,13 +57,13 @@
   };
 </script>
 
-  <meta name="description" content="磁盘管理添加硬盘设备$$在虚拟机中模拟添加一块新硬盘 \to 分区 \to 格式化 \to 挂载$$在虚拟机中添加硬盘        分区 创建分区  查看创建的分区   保存我们的上述操作   格式化挂载 首先是创建一个用于挂载设备的挂载点目录   使用mount命令将存储设备与挂载点目录进行关联   使用df -h命令来查看挂载状态和硬盘使用量信息   修改配置文件，使挂载永久有效. vim">
+  <meta name="description" content="磁盘管理添加硬盘设备$$在虚拟机中模拟添加一块新硬盘 \to 分区 \to 格式化 \to 挂载$$">
 <meta name="keywords" content="网络管理与服务设计">
 <meta property="og:type" content="article">
 <meta property="og:title" content="磁盘管理与文件管理">
 <meta property="og:url" content="http://yoursite.com/2019/11/03/磁盘管理/index.html">
 <meta property="og:site_name" content="Ap0l1o">
-<meta property="og:description" content="磁盘管理添加硬盘设备$$在虚拟机中模拟添加一块新硬盘 \to 分区 \to 格式化 \to 挂载$$在虚拟机中添加硬盘        分区 创建分区  查看创建的分区   保存我们的上述操作   格式化挂载 首先是创建一个用于挂载设备的挂载点目录   使用mount命令将存储设备与挂载点目录进行关联   使用df -h命令来查看挂载状态和硬盘使用量信息   修改配置文件，使挂载永久有效. vim">
+<meta property="og:description" content="磁盘管理添加硬盘设备$$在虚拟机中模拟添加一块新硬盘 \to 分区 \to 格式化 \to 挂载$$">
 <meta property="og:locale" content="zh-CN">
 <meta property="og:image" content="https://s2.ax1x.com/2019/11/03/KXQVCF.png">
 <meta property="og:image" content="https://s2.ax1x.com/2019/11/03/KXQuuR.png">
@@ -107,10 +107,10 @@
 <meta property="og:image" content="https://i.loli.net/2019/11/03/8USrHqRP3uVvwQK.png">
 <meta property="og:image" content="https://i.loli.net/2019/11/03/UqLErZcYmfh6ew3.png">
 <meta property="og:image" content="https://i.loli.net/2019/11/03/tSump6zbDCqIhw4.png">
-<meta property="og:updated_time" content="2019-11-03T08:27:18.174Z">
+<meta property="og:updated_time" content="2019-11-03T09:11:19.157Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="磁盘管理与文件管理">
-<meta name="twitter:description" content="磁盘管理添加硬盘设备$$在虚拟机中模拟添加一块新硬盘 \to 分区 \to 格式化 \to 挂载$$在虚拟机中添加硬盘        分区 创建分区  查看创建的分区   保存我们的上述操作   格式化挂载 首先是创建一个用于挂载设备的挂载点目录   使用mount命令将存储设备与挂载点目录进行关联   使用df -h命令来查看挂载状态和硬盘使用量信息   修改配置文件，使挂载永久有效. vim">
+<meta name="twitter:description" content="磁盘管理添加硬盘设备$$在虚拟机中模拟添加一块新硬盘 \to 分区 \to 格式化 \to 挂载$$">
 <meta name="twitter:image" content="https://s2.ax1x.com/2019/11/03/KXQVCF.png">
   <link rel="canonical" href="http://yoursite.com/2019/11/03/磁盘管理/">
 
@@ -291,7 +291,7 @@
                 
               
 
-              <time title="创建时间：2019-11-03 16:39:40 / 修改时间：16:27:18" itemprop="dateCreated datePublished" datetime="2019-11-03T16:39:40+08:00">2019-11-03</time>
+              <time title="创建时间：2019-11-03 16:39:40 / 修改时间：17:11:19" itemprop="dateCreated datePublished" datetime="2019-11-03T16:39:40+08:00">2019-11-03</time>
             </span>
           
             
@@ -345,7 +345,10 @@
     <div class="post-body" itemprop="articleBody">
 
       
-        <h1 id="磁盘管理"><a href="#磁盘管理" class="headerlink" title="磁盘管理"></a>磁盘管理</h1><h2 id="添加硬盘设备"><a href="#添加硬盘设备" class="headerlink" title="添加硬盘设备"></a>添加硬盘设备</h2><p>$$<br>在虚拟机中模拟添加一块新硬盘 \to 分区 \to 格式化 \to 挂载<br>$$</p><h3 id="在虚拟机中添加硬盘"><a href="#在虚拟机中添加硬盘" class="headerlink" title="在虚拟机中添加硬盘"></a>在虚拟机中添加硬盘</h3><ul>
+        <h1 id="磁盘管理"><a href="#磁盘管理" class="headerlink" title="磁盘管理"></a>磁盘管理</h1><h2 id="添加硬盘设备"><a href="#添加硬盘设备" class="headerlink" title="添加硬盘设备"></a>添加硬盘设备</h2><p>$$<br>在虚拟机中模拟添加一块新硬盘 \to 分区 \to 格式化 \to 挂载<br>$$</p>
+<a id="more"></a>
+
+<h3 id="在虚拟机中添加硬盘"><a href="#在虚拟机中添加硬盘" class="headerlink" title="在虚拟机中添加硬盘"></a>在虚拟机中添加硬盘</h3><ul>
 <li><img src="https://s2.ax1x.com/2019/11/03/KXQVCF.png" alt="KXQVCF.png"></li>
 <li><img src="https://s2.ax1x.com/2019/11/03/KXQuuR.png" alt="KXQuuR.png"></li>
 <li><img src="https://s2.ax1x.com/2019/11/03/KXQMHx.png" alt="KXQMHx.png"></li>
@@ -353,7 +356,8 @@
 <li><img src="https://s2.ax1x.com/2019/11/03/KXQ34O.png" alt="KXQ34O.png"></li>
 <li><img src="https://s2.ax1x.com/2019/11/03/KXQJ8e.png" alt="KXQJ8e.png"></li>
 <li><img src="https://s2.ax1x.com/2019/11/03/KXQtvd.png" alt="KXQtvd.png"></li>
-</ul><h3 id="分区"><a href="#分区" class="headerlink" title="分区"></a>分区</h3><ol>
+</ul>
+<h3 id="分区"><a href="#分区" class="headerlink" title="分区"></a>分区</h3><ol>
 <li><p>创建分区<img src="https://s2.ax1x.com/2019/11/03/KXQD58.png" alt="KXQD58.png"></p>
 </li>
 <li><p>查看创建的分区</p>
@@ -362,7 +366,9 @@
 <li><p>保存我们的上述操作</p>
 <p><img src="https://s2.ax1x.com/2019/11/03/KXQ62Q.png" alt="KXQ62Q.png"></p>
 </li>
-</ol><h3 id="格式化"><a href="#格式化" class="headerlink" title="格式化"></a>格式化</h3><p><img src="https://s2.ax1x.com/2019/11/03/KXQcvj.png" alt="KXQcvj.png"></p><h3 id="挂载"><a href="#挂载" class="headerlink" title="挂载"></a>挂载</h3><ol>
+</ol>
+<h3 id="格式化"><a href="#格式化" class="headerlink" title="格式化"></a>格式化</h3><p><img src="https://s2.ax1x.com/2019/11/03/KXQcvj.png" alt="KXQcvj.png"></p>
+<h3 id="挂载"><a href="#挂载" class="headerlink" title="挂载"></a>挂载</h3><ol>
 <li><p>首先是创建一个用于挂载设备的挂载点目录</p>
 <p><img src="https://s2.ax1x.com/2019/11/03/KXQ2Ks.png" alt="KXQ2Ks.png"></p>
 </li>
@@ -375,11 +381,7 @@
 <li><p>修改配置文件，使挂载永久有效. <code>vim /etc/fstab</code></p>
 <p><img src="https://s2.ax1x.com/2019/11/03/KXQoPU.png" alt="KXQoPU.png"></p>
 </li>
-</ol><a id="more"></a>
-
-
-
-
+</ol>
 <h2 id="磁盘管理常用命令"><a href="#磁盘管理常用命令" class="headerlink" title="磁盘管理常用命令"></a>磁盘管理常用命令</h2><h3 id="df-命令"><a href="#df-命令" class="headerlink" title="df 命令"></a><code>df</code> 命令</h3><p><code>df</code>命令用于显示有关每个文件所在的文件系统的信息，或者默认为所有文件系统。<br>命令格式：<code>df 选项 参数</code></p>
 <table>
 <thead>
@@ -686,8 +688,8 @@
 
             <div class="post-nav-prev post-nav-item">
               
-                <a href="/2019/11/03/课堂/" rel="prev" title="">
-                   <i class="fa fa-chevron-right"></i>
+                <a href="/2019/11/03/使用MariaDB数据库管理系统/" rel="prev" title="使用MariaDB数据库管理系统">
+                  使用MariaDB数据库管理系统 <i class="fa fa-chevron-right"></i>
                 </a>
               
             </div>
@@ -758,7 +760,7 @@
         
           <a href="/archives/">
         
-          <span class="site-state-item-count">29</span>
+          <span class="site-state-item-count">26</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
@@ -799,7 +801,7 @@
       
         
       
-        <a href="https://github.com/7oDo" title="GitHub &rarr; https://github.com/7oDo" rel="noopener" target="_blank"><i class="fa fa-fw fa-github"></i>GitHub</a>
+        <a href="https://github.com/Ap0l1o" title="GitHub &rarr; https://github.com/Ap0l1o" rel="noopener" target="_blank"><i class="fa fa-fw fa-github"></i>GitHub</a>
       </span>
     
   </div>

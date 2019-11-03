@@ -57,19 +57,16 @@
   };
 </script>
 
-  <meta name="description" content="使用 PAT 配置动态 NAT为 NAT 转换配置将被允许的流量1234R2(config)#ip access-list standard R2NATR2(config-std-nacl)#permit 192.168.10.0 0.0.0.255R2(config-std-nacl)#permit 192.168.20.0 0.0.0.255R2(config-std-nacl)#permit">
-<meta name="keywords" content="网络">
+  <meta name="keywords" content="网络">
 <meta property="og:type" content="article">
 <meta property="og:title" content="Packet Tracer - 实施静态和动态 NAT">
 <meta property="og:url" content="http://yoursite.com/2019/11/03/实施静态和动态 NAT/index.html">
 <meta property="og:site_name" content="Ap0l1o">
-<meta property="og:description" content="使用 PAT 配置动态 NAT为 NAT 转换配置将被允许的流量1234R2(config)#ip access-list standard R2NATR2(config-std-nacl)#permit 192.168.10.0 0.0.0.255R2(config-std-nacl)#permit 192.168.20.0 0.0.0.255R2(config-std-nacl)#permit">
 <meta property="og:locale" content="zh-CN">
 <meta property="og:image" content="https://s2.ax1x.com/2019/05/19/EjVhe1.png">
-<meta property="og:updated_time" content="2019-11-03T08:25:10.890Z">
+<meta property="og:updated_time" content="2019-11-03T09:12:38.069Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Packet Tracer - 实施静态和动态 NAT">
-<meta name="twitter:description" content="使用 PAT 配置动态 NAT为 NAT 转换配置将被允许的流量1234R2(config)#ip access-list standard R2NATR2(config-std-nacl)#permit 192.168.10.0 0.0.0.255R2(config-std-nacl)#permit 192.168.20.0 0.0.0.255R2(config-std-nacl)#permit">
 <meta name="twitter:image" content="https://s2.ax1x.com/2019/05/19/EjVhe1.png">
   <link rel="canonical" href="http://yoursite.com/2019/11/03/实施静态和动态 NAT/">
 
@@ -250,7 +247,7 @@
                 
               
 
-              <time title="创建时间：2019-11-03 16:39:27 / 修改时间：16:25:10" itemprop="dateCreated datePublished" datetime="2019-11-03T16:39:27+08:00">2019-11-03</time>
+              <time title="创建时间：2019-11-03 16:39:27 / 修改时间：17:12:38" itemprop="dateCreated datePublished" datetime="2019-11-03T16:39:27+08:00">2019-11-03</time>
             </span>
           
             
@@ -304,8 +301,8 @@
     <div class="post-body" itemprop="articleBody">
 
       
-        <p><img src="https://s2.ax1x.com/2019/05/19/EjVhe1.png" alt="image"></p><h2 id="使用-PAT-配置动态-NAT"><a href="#使用-PAT-配置动态-NAT" class="headerlink" title="使用 PAT 配置动态 NAT"></a>使用 PAT 配置动态 NAT</h2><h3 id="为-NAT-转换配置将被允许的流量"><a href="#为-NAT-转换配置将被允许的流量" class="headerlink" title="为 NAT 转换配置将被允许的流量"></a>为 NAT 转换配置将被允许的流量</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">R2(config)#ip access-list standard R2NAT</span><br><span class="line">R2(config-std-nacl)#permit 192.168.10.0 0.0.0.255</span><br><span class="line">R2(config-std-nacl)#permit 192.168.20.0 0.0.0.255</span><br><span class="line">R2(config-std-nacl)#permit 192.168.30.0 0.0.0.255</span><br></pre></td></tr></table></figure><a id="more"></a>
-
+        <p><img src="https://s2.ax1x.com/2019/05/19/EjVhe1.png" alt="image"><a id="more"></a></p>
+<h2 id="使用-PAT-配置动态-NAT"><a href="#使用-PAT-配置动态-NAT" class="headerlink" title="使用 PAT 配置动态 NAT"></a>使用 PAT 配置动态 NAT</h2><h3 id="为-NAT-转换配置将被允许的流量"><a href="#为-NAT-转换配置将被允许的流量" class="headerlink" title="为 NAT 转换配置将被允许的流量"></a>为 NAT 转换配置将被允许的流量</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">R2(config)#ip access-list standard R2NAT</span><br><span class="line">R2(config-std-nacl)#permit 192.168.10.0 0.0.0.255</span><br><span class="line">R2(config-std-nacl)#permit 192.168.20.0 0.0.0.255</span><br><span class="line">R2(config-std-nacl)#permit 192.168.30.0 0.0.0.255</span><br></pre></td></tr></table></figure>
 
 <h3 id="为-NAT-配置地址池"><a href="#为-NAT-配置地址池" class="headerlink" title="为 NAT 配置地址池"></a>为 NAT 配置地址池</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">R2(config)#ip nat pool NAT 209.165.202.129 209.165.202.130 netmask 255.255.255.128</span><br></pre></td></tr></table></figure>
 
@@ -437,7 +434,7 @@
         
           <a href="/archives/">
         
-          <span class="site-state-item-count">29</span>
+          <span class="site-state-item-count">26</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
@@ -478,7 +475,7 @@
       
         
       
-        <a href="https://github.com/7oDo" title="GitHub &rarr; https://github.com/7oDo" rel="noopener" target="_blank"><i class="fa fa-fw fa-github"></i>GitHub</a>
+        <a href="https://github.com/Ap0l1o" title="GitHub &rarr; https://github.com/Ap0l1o" rel="noopener" target="_blank"><i class="fa fa-fw fa-github"></i>GitHub</a>
       </span>
     
   </div>

@@ -57,21 +57,21 @@
   };
 </script>
 
-  <meta name="description" content="整体结构全连接的神经网络全连接的神经网络中，Affine层（仿射层，全连接层）后面跟着激活函数ReLU层或者Sigmoid层，相邻层的所有神经元之间都有连接。卷积神经网络（CNN）CNN中新增了Convoluting层（卷积层）和Pooling层（池化层）。CNN的连接顺序是“Convoluting—ReLU—Pooling”，Pooling层有时会被省略。">
+  <meta name="description" content="整体结构全连接的神经网络全连接的神经网络中，Affine层（仿射层，全连接层）后面跟着激活函数ReLU层或者Sigmoid层，相邻层的所有神经元之间都有连接。">
 <meta name="keywords" content="DL">
 <meta property="og:type" content="article">
 <meta property="og:title" content="0x06 卷积神经网络">
 <meta property="og:url" content="http://yoursite.com/2019/09/05/卷积神经网络/index.html">
 <meta property="og:site_name" content="Ap0l1o">
-<meta property="og:description" content="整体结构全连接的神经网络全连接的神经网络中，Affine层（仿射层，全连接层）后面跟着激活函数ReLU层或者Sigmoid层，相邻层的所有神经元之间都有连接。卷积神经网络（CNN）CNN中新增了Convoluting层（卷积层）和Pooling层（池化层）。CNN的连接顺序是“Convoluting—ReLU—Pooling”，Pooling层有时会被省略。">
+<meta property="og:description" content="整体结构全连接的神经网络全连接的神经网络中，Affine层（仿射层，全连接层）后面跟着激活函数ReLU层或者Sigmoid层，相邻层的所有神经元之间都有连接。">
 <meta property="og:locale" content="zh-CN">
 <meta property="og:image" content="https://s2.ax1x.com/2019/07/23/eF8ejx.md.gif">
 <meta property="og:image" content="https://s2.ax1x.com/2019/07/23/eF3v3n.png">
 <meta property="og:image" content="https://s2.ax1x.com/2019/07/23/eF89BT.png">
-<meta property="og:updated_time" content="2019-11-03T08:09:05.326Z">
+<meta property="og:updated_time" content="2019-11-03T09:12:27.255Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="0x06 卷积神经网络">
-<meta name="twitter:description" content="整体结构全连接的神经网络全连接的神经网络中，Affine层（仿射层，全连接层）后面跟着激活函数ReLU层或者Sigmoid层，相邻层的所有神经元之间都有连接。卷积神经网络（CNN）CNN中新增了Convoluting层（卷积层）和Pooling层（池化层）。CNN的连接顺序是“Convoluting—ReLU—Pooling”，Pooling层有时会被省略。">
+<meta name="twitter:description" content="整体结构全连接的神经网络全连接的神经网络中，Affine层（仿射层，全连接层）后面跟着激活函数ReLU层或者Sigmoid层，相邻层的所有神经元之间都有连接。">
 <meta name="twitter:image" content="https://s2.ax1x.com/2019/07/23/eF8ejx.md.gif">
   <link rel="canonical" href="http://yoursite.com/2019/09/05/卷积神经网络/">
 
@@ -263,7 +263,7 @@
                   <i class="fa fa-calendar-check-o"></i>
                 </span>
                 <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2019-11-03 16:09:05" itemprop="dateModified" datetime="2019-11-03T16:09:05+08:00">2019-11-03</time>
+                <time title="修改时间：2019-11-03 17:12:27" itemprop="dateModified" datetime="2019-11-03T17:12:27+08:00">2019-11-03</time>
               </span>
             
           
@@ -314,8 +314,8 @@
     <div class="post-body" itemprop="articleBody">
 
       
-        <h4 id="整体结构"><a href="#整体结构" class="headerlink" title="整体结构"></a>整体结构</h4><h5 id="全连接的神经网络"><a href="#全连接的神经网络" class="headerlink" title="全连接的神经网络"></a>全连接的神经网络</h5><p>全连接的神经网络中，Affine层（仿射层，全连接层）后面跟着激活函数ReLU层或者Sigmoid层，相邻层的所有神经元之间都有连接。</p><h5 id="卷积神经网络（CNN）"><a href="#卷积神经网络（CNN）" class="headerlink" title="卷积神经网络（CNN）"></a>卷积神经网络（CNN）</h5><p>CNN中新增了Convoluting层（卷积层）和Pooling层（池化层）。CNN的连接顺序是“Convoluting—ReLU—Pooling”，Pooling层有时会被省略。</p><a id="more"></a>
-
+        <h4 id="整体结构"><a href="#整体结构" class="headerlink" title="整体结构"></a>整体结构</h4><h5 id="全连接的神经网络"><a href="#全连接的神经网络" class="headerlink" title="全连接的神经网络"></a>全连接的神经网络</h5><p>全连接的神经网络中，Affine层（仿射层，全连接层）后面跟着激活函数ReLU层或者Sigmoid层，相邻层的所有神经元之间都有连接。<a id="more"></a></p>
+<h5 id="卷积神经网络（CNN）"><a href="#卷积神经网络（CNN）" class="headerlink" title="卷积神经网络（CNN）"></a>卷积神经网络（CNN）</h5><p>CNN中新增了Convoluting层（卷积层）和Pooling层（池化层）。CNN的连接顺序是“Convoluting—ReLU—Pooling”，Pooling层有时会被省略。</p>
 <p>在CNN中，有时将卷积层的输入输出数据成为特征图。</p>
 <h4 id="卷积层"><a href="#卷积层" class="headerlink" title="卷积层"></a>卷积层</h4><h5 id="全连接层存在的问题"><a href="#全连接层存在的问题" class="headerlink" title="全连接层存在的问题"></a>全连接层存在的问题</h5><p>全连接层会忽视形状，将全部的输入数据作为相同的神经元（同一纬度的神经元，例如一般都会将多维数据拉平为一维数据）处理，无法利用与形状相关的信息。</p>
 <h5 id="卷积运算"><a href="#卷积运算" class="headerlink" title="卷积运算"></a>卷积运算</h5><p>卷积层的处理就是进行卷积运算。</p>
@@ -473,7 +473,7 @@
         
           <a href="/archives/">
         
-          <span class="site-state-item-count">29</span>
+          <span class="site-state-item-count">26</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
@@ -514,7 +514,7 @@
       
         
       
-        <a href="https://github.com/7oDo" title="GitHub &rarr; https://github.com/7oDo" rel="noopener" target="_blank"><i class="fa fa-fw fa-github"></i>GitHub</a>
+        <a href="https://github.com/Ap0l1o" title="GitHub &rarr; https://github.com/Ap0l1o" rel="noopener" target="_blank"><i class="fa fa-fw fa-github"></i>GitHub</a>
       </span>
     
   </div>

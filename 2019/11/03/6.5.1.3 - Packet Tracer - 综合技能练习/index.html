@@ -1,0 +1,829 @@
+<!DOCTYPE html>
+
+
+
+
+
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 3.9.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=7.4.0">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32.jpg?v=7.4.0">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16.jpg?v=7.4.0">
+  <link rel="mask-icon" href="/images/logo.svg?v=7.4.0" color="#222">
+
+<link rel="stylesheet" href="/css/main.css?v=7.4.0">
+
+<link rel="stylesheet" href="//fonts.googleapis.com/css?family=Consolas:300,300italic,400,400italic,700,700italic&display=swap&subset=latin,latin-ext">
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css?v=4.7.0">
+  <link rel="stylesheet" href="/lib/pace/pace-theme-minimal.min.css?v=1.0.2">
+  <script src="/lib/pace/pace.min.js?v=1.0.2"></script>
+
+
+<script id="hexo-configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Pisces',
+    version: '7.4.0',
+    exturl: false,
+    sidebar: {"position":"left","display":"post","offset":12,"onmobile":false},
+    copycode: {"enable":true,"show_result":true,"style":null},
+    back2top: {"enable":true,"sidebar":false,"scrollpercent":false},
+    bookmark: {"enable":false,"color":"#222","save":"auto"},
+    fancybox: false,
+    mediumzoom: false,
+    lazyload: false,
+    pangu: false,
+    algolia: {
+      appID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    },
+    localsearch: {"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},
+    path: 'search.xml',
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    translation: {
+      copy_button: '复制',
+      copy_success: '复制成功',
+      copy_failure: '复制失败'
+    },
+    sidebarPadding: 40
+  };
+</script>
+
+  <meta name="description" content="目标 完成网络文档。   在路由器和交换机上执行基本的设备配置。   检验连接并排除故障。 要求 提供地址分配表中缺少的信息   命名路由器 College 和第二个交换机 Class-B。您将无法访问 Class-A。使用 cisco 作为所有线路的用户 EXEC 模式密码。   使用 class 作为特权 EXEC 模式密码。   加密所有明文密码。   配置相应的标语。   根据地址分配表为">
+<meta name="keywords" content="网络">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Packet Tracer - 综合技能练习">
+<meta property="og:url" content="http://yoursite.com/2019/11/03/6.5.1.3 - Packet Tracer - 综合技能练习/index.html">
+<meta property="og:site_name" content="Ap0l1o">
+<meta property="og:description" content="目标 完成网络文档。   在路由器和交换机上执行基本的设备配置。   检验连接并排除故障。 要求 提供地址分配表中缺少的信息   命名路由器 College 和第二个交换机 Class-B。您将无法访问 Class-A。使用 cisco 作为所有线路的用户 EXEC 模式密码。   使用 class 作为特权 EXEC 模式密码。   加密所有明文密码。   配置相应的标语。   根据地址分配表为">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:image" content="https://s1.ax1x.com/2018/11/16/ixcyv9.png">
+<meta property="og:image" content="https://s1.ax1x.com/2018/11/16/ixgS2Q.png">
+<meta property="og:updated_time" content="2019-11-03T08:20:56.802Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Packet Tracer - 综合技能练习">
+<meta name="twitter:description" content="目标 完成网络文档。   在路由器和交换机上执行基本的设备配置。   检验连接并排除故障。 要求 提供地址分配表中缺少的信息   命名路由器 College 和第二个交换机 Class-B。您将无法访问 Class-A。使用 cisco 作为所有线路的用户 EXEC 模式密码。   使用 class 作为特权 EXEC 模式密码。   加密所有明文密码。   配置相应的标语。   根据地址分配表为">
+<meta name="twitter:image" content="https://s1.ax1x.com/2018/11/16/ixcyv9.png">
+  <link rel="canonical" href="http://yoursite.com/2019/11/03/6.5.1.3 - Packet Tracer - 综合技能练习/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome: false,
+    isPost: true,
+    isPage: false,
+    isArchive: false
+  };
+</script>
+
+  <title>Packet Tracer - 综合技能练习 | Ap0l1o</title>
+  
+
+
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .logo,
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-CN">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-meta">
+
+    <div>
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Ap0l1o</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+  </div>
+
+  <div class="site-nav-toggle">
+    <button aria-label="切换导航栏">
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+
+<nav class="site-nav">
+  
+  <ul id="menu" class="menu">
+      
+      
+      
+        
+        <li class="menu-item menu-item-home">
+      
+    
+
+    <a href="/" rel="section"><i class="menu-item-icon fa fa-fw fa-home"></i> <br>首页</a>
+
+  </li>
+      
+      
+      
+        
+        <li class="menu-item menu-item-tags">
+      
+    
+
+    <a href="/tags/" rel="section"><i class="menu-item-icon fa fa-fw fa-tags"></i> <br>标签</a>
+
+  </li>
+      
+      
+      
+        
+        <li class="menu-item menu-item-categories">
+      
+    
+
+    <a href="/categories/" rel="section"><i class="menu-item-icon fa fa-fw fa-th"></i> <br>分类</a>
+
+  </li>
+      
+      
+      
+        
+        <li class="menu-item menu-item-archives">
+      
+    
+
+    <a href="/archives/" rel="section"><i class="menu-item-icon fa fa-fw fa-archive"></i> <br>归档</a>
+
+  </li>
+  </ul>
+
+</nav>
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+            
+
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+      <article itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block post">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/11/03/6.5.1.3 - Packet Tracer - 综合技能练习/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Ap0l1o">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar_gif.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Ap0l1o">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">Packet Tracer - 综合技能练习
+
+          
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              
+                
+              
+
+              <time title="创建时间：2019-11-03 16:39:27 / 修改时间：16:20:56" itemprop="dateCreated datePublished" datetime="2019-11-03T16:39:27+08:00">2019-11-03</time>
+            </span>
+          
+            
+
+            
+          
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/categories/大学课程/" itemprop="url" rel="index"><span itemprop="name">大学课程</span></a></span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            <span id="/2019/11/03/6.5.1.3 - Packet Tracer - 综合技能练习/" class="post-meta-item leancloud_visitors" data-flag-title="Packet Tracer - 综合技能练习" title="阅读次数">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              <span class="post-meta-item-text">阅读次数：</span>
+              <span class="leancloud-visitors-count"></span>
+            </span>
+          
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="fa fa-comment-o"></i>
+      </span>
+        
+      
+      <span class="post-meta-item-text">Valine：</span>
+    
+    <a title="valine" href="/2019/11/03/6.5.1.3 - Packet Tracer - 综合技能练习/#comments" itemprop="discussionUrl"><span class="post-comments-count valine-comment-count" data-xid="/2019/11/03/6.5.1.3 - Packet Tracer - 综合技能练习/" itemprop="commentCount"></span></a>
+  </span>
+  
+  
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h4 id="目标"><a href="#目标" class="headerlink" title="目标"></a>目标</h4><ol>
+<li>完成网络文档。  </li>
+<li>在路由器和交换机上执行基本的设备配置。  </li>
+<li>检验连接并排除故障。</li>
+</ol><h4 id="要求"><a href="#要求" class="headerlink" title="要求"></a>要求</h4><ol>
+<li>提供地址分配表中缺少的信息  </li>
+<li>命名路由器 College 和第二个交换机 Class-B。您将无法访问 Class-A。使用 cisco 作为所有线路的用户 EXEC 模式密码。  </li>
+<li>使用 class 作为特权 EXEC 模式密码。  </li>
+<li>加密所有明文密码。  </li>
+<li>配置相应的标语。  </li>
+<li>根据地址分配表为所有设备配置编址。  </li>
+<li>记录接口及其描述，包括 Class-B VLAN 1 接口。  </li>
+<li>保存配置。  </li>
+<li>检验所有设备之间的连接。所有设备应能 ping 通任何其他设备。  </li>
+<li>排除故障并记录问题。  </li>
+<li>实施启用和检验完整端到端连接所需的解决方案。  </li>
+</ol><a id="more"></a>
+
+<blockquote>
+<p>拓扑图：<br><img src="https://s1.ax1x.com/2018/11/16/ixcyv9.png" alt="image"><br>地址分配表：<br><img src="https://s1.ax1x.com/2018/11/16/ixgS2Q.png" alt="image">  </p>
+</blockquote>
+<h5 id="命名路由器和交换机："><a href="#命名路由器和交换机：" class="headerlink" title="命名路由器和交换机："></a>命名路由器和交换机：</h5><blockquote>
+<p>命名路由器:</p>
+</blockquote>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">&gt; enable</span><br><span class="line"># config terminal</span><br><span class="line">(config)# hostname College</span><br></pre></td></tr></table></figure>
+
+<blockquote>
+<p>命名交换机：</p>
+</blockquote>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">&gt; enable</span><br><span class="line"># config terminal</span><br><span class="line">(config)# hostname Class-B</span><br></pre></td></tr></table></figure>
+
+<h5 id="使用cisco作为所有线路的用户EXEC密码："><a href="#使用cisco作为所有线路的用户EXEC密码：" class="headerlink" title="使用cisco作为所有线路的用户EXEC密码："></a>使用cisco作为所有线路的用户EXEC密码：</h5><blockquote>
+<p>设置console线路密码：此时进入用户模式需要输入 cisco</p>
+</blockquote>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">&gt; enable</span><br><span class="line"># config terminal</span><br><span class="line">(config)# line console 0  /*进入console口线路模式*/</span><br><span class="line">(config-line)# password cisco  /* 设置密码 */</span><br><span class="line">(config-line)# login  /* 为接口开启登录功能 */</span><br></pre></td></tr></table></figure>
+
+<blockquote>
+<p>设置虚拟终端端口0的密码：</p>
+</blockquote>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">&gt; enable</span><br><span class="line"># config terminal</span><br><span class="line">(config)# line vty 0</span><br><span class="line">(config-line)# password cisco</span><br><span class="line">(config-line)# login</span><br></pre></td></tr></table></figure>
+
+<h5 id="使用class作为特权EXEC模式密码："><a href="#使用class作为特权EXEC模式密码：" class="headerlink" title="使用class作为特权EXEC模式密码："></a>使用class作为特权EXEC模式密码：</h5><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">&gt; enable</span><br><span class="line"># config terminal</span><br><span class="line">(config)# enable secret  class /* 加密的特权模式密码，不会在show running-config 中显示，而enable password class则会显示 */</span><br></pre></td></tr></table></figure>
+
+<h5 id="加密所有明文密码："><a href="#加密所有明文密码：" class="headerlink" title="加密所有明文密码："></a>加密所有明文密码：</h5><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">&gt; enable</span><br><span class="line"># config terminal</span><br><span class="line">(config)# sercive password-encryption</span><br></pre></td></tr></table></figure>
+
+<h5 id="配置相应的标语："><a href="#配置相应的标语：" class="headerlink" title="配置相应的标语："></a>配置相应的标语：</h5><blockquote>
+<p>设置登录消息标语：<br><code>banner motd  # Hello #  /* 娱乐一下 */</code>  </p>
+</blockquote>
+<h5 id="根据地址分配表配置地址"><a href="#根据地址分配表配置地址" class="headerlink" title="根据地址分配表配置地址"></a>根据地址分配表配置地址</h5><blockquote>
+<p>配置路由器的G0/0和G0/1：</p>
+</blockquote>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">配置G0/0：</span><br><span class="line">(config)# interface G0/0   /* 进入端口 */</span><br><span class="line">(config-if)# ip address 172.14.5.1 255.255.255.0 /* 设置端口的ip地址和子网掩码 */</span><br><span class="line">(config-if)# no shutdown /* 打开接口 */</span><br><span class="line">配置G0/1：</span><br><span class="line"># interface G0/1   /* 进入端口 */</span><br><span class="line">(config-if)# ip address 172.14.10.1 255.255.255.0 /* 设置端口的ip地址和子网掩码 */</span><br><span class="line">(config-if)# no shutdown /* 打开接口 */</span><br></pre></td></tr></table></figure>
+
+<blockquote>
+<p>配置交换机B的VLAN接口:</p>
+</blockquote>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">(config)# interface vlan 1</span><br><span class="line">(config-if)# ip address 172.14.10.35 255.255.255.0</span><br></pre></td></tr></table></figure>
+
+<blockquote>
+<p>配置交换机B的默认网关：<br><code>ip default-gateway 172.14.10.1</code></p>
+</blockquote>
+<blockquote>
+<p>保存配置：<br><code>copy running-config startup-config</code> </p>
+</blockquote>
+<blockquote>
+<p>配置四台PC的ip和默认网关：根据分配表配置即可，错误的修改。</p>
+</blockquote>
+
+    </div>
+
+    
+    
+    
+        
+      
+        <div id="reward-container">
+  <div>Donate~</div>
+  <button id="reward-button" disable="enable" onclick="var qr = document.getElementById(&quot;qr&quot;); qr.style.display = (qr.style.display === 'none') ? 'block' : 'none';">
+    打赏
+  </button>
+  <div id="qr" style="display: none;">
+        
+      
+      <div style="display: inline-block">
+        <img src="/images/alipay.jpg" alt="Ap0l1o 支付宝">
+        <p>支付宝</p>
+      </div>
+
+  </div>
+</div>
+
+      
+
+      <footer class="post-footer">
+          
+            
+          
+          <div class="post-tags">
+            
+              <a href="/tags/网络/" rel="tag"># 网络</a>
+            
+          </div>
+        
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-next post-nav-item">
+              
+                <a href="/2019/11/03/6.4.3.4 - Packet Tracer - 排除默认网关故障/" rel="next" title="Packet Tracer - 排除默认网关故障">
+                  <i class="fa fa-chevron-left"></i> Packet Tracer - 排除默认网关故障
+                </a>
+              
+            </div>
+
+            <span class="post-nav-divider"></span>
+
+            <div class="post-nav-prev post-nav-item">
+              
+                <a href="/2019/11/03/数据库/" rel="prev" title="数据库系统概论">
+                  数据库系统概论 <i class="fa fa-chevron-right"></i>
+                </a>
+              
+            </div>
+          </div>
+        
+      </footer>
+    
+  </div>
+  
+  
+  
+  </article>
+
+  </div>
+
+
+          </div>
+          
+    
+    <div class="comments" id="comments"></div>
+  
+
+        </div>
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+        
+        
+        
+        
+      
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-4"><a class="nav-link" href="#目标"><span class="nav-number">1.</span> <span class="nav-text">目标</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#要求"><span class="nav-number">2.</span> <span class="nav-text">要求</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#命名路由器和交换机："><span class="nav-number">2.1.</span> <span class="nav-text">命名路由器和交换机：</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#使用cisco作为所有线路的用户EXEC密码："><span class="nav-number">2.2.</span> <span class="nav-text">使用cisco作为所有线路的用户EXEC密码：</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#使用class作为特权EXEC模式密码："><span class="nav-number">2.3.</span> <span class="nav-text">使用class作为特权EXEC模式密码：</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#加密所有明文密码："><span class="nav-number">2.4.</span> <span class="nav-text">加密所有明文密码：</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#配置相应的标语："><span class="nav-number">2.5.</span> <span class="nav-text">配置相应的标语：</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#根据地址分配表配置地址"><span class="nav-number">2.6.</span> <span class="nav-text">根据地址分配表配置地址</span></a></li></ol></li></ol></div>
+        
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image"
+      src="/images/avatar_gif.gif"
+      alt="Ap0l1o">
+  <p class="site-author-name" itemprop="name">Ap0l1o</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+  <nav class="site-state motion-element">
+      <div class="site-state-item site-state-posts">
+        
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">29</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+    
+      
+      
+      <div class="site-state-item site-state-categories">
+        
+          
+            <a href="/categories/">
+          
+        
+        <span class="site-state-item-count">4</span>
+        <span class="site-state-item-name">分类</span>
+        </a>
+      </div>
+    
+      
+      
+      <div class="site-state-item site-state-tags">
+        
+          
+            <a href="/tags/">
+          
+        
+        <span class="site-state-item-count">5</span>
+        <span class="site-state-item-name">标签</span>
+        </a>
+      </div>
+    
+  </nav>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+      
+      
+        
+      
+      
+        
+      
+        <a href="https://github.com/7oDo" title="GitHub &rarr; https://github.com/7oDo" rel="noopener" target="_blank"><i class="fa fa-fw fa-github"></i>GitHub</a>
+      </span>
+    
+  </div>
+
+
+  <div class="links-of-blogroll motion-element">
+    <div class="links-of-blogroll-title">
+      <i class="fa fa-fw fa-link"></i>
+      Links
+    </div>
+    <ul class="links-of-blogroll-list">
+        <li class="links-of-blogroll-item">
+          <a href="https://www.cnblogs.com/Jie-Fei/" title="https://www.cnblogs.com/Jie-Fei/" rel="noopener" target="_blank">cnblogs</a>
+        </li>
+      
+    </ul>
+  </div>
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2019</span>
+  <span class="with-love" id="animate">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Ap0l1o</span>
+</div>
+
+        
+
+
+
+
+
+
+  
+  <script>
+  function leancloudSelector(url) {
+    return document.getElementById(url).querySelector('.leancloud-visitors-count');
+  }
+  if (CONFIG.page.isPost) {
+    function addCount(Counter) {
+      var visitors = document.querySelector('.leancloud_visitors');
+      var url = visitors.getAttribute('id').trim();
+      var title = visitors.getAttribute('data-flag-title').trim();
+
+      Counter('get', `/classes/Counter?where=${JSON.stringify({ url })}`)
+        .then(response => response.json())
+        .then(({ results }) => {
+          if (results.length > 0) {
+            var counter = results[0];
+            Counter('put', '/classes/Counter/' + counter.objectId, { time: { '__op': 'Increment', 'amount': 1 } })
+              .then(response => response.json())
+              .then(() => {
+                leancloudSelector(url).innerText = counter.time + 1;
+              })
+            
+              .catch(error => {
+                console.log('Failed to save visitor count', error);
+              })
+          } else {
+              Counter('post', '/classes/Counter', { title: title, url: url, time: 1 })
+                .then(response => response.json())
+                .then(() => {
+                  leancloudSelector(url).innerText = 1;
+                })
+                .catch(error => {
+                  console.log('Failed to create', error);
+                });
+            
+          }
+        })
+        .catch(error => {
+          console.log('LeanCloud Counter Error', error);
+        });
+    }
+  } else {
+    function showTime(Counter) {
+      var visitors = document.querySelectorAll('.leancloud_visitors');
+      var entries = [...visitors].map(element => {
+        return element.getAttribute('id').trim();
+      });
+
+      Counter('get', `/classes/Counter?where=${JSON.stringify({ url: { '$in': entries } })}`)
+        .then(response => response.json())
+        .then(({ results }) => {
+          if (results.length === 0) {
+            document.querySelectorAll('.leancloud_visitors .leancloud-visitors-count').forEach(element => {
+              element.innerText = 0;
+            });
+            return;
+          }
+          for (var i = 0; i < results.length; i++) {
+            var item = results[i];
+            var url = item.url;
+            var time = item.time;
+            leancloudSelector(url).innerText = time;
+          }
+          for (var i = 0; i < entries.length; i++) {
+            var url = entries[i];
+            var element = leancloudSelector(url);
+            if (element.innerText == '') {
+              element.innerText = 0;
+            }
+          }
+        })
+        .catch(error => {
+          console.log('LeanCloud Counter Error', error);
+        });
+    }
+  }
+
+  fetch('https://app-router.leancloud.cn/2/route?appId=6I3i4U3wh9KIPOi55NTP6g2Y-gzGzoHsz')
+    .then(response => response.json())
+    .then(({ api_server }) => {
+      var Counter = (method, url, data) => {
+        return fetch(`https://${api_server}/1.1${url}`, {
+          method: method,
+          headers: {
+            'X-LC-Id': '6I3i4U3wh9KIPOi55NTP6g2Y-gzGzoHsz',
+            'X-LC-Key': '9TiVVrkObL1VH2ksTWL0qt71',
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(data)
+        });
+      };
+      if (CONFIG.page.isPost) {
+        const localhost = /http:\/\/(localhost|127.0.0.1|0.0.0.0)/;
+        if (localhost.test(document.URL)) return;
+        addCount(Counter);
+      } else if (document.querySelectorAll('.post-title-link').length >= 1) {
+        showTime(Counter);
+      }
+    });
+  </script>
+
+
+  <script>
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "//tajs.qq.com/stats?sId=66469216";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
+
+
+
+
+        
+      </div>
+    </footer>
+  </div>
+
+  
+
+
+    
+    
+  
+  <script src="/lib/anime.min.js?v=3.1.0"></script>
+  <script src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  <script src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  <script defer src="/lib/three/three.min.js"></script>
+  <script defer src="/lib/three/three-waves.min.js"></script>
+<script src="/js/utils.js?v=7.4.0"></script><script src="/js/motion.js?v=7.4.0"></script>
+<script src="/js/schemes/pisces.js?v=7.4.0"></script>
+<script src="/js/next-boot.js?v=7.4.0"></script>
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+    
+      
+<script type="text/x-mathjax-config">
+    MathJax.Ajax.config.path['mhchem'] = '//cdn.jsdelivr.net/npm/mathjax-mhchem@3';
+
+  MathJax.Hub.Config({
+    tex2jax: {
+      inlineMath: [ ['$', '$'], ['\\(', '\\)'] ],
+      processEscapes: true,
+      skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+    },
+    TeX: {
+        extensions: ['[mhchem]/mhchem.js'],
+      equationNumbers: {
+        autoNumber: 'AMS'
+      }
+    }
+  });
+
+  MathJax.Hub.Register.StartupHook('TeX Jax Ready', function() {
+    MathJax.InputJax.TeX.prefilterHooks.Add(function(data) {
+      if (data.display) {
+        var next = data.script.nextSibling;
+        while (next && next.nodeName.toLowerCase() === '#text') {
+          next = next.nextSibling;
+        }
+        if (next && next.nodeName.toLowerCase() === 'br') {
+          next.parentNode.removeChild(next);
+        }
+      }
+    });
+  });
+
+  MathJax.Hub.Queue(function() {
+    var all = MathJax.Hub.getAllJax(), i;
+    for (i = 0; i < all.length; i += 1) {
+      element = document.getElementById(all[i].inputID + '-Frame').parentNode;
+      if (element.nodeName.toLowerCase() == 'li') {
+        element = element.parentNode;
+      }
+      element.classList.add('has-jax');
+    }
+  });
+</script>
+<script>
+  NexT.utils.getScript('//cdn.jsdelivr.net/npm/mathjax@2/MathJax.js?config=TeX-AMS-MML_HTMLorMML', () => {
+    MathJax.Hub.Typeset();
+  }, window.MathJax);
+</script>
+
+    
+  
+
+  
+
+  
+
+
+<script>
+NexT.utils.getScript('//unpkg.com/valine/dist/Valine.min.js', () => {
+  var GUEST = ['nick', 'mail', 'link'];
+  var guest = 'nick,mail,link';
+  guest = guest.split(',').filter(item => {
+    return GUEST.includes(item);
+  });
+  new Valine({
+    el: '#comments',
+    verify: false,
+    notify: false,
+    appId: '6I3i4U3wh9KIPOi55NTP6g2Y-gzGzoHsz',
+    appKey: '9TiVVrkObL1VH2ksTWL0qt71',
+    placeholder: 'Just go go',
+    avatar: 'mm',
+    meta: guest,
+    pageSize: '10' || 10,
+    visitor: false,
+    lang: 'zh-CN' || 'zh-cn',
+    path: location.pathname
+  });
+}, window.Valine);
+</script>
+
+</body>
+</html>

@@ -1,0 +1,865 @@
+<!DOCTYPE html>
+
+
+
+
+
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 3.9.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=7.4.0">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32.jpg?v=7.4.0">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16.jpg?v=7.4.0">
+  <link rel="mask-icon" href="/images/logo.svg?v=7.4.0" color="#222">
+
+<link rel="stylesheet" href="/css/main.css?v=7.4.0">
+
+<link rel="stylesheet" href="//fonts.googleapis.com/css?family=Consolas:300,300italic,400,400italic,700,700italic&display=swap&subset=latin,latin-ext">
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css?v=4.7.0">
+  <link rel="stylesheet" href="/lib/pace/pace-theme-minimal.min.css?v=1.0.2">
+  <script src="/lib/pace/pace.min.js?v=1.0.2"></script>
+
+
+<script id="hexo-configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Pisces',
+    version: '7.4.0',
+    exturl: false,
+    sidebar: {"position":"left","display":"post","offset":12,"onmobile":false},
+    copycode: {"enable":true,"show_result":true,"style":null},
+    back2top: {"enable":true,"sidebar":false,"scrollpercent":false},
+    bookmark: {"enable":false,"color":"#222","save":"auto"},
+    fancybox: false,
+    mediumzoom: false,
+    lazyload: false,
+    pangu: false,
+    algolia: {
+      appID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    },
+    localsearch: {"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},
+    path: 'search.xml',
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    translation: {
+      copy_button: '复制',
+      copy_success: '复制成功',
+      copy_failure: '复制失败'
+    },
+    sidebarPadding: 40
+  };
+</script>
+
+  <meta name="description" content="绪论Java的组织形式：类是Java程序的最小程序单位。如果某个类能被解释器直接解释执行，则这个类必须包含main方法，且必须用public static void来修饰。main方法是Java程序的入口，只有一个类包含main方法，其他类都是用于被main方法直接或间接调用的。Java的命名编译和运行：">
+<meta name="keywords" content="Java">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Java基础学习（持续更新）">
+<meta property="og:url" content="http://yoursite.com/2019/10/13/Java随记/index.html">
+<meta property="og:site_name" content="Ap0l1o">
+<meta property="og:description" content="绪论Java的组织形式：类是Java程序的最小程序单位。如果某个类能被解释器直接解释执行，则这个类必须包含main方法，且必须用public static void来修饰。main方法是Java程序的入口，只有一个类包含main方法，其他类都是用于被main方法直接或间接调用的。Java的命名编译和运行：">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:image" content="e:%5CMarkDown%E6%96%87%E4%BB%B6%5C%E5%9B%BE%E7%89%87%5C1568258464020.png">
+<meta property="og:image" content="https://s2.ax1x.com/2019/09/12/n08yDI.png">
+<meta property="og:updated_time" content="2019-10-13T13:27:33.870Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Java基础学习（持续更新）">
+<meta name="twitter:description" content="绪论Java的组织形式：类是Java程序的最小程序单位。如果某个类能被解释器直接解释执行，则这个类必须包含main方法，且必须用public static void来修饰。main方法是Java程序的入口，只有一个类包含main方法，其他类都是用于被main方法直接或间接调用的。Java的命名编译和运行：">
+<meta name="twitter:image" content="e:%5CMarkDown%E6%96%87%E4%BB%B6%5C%E5%9B%BE%E7%89%87%5C1568258464020.png">
+  <link rel="canonical" href="http://yoursite.com/2019/10/13/Java随记/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome: false,
+    isPost: true,
+    isPage: false,
+    isArchive: false
+  };
+</script>
+
+  <title>Java基础学习（持续更新） | Ap0l1o</title>
+  
+
+
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .logo,
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-CN">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-meta">
+
+    <div>
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Ap0l1o</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+  </div>
+
+  <div class="site-nav-toggle">
+    <button aria-label="切换导航栏">
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+
+<nav class="site-nav">
+  
+  <ul id="menu" class="menu">
+      
+      
+      
+        
+        <li class="menu-item menu-item-home">
+      
+    
+
+    <a href="/" rel="section"><i class="menu-item-icon fa fa-fw fa-home"></i> <br>首页</a>
+
+  </li>
+      
+      
+      
+        
+        <li class="menu-item menu-item-tags">
+      
+    
+
+    <a href="/tags/" rel="section"><i class="menu-item-icon fa fa-fw fa-tags"></i> <br>标签</a>
+
+  </li>
+      
+      
+      
+        
+        <li class="menu-item menu-item-categories">
+      
+    
+
+    <a href="/categories/" rel="section"><i class="menu-item-icon fa fa-fw fa-th"></i> <br>分类</a>
+
+  </li>
+      
+      
+      
+        
+        <li class="menu-item menu-item-archives">
+      
+    
+
+    <a href="/archives/" rel="section"><i class="menu-item-icon fa fa-fw fa-archive"></i> <br>归档</a>
+
+  </li>
+  </ul>
+
+</nav>
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+            
+
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+      <article itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block post">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/10/13/Java随记/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Ap0l1o">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar_gif.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Ap0l1o">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">Java基础学习（持续更新）
+
+          
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              
+                
+              
+
+              <time title="创建时间：2019-10-13 21:28:32 / 修改时间：21:27:33" itemprop="dateCreated datePublished" datetime="2019-10-13T21:28:32+08:00">2019-10-13</time>
+            </span>
+          
+            
+
+            
+          
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/categories/Java/" itemprop="url" rel="index"><span itemprop="name">Java</span></a></span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            <span id="/2019/10/13/Java随记/" class="post-meta-item leancloud_visitors" data-flag-title="Java基础学习（持续更新）" title="阅读次数">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              <span class="post-meta-item-text">阅读次数：</span>
+              <span class="leancloud-visitors-count"></span>
+            </span>
+          
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="fa fa-comment-o"></i>
+      </span>
+        
+      
+      <span class="post-meta-item-text">Valine：</span>
+    
+    <a title="valine" href="/2019/10/13/Java随记/#comments" itemprop="discussionUrl"><span class="post-comments-count valine-comment-count" data-xid="/2019/10/13/Java随记/" itemprop="commentCount"></span></a>
+  </span>
+  
+  
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h2 id="绪论"><a href="#绪论" class="headerlink" title="绪论"></a>绪论</h2><p><strong>Java的组织形式：类是<code>Java</code>程序的最小程序单位。如果某个类能被解释器直接解释执行，则这个类必须包含<code>main</code>方法，且必须用<code>public static void</code>来修饰</strong>。<code>main</code>方法是<code>Java</code>程序的入口，只有一个类包含<code>main</code>方法，其他类都是用于被<code>main</code>方法直接或间接调用的。</p><p>Java的命名编译和运行：</p><a id="more"></a>
+
+<ul>
+<li><p>Java文件扩展名为<code>.java</code></p>
+</li>
+<li><p>只有一个类的话文件名和唯一类的类名相同</p>
+</li>
+<li><p><strong>多个类的话只能有一个类是public类</strong>，如果有public类，则<strong>文件名为public类的类名</strong></p>
+</li>
+<li><p>包含主方法的类为主类，一般将主类作为public类</p>
+</li>
+<li><p>使用<code>javac + 完整的文件名</code>来编译Java文件，编译完成会生成多个字节码文件对应各个类，扩展名为class，<strong>字节码文件名为每个类名</strong></p>
+</li>
+<li><p>编译完成后使用<code>java + 主类名</code>运行字节码文件</p>
+</li>
+</ul>
+<p>数据的输入和输出：</p>
+<ul>
+<li><p>main方法后面的参数是一个字符串数组，接收来的数据都默认为是字符串类型，若要转换成其他类型需要其他的类进行转换。这种接收数据的方法只能在<code>jdk</code>环境下运行，在编译完成后运行时后面加上参数。</p>
+</li>
+<li><p>使用<code>Scanner</code>类创建对象来接收输入，需要导入包<code>import java.util.Scanner;</code></p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">Scanner reader = <span class="keyword">new</span> Scanner(System.in);</span><br><span class="line">      <span class="keyword">double</span> a = reader.nextDouble();</span><br><span class="line">      <span class="keyword">double</span> b = reader.nextDouble();</span><br><span class="line">      <span class="keyword">double</span> c = reader.nextDouble();</span><br><span class="line"><span class="comment">//此外有：reader.nextInt(), reader.nextFloat(), reader.nextLine(), reader.next()</span></span><br><span class="line"><span class="comment">// nextLine()接收的字符串不受空格限制，只受回车的限制。前面若有数值类型，则需要多写一个来吃掉回车符。</span></span><br><span class="line"><span class="comment">// next()接收的字符串受空格限制</span></span><br></pre></td></tr></table></figure>
+
+</li>
+</ul>
+<h2 id="随学随记"><a href="#随学随记" class="headerlink" title="随学随记"></a>随学随记</h2><h3 id="表达式类型的自动提升"><a href="#表达式类型的自动提升" class="headerlink" title="表达式类型的自动提升"></a>表达式类型的自动提升</h3><p>当一个算术表达式中包含多个基本类型的值时，整个算数表达式的数据类型将发生自动提升：</p>
+<ul>
+<li>所有的byte类型、short类型和char类型将被提升到int类型</li>
+<li>整个算数表达式的数据类型自动提升到与表达式中最高等级操作数同样的类型</li>
+</ul>
+<p><img src="E:%5CMarkDown%E6%96%87%E4%BB%B6%5C%E5%9B%BE%E7%89%87%5C1568258464020.png" alt="1568258464020"></p>
+<p><img src="https://s2.ax1x.com/2019/09/12/n08yDI.png" alt="images"></p>
+<h3 id="直接量的类型"><a href="#直接量的类型" class="headerlink" title="直接量的类型"></a>直接量的类型</h3><p>直接量是在源码中直接给出的值。类型如下：</p>
+<ul>
+<li><code>int</code>类型的直接量: 在程序中直接给出的整型数值，分为二进制（<code>0B</code>或<code>0b</code>开头），八进制（以0开头），十进制，十六进制（以<code>0X</code>或<code>0x</code>开头）</li>
+<li>long类型的直接量：在整型数值后添加<code>l</code>或<code>L</code>后就变成了long类型的直接量。</li>
+<li>float类型的直接量：在一个浮点数后添加f或F就变成了float类型的直接量</li>
+<li>double类型的直接量：直接给出一个标准小数形式或科学计数法形式的浮点数就是double类型的直接量。</li>
+<li>boolean类型的直接量：这个类型的直接量只有<code>true</code>和<code>false</code></li>
+<li>char类型的直接量：有三种形式，用单引号括起来的字符、转义字符和Unicode值表示的字符。如：<code>&#39;a&#39; , &#39;\n&#39;, &#39;\u0061&#39;</code></li>
+<li>String类型的直接量：用双引号括起来的字符序列就是String类型的直接量。</li>
+<li>null类型的直接量：只有null，可以赋值给任何引用类型的变量，用以表示这个引用类型变量中保存的地址为空，即还未指向任何有效对象</li>
+</ul>
+<h3 id="除法运算"><a href="#除法运算" class="headerlink" title="除法运算"></a>除法运算</h3><ul>
+<li>如果除法运算的两个操作数都是整数类型，则计算结果截断取整。且除数不能为0，否则会引发除以零异常</li>
+<li>若除法运算的两个操作数中存在浮点数，则计算结果也是浮点数。且此时允许除数为0或者0.0，的到结果是正无穷大或者负无穷大。</li>
+</ul>
+<h3 id="复杂数学运算"><a href="#复杂数学运算" class="headerlink" title="复杂数学运算"></a>复杂数学运算</h3><p><code>Java</code>没有提供其他更复杂的运算符，如果需要进行乘方、开方等运算，则可借助于<code>java.lang.Math</code>类的工具方法来完成复杂的数学运算。示例如下：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">MathTest</span></span></span><br><span class="line"><span class="class"></span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span></span></span><br><span class="line"><span class="function">    </span>&#123;</span><br><span class="line">        <span class="keyword">double</span> a = <span class="number">3.2</span>;</span><br><span class="line">        <span class="comment">// 求 a 的五次方 </span></span><br><span class="line">        <span class="keyword">double</span> b = Math.pow(a, <span class="number">5</span>);</span><br><span class="line">        System.out.println(b);</span><br><span class="line"></span><br><span class="line">        <span class="comment">// 求 a 的平方根</span></span><br><span class="line">        <span class="keyword">double</span> c = Math.sqrt(a);</span><br><span class="line">        System.out.println(c);</span><br><span class="line"></span><br><span class="line">        <span class="comment">// 计算随机数，返回一个0~1之间的伪随机数</span></span><br><span class="line">        <span class="keyword">double</span> d = Math.random();</span><br><span class="line">        System.out.println(d);</span><br><span class="line"></span><br><span class="line">        <span class="comment">// 求1.57的sin函数值， 1.57被当做弧度</span></span><br><span class="line">        <span class="keyword">double</span> e = Math.sin(<span class="number">1.57</span>);</span><br><span class="line">        System.out.println(e);</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="位运算符"><a href="#位运算符" class="headerlink" title="位运算符"></a>位运算符</h3><p>Java支持的位运算符有如下七个：</p>
+<ul>
+<li><code>&amp;</code> ：按位与</li>
+<li><code>|</code> ：按位或</li>
+<li><code>~</code> ：按位非</li>
+<li><code>^</code> ：按位异或，相同为0，不同为1</li>
+<li><code>&lt;&lt;</code> ：左移运算符</li>
+<li><code>&gt;&gt;</code> ：右移运算符</li>
+<li><code>&gt;&gt;&gt;</code> ：无符号右移运算符</li>
+</ul>
+<h3 id="逻辑运算符"><a href="#逻辑运算符" class="headerlink" title="逻辑运算符"></a>逻辑运算符</h3><p>逻辑运算符用于操作两个布尔型的常量或变量：</p>
+<ul>
+<li><code>&amp;&amp;</code> : 与，先计算左边的操作数，如果左边的操作数为false，则直接返回false，不会计算右边的操作数</li>
+<li><code>&amp;</code> ：不短路与，总会计算前后两个操作数</li>
+<li><code>||</code> ：或，如果第一个操作数返回true，则直接返回true，不会计算右边的操作数</li>
+<li><code>|</code> ：不短路或，总会计算前后两个操作数</li>
+<li><code>!</code> ：非</li>
+<li><code>^</code> ：异或</li>
+</ul>
+<h3 id="三目运算符"><a href="#三目运算符" class="headerlink" title="三目运算符"></a>三目运算符</h3><p><code>(expression) ? if-true-statement : if-false-statement</code></p>
+<p>先对逻辑表达式<code>expression</code>求值，如果返回<code>true</code>，则返回第二个操作数的值，否则返回第三个操作数的值。（大多时候作为<code>if else</code>的精简写法）</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">String str = <span class="number">5</span> &gt; <span class="number">3</span> ? <span class="string">"5大于3"</span> : <span class="string">"5不大于三"</span>;</span><br><span class="line">System.out.println(str);</span><br></pre></td></tr></table></figure>
+
+<h3 id="使用break结束外层循环"><a href="#使用break结束外层循环" class="headerlink" title="使用break结束外层循环"></a>使用<code>break</code>结束外层循环</h3><p><code>break</code>不仅可以结束其所在的循环，还可以直接结束其外层循环。此时需要在<code>break</code>后紧跟一个标签，这个标签用于标识一个外层循环。标签是一个标识符加一个英文冒号，并将其置于循环前。</p>
+<p>（continue也有类似用法，用于跳过标签所表示的循环的本次循环的剩余语句）</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">BreakTest</span></span></span><br><span class="line"><span class="class"></span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span></span></span><br><span class="line"><span class="function">    </span>&#123;</span><br><span class="line">        <span class="comment">// 用一个标签名加冒号并置于循环前标识循环</span></span><br><span class="line">        outer:</span><br><span class="line">        <span class="keyword">for</span>(<span class="keyword">int</span> i=<span class="number">0</span>; i&lt;<span class="number">10</span>; i++)&#123;</span><br><span class="line">            <span class="keyword">for</span>(<span class="keyword">int</span> j=<span class="number">5</span>; j&gt;=<span class="number">0</span>; j--)&#123;</span><br><span class="line">                System.out.println(<span class="string">"i : "</span> + i + <span class="string">"; j ："</span> + j);</span><br><span class="line">                <span class="keyword">if</span>(i == j)</span><br><span class="line">                &#123;</span><br><span class="line">                    <span class="keyword">break</span> outer;</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">            System.out.println(i);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="Java数组"><a href="#Java数组" class="headerlink" title="Java数组"></a>Java数组</h3><p><strong>定义数组时不能指定数组的长度</strong>。Java语言中数组必须先初始化，然后才可以使用。所谓初始化，就是为数组元素分配内存空间，并未每个数组元素赋初始值。</p>
+<ul>
+<li><strong>静态初始化</strong>：初始化时显式指定每个数组元素的初始值，由系统决定数组长度。</li>
+<li><strong>动态初始化</strong>：初始化时只指定数组长度，由系统为数组元素分配初始值。</li>
+</ul>
+<p><strong>这里的静态和动态指的是是否由系统来为数组分配初始值。</strong></p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">ArrayTest</span></span></span><br><span class="line"><span class="class"></span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span></span></span><br><span class="line"><span class="function">    </span>&#123;</span><br><span class="line">        <span class="comment">// 使用静态初始化</span></span><br><span class="line">        <span class="keyword">int</span>[] intArr;</span><br><span class="line">        intArr = <span class="keyword">new</span> <span class="keyword">int</span>[]&#123;<span class="number">5</span>, <span class="number">6</span>, <span class="number">8</span>, <span class="number">20</span>&#125;;</span><br><span class="line"></span><br><span class="line">        Object[] objArr;</span><br><span class="line">        objArr = <span class="keyword">new</span> String[]&#123;<span class="string">"Yao"</span>, <span class="string">"xing"</span>, <span class="string">"fei"</span>&#125;;</span><br><span class="line"></span><br><span class="line">        Object[] objArr2;</span><br><span class="line">        objArr2 = <span class="keyword">new</span> Object[]&#123;<span class="string">"Yao"</span>, <span class="string">"xing"</span>, <span class="string">"fei"</span>&#125;;</span><br><span class="line">        </span><br><span class="line">        <span class="comment">// 简化的数组初始化方法</span></span><br><span class="line">        <span class="keyword">int</span>[] a = &#123;<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>, <span class="number">4</span>&#125;;</span><br><span class="line">        </span><br><span class="line">        <span class="comment">// 动态初始化</span></span><br><span class="line">        <span class="keyword">int</span>[] intArr2;</span><br><span class="line">        intArr2 = <span class="keyword">new</span> <span class="keyword">int</span>[<span class="number">5</span>];</span><br><span class="line">        <span class="comment">// 使用动态初始化，定义和初始化同时完成</span></span><br><span class="line">        <span class="keyword">int</span>[] price = <span class="keyword">new</span> <span class="keyword">int</span>[<span class="number">5</span>];</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p><code>Java</code>中所有的数组都提供了一个<code>length</code>属性，通过这个属性可以访问到数组的长度。</p>
+<h3 id="foreach循环"><a href="#foreach循环" class="headerlink" title="foreach循环"></a><code>foreach</code>循环</h3><p>使用<code>foreach</code>循环遍历数组和集合元素时，不需要获得数组和集合长度，无须根据索引来访问数组元素和集合元素，<code>foreach</code>循环自动遍历数组和集合的每个元素。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * for(type variableName : array(collection))</span></span><br><span class="line"><span class="comment"> * &#123;</span></span><br><span class="line"><span class="comment"> *      // variableName 自动迭代访问每个元素。 其中type为数组元素类型，variableName是迭代访问的每个元素，array为数组名</span></span><br><span class="line"><span class="comment"> * &#125;</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">ForEachTest</span></span></span><br><span class="line"><span class="class"></span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span></span></span><br><span class="line"><span class="function">    </span>&#123;</span><br><span class="line">        String[] name = &#123;<span class="string">"Yao"</span>, <span class="string">"Xing"</span>, <span class="string">"Fei"</span>&#125;;</span><br><span class="line">        <span class="keyword">for</span>(String each : name)&#123;</span><br><span class="line">            System.out.println(each);</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="Java中数组在内存中的运行机制"><a href="#Java中数组在内存中的运行机制" class="headerlink" title="Java中数组在内存中的运行机制"></a>Java中数组在内存中的运行机制</h3><h4 id="Java中数组的回收"><a href="#Java中数组的回收" class="headerlink" title="Java中数组的回收"></a>Java中数组的回收</h4><p><strong>栈内存中存放数组的引用变量，堆内存中存放实际的数组对象</strong>。如果堆内存中数组不再有任何引用变量指向自己，则这个数组将成为垃圾，该数组的内存将会被系统的垃圾回收机制回收。因此，为了让垃圾回收机制回收一个数组所占的内存空间，可以<strong>将该数组变量赋值为<code>null</code></strong>，也就切断了数组引用变量和实际数组之间的引用关系，实际的数组也就成了垃圾。</p>
+<h4 id="基本类型数组的初始化"><a href="#基本类型数组的初始化" class="headerlink" title="基本类型数组的初始化"></a>基本类型数组的初始化</h4><p>数组初始化的全部过程：先定义数组变量，此时仅在栈内存中定义了一个空引用，并没有指向任何有效的内存。动态初始化数组时会为数组分配内存空间，并分配默认的初始值。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">PrimitiveArrayTest</span></span></span><br><span class="line"><span class="class"></span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span></span>&#123;</span><br><span class="line">        <span class="comment">// 定义 int[] 类型的数组变量</span></span><br><span class="line">        <span class="keyword">int</span>[] intArr;</span><br><span class="line">        <span class="comment">// 动态初始化数组，此时会为其分配内存，并分配默认的初始值</span></span><br><span class="line">        intArr = <span class="keyword">new</span> <span class="keyword">int</span>[<span class="number">5</span>];</span><br><span class="line">        <span class="comment">// 循环为数组赋值</span></span><br><span class="line">        <span class="keyword">for</span>(<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; intArr.length; i++)</span><br><span class="line">        &#123;</span><br><span class="line">            intArr[i] = i + <span class="number">1</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="comment">// 输出</span></span><br><span class="line">        <span class="keyword">for</span>(<span class="keyword">int</span> x : intArr)</span><br><span class="line">        &#123;</span><br><span class="line">            System.out.println(x);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h4 id="引用类型数组的初始化"><a href="#引用类型数组的初始化" class="headerlink" title="引用类型数组的初始化"></a>引用类型数组的初始化</h4><p>引用类型数组的数组元素是引用，每个数组元素里存储的还是引用，它指向另一块内存。</p>
+<p>在定义引用类型数组的变量名时仅仅在栈内存中定义了一个引用变量，也就是一个指针，但这个指针并未指向任何有效的内存区。在对此数组进行初始化后，系统为数组元素分配默认初始值：null，数组的元素应为引用，此时并未指向任何有效的内存，因此在其未指向有效内存之前不能修改其元素。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Persion</span></span></span><br><span class="line"><span class="class"></span>&#123;</span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">int</span> age;</span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">double</span> height;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">info</span><span class="params">()</span></span></span><br><span class="line"><span class="function">    </span>&#123;</span><br><span class="line">        System.out.println(<span class="string">"年龄："</span> + age);</span><br><span class="line">        System.out.println(<span class="string">"身高："</span> + height);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">ReferenceArrayTest</span></span></span><br><span class="line"><span class="class"></span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span></span></span><br><span class="line"><span class="function">    </span>&#123;</span><br><span class="line">        <span class="comment">// 定义一个students数组变量，其类型是Persion[]</span></span><br><span class="line">        Persion[] students;</span><br><span class="line">        <span class="comment">// 动态初始化, 数组元素在并未指向具体实例时无法对其修改</span></span><br><span class="line">        students = <span class="keyword">new</span> Persion[<span class="number">2</span>];</span><br><span class="line"></span><br><span class="line">        <span class="comment">// 创建两个Persion实例，分别赋给相应的变量</span></span><br><span class="line">        Persion yao = <span class="keyword">new</span> Persion();</span><br><span class="line">        Persion xing = <span class="keyword">new</span> Persion();</span><br><span class="line">        yao.age = <span class="number">20</span>;</span><br><span class="line">        yao.height = <span class="number">173.5</span>;</span><br><span class="line">        xing.age = <span class="number">18</span>;</span><br><span class="line">        xing.height = <span class="number">172</span>;</span><br><span class="line"></span><br><span class="line">        <span class="comment">// 将两个变量赋给数组的两个元素</span></span><br><span class="line">        students[<span class="number">0</span>] = yao;</span><br><span class="line">        students[<span class="number">1</span>] = xing;</span><br><span class="line"></span><br><span class="line">        students[<span class="number">1</span>].info();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="Java多维数组"><a href="#Java多维数组" class="headerlink" title="Java多维数组"></a>Java多维数组</h3><p>从数组底层的运行机制上来看Java没有多维数组。Java的数组类型是引用类型，数组变量其实是一个引用，这个引用指向真实的数组内存。数组元素的类型也可以是引用，如果数组元素的引用再次指向真实的数组内存，这便构成了Java的多维数组。</p>
+<p>定义二维数组的语法：<code>type[][] arrName;</code></p>
+<p>Java使用上述格式来定义二维数组，但它的实质还是一维数组，只是其数组元素也是引用，数组元素里保存的引用指向一维数组。</p>
+<p>初始化：<code>arrName = new type[length][];</code></p>
+<p>上面的初始化语法相当于初始化了一个一维数组，这个一维数组的长度是length。这个一维数组的元素类型是引用型，所以系统为其分配初始值<code>null</code> ，需要对每个元素再进行初始化。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">TwoDimensionTest</span></span></span><br><span class="line"><span class="class"></span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span></span></span><br><span class="line"><span class="function">    </span>&#123;</span><br><span class="line">        <span class="comment">// 定义一个二维数组</span></span><br><span class="line">        <span class="keyword">int</span>[][] a;</span><br><span class="line">        <span class="comment">// 把 a 当成一维数组来初始化，初始化 a 是一个长度为4的数组</span></span><br><span class="line">        <span class="comment">// a 的数组元素又是引用类型(数组类型)</span></span><br><span class="line">        a = <span class="keyword">new</span> <span class="keyword">int</span>[<span class="number">4</span>][];</span><br><span class="line">        <span class="comment">// 把 a 当成一位数组，遍历 a 数组的每个数组元素(动态初始化时分配默认值为null)</span></span><br><span class="line">        <span class="keyword">for</span>(<span class="keyword">int</span> i=<span class="number">0</span>; i &lt; a.length; i++)</span><br><span class="line">        &#123;</span><br><span class="line">            System.out.println(a[i]);</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="comment">// 初始化 a 数组的第一个元素</span></span><br><span class="line">        a[<span class="number">0</span>] = <span class="keyword">new</span> <span class="keyword">int</span>[<span class="number">2</span>];</span><br><span class="line">        <span class="comment">// 访问a数组的第一个元素所指数组的第二个元素</span></span><br><span class="line">        a[<span class="number">0</span>][<span class="number">1</span>] = <span class="number">6</span>;</span><br><span class="line">        <span class="comment">// 遍历 a 数组第一个元素（是一个数组）</span></span><br><span class="line">        <span class="keyword">for</span>(<span class="keyword">int</span> i=<span class="number">0</span>; i &lt; a[<span class="number">0</span>].length; i++)</span><br><span class="line">        &#123;</span><br><span class="line">            System.out.println(a[<span class="number">0</span>][i]);</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>也可以同时初始化二维数组的两个维数：<code>int[][] b = new int[3][4]</code></p>
+<h4 id="操作数组的工具类：Arrays"><a href="#操作数组的工具类：Arrays" class="headerlink" title="操作数组的工具类：Arrays"></a>操作数组的工具类：<code>Arrays</code></h4><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> java.util.Arrays;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">ArraysTest</span></span></span><br><span class="line"><span class="class"></span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span></span></span><br><span class="line"><span class="function">    </span>&#123;</span><br><span class="line">        <span class="comment">// 用两种静态初始化方法初始化两个数组</span></span><br><span class="line">        <span class="keyword">int</span>[] a1 = <span class="keyword">new</span> <span class="keyword">int</span>[]&#123;<span class="number">3</span>, <span class="number">4</span>, <span class="number">5</span>, <span class="number">6</span>&#125;;</span><br><span class="line">        <span class="keyword">int</span>[] a2 = &#123;<span class="number">3</span>, <span class="number">4</span>, <span class="number">5</span>, <span class="number">6</span>&#125;;</span><br><span class="line">        </span><br><span class="line">        <span class="comment">// 查看两个数组是否相等</span></span><br><span class="line">        System.out.println(<span class="string">"a1 和 a2 是否相等："</span> + Arrays.equals(a1, a2));</span><br><span class="line"></span><br><span class="line">        <span class="comment">// 通过复制 a1 数组获得 b 数组</span></span><br><span class="line">        <span class="keyword">int</span>[] b = Arrays.copyOf(a1, <span class="number">6</span>);</span><br><span class="line">        System.out.println(<span class="string">"a1 和 b 是否相等："</span> + Arrays.equals(a1, b));</span><br><span class="line"></span><br><span class="line">        <span class="comment">// 将 b 数组的元素转换为字符串并输出</span></span><br><span class="line">        System.out.println(<span class="string">"b 数组的元素为："</span> + Arrays.toString(b));</span><br><span class="line"></span><br><span class="line">        <span class="comment">// 将 b 数组的[3,5)个元素赋值为1</span></span><br><span class="line">        Arrays.fill(b, <span class="number">2</span>, <span class="number">4</span>, <span class="number">1</span>);</span><br><span class="line">        System.out.println(<span class="string">"b 数组的元素为："</span> + Arrays.toString(b));</span><br><span class="line"></span><br><span class="line">        <span class="comment">// 对 b 数组元素进行排序</span></span><br><span class="line">        Arrays.sort(b);</span><br><span class="line">        System.out.println(<span class="string">"b 数组的元素为："</span> + Arrays.toString(b));</span><br><span class="line"></span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="Java的垃圾回收机制"><a href="#Java的垃圾回收机制" class="headerlink" title="Java的垃圾回收机制"></a>Java的垃圾回收机制</h3><p>栈内存中存放引用变量，引用变量指向堆内存中的对象。当一个对象被创建成功后，这个对象将保存在堆内存中，Java程序不允许直接访问堆内存中的对象，只能通过对该对象的引用操作该对象。</p>
+<p>如果堆内存中的对象没有任何引用变量指向该对象，那么程序将无法再访问该对象，这个对象将变成垃圾，Java的垃圾回收机制将回收该垃圾。因此，如果希望垃圾回收机制回收某个对象，只需要切断该对象的所有引用变量和它之间的关系即可，也就是把这些引用变量赋值为<code>null</code>。</p>
+<h3 id="静态成员和非静态成员"><a href="#静态成员和非静态成员" class="headerlink" title="静态成员和非静态成员"></a>静态成员和非静态成员</h3><p>静态成员属于类，非静态成员属于实例。因此，静态成员不能直接访问非静态成员。</p>
+<h3 id="Java中的方法"><a href="#Java中的方法" class="headerlink" title="Java中的方法"></a>Java中的方法</h3><ul>
+<li>方法不能独立定义，方法只能在类体里面定义</li>
+<li>方法要么属于类，要么属于类的一个对象</li>
+<li>永远不能对立执行方法，执行方法必须使用类或对象作为调用者</li>
+</ul>
+<p>类的方法既可以使用类作为调用者，也可以使用类的对象作为调用者。没有static修饰的方法属于类的一个实例，只能使用对象作为调用者来调用。</p>
+<h3 id="Java的实参与形参"><a href="#Java的实参与形参" class="headerlink" title="Java的实参与形参"></a>Java的实参与形参</h3><ul>
+<li>形参：声明方法时指定的需要传入的参数为形参</li>
+<li>实参：调用方法时实际传给形参的参数值被称为实参</li>
+</ul>
+<p>如果声明方法时包含了形参声明，则调用方法时必须给这些形参指定参数值。Java中方法的参数传递方式只有一种，值传递，将实际参数的副本传入方法内，而参数本身不会受到任何印象。</p>
+<p><strong>当传递的参数为引用对象时，若对副本引用对象指向的内容做修改，则会改变原参数指向的内容，这里仍然是值传递，引起改变的原因是实参和形参指向的内容相同。</strong></p>
+<h3 id="形参个数可变的方法"><a href="#形参个数可变的方法" class="headerlink" title="形参个数可变的方法"></a>形参个数可变的方法</h3><p>在定义方法时，在最后一个形参的类型后增加三个点（<code>...</code>），则表明该形参可以接受多个参数值，多个参数值被当成数组传入。和直接定义形参为数组的区别如下：</p>
+<ul>
+<li>数组形式的形参可以位于形参列表的任意位置，而个数可变的方法只能位于形参列表的最后</li>
+<li>传给参数可变的形参时无须是一个数组，传给数组形参时的实参必须是一个数组</li>
+</ul>
+<h3 id="Java中的变量"><a href="#Java中的变量" class="headerlink" title="Java中的变量"></a>Java中的变量</h3><p>根据变量位置不同分为两大类：</p>
+<ul>
+<li>成员变量：类里定义的变量</li>
+<li>局部变量：方法里定义的变量</li>
+</ul>
+<p>成员变量分两类：</p>
+<ul>
+<li>类变量：定义成员变量时用<code>static</code>修饰的变量，可以用类和实例访问</li>
+<li>实例变量：定义成员变量时没有用<code>static</code>修饰的变量，只能用实例访问</li>
+</ul>
+<p>局部变量分三类：</p>
+<ul>
+<li>形参：定义方法签名时定义的变量，作用域在整个方法内有效</li>
+<li>方法局部变量：在方法体内定义的变量，作用域从定义处开始到方法结束</li>
+<li>代码块局部变量：在代码块中定义的变量，作用域从定义处开始到代码块结束</li>
+</ul>
+<p>局部变量除了形参外，必须显式初始化，也即在指定初始值之前不能访问。成员变量在系统加载类或创建实例时会为其自动分配内存空间并指定初始值。</p>
+<p>Java允许局部变量和成员变量同名，如果方法里的局部变量和成员变量同名，局部变量会覆盖成员变量，如果需要引用成员变量，可以使用<code>this</code>（对于实例变量）或类名（对于类变量）来调用。</p>
+<h3 id="封装：访问控制符"><a href="#封装：访问控制符" class="headerlink" title="封装：访问控制符"></a>封装：访问控制符</h3><p>封装的含义：把该隐藏的隐藏起来，把该暴露的暴露出来</p>
+<p>使用访问控制符：</p>
+<ul>
+<li><code>private</code>（当前类访问权限）：使用它来修饰成员变量就可以把成员变量隐藏在该类的内部，只能在当前类的内部访问</li>
+<li><code>default</code>（包访问权限）：类成员或一个外部类不适用任何访问控制符修饰，就称它是包访问权限的，可以被相同包下的其他类访问</li>
+<li><code>protected</code>（子类访问权限）：使用<code>protected</code>修饰的类成员既可以被同一个包中的其他类访问，也可以被其他包中的子类访问</li>
+<li><code>public</code>（公共访问权限）：使用<code>public</code>访问控制符修饰的类成员可以被所有类访问</li>
+</ul>
+<p>外部类可以使用public和包访问权限，使用public修饰的外部类可以被所有类使用，如声明变量、创建实例；不适用任何访问控制符修饰的外部类只能被同一个包中的其他类使用。</p>
+<p>如果一个<code>Java</code>源文件里定义的所有类都没有使用<code>public</code>修饰，则这个Java源文件的文件名可以是一切合法的文件名；但如果一个Java源文件里定义了一个<code>public</code>修饰的类，则这个源文件的文件名必须与<code>public</code>修饰的类的类名相同。</p>
+
+    </div>
+
+    
+    
+    
+        
+      
+        <div id="reward-container">
+  <div>Donate~</div>
+  <button id="reward-button" disable="enable" onclick="var qr = document.getElementById(&quot;qr&quot;); qr.style.display = (qr.style.display === 'none') ? 'block' : 'none';">
+    打赏
+  </button>
+  <div id="qr" style="display: none;">
+        
+      
+      <div style="display: inline-block">
+        <img src="/images/alipay.jpg" alt="Ap0l1o 支付宝">
+        <p>支付宝</p>
+      </div>
+
+  </div>
+</div>
+
+      
+
+      <footer class="post-footer">
+          
+            
+          
+          <div class="post-tags">
+            
+              <a href="/tags/Java/" rel="tag"># Java</a>
+            
+          </div>
+        
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-next post-nav-item">
+              
+                <a href="/2019/09/05/卷积神经网络/" rel="next" title="0x06 卷积神经网络">
+                  <i class="fa fa-chevron-left"></i> 0x06 卷积神经网络
+                </a>
+              
+            </div>
+
+            <span class="post-nav-divider"></span>
+
+            <div class="post-nav-prev post-nav-item">
+              
+                <a href="/2019/11/03/感知机/" rel="prev" title="0x01 感知机">
+                  0x01 感知机 <i class="fa fa-chevron-right"></i>
+                </a>
+              
+            </div>
+          </div>
+        
+      </footer>
+    
+  </div>
+  
+  
+  
+  </article>
+
+  </div>
+
+
+          </div>
+          
+    
+    <div class="comments" id="comments"></div>
+  
+
+        </div>
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+        
+        
+        
+        
+      
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#绪论"><span class="nav-number">1.</span> <span class="nav-text">绪论</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#随学随记"><span class="nav-number">2.</span> <span class="nav-text">随学随记</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#表达式类型的自动提升"><span class="nav-number">2.1.</span> <span class="nav-text">表达式类型的自动提升</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#直接量的类型"><span class="nav-number">2.2.</span> <span class="nav-text">直接量的类型</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#除法运算"><span class="nav-number">2.3.</span> <span class="nav-text">除法运算</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#复杂数学运算"><span class="nav-number">2.4.</span> <span class="nav-text">复杂数学运算</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#位运算符"><span class="nav-number">2.5.</span> <span class="nav-text">位运算符</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#逻辑运算符"><span class="nav-number">2.6.</span> <span class="nav-text">逻辑运算符</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#三目运算符"><span class="nav-number">2.7.</span> <span class="nav-text">三目运算符</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#使用break结束外层循环"><span class="nav-number">2.8.</span> <span class="nav-text">使用break结束外层循环</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Java数组"><span class="nav-number">2.9.</span> <span class="nav-text">Java数组</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#foreach循环"><span class="nav-number">2.10.</span> <span class="nav-text">foreach循环</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Java中数组在内存中的运行机制"><span class="nav-number">2.11.</span> <span class="nav-text">Java中数组在内存中的运行机制</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#Java中数组的回收"><span class="nav-number">2.11.1.</span> <span class="nav-text">Java中数组的回收</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#基本类型数组的初始化"><span class="nav-number">2.11.2.</span> <span class="nav-text">基本类型数组的初始化</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#引用类型数组的初始化"><span class="nav-number">2.11.3.</span> <span class="nav-text">引用类型数组的初始化</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Java多维数组"><span class="nav-number">2.12.</span> <span class="nav-text">Java多维数组</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#操作数组的工具类：Arrays"><span class="nav-number">2.12.1.</span> <span class="nav-text">操作数组的工具类：Arrays</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Java的垃圾回收机制"><span class="nav-number">2.13.</span> <span class="nav-text">Java的垃圾回收机制</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#静态成员和非静态成员"><span class="nav-number">2.14.</span> <span class="nav-text">静态成员和非静态成员</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Java中的方法"><span class="nav-number">2.15.</span> <span class="nav-text">Java中的方法</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Java的实参与形参"><span class="nav-number">2.16.</span> <span class="nav-text">Java的实参与形参</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#形参个数可变的方法"><span class="nav-number">2.17.</span> <span class="nav-text">形参个数可变的方法</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Java中的变量"><span class="nav-number">2.18.</span> <span class="nav-text">Java中的变量</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#封装：访问控制符"><span class="nav-number">2.19.</span> <span class="nav-text">封装：访问控制符</span></a></li></ol></li></ol></div>
+        
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image"
+      src="/images/avatar_gif.gif"
+      alt="Ap0l1o">
+  <p class="site-author-name" itemprop="name">Ap0l1o</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+  <nav class="site-state motion-element">
+      <div class="site-state-item site-state-posts">
+        
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">29</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+    
+      
+      
+      <div class="site-state-item site-state-categories">
+        
+          
+            <a href="/categories/">
+          
+        
+        <span class="site-state-item-count">4</span>
+        <span class="site-state-item-name">分类</span>
+        </a>
+      </div>
+    
+      
+      
+      <div class="site-state-item site-state-tags">
+        
+          
+            <a href="/tags/">
+          
+        
+        <span class="site-state-item-count">5</span>
+        <span class="site-state-item-name">标签</span>
+        </a>
+      </div>
+    
+  </nav>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+      
+      
+        
+      
+      
+        
+      
+        <a href="https://github.com/7oDo" title="GitHub &rarr; https://github.com/7oDo" rel="noopener" target="_blank"><i class="fa fa-fw fa-github"></i>GitHub</a>
+      </span>
+    
+  </div>
+
+
+  <div class="links-of-blogroll motion-element">
+    <div class="links-of-blogroll-title">
+      <i class="fa fa-fw fa-link"></i>
+      Links
+    </div>
+    <ul class="links-of-blogroll-list">
+        <li class="links-of-blogroll-item">
+          <a href="https://www.cnblogs.com/Jie-Fei/" title="https://www.cnblogs.com/Jie-Fei/" rel="noopener" target="_blank">cnblogs</a>
+        </li>
+      
+    </ul>
+  </div>
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2019</span>
+  <span class="with-love" id="animate">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Ap0l1o</span>
+</div>
+
+        
+
+
+
+
+
+
+  
+  <script>
+  function leancloudSelector(url) {
+    return document.getElementById(url).querySelector('.leancloud-visitors-count');
+  }
+  if (CONFIG.page.isPost) {
+    function addCount(Counter) {
+      var visitors = document.querySelector('.leancloud_visitors');
+      var url = visitors.getAttribute('id').trim();
+      var title = visitors.getAttribute('data-flag-title').trim();
+
+      Counter('get', `/classes/Counter?where=${JSON.stringify({ url })}`)
+        .then(response => response.json())
+        .then(({ results }) => {
+          if (results.length > 0) {
+            var counter = results[0];
+            Counter('put', '/classes/Counter/' + counter.objectId, { time: { '__op': 'Increment', 'amount': 1 } })
+              .then(response => response.json())
+              .then(() => {
+                leancloudSelector(url).innerText = counter.time + 1;
+              })
+            
+              .catch(error => {
+                console.log('Failed to save visitor count', error);
+              })
+          } else {
+              Counter('post', '/classes/Counter', { title: title, url: url, time: 1 })
+                .then(response => response.json())
+                .then(() => {
+                  leancloudSelector(url).innerText = 1;
+                })
+                .catch(error => {
+                  console.log('Failed to create', error);
+                });
+            
+          }
+        })
+        .catch(error => {
+          console.log('LeanCloud Counter Error', error);
+        });
+    }
+  } else {
+    function showTime(Counter) {
+      var visitors = document.querySelectorAll('.leancloud_visitors');
+      var entries = [...visitors].map(element => {
+        return element.getAttribute('id').trim();
+      });
+
+      Counter('get', `/classes/Counter?where=${JSON.stringify({ url: { '$in': entries } })}`)
+        .then(response => response.json())
+        .then(({ results }) => {
+          if (results.length === 0) {
+            document.querySelectorAll('.leancloud_visitors .leancloud-visitors-count').forEach(element => {
+              element.innerText = 0;
+            });
+            return;
+          }
+          for (var i = 0; i < results.length; i++) {
+            var item = results[i];
+            var url = item.url;
+            var time = item.time;
+            leancloudSelector(url).innerText = time;
+          }
+          for (var i = 0; i < entries.length; i++) {
+            var url = entries[i];
+            var element = leancloudSelector(url);
+            if (element.innerText == '') {
+              element.innerText = 0;
+            }
+          }
+        })
+        .catch(error => {
+          console.log('LeanCloud Counter Error', error);
+        });
+    }
+  }
+
+  fetch('https://app-router.leancloud.cn/2/route?appId=6I3i4U3wh9KIPOi55NTP6g2Y-gzGzoHsz')
+    .then(response => response.json())
+    .then(({ api_server }) => {
+      var Counter = (method, url, data) => {
+        return fetch(`https://${api_server}/1.1${url}`, {
+          method: method,
+          headers: {
+            'X-LC-Id': '6I3i4U3wh9KIPOi55NTP6g2Y-gzGzoHsz',
+            'X-LC-Key': '9TiVVrkObL1VH2ksTWL0qt71',
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(data)
+        });
+      };
+      if (CONFIG.page.isPost) {
+        const localhost = /http:\/\/(localhost|127.0.0.1|0.0.0.0)/;
+        if (localhost.test(document.URL)) return;
+        addCount(Counter);
+      } else if (document.querySelectorAll('.post-title-link').length >= 1) {
+        showTime(Counter);
+      }
+    });
+  </script>
+
+
+  <script>
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "//tajs.qq.com/stats?sId=66469216";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
+
+
+
+
+        
+      </div>
+    </footer>
+  </div>
+
+  
+
+
+    
+    
+  
+  <script src="/lib/anime.min.js?v=3.1.0"></script>
+  <script src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  <script src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  <script defer src="/lib/three/three.min.js"></script>
+  <script defer src="/lib/three/three-waves.min.js"></script>
+<script src="/js/utils.js?v=7.4.0"></script><script src="/js/motion.js?v=7.4.0"></script>
+<script src="/js/schemes/pisces.js?v=7.4.0"></script>
+<script src="/js/next-boot.js?v=7.4.0"></script>
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+
+
+<script>
+NexT.utils.getScript('//unpkg.com/valine/dist/Valine.min.js', () => {
+  var GUEST = ['nick', 'mail', 'link'];
+  var guest = 'nick,mail,link';
+  guest = guest.split(',').filter(item => {
+    return GUEST.includes(item);
+  });
+  new Valine({
+    el: '#comments',
+    verify: false,
+    notify: false,
+    appId: '6I3i4U3wh9KIPOi55NTP6g2Y-gzGzoHsz',
+    appKey: '9TiVVrkObL1VH2ksTWL0qt71',
+    placeholder: 'Just go go',
+    avatar: 'mm',
+    meta: guest,
+    pageSize: '10' || 10,
+    visitor: false,
+    lang: 'zh-CN' || 'zh-cn',
+    path: location.pathname
+  });
+}, window.Valine);
+</script>
+
+</body>
+</html>

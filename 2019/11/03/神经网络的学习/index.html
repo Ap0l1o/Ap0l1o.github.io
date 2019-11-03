@@ -1,0 +1,842 @@
+<!DOCTYPE html>
+
+
+
+
+
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 3.9.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=7.4.0">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32.jpg?v=7.4.0">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16.jpg?v=7.4.0">
+  <link rel="mask-icon" href="/images/logo.svg?v=7.4.0" color="#222">
+
+<link rel="stylesheet" href="/css/main.css?v=7.4.0">
+
+<link rel="stylesheet" href="//fonts.googleapis.com/css?family=Consolas:300,300italic,400,400italic,700,700italic&display=swap&subset=latin,latin-ext">
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css?v=4.7.0">
+  <link rel="stylesheet" href="/lib/pace/pace-theme-minimal.min.css?v=1.0.2">
+  <script src="/lib/pace/pace.min.js?v=1.0.2"></script>
+
+
+<script id="hexo-configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Pisces',
+    version: '7.4.0',
+    exturl: false,
+    sidebar: {"position":"left","display":"post","offset":12,"onmobile":false},
+    copycode: {"enable":true,"show_result":true,"style":null},
+    back2top: {"enable":true,"sidebar":false,"scrollpercent":false},
+    bookmark: {"enable":false,"color":"#222","save":"auto"},
+    fancybox: false,
+    mediumzoom: false,
+    lazyload: false,
+    pangu: false,
+    algolia: {
+      appID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    },
+    localsearch: {"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},
+    path: 'search.xml',
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    translation: {
+      copy_button: '复制',
+      copy_success: '复制成功',
+      copy_failure: '复制失败'
+    },
+    sidebarPadding: 40
+  };
+</script>
+
+  <meta name="description" content="学习的含义 ​    神经网络的特征是从数据中进行学习。所谓从数据中进行学习，是指可以由数据自动决定权重参数的值。 损失函数 ​    神经网络的学习通过某个指标表示现在的状态（神经网络的性能），然后，以这个指标为基准寻找最优权重参数。所用的指标即被称为损失函数。损失函数一般为均方误差和交叉熵误差。">
+<meta name="keywords" content="DL">
+<meta property="og:type" content="article">
+<meta property="og:title" content="0x03 神经网络的学习">
+<meta property="og:url" content="http://yoursite.com/2019/11/03/神经网络的学习/index.html">
+<meta property="og:site_name" content="Ap0l1o">
+<meta property="og:description" content="学习的含义 ​    神经网络的特征是从数据中进行学习。所谓从数据中进行学习，是指可以由数据自动决定权重参数的值。 损失函数 ​    神经网络的学习通过某个指标表示现在的状态（神经网络的性能），然后，以这个指标为基准寻找最优权重参数。所用的指标即被称为损失函数。损失函数一般为均方误差和交叉熵误差。">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:updated_time" content="2019-11-03T08:08:35.859Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="0x03 神经网络的学习">
+<meta name="twitter:description" content="学习的含义 ​    神经网络的特征是从数据中进行学习。所谓从数据中进行学习，是指可以由数据自动决定权重参数的值。 损失函数 ​    神经网络的学习通过某个指标表示现在的状态（神经网络的性能），然后，以这个指标为基准寻找最优权重参数。所用的指标即被称为损失函数。损失函数一般为均方误差和交叉熵误差。">
+  <link rel="canonical" href="http://yoursite.com/2019/11/03/神经网络的学习/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome: false,
+    isPost: true,
+    isPage: false,
+    isArchive: false
+  };
+</script>
+
+  <title>0x03 神经网络的学习 | Ap0l1o</title>
+  
+
+
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .logo,
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-CN">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-meta">
+
+    <div>
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Ap0l1o</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+  </div>
+
+  <div class="site-nav-toggle">
+    <button aria-label="切换导航栏">
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+
+<nav class="site-nav">
+  
+  <ul id="menu" class="menu">
+      
+      
+      
+        
+        <li class="menu-item menu-item-home">
+      
+    
+
+    <a href="/" rel="section"><i class="menu-item-icon fa fa-fw fa-home"></i> <br>首页</a>
+
+  </li>
+      
+      
+      
+        
+        <li class="menu-item menu-item-tags">
+      
+    
+
+    <a href="/tags/" rel="section"><i class="menu-item-icon fa fa-fw fa-tags"></i> <br>标签</a>
+
+  </li>
+      
+      
+      
+        
+        <li class="menu-item menu-item-categories">
+      
+    
+
+    <a href="/categories/" rel="section"><i class="menu-item-icon fa fa-fw fa-th"></i> <br>分类</a>
+
+  </li>
+      
+      
+      
+        
+        <li class="menu-item menu-item-archives">
+      
+    
+
+    <a href="/archives/" rel="section"><i class="menu-item-icon fa fa-fw fa-archive"></i> <br>归档</a>
+
+  </li>
+  </ul>
+
+</nav>
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+            
+
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+      <article itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block post">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/11/03/神经网络的学习/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Ap0l1o">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar_gif.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Ap0l1o">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">0x03 神经网络的学习
+
+          
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              
+                
+              
+
+              <time title="创建时间：2019-11-03 16:09:33 / 修改时间：16:08:35" itemprop="dateCreated datePublished" datetime="2019-11-03T16:09:33+08:00">2019-11-03</time>
+            </span>
+          
+            
+
+            
+          
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/categories/深度学习入门/" itemprop="url" rel="index"><span itemprop="name">深度学习入门</span></a></span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            <span id="/2019/11/03/神经网络的学习/" class="post-meta-item leancloud_visitors" data-flag-title="0x03 神经网络的学习" title="阅读次数">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              <span class="post-meta-item-text">阅读次数：</span>
+              <span class="leancloud-visitors-count"></span>
+            </span>
+          
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="fa fa-comment-o"></i>
+      </span>
+        
+      
+      <span class="post-meta-item-text">Valine：</span>
+    
+    <a title="valine" href="/2019/11/03/神经网络的学习/#comments" itemprop="discussionUrl"><span class="post-comments-count valine-comment-count" data-xid="/2019/11/03/神经网络的学习/" itemprop="commentCount"></span></a>
+  </span>
+  
+  
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h2 id="学习的含义"><a href="#学习的含义" class="headerlink" title="学习的含义"></a>学习的含义</h2><blockquote>
+<p>​    神经网络的特征是从<em>数据中进行学习</em>。所谓从<em>数据中进行学习</em>，是指可以由数据自动决定<strong>权重参数的值</strong>。</p>
+</blockquote><h2 id="损失函数"><a href="#损失函数" class="headerlink" title="损失函数"></a>损失函数</h2><blockquote>
+<p>​    神经网络的学习通过某个<strong>指标</strong>表示现在的状态（神经网络的性能），然后，以这个指标为基准寻找<strong>最优权重参数</strong>。所用的指标即被称为<strong>损失函数</strong>。损失函数一般为均方误差和交叉熵误差。</p>
+</blockquote><a id="more"></a>
+
+<h3 id="均方误差"><a href="#均方误差" class="headerlink" title="均方误差"></a>均方误差</h3><p>$$<br>E = \frac{1}{2}\displaystyle\sum_{k}(y_k-t_k)^2<br>$$</p>
+<p>其中k表示数据的维数（即数据的个数），y<del>k</del>表示神经网络的输出，t<del>k</del>表示监督数据（即标签）。</p>
+<blockquote>
+<p>这里介绍一下<code>one-hot</code>编码，<code>one-hot</code>编码，是将正确解标签表示为1，其他标签表示为0的方法。</p>
+</blockquote>
+<p>均方误差表示的是神经网络的输出与正确解监督数据的各个元素之差的平方，再求和。</p>
+<p>代码示例：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">mean_squared_error</span><span class="params">(y, t)</span>:</span></span><br><span class="line">    <span class="keyword">return</span> <span class="number">0.5</span> * np.sum( (y-t)**<span class="number">2</span> )</span><br></pre></td></tr></table></figure>
+
+<h3 id="交叉熵误差-cross-entropy"><a href="#交叉熵误差-cross-entropy" class="headerlink" title="交叉熵误差  cross entropy"></a>交叉熵误差  <code>cross entropy</code></h3><p>交叉熵是用来比较两个概率分布的。它会告诉我们两个分布的相似程度。</p>
+<p>在同一组结果上定义的两个概率分布p和q之间的交叉熵是由下列公式给出的：<br>$$<br>H(p,q) = -\displaystyle\sum_xp(x)\log q(x)<br>$$</p>
+<p>$$<br>E = -\displaystyle\sum_{k}t_klog(y_k)<br>$$</p>
+<p>交叉熵误差实际计算的是<em>正确解标签</em>与<em>神经网络在正确解上的输出的对数</em>的乘积取负数。在标签为<code>one-hot</code>编码的情况下实际计算的是<em>神经网络输出正确解概率的对数然后取负数</em>。因为在此，正确解的概率为1 ，即p(x)为1 。</p>
+<p>注：信息熵的定义<br>$$<br>H(x) = -\displaystyle\sum_ip_i\log(p_i)<br>$$</p>
+<p>交叉熵误差的值只由正确解标签对应的输出结果决定。</p>
+<p>代码示例：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 交叉熵误差：计算正确解标签对应输出的自然对数，正确解对应输出值越大(即概率越接近1)越接近0  [标签是one-hot编码]</span></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">cross_entropy_error</span><span class="params">(y, t)</span>:</span></span><br><span class="line">    delt = <span class="number">1e-7</span></span><br><span class="line">    <span class="keyword">return</span> -np.sum(t * np.log(y + delt)) <span class="comment"># 加上 delt 是为了防止 log(0) 的出现导致后序计算无法继续</span></span><br></pre></td></tr></table></figure>
+
+<h2 id="mini-batch学习"><a href="#mini-batch学习" class="headerlink" title="mini-batch学习"></a>mini-batch学习</h2><p>使用训练数据进行学习，严格来说就是针对训练数据计算损失函数的值，找出使该值尽可能小的参数。</p>
+<p>单个数据的损失函数值不具有代表性，全部数据的损失函数之求和再取平均值计算量又过大，所以这里取折中的方法，从全部数据中选出一批数据（称为<code>mini-batch</code>，小批量），然后对每个<code>mini-batch</code>学习。</p>
+<blockquote>
+<p>这里引入<code>epoch</code>的概念，一个<code>epoch</code>表示学习中所有训练数据均被使用过一次时的迭代次数。</p>
+<p>若总数据量为1000，mini-batch为100，则每个epoch是10个mini-batch</p>
+</blockquote>
+<p>mini-batch交叉熵误差实现实例：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 可以处理单个数据和批量数据的交叉熵  [标签是one-hot编码]</span></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">cross_entropy_error</span><span class="params">(y, t)</span>:</span></span><br><span class="line">    <span class="keyword">if</span> y.ndim == <span class="number">1</span>:</span><br><span class="line">        y = y.reshape(<span class="number">1</span>, y.size)</span><br><span class="line">        t = t.reshape(<span class="number">1</span>, t.size)</span><br><span class="line">    batch_size = y.shape[<span class="number">0</span>]</span><br><span class="line">    <span class="keyword">return</span> -np.sum(t * np.log(y + <span class="number">1e-7</span>)) / batch_size</span><br><span class="line"></span><br><span class="line"><span class="comment"># 在标签为非 one-hot 编码时交叉熵的计算</span></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">cross_entropy_error</span><span class="params">(y, t)</span>:</span></span><br><span class="line">    <span class="keyword">if</span> y.ndim == <span class="number">1</span>:</span><br><span class="line">        y = y.reshape(<span class="number">1</span>, y.size)</span><br><span class="line">        t = t.reshape(<span class="number">1</span>, t.size)</span><br><span class="line">    batch_size = y.shape[<span class="number">0</span>]</span><br><span class="line">    <span class="keyword">return</span> -np.sum(np.log(y[np.arange(batch_size), t] + <span class="number">1e-7</span>)) / batch_size</span><br><span class="line"></span><br><span class="line"><span class="comment"># 通用化</span></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">cross_entropy_error</span><span class="params">(y, t)</span>:</span></span><br><span class="line">    <span class="keyword">if</span> y.ndim == <span class="number">1</span>:</span><br><span class="line">        y = y.reshape(<span class="number">1</span>, y.size)</span><br><span class="line">        t = t.reshape(<span class="number">1</span>, t.size)</span><br><span class="line">    </span><br><span class="line">    <span class="comment"># 如果标签是one-hot编码, 同过计算最大索引来寻找真正的标签</span></span><br><span class="line">    <span class="keyword">if</span> t.size == y.size: </span><br><span class="line">        t = t.argmax(axis = <span class="number">1</span>)</span><br><span class="line">    </span><br><span class="line">    <span class="comment"># y的第一个维度为批量大小</span></span><br><span class="line">    batch_size = y.shape[<span class="number">0</span>]</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> -np.sum(np.log(y[np.arange(batch_size), t] + <span class="number">1e-7</span>)) / batch_size</span><br></pre></td></tr></table></figure>
+
+<h2 id="导入损失函数的原因"><a href="#导入损失函数的原因" class="headerlink" title="导入损失函数的原因"></a>导入损失函数的原因</h2><blockquote>
+<p>​    在进行神经网络的学习时，不能将识别精度作为指标。因为如果以识别精度为指标，则权重参数的导数在绝大多数地方都会变为0，因为权重的微小改变并不会导致识别精度的连续的变化。  </p>
+<p>​    识别精度对微小的参数变化基本上没有什么反应，即便有反应，它的值也是不连续、突然的变化。作为激活函数的<em>阶跃函数</em>也有同样的情况，因为其导数在绝大多数地方都为0 。</p>
+</blockquote>
+<h2 id="梯度，用数值微分法求梯度"><a href="#梯度，用数值微分法求梯度" class="headerlink" title="梯度，用数值微分法求梯度"></a>梯度，用数值微分法求梯度</h2><h3 id="梯度的概念"><a href="#梯度的概念" class="headerlink" title="梯度的概念"></a>梯度的概念</h3><blockquote>
+<p>由<em>全部变量</em>的<em>偏导数</em>汇总而成的<em>向量</em>称为<strong>梯度</strong>。</p>
+</blockquote>
+<h3 id="为何这里引入梯度"><a href="#为何这里引入梯度" class="headerlink" title="为何这里引入梯度"></a>为何这里引入梯度</h3><blockquote>
+<p>梯度会指向各点处的函数值降低的方向，严格来说，梯度指向的方向是各点处的函数值减小最多的方向。利用这一性质可以来确定减小损失函数值的方法。</p>
+</blockquote>
+<h3 id="利用数值微分来求梯度"><a href="#利用数值微分来求梯度" class="headerlink" title="利用数值微分来求梯度"></a>利用数值微分来求梯度</h3><h4 id="数值微分的概念"><a href="#数值微分的概念" class="headerlink" title="数值微分的概念"></a>数值微分的概念</h4><blockquote>
+<p>利用微小的差分求导数的过程称为数值微分。</p>
+</blockquote>
+<h4 id="求梯度"><a href="#求梯度" class="headerlink" title="求梯度"></a>求梯度</h4><p>代码示例：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">##  利用数值微分来计算梯度</span></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">numerical_gradient</span><span class="params">(f, x)</span>:</span></span><br><span class="line">    <span class="comment"># x 实际上指的是权重</span></span><br><span class="line">    h = <span class="number">1e-4</span></span><br><span class="line">    grad = np.zeros_like(x)</span><br><span class="line"></span><br><span class="line">    <span class="comment"># 依次计算每个变量的偏导数，最后汇总成一个向量</span></span><br><span class="line">    <span class="keyword">for</span> idx <span class="keyword">in</span> range(x.size):</span><br><span class="line">        tmp_val = x[idx]</span><br><span class="line"></span><br><span class="line">        <span class="comment"># 计算 f(x + h)</span></span><br><span class="line">        x[idx] = tmp_val + h</span><br><span class="line">        fxh1 = f(x)</span><br><span class="line"></span><br><span class="line">        <span class="comment"># 计算 f(x - h)</span></span><br><span class="line">        x[idx] = tmp_val - h </span><br><span class="line">        fxh2 = f(x)</span><br><span class="line"></span><br><span class="line">        <span class="comment"># 将计算出的单个变量的偏导数加入向量组</span></span><br><span class="line">        grad[idx] = (fxh1 - fxh2) / (<span class="number">2</span> * h) </span><br><span class="line"></span><br><span class="line">        x[idx] = tmp_val <span class="comment"># 将变量恢复原值</span></span><br><span class="line">    </span><br><span class="line">    <span class="keyword">return</span> grad</span><br></pre></td></tr></table></figure>
+
+<h2 id="梯度法"><a href="#梯度法" class="headerlink" title="梯度法"></a>梯度法</h2><blockquote>
+<p>​    机器学习的目的是找到最优参数，也即使损失函数值最小的参数。使用梯度来寻找损失函数最小值的方法就是梯度法。  </p>
+<p>​    需要注意的是，梯度表示的是各点处的函数值减小最多的方向，却不一定是函数的最小值或真正应该前进的方向。  </p>
+<p>​    梯度的方向虽然不一定指向最小值，但沿着这个方向能最大程度的减小损失函数的值。通过不断地沿着新梯度的方向前进，逐渐减小损失函数值的过程就是梯度法（这里特指梯度下降法）。</p>
+</blockquote>
+<p>学习率引入：</p>
+<blockquote>
+<p>学习率决定在一次学习中，应该学习多少，即在多大程度上根据梯度更新参数。学习率是一种超参数，超参数是由人工设定的。</p>
+</blockquote>
+<p>梯度下降法代码示例：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">##  梯度下降法：</span></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">gradient_descent</span><span class="params">(f, init_x, lr = <span class="number">0.01</span>, step_num = <span class="number">100</span>)</span>:</span></span><br><span class="line">    <span class="string">"""</span></span><br><span class="line"><span class="string">    f : 表示要优化的函数;</span></span><br><span class="line"><span class="string">    init_x ：x 的初始值;</span></span><br><span class="line"><span class="string">    lr: 学习率 leraning rate;</span></span><br><span class="line"><span class="string">    step_num : 是梯度法重复的次数</span></span><br><span class="line"><span class="string">    """</span></span><br><span class="line">    x = init_x <span class="comment"># init_x 即初始值，也即初始权重</span></span><br><span class="line"></span><br><span class="line">    <span class="keyword">for</span> i <span class="keyword">in</span> range(step_num): <span class="comment"># 共更新 step_num 次，根据梯度反复更新参数来学习</span></span><br><span class="line">        grad = numerical_gradient(f, x) <span class="comment"># 计算梯度</span></span><br><span class="line">        x -= lr * grad <span class="comment"># 向减小的方向更新， 以得到极小值</span></span><br><span class="line">    </span><br><span class="line">    <span class="keyword">return</span> x</span><br></pre></td></tr></table></figure>
+
+<h2 id="神经网络的学习步骤"><a href="#神经网络的学习步骤" class="headerlink" title="神经网络的学习步骤"></a>神经网络的学习步骤</h2><ul>
+<li><p>前提：</p>
+<blockquote>
+<p>神经网络存在合适的权重和偏置，调整权重和偏置以便拟合训练数据的过程称为“学习”。神经网络的学习分为以下四步：</p>
+</blockquote>
+<ul>
+<li><p>步骤1——mini-batch</p>
+<p>从训练数据中随机选出一部分数据，这部分数据称为mini-batch。目标是减小mini-batch的损失函数的值。</p>
+</li>
+<li><p>步骤2——计算梯度</p>
+<p>求出各个权重参数的梯度，梯度表示损失函数的值减小最多的方向。</p>
+</li>
+<li><p>步骤3——更新参数</p>
+<p>将权重参数沿梯度方向进行<strong>微小更新</strong>。</p>
+</li>
+<li><p>步骤4——重复</p>
+<p>重复步骤1、步骤2、步骤3</p>
+</li>
+</ul>
+</li>
+</ul>
+<p>​    </p>
+
+    </div>
+
+    
+    
+    
+        
+      
+        <div id="reward-container">
+  <div>Donate~</div>
+  <button id="reward-button" disable="enable" onclick="var qr = document.getElementById(&quot;qr&quot;); qr.style.display = (qr.style.display === 'none') ? 'block' : 'none';">
+    打赏
+  </button>
+  <div id="qr" style="display: none;">
+        
+      
+      <div style="display: inline-block">
+        <img src="/images/alipay.jpg" alt="Ap0l1o 支付宝">
+        <p>支付宝</p>
+      </div>
+
+  </div>
+</div>
+
+      
+
+      <footer class="post-footer">
+          
+            
+          
+          <div class="post-tags">
+            
+              <a href="/tags/DL/" rel="tag"># DL</a>
+            
+          </div>
+        
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-next post-nav-item">
+              
+                <a href="/2019/11/03/感知机/" rel="next" title="0x01 感知机">
+                  <i class="fa fa-chevron-left"></i> 0x01 感知机
+                </a>
+              
+            </div>
+
+            <span class="post-nav-divider"></span>
+
+            <div class="post-nav-prev post-nav-item">
+              
+                <a href="/2019/11/03/误差反向传播法/" rel="prev" title="0x04 误差反向传播法">
+                  0x04 误差反向传播法 <i class="fa fa-chevron-right"></i>
+                </a>
+              
+            </div>
+          </div>
+        
+      </footer>
+    
+  </div>
+  
+  
+  
+  </article>
+
+  </div>
+
+
+          </div>
+          
+    
+    <div class="comments" id="comments"></div>
+  
+
+        </div>
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+        
+        
+        
+        
+      
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#学习的含义"><span class="nav-number">1.</span> <span class="nav-text">学习的含义</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#损失函数"><span class="nav-number">2.</span> <span class="nav-text">损失函数</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#均方误差"><span class="nav-number">2.1.</span> <span class="nav-text">均方误差</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#交叉熵误差-cross-entropy"><span class="nav-number">2.2.</span> <span class="nav-text">交叉熵误差  cross entropy</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#mini-batch学习"><span class="nav-number">3.</span> <span class="nav-text">mini-batch学习</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#导入损失函数的原因"><span class="nav-number">4.</span> <span class="nav-text">导入损失函数的原因</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#梯度，用数值微分法求梯度"><span class="nav-number">5.</span> <span class="nav-text">梯度，用数值微分法求梯度</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#梯度的概念"><span class="nav-number">5.1.</span> <span class="nav-text">梯度的概念</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#为何这里引入梯度"><span class="nav-number">5.2.</span> <span class="nav-text">为何这里引入梯度</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#利用数值微分来求梯度"><span class="nav-number">5.3.</span> <span class="nav-text">利用数值微分来求梯度</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#数值微分的概念"><span class="nav-number">5.3.1.</span> <span class="nav-text">数值微分的概念</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#求梯度"><span class="nav-number">5.3.2.</span> <span class="nav-text">求梯度</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#梯度法"><span class="nav-number">6.</span> <span class="nav-text">梯度法</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#神经网络的学习步骤"><span class="nav-number">7.</span> <span class="nav-text">神经网络的学习步骤</span></a></li></ol></div>
+        
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image"
+      src="/images/avatar_gif.gif"
+      alt="Ap0l1o">
+  <p class="site-author-name" itemprop="name">Ap0l1o</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+  <nav class="site-state motion-element">
+      <div class="site-state-item site-state-posts">
+        
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">29</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+    
+      
+      
+      <div class="site-state-item site-state-categories">
+        
+          
+            <a href="/categories/">
+          
+        
+        <span class="site-state-item-count">4</span>
+        <span class="site-state-item-name">分类</span>
+        </a>
+      </div>
+    
+      
+      
+      <div class="site-state-item site-state-tags">
+        
+          
+            <a href="/tags/">
+          
+        
+        <span class="site-state-item-count">5</span>
+        <span class="site-state-item-name">标签</span>
+        </a>
+      </div>
+    
+  </nav>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+      
+      
+        
+      
+      
+        
+      
+        <a href="https://github.com/7oDo" title="GitHub &rarr; https://github.com/7oDo" rel="noopener" target="_blank"><i class="fa fa-fw fa-github"></i>GitHub</a>
+      </span>
+    
+  </div>
+
+
+  <div class="links-of-blogroll motion-element">
+    <div class="links-of-blogroll-title">
+      <i class="fa fa-fw fa-link"></i>
+      Links
+    </div>
+    <ul class="links-of-blogroll-list">
+        <li class="links-of-blogroll-item">
+          <a href="https://www.cnblogs.com/Jie-Fei/" title="https://www.cnblogs.com/Jie-Fei/" rel="noopener" target="_blank">cnblogs</a>
+        </li>
+      
+    </ul>
+  </div>
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2019</span>
+  <span class="with-love" id="animate">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Ap0l1o</span>
+</div>
+
+        
+
+
+
+
+
+
+  
+  <script>
+  function leancloudSelector(url) {
+    return document.getElementById(url).querySelector('.leancloud-visitors-count');
+  }
+  if (CONFIG.page.isPost) {
+    function addCount(Counter) {
+      var visitors = document.querySelector('.leancloud_visitors');
+      var url = visitors.getAttribute('id').trim();
+      var title = visitors.getAttribute('data-flag-title').trim();
+
+      Counter('get', `/classes/Counter?where=${JSON.stringify({ url })}`)
+        .then(response => response.json())
+        .then(({ results }) => {
+          if (results.length > 0) {
+            var counter = results[0];
+            Counter('put', '/classes/Counter/' + counter.objectId, { time: { '__op': 'Increment', 'amount': 1 } })
+              .then(response => response.json())
+              .then(() => {
+                leancloudSelector(url).innerText = counter.time + 1;
+              })
+            
+              .catch(error => {
+                console.log('Failed to save visitor count', error);
+              })
+          } else {
+              Counter('post', '/classes/Counter', { title: title, url: url, time: 1 })
+                .then(response => response.json())
+                .then(() => {
+                  leancloudSelector(url).innerText = 1;
+                })
+                .catch(error => {
+                  console.log('Failed to create', error);
+                });
+            
+          }
+        })
+        .catch(error => {
+          console.log('LeanCloud Counter Error', error);
+        });
+    }
+  } else {
+    function showTime(Counter) {
+      var visitors = document.querySelectorAll('.leancloud_visitors');
+      var entries = [...visitors].map(element => {
+        return element.getAttribute('id').trim();
+      });
+
+      Counter('get', `/classes/Counter?where=${JSON.stringify({ url: { '$in': entries } })}`)
+        .then(response => response.json())
+        .then(({ results }) => {
+          if (results.length === 0) {
+            document.querySelectorAll('.leancloud_visitors .leancloud-visitors-count').forEach(element => {
+              element.innerText = 0;
+            });
+            return;
+          }
+          for (var i = 0; i < results.length; i++) {
+            var item = results[i];
+            var url = item.url;
+            var time = item.time;
+            leancloudSelector(url).innerText = time;
+          }
+          for (var i = 0; i < entries.length; i++) {
+            var url = entries[i];
+            var element = leancloudSelector(url);
+            if (element.innerText == '') {
+              element.innerText = 0;
+            }
+          }
+        })
+        .catch(error => {
+          console.log('LeanCloud Counter Error', error);
+        });
+    }
+  }
+
+  fetch('https://app-router.leancloud.cn/2/route?appId=6I3i4U3wh9KIPOi55NTP6g2Y-gzGzoHsz')
+    .then(response => response.json())
+    .then(({ api_server }) => {
+      var Counter = (method, url, data) => {
+        return fetch(`https://${api_server}/1.1${url}`, {
+          method: method,
+          headers: {
+            'X-LC-Id': '6I3i4U3wh9KIPOi55NTP6g2Y-gzGzoHsz',
+            'X-LC-Key': '9TiVVrkObL1VH2ksTWL0qt71',
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(data)
+        });
+      };
+      if (CONFIG.page.isPost) {
+        const localhost = /http:\/\/(localhost|127.0.0.1|0.0.0.0)/;
+        if (localhost.test(document.URL)) return;
+        addCount(Counter);
+      } else if (document.querySelectorAll('.post-title-link').length >= 1) {
+        showTime(Counter);
+      }
+    });
+  </script>
+
+
+  <script>
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "//tajs.qq.com/stats?sId=66469216";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
+
+
+
+
+        
+      </div>
+    </footer>
+  </div>
+
+  
+
+
+    
+    
+  
+  <script src="/lib/anime.min.js?v=3.1.0"></script>
+  <script src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  <script src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  <script defer src="/lib/three/three.min.js"></script>
+  <script defer src="/lib/three/three-waves.min.js"></script>
+<script src="/js/utils.js?v=7.4.0"></script><script src="/js/motion.js?v=7.4.0"></script>
+<script src="/js/schemes/pisces.js?v=7.4.0"></script>
+<script src="/js/next-boot.js?v=7.4.0"></script>
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+    
+      
+<script type="text/x-mathjax-config">
+    MathJax.Ajax.config.path['mhchem'] = '//cdn.jsdelivr.net/npm/mathjax-mhchem@3';
+
+  MathJax.Hub.Config({
+    tex2jax: {
+      inlineMath: [ ['$', '$'], ['\\(', '\\)'] ],
+      processEscapes: true,
+      skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+    },
+    TeX: {
+        extensions: ['[mhchem]/mhchem.js'],
+      equationNumbers: {
+        autoNumber: 'AMS'
+      }
+    }
+  });
+
+  MathJax.Hub.Register.StartupHook('TeX Jax Ready', function() {
+    MathJax.InputJax.TeX.prefilterHooks.Add(function(data) {
+      if (data.display) {
+        var next = data.script.nextSibling;
+        while (next && next.nodeName.toLowerCase() === '#text') {
+          next = next.nextSibling;
+        }
+        if (next && next.nodeName.toLowerCase() === 'br') {
+          next.parentNode.removeChild(next);
+        }
+      }
+    });
+  });
+
+  MathJax.Hub.Queue(function() {
+    var all = MathJax.Hub.getAllJax(), i;
+    for (i = 0; i < all.length; i += 1) {
+      element = document.getElementById(all[i].inputID + '-Frame').parentNode;
+      if (element.nodeName.toLowerCase() == 'li') {
+        element = element.parentNode;
+      }
+      element.classList.add('has-jax');
+    }
+  });
+</script>
+<script>
+  NexT.utils.getScript('//cdn.jsdelivr.net/npm/mathjax@2/MathJax.js?config=TeX-AMS-MML_HTMLorMML', () => {
+    MathJax.Hub.Typeset();
+  }, window.MathJax);
+</script>
+
+    
+  
+
+  
+
+  
+
+
+<script>
+NexT.utils.getScript('//unpkg.com/valine/dist/Valine.min.js', () => {
+  var GUEST = ['nick', 'mail', 'link'];
+  var guest = 'nick,mail,link';
+  guest = guest.split(',').filter(item => {
+    return GUEST.includes(item);
+  });
+  new Valine({
+    el: '#comments',
+    verify: false,
+    notify: false,
+    appId: '6I3i4U3wh9KIPOi55NTP6g2Y-gzGzoHsz',
+    appKey: '9TiVVrkObL1VH2ksTWL0qt71',
+    placeholder: 'Just go go',
+    avatar: 'mm',
+    meta: guest,
+    pageSize: '10' || 10,
+    visitor: false,
+    lang: 'zh-CN' || 'zh-cn',
+    path: location.pathname
+  });
+}, window.Valine);
+</script>
+
+</body>
+</html>

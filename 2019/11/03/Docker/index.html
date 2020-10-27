@@ -57,13 +57,13 @@
   };
 </script>
 
-  <meta name="description" content="Docker的安装更新apt包的索引sudo  apt-get update">
+  <meta name="description" content="Docker的安装 更新apt包的索引 sudo  apt-get update">
 <meta name="keywords" content="网络管理与服务设计">
 <meta property="og:type" content="article">
 <meta property="og:title" content="Docker的安装与验证">
 <meta property="og:url" content="http://yoursite.com/2019/11/03/Docker/index.html">
 <meta property="og:site_name" content="Ap0l1o">
-<meta property="og:description" content="Docker的安装更新apt包的索引sudo  apt-get update">
+<meta property="og:description" content="Docker的安装 更新apt包的索引 sudo  apt-get update">
 <meta property="og:locale" content="zh-CN">
 <meta property="og:image" content="https://s2.ax1x.com/2019/11/02/KL0hNj.png">
 <meta property="og:image" content="https://s2.ax1x.com/2019/11/02/KLB2xx.png">
@@ -75,7 +75,7 @@
 <meta property="og:updated_time" content="2019-11-03T09:13:27.338Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Docker的安装与验证">
-<meta name="twitter:description" content="Docker的安装更新apt包的索引sudo  apt-get update">
+<meta name="twitter:description" content="Docker的安装 更新apt包的索引 sudo  apt-get update">
 <meta name="twitter:image" content="https://s2.ax1x.com/2019/11/02/KL0hNj.png">
   <link rel="canonical" href="http://yoursite.com/2019/11/03/Docker/">
 
@@ -337,22 +337,30 @@
     <div class="post-body" itemprop="articleBody">
 
       
-        <h2 id="Docker的安装"><a href="#Docker的安装" class="headerlink" title="Docker的安装"></a>Docker的安装</h2><h3 id="更新apt包的索引"><a href="#更新apt包的索引" class="headerlink" title="更新apt包的索引"></a>更新apt包的索引</h3><p><code>sudo  apt-get update</code><a id="more"></a></p>
+        <h2 id="docker%E7%9A%84%E5%AE%89%E8%A3%85">Docker的安装</h2>
+<h3 id="%E6%9B%B4%E6%96%B0apt%E5%8C%85%E7%9A%84%E7%B4%A2%E5%BC%95">更新apt包的索引</h3>
+<p><code>sudo  apt-get update</code><a id="more"></a></p>
 <p><img src="https://s2.ax1x.com/2019/11/02/KL0hNj.png" alt="KL0hNj.png"></p>
-<h3 id="安装-apt-依赖包，用于通过HTTPS来获取仓库"><a href="#安装-apt-依赖包，用于通过HTTPS来获取仓库" class="headerlink" title="安装 apt 依赖包，用于通过HTTPS来获取仓库:"></a>安装 apt 依赖包，用于通过HTTPS来获取仓库:</h3><p><img src="https://s2.ax1x.com/2019/11/02/KLB2xx.png" alt="KLB2xx.png"></p>
-<h3 id="添加-Docker-的官方-GPG-密钥"><a href="#添加-Docker-的官方-GPG-密钥" class="headerlink" title="添加 Docker 的官方 GPG 密钥"></a>添加 Docker 的官方 GPG 密钥</h3><blockquote>
-<p><strong>GNU Privacy Guard</strong>（<strong>GnuPG</strong>或<strong>GPG</strong>）是一个密码学软件，用于加密、签名通信内容及管理非对称密码学的密钥。 </p>
+<h3 id="%E5%AE%89%E8%A3%85-apt-%E4%BE%9D%E8%B5%96%E5%8C%85%EF%BC%8C%E7%94%A8%E4%BA%8E%E9%80%9A%E8%BF%87https%E6%9D%A5%E8%8E%B7%E5%8F%96%E4%BB%93%E5%BA%93%3A">安装 apt 依赖包，用于通过HTTPS来获取仓库:</h3>
+<p><img src="https://s2.ax1x.com/2019/11/02/KLB2xx.png" alt="KLB2xx.png"></p>
+<h3 id="%E6%B7%BB%E5%8A%A0-docker-%E7%9A%84%E5%AE%98%E6%96%B9-gpg-%E5%AF%86%E9%92%A5">添加 Docker 的官方 GPG 密钥</h3>
+<blockquote>
+<p><strong>GNU Privacy Guard</strong>（<strong>GnuPG</strong>或<strong>GPG</strong>）是一个密码学软件，用于加密、签名通信内容及管理非对称密码学的密钥。</p>
 </blockquote>
 <p><code>curl -fsSl https://download.docker.com/linux/ubuntu/gpg | sudo apt-key add -</code></p>
 <p><img src="https://s2.ax1x.com/2019/11/03/KOohz6.png" alt="KOohz6.png"></p>
 <p>验证现在是否已有密钥：<code>sudo apt-key fingerprint 0EBFCD88</code></p>
 <p><img src="https://s2.ax1x.com/2019/11/03/KOTdTH.png" alt="KOTdTH.png"></p>
-<h3 id="设置稳定版仓库"><a href="#设置稳定版仓库" class="headerlink" title="设置稳定版仓库"></a>设置稳定版仓库</h3><p><code>sudo add-apt-repository &quot;deb [arch=amd64] https://download.docker.com/linux/ubuntu $(lsb_release -cs) stable&quot;</code></p>
+<h3 id="%E8%AE%BE%E7%BD%AE%E7%A8%B3%E5%AE%9A%E7%89%88%E4%BB%93%E5%BA%93">设置稳定版仓库</h3>
+<p><code> sudo add-apt-repository &quot;deb [arch=amd64] https://download.docker.com/linux/ubuntu $(lsb_release -cs) stable&quot;</code></p>
 <p><img src="https://s2.ax1x.com/2019/11/03/KO7ugP.png" alt="KO7ugP.png"></p>
-<h3 id="再次更新一下apt包的索"><a href="#再次更新一下apt包的索" class="headerlink" title="再次更新一下apt包的索"></a>再次更新一下apt包的索</h3><p><code>sudo apt-get update</code></p>
-<h3 id="安装最新版本的Docker-CE"><a href="#安装最新版本的Docker-CE" class="headerlink" title="安装最新版本的Docker CE"></a>安装最新版本的<code>Docker CE</code></h3><p><code>sudo apt-get install -y docker-ce</code></p>
+<h3 id="%E5%86%8D%E6%AC%A1%E6%9B%B4%E6%96%B0%E4%B8%80%E4%B8%8Bapt%E5%8C%85%E7%9A%84%E7%B4%A2">再次更新一下apt包的索</h3>
+<p><code>sudo apt-get update </code></p>
+<h3 id="%E5%AE%89%E8%A3%85%E6%9C%80%E6%96%B0%E7%89%88%E6%9C%AC%E7%9A%84docker-ce">安装最新版本的<code>Docker CE</code></h3>
+<p><code>sudo apt-get install -y docker-ce</code></p>
 <p><img src="https://s2.ax1x.com/2019/11/03/KObHjP.png" alt="KObHjP.png"></p>
-<h3 id="验证Docker"><a href="#验证Docker" class="headerlink" title="验证Docker"></a>验证Docker</h3><p>查看<code>docker</code>服务是否启动：<code>systemctl statuc docker</code></p>
+<h3 id="%E9%AA%8C%E8%AF%81docker">验证Docker</h3>
+<p>查看<code>docker</code>服务是否启动：<code>systemctl statuc docker</code></p>
 <p><img src="https://s2.ax1x.com/2019/11/03/KOqCj0.png" alt="KOqCj0.png"></p>
 
     </div>
@@ -460,7 +468,7 @@
 
       <!--noindex-->
       <div class="post-toc-wrap sidebar-panel">
-          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#Docker的安装"><span class="nav-number">1.</span> <span class="nav-text">Docker的安装</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#更新apt包的索引"><span class="nav-number">1.1.</span> <span class="nav-text">更新apt包的索引</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#安装-apt-依赖包，用于通过HTTPS来获取仓库"><span class="nav-number">1.2.</span> <span class="nav-text">安装 apt 依赖包，用于通过HTTPS来获取仓库:</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#添加-Docker-的官方-GPG-密钥"><span class="nav-number">1.3.</span> <span class="nav-text">添加 Docker 的官方 GPG 密钥</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#设置稳定版仓库"><span class="nav-number">1.4.</span> <span class="nav-text">设置稳定版仓库</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#再次更新一下apt包的索"><span class="nav-number">1.5.</span> <span class="nav-text">再次更新一下apt包的索</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#安装最新版本的Docker-CE"><span class="nav-number">1.6.</span> <span class="nav-text">安装最新版本的Docker CE</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#验证Docker"><span class="nav-number">1.7.</span> <span class="nav-text">验证Docker</span></a></li></ol></li></ol></div>
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#docker%E7%9A%84%E5%AE%89%E8%A3%85"><span class="nav-number">1.</span> <span class="nav-text">Docker的安装</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%9B%B4%E6%96%B0apt%E5%8C%85%E7%9A%84%E7%B4%A2%E5%BC%95"><span class="nav-number">1.1.</span> <span class="nav-text">更新apt包的索引</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%AE%89%E8%A3%85-apt-%E4%BE%9D%E8%B5%96%E5%8C%85%EF%BC%8C%E7%94%A8%E4%BA%8E%E9%80%9A%E8%BF%87https%E6%9D%A5%E8%8E%B7%E5%8F%96%E4%BB%93%E5%BA%93%3A"><span class="nav-number">1.2.</span> <span class="nav-text">安装 apt 依赖包，用于通过HTTPS来获取仓库:</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%B7%BB%E5%8A%A0-docker-%E7%9A%84%E5%AE%98%E6%96%B9-gpg-%E5%AF%86%E9%92%A5"><span class="nav-number">1.3.</span> <span class="nav-text">添加 Docker 的官方 GPG 密钥</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%AE%BE%E7%BD%AE%E7%A8%B3%E5%AE%9A%E7%89%88%E4%BB%93%E5%BA%93"><span class="nav-number">1.4.</span> <span class="nav-text">设置稳定版仓库</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%86%8D%E6%AC%A1%E6%9B%B4%E6%96%B0%E4%B8%80%E4%B8%8Bapt%E5%8C%85%E7%9A%84%E7%B4%A2"><span class="nav-number">1.5.</span> <span class="nav-text">再次更新一下apt包的索</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%AE%89%E8%A3%85%E6%9C%80%E6%96%B0%E7%89%88%E6%9C%AC%E7%9A%84docker-ce"><span class="nav-number">1.6.</span> <span class="nav-text">安装最新版本的Docker CE</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E9%AA%8C%E8%AF%81docker"><span class="nav-number">1.7.</span> <span class="nav-text">验证Docker</span></a></li></ol></li></ol></div>
         
       </div>
       <!--/noindex-->
@@ -478,7 +486,7 @@
         
           <a href="/archives/">
         
-          <span class="site-state-item-count">26</span>
+          <span class="site-state-item-count">27</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
@@ -491,7 +499,7 @@
             <a href="/categories/">
           
         
-        <span class="site-state-item-count">4</span>
+        <span class="site-state-item-count">5</span>
         <span class="site-state-item-name">分类</span>
         </a>
       </div>
@@ -504,7 +512,7 @@
             <a href="/tags/">
           
         
-        <span class="site-state-item-count">5</span>
+        <span class="site-state-item-count">6</span>
         <span class="site-state-item-name">标签</span>
         </a>
       </div>
@@ -813,7 +821,7 @@
 
 
 <script>
-NexT.utils.getScript('//unpkg.com/valine/dist/Valine.min.js', () => {
+NexT.utils.getScript('https://cdn.jsdelivr.net/npm/valine@1.4.14/dist/Valine.min.js', () => {
   var GUEST = ['nick', 'mail', 'link'];
   var guest = 'nick,mail,link';
   guest = guest.split(',').filter(item => {

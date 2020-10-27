@@ -57,18 +57,18 @@
   };
 </script>
 
-  <meta name="description" content="参数的更新神经网络学习的目的是找到使损失函数的值尽可能小的参数，这是寻找最优参数的问题，解决这个问题的过程称为最优化。">
+  <meta name="description" content="参数的更新 神经网络学习的目的是找到使损失函数的值尽可能小的参数，这是寻找最优参数的问题，解决这个问题的过程称为最优化。">
 <meta name="keywords" content="DL">
 <meta property="og:type" content="article">
 <meta property="og:title" content="0x05 与学习相关的技巧">
 <meta property="og:url" content="http://yoursite.com/2019/11/03/与学习相关的技巧/index.html">
 <meta property="og:site_name" content="Ap0l1o">
-<meta property="og:description" content="参数的更新神经网络学习的目的是找到使损失函数的值尽可能小的参数，这是寻找最优参数的问题，解决这个问题的过程称为最优化。">
+<meta property="og:description" content="参数的更新 神经网络学习的目的是找到使损失函数的值尽可能小的参数，这是寻找最优参数的问题，解决这个问题的过程称为最优化。">
 <meta property="og:locale" content="zh-CN">
 <meta property="og:updated_time" content="2019-11-03T09:13:09.008Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="0x05 与学习相关的技巧">
-<meta name="twitter:description" content="参数的更新神经网络学习的目的是找到使损失函数的值尽可能小的参数，这是寻找最优参数的问题，解决这个问题的过程称为最优化。">
+<meta name="twitter:description" content="参数的更新 神经网络学习的目的是找到使损失函数的值尽可能小的参数，这是寻找最优参数的问题，解决这个问题的过程称为最优化。">
   <link rel="canonical" href="http://yoursite.com/2019/11/03/与学习相关的技巧/">
 
 
@@ -329,51 +329,80 @@
     <div class="post-body" itemprop="articleBody">
 
       
-        <h4 id="参数的更新"><a href="#参数的更新" class="headerlink" title="参数的更新"></a>参数的更新</h4><p>神经网络学习的目的是找到使损失函数的值尽可能小的参数，这是寻找最优参数的问题，解决这个问题的过程称为最优化。<a id="more"></a></p>
-<h4 id="随机梯度下降（SGD）"><a href="#随机梯度下降（SGD）" class="headerlink" title="随机梯度下降（SGD）"></a>随机梯度下降（SGD）</h4><p>使用参数的梯度，沿梯度方向更新参数，并重复这个步骤多次，从而逐渐靠近最优参数，这个过程称为<strong>随机梯度下降法（<code>SGD</code>）</strong></p>
+        <h4 id="%E5%8F%82%E6%95%B0%E7%9A%84%E6%9B%B4%E6%96%B0">参数的更新</h4>
+<p>神经网络学习的目的是找到使损失函数的值尽可能小的参数，这是寻找最优参数的问题，解决这个问题的过程称为最优化。<a id="more"></a></p>
+<h4 id="%E9%9A%8F%E6%9C%BA%E6%A2%AF%E5%BA%A6%E4%B8%8B%E9%99%8D%EF%BC%88sgd%EF%BC%89">随机梯度下降（SGD）</h4>
+<p>使用参数的梯度，沿梯度方向更新参数，并重复这个步骤多次，从而逐渐靠近最优参数，这个过程称为<strong>随机梯度下降法（<code>SGD</code>）</strong></p>
 <p>代码示例：</p>
 <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">SGD</span>:</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">__init__</span><span class="params">(self, lr = <span class="number">0.01</span>)</span>:</span></span><br><span class="line">        self.lr = lr <span class="comment"># 学习率</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">update</span><span class="params">(slef, params, grads)</span>:</span></span><br><span class="line">        <span class="keyword">for</span> key <span class="keyword">in</span> params.keys():</span><br><span class="line">            params[key] -= self.lr * grads[key] <span class="comment"># 梯度下降</span></span><br></pre></td></tr></table></figure>
-
-<h4 id="SGD-的缺点"><a href="#SGD-的缺点" class="headerlink" title="SGD 的缺点"></a>SGD 的缺点</h4><p>梯度指向的是函数值降低最快的方向而不是最小值的方向。</p>
-<h4 id="Momentum-方法"><a href="#Momentum-方法" class="headerlink" title="Momentum 方法"></a>Momentum 方法</h4><p>$$<br>\vec{v} = \alpha\vec{v} - \eta\frac{\partial\vec{L}}{\partial\vec{W}} \\<br>\vec{W} = \vec{W} + \vec{v}<br>$$</p>
+<h4 id="sgd-%E7%9A%84%E7%BC%BA%E7%82%B9">SGD 的缺点</h4>
+<p>梯度指向的是函数值降低最快的方向而不是最小值的方向。</p>
+<h4 id="momentum-%E6%96%B9%E6%B3%95">Momentum 方法</h4>
+<p>$$<br>
+\vec{v} = \alpha\vec{v} - \eta\frac{\partial\vec{L}}{\partial\vec{W}} \\<br>
+\vec{W} = \vec{W} + \vec{v}<br>
+$$</p>
 <p>其中 $\vec{v}$ 初始化为与 $\vec{W}$ 结构相同的全0矩阵。$\frac{\partial\vec{L}}{\partial\vec{W}}$ 表示损失函数关于权重的梯度， $\eta$ 表示学习率。</p>
 <p>含义是更新参数不仅要考虑当前的梯度值，还要考虑上一次的参数更新。</p>
 <p>代码示例：</p>
 <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Momentum</span>:</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">__init</span><span class="params">(self, lr = <span class="number">0.01</span>, momentum = <span class="number">0.9</span>)</span>:</span></span><br><span class="line">        self.lr = lr</span><br><span class="line">        self.momentum = momentum</span><br><span class="line">        self.v = <span class="literal">None</span></span><br><span class="line">    </span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">update</span><span class="params">(self, params, grads)</span>:</span></span><br><span class="line">        <span class="comment"># 第一次调用 update 时 初始化 v</span></span><br><span class="line">        <span class="keyword">if</span> self.v <span class="keyword">is</span> <span class="literal">None</span>:</span><br><span class="line">            self.v = &#123;&#125;</span><br><span class="line">            <span class="keyword">for</span> key,val <span class="keyword">in</span> params.items():</span><br><span class="line">                self.v[key] = np.zeros_like(val)</span><br><span class="line">        <span class="comment"># 利用Momentum方法梯度下降</span></span><br><span class="line">        <span class="keyword">for</span> key <span class="keyword">in</span> params.keys():</span><br><span class="line">            self.v[key] = self.momentum * self.v[key] - self.lr*grads[key]</span><br><span class="line">            params[key] += self.v[key]</span><br></pre></td></tr></table></figure>
-
-<h4 id="AdaGrad-方法"><a href="#AdaGrad-方法" class="headerlink" title="AdaGrad 方法"></a>AdaGrad 方法</h4><p>学习率衰减的方法，随着学习的进行，使学习率逐渐减小。<br>$$<br>\vec{h} = \vec{h} + \frac{\partial\vec{L}}{\partial\vec{W}} \bigodot \frac{\partial\vec{L}}{\partial\vec{W}} \\<br>\vec{W} = \vec{W} - \eta\frac{1}{\sqrt[2]{\vec{h}}}\frac{\partial\vec{L}}{\partial\vec{W}}<br>$$<br>$\vec{W}$ 表示要更新的权重参数，$\frac{\partial\vec{L}}{\partial\vec{W}}$ 表示损失函数关于权重参数的梯度， $\eta$ 表示学习率，$\vec{h}$ 保存了以前的所有梯度值的平方和。$ \bigodot$  表示对应矩阵元素的乘法。在更新参数时，通过乘$\frac{1}{\sqrt[2]{\vec{h}}}$ 调整学习的尺度，这将使参数的元素中变动较大的元素的学习率将变小，也就是说可以按参数的元素进行学习率衰减。使变动大的参数的学习率逐渐减小。</p>
+<h4 id="adagrad-%E6%96%B9%E6%B3%95">AdaGrad 方法</h4>
+<p>学习率衰减的方法，随着学习的进行，使学习率逐渐减小。<br>
+$$<br>
+\vec{h} = \vec{h} + \frac{\partial\vec{L}}{\partial\vec{W}} \bigodot \frac{\partial\vec{L}}{\partial\vec{W}} \\<br>
+\vec{W} = \vec{W} - \eta\frac{1}{\sqrt[2]{\vec{h}}}\frac{\partial\vec{L}}{\partial\vec{W}}<br>
+$$<br>
+$\vec{W}$ 表示要更新的权重参数，$\frac{\partial\vec{L}}{\partial\vec{W}}$ 表示损失函数关于权重参数的梯度， $\eta$ 表示学习率，$\vec{h}$ 保存了以前的所有梯度值的平方和。$ \bigodot$  表示对应矩阵元素的乘法。在更新参数时，通过乘$\frac{1}{\sqrt[2]{\vec{h}}}$ 调整学习的尺度，这将使参数的元素中变动较大的元素的学习率将变小，也就是说可以按参数的元素进行学习率衰减。使变动大的参数的学习率逐渐减小。</p>
 <p>代码示例：</p>
 <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">AdaGrad</span>:</span></span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">__init__</span><span class="params">(self, lr=<span class="number">0.01</span>)</span>:</span></span><br><span class="line">        self.lr = lr</span><br><span class="line">        self.h = <span class="literal">None</span></span><br><span class="line">        </span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">update</span><span class="params">(self, params, grads)</span>:</span></span><br><span class="line">        <span class="comment"># 第一次则初始化 h</span></span><br><span class="line">        <span class="keyword">if</span> self.h <span class="keyword">is</span> <span class="literal">None</span>:</span><br><span class="line">            self.h = &#123;&#125;</span><br><span class="line">            <span class="keyword">for</span> key, val <span class="keyword">in</span> params.items():</span><br><span class="line">                self.h[key] = np.zeros_like(val)</span><br><span class="line">            </span><br><span class="line">        <span class="keyword">for</span> key <span class="keyword">in</span> params.keys():</span><br><span class="line">            <span class="comment"># 用 h 保存所有梯度值的平方和。</span></span><br><span class="line">            self.h[key] += grads[key] * grads[key]</span><br><span class="line">            <span class="comment"># 按学习率衰减的方法梯度下降</span></span><br><span class="line">            params[key] -= self.lr * grads[key] / (np.sqrt(self.h[key]) + <span class="number">1e-7</span>)</span><br></pre></td></tr></table></figure>
-
-<h4 id="Adam方法"><a href="#Adam方法" class="headerlink" title="Adam方法"></a>Adam方法</h4><p>融合Momentum方法和AdaGrad方法。</p>
-<h4 id="权重的初始值"><a href="#权重的初始值" class="headerlink" title="权重的初始值"></a>权重的初始值</h4><h5 id="隐藏层激活值的分布"><a href="#隐藏层激活值的分布" class="headerlink" title="隐藏层激活值的分布"></a>隐藏层激活值的分布</h5><p>激活值，即激活函数的输出值。</p>
+<h4 id="adam%E6%96%B9%E6%B3%95">Adam方法</h4>
+<p>融合Momentum方法和AdaGrad方法。</p>
+<h4 id="%E6%9D%83%E9%87%8D%E7%9A%84%E5%88%9D%E5%A7%8B%E5%80%BC">权重的初始值</h4>
+<h5 id="%E9%9A%90%E8%97%8F%E5%B1%82%E6%BF%80%E6%B4%BB%E5%80%BC%E7%9A%84%E5%88%86%E5%B8%83">隐藏层激活值的分布</h5>
+<p>激活值，即激活函数的输出值。</p>
 <p>当激活函数为<code>sigmoid</code>时，各层的激活值呈偏向0和1的分布，随着输出不断靠近0或1，它的导数的值逐渐接近0 。因此，偏向0或1的数据分布会造成反向传播中梯度的值的不断变小，最后消失，这个问题称为<strong>梯度消失</strong>。</p>
 <p>当各层的激活值有所偏向时，也会有很大的问题，表现力受限。比如，如果100个神经元都输出几乎相同的值，那么也可以用1个神经元来表达相同的事情。</p>
-<h5 id="Xavier初始值"><a href="#Xavier初始值" class="headerlink" title="Xavier初始值"></a>Xavier初始值</h5><p>Xavier的论文中，为了使各层的激活值呈现出具有相同广度的分布，推导了合适的权重尺度。结论是，如果前一层的节点数为 n ，则初始值用$\frac{1}{\sqrt{n}}$ 的分布。</p>
+<h5 id="xavier%E5%88%9D%E5%A7%8B%E5%80%BC">Xavier初始值</h5>
+<p>Xavier的论文中，为了使各层的激活值呈现出具有相同广度的分布，推导了合适的权重尺度。结论是，如果前一层的节点数为 n ，则初始值用$\frac{1}{\sqrt{n}}$ 的分布。</p>
 <p>当激活函数为<code>sigmoid</code>或<code>tanh</code>等S型曲线函数时，初始值一般使用此方法。</p>
-<h5 id="He初始值"><a href="#He初始值" class="headerlink" title="He初始值"></a>He初始值</h5><p>当前一层的节点数为 n 时，He初始值使用标准差为$\sqrt{\frac{2}{n}}$ 的高斯分布。  </p>
-<p>当激活函数使用<code>ReLU</code>时，权重初始值一般使用<code>He</code>初始值。 </p>
-<h4 id="Batch-Normalization-批标准化"><a href="#Batch-Normalization-批标准化" class="headerlink" title="Batch Normalization(批标准化)"></a>Batch Normalization(批标准化)</h4><p>批标准化，是为了使各层拥有适当的广度，<strong>“强制性”</strong>地调整激活值的分布。</p>
+<h5 id="he%E5%88%9D%E5%A7%8B%E5%80%BC">He初始值</h5>
+<p>当前一层的节点数为 n 时，He初始值使用标准差为$\sqrt{\frac{2}{n}}$ 的高斯分布。</p>
+<p>当激活函数使用<code>ReLU</code>时，权重初始值一般使用<code>He</code>初始值。</p>
+<h4 id="batch-normalization(%E6%89%B9%E6%A0%87%E5%87%86%E5%8C%96)">Batch Normalization(批标准化)</h4>
+<p>批标准化，是为了使各层拥有适当的广度，**“强制性”**地调整激活值的分布。</p>
 <p>优点如下：</p>
 <ul>
 <li>可以使学习快速进行（可以增大学习率）</li>
 <li>不那么依赖初始值（对于初始值不用那么神经质）</li>
 <li>抑制过拟合</li>
 </ul>
-<p><code>Batch Normaliztion</code> 的思路是调整各层的激活值分布使其拥有适当的广度，为此，要向神经网络中插入对数据进行正规化的层，即Batch Normalization层，以进行学习时的mini-batch为单位，按mini-batch进行正规化。具体而言就是是数据分布的均值为0,方差为1的正规化，如下所示：<br>$$<br>均值\ \mu_B = \frac{1}{m}\displaystyle\sum_{i=1}^mx_i \\<br>方差\ \sigma^2_B = \frac{1}{m}\displaystyle\sum_{i=1}^m(x_i-\mu_B)^2 \\<br>标准化\ x_i = \frac{x_i-\mu_B}{\sqrt{\sigma^2_B+\xi}}<br>$$</p>
-<p>接着，Batch Normalization层会对正规化后的数据进行缩放和平移的变换，数学式如下所示：<br>$$<br>y_i = \gamma x_i + \beta<br>$$<br>$\gamma$ 和 $\beta$ 是参数，一开始分别为取值为1和0，然后通过学习调整到合适的值。</p>
-<h4 id="正则化"><a href="#正则化" class="headerlink" title="正则化"></a>正则化</h4><h5 id="过拟合"><a href="#过拟合" class="headerlink" title="过拟合"></a>过拟合</h5><p>过拟合指的是只能你和训练数据，但不能很好地你和不包含在训练数据中的其他数据的状态。</p>
+<p><code>Batch Normaliztion</code> 的思路是调整各层的激活值分布使其拥有适当的广度，为此，要向神经网络中插入对数据进行正规化的层，即Batch Normalization层，以进行学习时的mini-batch为单位，按mini-batch进行正规化。具体而言就是是数据分布的均值为0,方差为1的正规化，如下所示：<br>
+$$<br>
+均值\ \mu_B = \frac{1}{m}\displaystyle\sum_{i=1}^mx_i \\<br>
+方差\ \sigma^2_B = \frac{1}{m}\displaystyle\sum_{i=1}<sup>m(x_i-\mu_B)</sup>2 \\<br>
+标准化\ x_i = \frac{x_i-\mu_B}{\sqrt{\sigma^2_B+\xi}}<br>
+$$</p>
+<p>接着，Batch Normalization层会对正规化后的数据进行缩放和平移的变换，数学式如下所示：<br>
+$$<br>
+y_i = \gamma x_i + \beta<br>
+$$<br>
+$\gamma$ 和 $\beta$ 是参数，一开始分别为取值为1和0，然后通过学习调整到合适的值。</p>
+<h4 id="%E6%AD%A3%E5%88%99%E5%8C%96">正则化</h4>
+<h5 id="%E8%BF%87%E6%8B%9F%E5%90%88">过拟合</h5>
+<p>过拟合指的是只能你和训练数据，但不能很好地你和不包含在训练数据中的其他数据的状态。</p>
 <p>发生过拟合的原因主要有以下连个：</p>
 <ul>
 <li>模型拥有大量参数、表现力强</li>
 <li>训练数据过少</li>
 </ul>
-<h5 id="权重衰减"><a href="#权重衰减" class="headerlink" title="权重衰减"></a>权重衰减</h5><p>通过在学习的过程中对<strong>大的权重</strong>进行<strong>惩罚</strong>，来抑制过拟合。具体惩罚方法是损失函数加上权重的平方范数（L2范数）来抑制权重变大，L2范数相当于各个元素的平方和，可表示为$\sqrt{w_1^2 + w_1^2 + \cdots + w_n^2 }$ 。 （L1范数是各个元素的绝对值之和）。需要注意的是，由于这个惩罚只在<strong>训练时添加</strong>，所以==网络的训练损失会比测试损失大很多==。</p>
-<h4 id="Dropout"><a href="#Dropout" class="headerlink" title="Dropout"></a>Dropout</h4><p>Dropout是一种在学习的过程中随即删除神经元的方法。训练时，随机选出隐藏层的神经元，然后将其删除。被删除的神经元不再进行信号的传递。训练时，没传递一次数据，就会随机选择要删除的神经元。测试时虽然会传递所有的神经元信号，但是对于各个神经元的输出，要乘上训练时的删除比例后再输出。</p>
+<h5 id="%E6%9D%83%E9%87%8D%E8%A1%B0%E5%87%8F">权重衰减</h5>
+<p>通过在学习的过程中对<strong>大的权重</strong>进行<strong>惩罚</strong>，来抑制过拟合。具体惩罚方法是损失函数加上权重的平方范数（L2范数）来抑制权重变大，L2范数相当于各个元素的平方和，可表示为$\sqrt{w_1^2 + w_1^2 + \cdots + w_n^2 }$ 。 （L1范数是各个元素的绝对值之和）。需要注意的是，由于这个惩罚只在<strong>训练时添加</strong>，所以<mark>网络的训练损失会比测试损失大很多</mark>。</p>
+<h4 id="dropout">Dropout</h4>
+<p>Dropout是一种在学习的过程中随即删除神经元的方法。训练时，随机选出隐藏层的神经元，然后将其删除。被删除的神经元不再进行信号的传递。训练时，没传递一次数据，就会随机选择要删除的神经元。测试时虽然会传递所有的神经元信号，但是对于各个神经元的输出，要乘上训练时的删除比例后再输出。</p>
 <p>代码示例：</p>
 <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Dropout</span>:</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">__init</span><span class="params">(self, dropout_ratio = <span class="number">0.5</span>)</span>:</span></span><br><span class="line">        self.dropout_ration = dropout_ratio</span><br><span class="line">        self.mask = <span class="literal">None</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">forward</span><span class="params">(self, x, train_flg = True)</span>:</span></span><br><span class="line">        <span class="comment"># 训练时，随机选择要删除的神经元删除</span></span><br><span class="line">        <span class="keyword">if</span> train_flg:</span><br><span class="line">            <span class="comment"># 随机生成和 x 形状相同的矩阵，并将值大于 dropout_ratio 的值设为True</span></span><br><span class="line">            self.mask = np.random.rand(*x.shape) &gt; self.dropout_ratio</span><br><span class="line">            <span class="keyword">return</span> x * self.mask</span><br><span class="line">        <span class="comment"># 测试时，对于输出，要乘上训练时的删除比例后再输出</span></span><br><span class="line">       	<span class="keyword">else</span>:</span><br><span class="line">            <span class="keyword">return</span> x * (<span class="number">1.0</span> - self.dropout_ratio)</span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">backward</span><span class="params">(self, dout)</span>:</span></span><br><span class="line">        <span class="keyword">return</span> dout * self.mask</span><br><span class="line">   	<span class="comment"># 反向传播时，对于传递了信号的神经元，按原样向下游传递信号，对于没传递信号的神经元则在此中断。</span></span><br></pre></td></tr></table></figure>
-
-<h4 id="补充"><a href="#补充" class="headerlink" title="补充"></a>补充</h4><ul>
+<h4 id="%E8%A1%A5%E5%85%85">补充</h4>
+<ul>
 <li>训练数据用于学习</li>
 <li>验证数据用于评估超参数</li>
 <li>测试数据用于评估泛化能力</li>
@@ -484,7 +513,7 @@
 
       <!--noindex-->
       <div class="post-toc-wrap sidebar-panel">
-          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-4"><a class="nav-link" href="#参数的更新"><span class="nav-number">1.</span> <span class="nav-text">参数的更新</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#随机梯度下降（SGD）"><span class="nav-number">2.</span> <span class="nav-text">随机梯度下降（SGD）</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#SGD-的缺点"><span class="nav-number">3.</span> <span class="nav-text">SGD 的缺点</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Momentum-方法"><span class="nav-number">4.</span> <span class="nav-text">Momentum 方法</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#AdaGrad-方法"><span class="nav-number">5.</span> <span class="nav-text">AdaGrad 方法</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Adam方法"><span class="nav-number">6.</span> <span class="nav-text">Adam方法</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#权重的初始值"><span class="nav-number">7.</span> <span class="nav-text">权重的初始值</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#隐藏层激活值的分布"><span class="nav-number">7.1.</span> <span class="nav-text">隐藏层激活值的分布</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#Xavier初始值"><span class="nav-number">7.2.</span> <span class="nav-text">Xavier初始值</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#He初始值"><span class="nav-number">7.3.</span> <span class="nav-text">He初始值</span></a></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Batch-Normalization-批标准化"><span class="nav-number">8.</span> <span class="nav-text">Batch Normalization(批标准化)</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#正则化"><span class="nav-number">9.</span> <span class="nav-text">正则化</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#过拟合"><span class="nav-number">9.1.</span> <span class="nav-text">过拟合</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#权重衰减"><span class="nav-number">9.2.</span> <span class="nav-text">权重衰减</span></a></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Dropout"><span class="nav-number">10.</span> <span class="nav-text">Dropout</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#补充"><span class="nav-number">11.</span> <span class="nav-text">补充</span></a></li></ol></div>
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%8F%82%E6%95%B0%E7%9A%84%E6%9B%B4%E6%96%B0"><span class="nav-number">1.</span> <span class="nav-text">参数的更新</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E9%9A%8F%E6%9C%BA%E6%A2%AF%E5%BA%A6%E4%B8%8B%E9%99%8D%EF%BC%88sgd%EF%BC%89"><span class="nav-number">2.</span> <span class="nav-text">随机梯度下降（SGD）</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#sgd-%E7%9A%84%E7%BC%BA%E7%82%B9"><span class="nav-number">3.</span> <span class="nav-text">SGD 的缺点</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#momentum-%E6%96%B9%E6%B3%95"><span class="nav-number">4.</span> <span class="nav-text">Momentum 方法</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#adagrad-%E6%96%B9%E6%B3%95"><span class="nav-number">5.</span> <span class="nav-text">AdaGrad 方法</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#adam%E6%96%B9%E6%B3%95"><span class="nav-number">6.</span> <span class="nav-text">Adam方法</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%9D%83%E9%87%8D%E7%9A%84%E5%88%9D%E5%A7%8B%E5%80%BC"><span class="nav-number">7.</span> <span class="nav-text">权重的初始值</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#%E9%9A%90%E8%97%8F%E5%B1%82%E6%BF%80%E6%B4%BB%E5%80%BC%E7%9A%84%E5%88%86%E5%B8%83"><span class="nav-number">7.1.</span> <span class="nav-text">隐藏层激活值的分布</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#xavier%E5%88%9D%E5%A7%8B%E5%80%BC"><span class="nav-number">7.2.</span> <span class="nav-text">Xavier初始值</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#he%E5%88%9D%E5%A7%8B%E5%80%BC"><span class="nav-number">7.3.</span> <span class="nav-text">He初始值</span></a></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#batch-normalization(%E6%89%B9%E6%A0%87%E5%87%86%E5%8C%96)"><span class="nav-number">8.</span> <span class="nav-text">Batch Normalization(批标准化)</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%AD%A3%E5%88%99%E5%8C%96"><span class="nav-number">9.</span> <span class="nav-text">正则化</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#%E8%BF%87%E6%8B%9F%E5%90%88"><span class="nav-number">9.1.</span> <span class="nav-text">过拟合</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#%E6%9D%83%E9%87%8D%E8%A1%B0%E5%87%8F"><span class="nav-number">9.2.</span> <span class="nav-text">权重衰减</span></a></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#dropout"><span class="nav-number">10.</span> <span class="nav-text">Dropout</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E8%A1%A5%E5%85%85"><span class="nav-number">11.</span> <span class="nav-text">补充</span></a></li></ol></div>
         
       </div>
       <!--/noindex-->
@@ -502,7 +531,7 @@
         
           <a href="/archives/">
         
-          <span class="site-state-item-count">26</span>
+          <span class="site-state-item-count">27</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
@@ -515,7 +544,7 @@
             <a href="/categories/">
           
         
-        <span class="site-state-item-count">4</span>
+        <span class="site-state-item-count">5</span>
         <span class="site-state-item-name">分类</span>
         </a>
       </div>
@@ -528,7 +557,7 @@
             <a href="/tags/">
           
         
-        <span class="site-state-item-count">5</span>
+        <span class="site-state-item-count">6</span>
         <span class="site-state-item-name">标签</span>
         </a>
       </div>
@@ -837,7 +866,7 @@
 
 
 <script>
-NexT.utils.getScript('//unpkg.com/valine/dist/Valine.min.js', () => {
+NexT.utils.getScript('https://cdn.jsdelivr.net/npm/valine@1.4.14/dist/Valine.min.js', () => {
   var GUEST = ['nick', 'mail', 'link'];
   var guest = 'nick,mail,link';
   guest = guest.split(',').filter(item => {

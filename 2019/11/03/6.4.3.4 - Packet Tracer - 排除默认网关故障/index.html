@@ -57,20 +57,20 @@
   };
 </script>
 
-  <meta name="description" content="目标: 第 1 部分：检验网络文档并查找问题原因    第 2 部分：实施、检验并记录解决方案">
+  <meta name="description" content="目标:   第 1 部分：检验网络文档并查找问题原因   第 2 部分：实施、检验并记录解决方案">
 <meta name="keywords" content="网络">
 <meta property="og:type" content="article">
 <meta property="og:title" content="Packet Tracer - 排除默认网关故障">
 <meta property="og:url" content="http://yoursite.com/2019/11/03/6.4.3.4 - Packet Tracer - 排除默认网关故障/index.html">
 <meta property="og:site_name" content="Ap0l1o">
-<meta property="og:description" content="目标: 第 1 部分：检验网络文档并查找问题原因    第 2 部分：实施、检验并记录解决方案">
+<meta property="og:description" content="目标:   第 1 部分：检验网络文档并查找问题原因   第 2 部分：实施、检验并记录解决方案">
 <meta property="og:locale" content="zh-CN">
 <meta property="og:image" content="https://s1.ax1x.com/2018/11/16/ixtnit.png">
 <meta property="og:image" content="https://s1.ax1x.com/2018/11/16/ixtlQS.png">
 <meta property="og:updated_time" content="2019-11-03T09:10:59.660Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Packet Tracer - 排除默认网关故障">
-<meta name="twitter:description" content="目标: 第 1 部分：检验网络文档并查找问题原因    第 2 部分：实施、检验并记录解决方案">
+<meta name="twitter:description" content="目标:   第 1 部分：检验网络文档并查找问题原因   第 2 部分：实施、检验并记录解决方案">
 <meta name="twitter:image" content="https://s1.ax1x.com/2018/11/16/ixtnit.png">
   <link rel="canonical" href="http://yoursite.com/2019/11/03/6.4.3.4 - Packet Tracer - 排除默认网关故障/">
 
@@ -332,35 +332,50 @@
     <div class="post-body" itemprop="articleBody">
 
       
-        <h4 id="目标"><a href="#目标" class="headerlink" title="目标:"></a>目标:</h4><ol>
-<li><p>第 1 部分：检验网络文档并查找问题原因  </p>
+        <h4 id="%E7%9B%AE%E6%A0%87%3A">目标:</h4>
+<ol>
+<li>
+<p>第 1 部分：检验网络文档并查找问题原因</p>
 </li>
-<li><p>第 2 部分：实施、检验并记录解决方案  </p>
+<li>
+<p>第 2 部分：实施、检验并记录解决方案</p>
 <a id="more"></a>
-
 </li>
 </ol>
 <blockquote>
-<p>拓扑图：<br><img src="https://s1.ax1x.com/2018/11/16/ixtnit.png" alt="image"><br>地址分配表：<br><img src="https://s1.ax1x.com/2018/11/16/ixtlQS.png" alt="image"></p>
+<p>拓扑图：<br>
+<img src="https://s1.ax1x.com/2018/11/16/ixtnit.png" alt="image"><br>
+地址分配表：<br>
+<img src="https://s1.ax1x.com/2018/11/16/ixtlQS.png" alt="image"></p>
 </blockquote>
-<h5 id="检查交换机S1："><a href="#检查交换机S1：" class="headerlink" title="检查交换机S1："></a>检查交换机S1：</h5><blockquote>
-<p>查看交换机的端口配置信息：<br><code>show running-config</code><br>发现未配置默认网关，根据拓扑图和PC1、PC2的默认网关配置其默认网关：<br><code>ip default-gateway 192.168.10.1</code>  </p>
+<h5 id="%E6%A3%80%E6%9F%A5%E4%BA%A4%E6%8D%A2%E6%9C%BAs1%EF%BC%9A">检查交换机S1：</h5>
+<blockquote>
+<p>查看交换机的端口配置信息：<br>
+<code>show running-config</code><br>
+发现未配置默认网关，根据拓扑图和PC1、PC2的默认网关配置其默认网关：<br>
+<code>ip default-gateway 192.168.10.1</code></p>
 </blockquote>
-<h5 id="检查交换机S2："><a href="#检查交换机S2：" class="headerlink" title="检查交换机S2："></a>检查交换机S2：</h5><blockquote>
-<p>查看交换机的端口配置信息：<br><code>show running-config</code><br>发现未配置其VLAN 1端口的IP地址，配置其IP地址：  </p>
+<h5 id="%E6%A3%80%E6%9F%A5%E4%BA%A4%E6%8D%A2%E6%9C%BAs2%EF%BC%9A">检查交换机S2：</h5>
+<blockquote>
+<p>查看交换机的端口配置信息：<br>
+<code>show running-config</code><br>
+发现未配置其VLAN 1端口的IP地址，配置其IP地址：</p>
 </blockquote>
 <figure class="highlight routeros"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">1.创建VLAN 1：</span><br><span class="line">vlan 1  </span><br><span class="line">2.进入VLAN接口：</span><br><span class="line">interface<span class="built_in"> vlan </span>1  </span><br><span class="line">3.配置IP  </span><br><span class="line">ip<span class="built_in"> address </span>192.168.11.2 255.255.255.0</span><br></pre></td></tr></table></figure>
-
-<h5 id="检查PC1："><a href="#检查PC1：" class="headerlink" title="检查PC1："></a>检查PC1：</h5><blockquote>
-<p>检查发现其IP地址不正确，修改即可。  </p>
+<h5 id="%E6%A3%80%E6%9F%A5pc1%EF%BC%9A">检查PC1：</h5>
+<blockquote>
+<p>检查发现其IP地址不正确，修改即可。</p>
 </blockquote>
-<h5 id="检查PC2："><a href="#检查PC2：" class="headerlink" title="检查PC2："></a>检查PC2：</h5><blockquote>
-<p>正常  </p>
+<h5 id="%E6%A3%80%E6%9F%A5pc2%EF%BC%9A">检查PC2：</h5>
+<blockquote>
+<p>正常</p>
 </blockquote>
-<h5 id="检查PC3："><a href="#检查PC3：" class="headerlink" title="检查PC3："></a>检查PC3：</h5><blockquote>
-<p>正常  </p>
+<h5 id="%E6%A3%80%E6%9F%A5pc3%EF%BC%9A">检查PC3：</h5>
+<blockquote>
+<p>正常</p>
 </blockquote>
-<h5 id="检查PC4："><a href="#检查PC4：" class="headerlink" title="检查PC4："></a>检查PC4：</h5><blockquote>
+<h5 id="%E6%A3%80%E6%9F%A5pc4%EF%BC%9A">检查PC4：</h5>
+<blockquote>
 <p>默认网关不正确，修改即可。</p>
 </blockquote>
 
@@ -469,7 +484,7 @@
 
       <!--noindex-->
       <div class="post-toc-wrap sidebar-panel">
-          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-4"><a class="nav-link" href="#目标"><span class="nav-number">1.</span> <span class="nav-text">目标:</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#检查交换机S1："><span class="nav-number">1.1.</span> <span class="nav-text">检查交换机S1：</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#检查交换机S2："><span class="nav-number">1.2.</span> <span class="nav-text">检查交换机S2：</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#检查PC1："><span class="nav-number">1.3.</span> <span class="nav-text">检查PC1：</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#检查PC2："><span class="nav-number">1.4.</span> <span class="nav-text">检查PC2：</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#检查PC3："><span class="nav-number">1.5.</span> <span class="nav-text">检查PC3：</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#检查PC4："><span class="nav-number">1.6.</span> <span class="nav-text">检查PC4：</span></a></li></ol></li></ol></div>
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E7%9B%AE%E6%A0%87%3A"><span class="nav-number">1.</span> <span class="nav-text">目标:</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#%E6%A3%80%E6%9F%A5%E4%BA%A4%E6%8D%A2%E6%9C%BAs1%EF%BC%9A"><span class="nav-number">1.1.</span> <span class="nav-text">检查交换机S1：</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#%E6%A3%80%E6%9F%A5%E4%BA%A4%E6%8D%A2%E6%9C%BAs2%EF%BC%9A"><span class="nav-number">1.2.</span> <span class="nav-text">检查交换机S2：</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#%E6%A3%80%E6%9F%A5pc1%EF%BC%9A"><span class="nav-number">1.3.</span> <span class="nav-text">检查PC1：</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#%E6%A3%80%E6%9F%A5pc2%EF%BC%9A"><span class="nav-number">1.4.</span> <span class="nav-text">检查PC2：</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#%E6%A3%80%E6%9F%A5pc3%EF%BC%9A"><span class="nav-number">1.5.</span> <span class="nav-text">检查PC3：</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#%E6%A3%80%E6%9F%A5pc4%EF%BC%9A"><span class="nav-number">1.6.</span> <span class="nav-text">检查PC4：</span></a></li></ol></li></ol></div>
         
       </div>
       <!--/noindex-->
@@ -487,7 +502,7 @@
         
           <a href="/archives/">
         
-          <span class="site-state-item-count">26</span>
+          <span class="site-state-item-count">27</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
@@ -500,7 +515,7 @@
             <a href="/categories/">
           
         
-        <span class="site-state-item-count">4</span>
+        <span class="site-state-item-count">5</span>
         <span class="site-state-item-name">分类</span>
         </a>
       </div>
@@ -513,7 +528,7 @@
             <a href="/tags/">
           
         
-        <span class="site-state-item-count">5</span>
+        <span class="site-state-item-count">6</span>
         <span class="site-state-item-name">标签</span>
         </a>
       </div>
@@ -822,7 +837,7 @@
 
 
 <script>
-NexT.utils.getScript('//unpkg.com/valine/dist/Valine.min.js', () => {
+NexT.utils.getScript('https://cdn.jsdelivr.net/npm/valine@1.4.14/dist/Valine.min.js', () => {
   var GUEST = ['nick', 'mail', 'link'];
   var guest = 'nick,mail,link';
   guest = guest.split(',').filter(item => {

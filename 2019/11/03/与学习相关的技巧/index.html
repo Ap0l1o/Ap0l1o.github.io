@@ -65,7 +65,7 @@
 <meta property="og:site_name" content="Ap0l1o">
 <meta property="og:description" content="参数的更新 神经网络学习的目的是找到使损失函数的值尽可能小的参数，这是寻找最优参数的问题，解决这个问题的过程称为最优化。">
 <meta property="og:locale" content="zh-CN">
-<meta property="og:updated_time" content="2019-11-03T09:13:09.008Z">
+<meta property="og:updated_time" content="2020-11-02T02:55:37.643Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="0x05 与学习相关的技巧">
 <meta name="twitter:description" content="参数的更新 神经网络学习的目的是找到使损失函数的值尽可能小的参数，这是寻找最优参数的问题，解决这个问题的过程称为最优化。">
@@ -275,11 +275,19 @@
                 
               
 
-              <time title="创建时间：2019-11-03 16:09:33 / 修改时间：17:13:09" itemprop="dateCreated datePublished" datetime="2019-11-03T16:09:33+08:00">2019-11-03</time>
+              <time title="创建时间：2019-11-03 16:09:33" itemprop="dateCreated datePublished" datetime="2019-11-03T16:09:33+08:00">2019-11-03</time>
             </span>
           
             
 
+            
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2020-11-02 10:55:37" itemprop="dateModified" datetime="2020-11-02T10:55:37+08:00">2020-11-02</time>
+              </span>
             
           
             <span class="post-meta-item">
@@ -369,17 +377,17 @@ $\vec{W}$ 表示要更新的权重参数，$\frac{\partial\vec{L}}{\partial\vec{
 <p>当前一层的节点数为 n 时，He初始值使用标准差为$\sqrt{\frac{2}{n}}$ 的高斯分布。</p>
 <p>当激活函数使用<code>ReLU</code>时，权重初始值一般使用<code>He</code>初始值。</p>
 <h4 id="batch-normalization(%E6%89%B9%E6%A0%87%E5%87%86%E5%8C%96)">Batch Normalization(批标准化)</h4>
-<p>批标准化，是为了使各层拥有适当的广度，**“强制性”**地调整激活值的分布。</p>
+<p>批标准化，是为了使各层拥有适当的广度，“<strong>强制性</strong>”地调整激活值的分布。</p>
 <p>优点如下：</p>
 <ul>
 <li>可以使学习快速进行（可以增大学习率）</li>
 <li>不那么依赖初始值（对于初始值不用那么神经质）</li>
 <li>抑制过拟合</li>
 </ul>
-<p><code>Batch Normaliztion</code> 的思路是调整各层的激活值分布使其拥有适当的广度，为此，要向神经网络中插入对数据进行正规化的层，即Batch Normalization层，以进行学习时的mini-batch为单位，按mini-batch进行正规化。具体而言就是是数据分布的均值为0,方差为1的正规化，如下所示：<br>
-$$<br>
-均值\ \mu_B = \frac{1}{m}\displaystyle\sum_{i=1}^mx_i \\<br>
-方差\ \sigma^2_B = \frac{1}{m}\displaystyle\sum_{i=1}<sup>m(x_i-\mu_B)</sup>2 \\<br>
+<p><code>Batch Normaliztion</code> 的思路是调整各层的激活值分布使其拥有适当的广度，为此，要向神经网络中插入对数据进行正规化的层，即Batch Normalization层，以进行学习时的mini-batch为单位，按mini-batch进行正规化。具体而言就是是数据分布的均值为0,方差为1的正规化，如下所示：</p>
+<p>$$<br>
+均值\ \mu_B = \frac{1}{m}\sum_{i=1}^m x_i \\<br>
+方差\ \sigma^2_B = \frac{1}{m}\sum_{i=1}^m (x_i-\mu_B)^2 \\<br>
 标准化\ x_i = \frac{x_i-\mu_B}{\sqrt{\sigma^2_B+\xi}}<br>
 $$</p>
 <p>接着，Batch Normalization层会对正规化后的数据进行缩放和平移的变换，数学式如下所示：<br>

@@ -4,6 +4,56 @@
   
   
   <entry>
+    <title>one</title>
+    <link href="/2021/09/21/one/"/>
+    <url>/2021/09/21/one/</url>
+    
+    <content type="html"><![CDATA[<p>bbbb</p>]]></content>
+    
+    
+    <categories>
+      
+      <category>category_one</category>
+      
+    </categories>
+    
+    
+    <tags>
+      
+      <tag>test1</tag>
+      
+    </tags>
+    
+  </entry>
+  
+  
+  
+  <entry>
+    <title>two</title>
+    <link href="/2021/09/21/two/"/>
+    <url>/2021/09/21/two/</url>
+    
+    <content type="html"><![CDATA[<p>aaaaa</p>]]></content>
+    
+    
+    <categories>
+      
+      <category>category_two</category>
+      
+    </categories>
+    
+    
+    <tags>
+      
+      <tag>tag_two</tag>
+      
+    </tags>
+    
+  </entry>
+  
+  
+  
+  <entry>
     <title>Hello World</title>
     <link href="/2021/09/21/hello-world/"/>
     <url>/2021/09/21/hello-world/</url>

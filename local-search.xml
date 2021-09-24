@@ -4,6 +4,33 @@
   
   
   <entry>
+    <title>动态内存分配</title>
+    <link href="/2021/09/24/%E5%8A%A8%E6%80%81%E5%86%85%E5%AD%98%E5%88%86%E9%85%8D/"/>
+    <url>/2021/09/24/%E5%8A%A8%E6%80%81%E5%86%85%E5%AD%98%E5%88%86%E9%85%8D/</url>
+    
+    <content type="html"><![CDATA[<h2 id="C-语言的动态内存分配"><a href="#C-语言的动态内存分配" class="headerlink" title="C 语言的动态内存分配"></a>C 语言的动态内存分配</h2><p>C语言使用<code>malloc</code>和<code>free</code>两个库函数完成动态内存的分配和释放，头文件为<code>stdlib.h</code>。其函数原型为：</p><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs c"><span class="hljs-function"><span class="hljs-keyword">void</span> * <span class="hljs-title">malloc</span><span class="hljs-params">(size_t_ size)</span></span>;<br><span class="hljs-function"><span class="hljs-keyword">void</span> <span class="hljs-title">free</span><span class="hljs-params">(<span class="hljs-keyword">void</span> *p)</span></span>;<br></code></pre></td></tr></table></figure><p>使用实例：</p><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><code class="hljs c"><span class="hljs-meta">#<span class="hljs-meta-keyword">include</span><span class="hljs-meta-string">&lt;stdio.h&gt;</span></span><br><span class="hljs-meta">#<span class="hljs-meta-keyword">include</span><span class="hljs-meta-string">&lt;stdlib.h&gt;</span></span><br><span class="hljs-meta">#<span class="hljs-meta-keyword">include</span><span class="hljs-meta-string">&lt;string.h&gt;</span></span><br><br><span class="hljs-function"><span class="hljs-keyword">int</span> <span class="hljs-title">main</span><span class="hljs-params">()</span></span><br><span class="hljs-function"></span>&#123;<br>    <span class="hljs-keyword">char</span> * name;<br>    name = (<span class="hljs-keyword">char</span> *)<span class="hljs-built_in">malloc</span>(<span class="hljs-keyword">sizeof</span>(<span class="hljs-keyword">char</span>) * <span class="hljs-number">20</span>);<br>    <span class="hljs-built_in">strcpy</span>(name, <span class="hljs-string">&quot;Ap0l1o&quot;</span>);<br>    <span class="hljs-built_in">printf</span>(<span class="hljs-string">&quot;%s&quot;</span>, name);<br>    <span class="hljs-built_in">free</span>(name);<br>    name = <span class="hljs-literal">NULL</span>;<br>&#125;<br></code></pre></td></tr></table></figure><p>需要注意的地方(C语言内存分配的不足之处)：</p><ul><li><code>malloc</code>函数的参数是要分配的字节数目，这个需要我们自己来计算。比如，上面的实例中，我们先使用<code>sizeof</code>函数计算了<code>char</code>类型的内存大小，然后分配了20个<code>char</code>类型内存大小；</li><li><code>malloc</code>函数的返回值是无类型指针<code>void *</code>，需要我们在程序中强制将其转为指定的类型。所以在上面的实例中，我们使用<code>(char *)</code>将其转为<code>char</code>类型的指针变量；</li><li>特别需要注意的是<code>free</code>函数只是释放了<code>malloc</code>所申请的内存，但并没有改变指针的值，因此，在释放内存后应该将指针指向<code>NULL</code>，否则该指针将指向一个无法控制的内存区域，成为野指针；</li></ul><h2 id="C-动态内存分配"><a href="#C-动态内存分配" class="headerlink" title="C++动态内存分配"></a>C++动态内存分配</h2><p>为了弥补C语言动态内存分配的缺点，C++提供了新的运算符<code>new</code>和<code>delete</code>来完成动态内存的分配和释放。</p><p>使用运算符<code>new</code>和<code>delete</code>的优点为：</p><ul><li><code>new</code>的参数为待分配单元的数目，它自动计算要分配的变量类型的大小；</li><li>它自动返回正确的指针类型，不必对返回的指针进行类型转换；</li><li>可以用<code>new</code>将分配的存储空间进行初始化；</li></ul><p>使用方法为：</p><figure class="highlight haxe"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><code class="hljs haxe"><span class="hljs-number">1.</span>  指针变量名 = <span class="hljs-keyword">new</span> <span class="hljs-type"></span>指针基类型名(指针基类型表达式);<br>圆括号里的「指针基类型表达式」意思是用这个表达式的值来初始化指针指向的单元。<br>例如，p = <span class="hljs-keyword">new</span> <span class="hljs-type">double</span>(<span class="hljs-number">1.0</span>)，将指针p指向地址的值初始化为<span class="hljs-number">1.0</span><br><span class="hljs-number">2.</span>  指针变量名 = <span class="hljs-keyword">new</span> <span class="hljs-type"></span>指针基类型名[整型表达式];<br>方括号里的「整型表达式」是要分配一个数组，表达式的值是分配的数组的长度。<br>例如，p = <span class="hljs-keyword">new</span> <span class="hljs-type">char</span>[<span class="hljs-number">10</span>]，指针p指向长度为<span class="hljs-number">10</span>的数组的第一个元素。<br></code></pre></td></tr></table></figure><p>注意事项如下：</p><ul><li>使用<code>new</code>申请的存储空间是没有名字的，只能通过指针间接访问它们；</li><li><code>delete</code> 的操作数必须是一个<code>new</code>返回的指针；</li></ul>]]></content>
+    
+    
+    <categories>
+      
+      <category>C/C++</category>
+      
+    </categories>
+    
+    
+    <tags>
+      
+      <tag>C/C++</tag>
+      
+      <tag>编程语言</tag>
+      
+    </tags>
+    
+  </entry>
+  
+  
+  
+  <entry>
     <title>Hello World</title>
     <link href="/2021/09/21/hello-world/"/>
     <url>/2021/09/21/hello-world/</url>

@@ -14,11 +14,11 @@
   <meta http-equiv="x-ua-compatible" content="ie=edge">
   
   <meta name="theme-color" content="#2f4154">
-  <meta name="description" content="全局状态与分布式快照算法。">
+  <meta name="description" content="并发控制算法介绍。">
   <meta name="author" content="ap0l1o">
   <meta name="keywords" content="">
   
-  <title>分布式快照捕获算法 - ap0l1o</title>
+  <title>并发控制 - ap0l1o</title>
 
   <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.0/dist/css/bootstrap.min.css" />
 
@@ -219,7 +219,7 @@
       <div class="full-bg-img">
         <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
           <div class="page-header text-center fade-in-up">
-            <span class="h2" id="subtitle" title="分布式快照捕获算法">
+            <span class="h2" id="subtitle" title="并发控制">
               
             </span>
 
@@ -229,8 +229,8 @@
   
     <span class="post-meta">
       <i class="iconfont icon-date-fill" aria-hidden="true"></i>
-      <time datetime="2021-10-14 21:43" pubdate>
-        2021年10月14日 晚上
+      <time datetime="2021-10-20 21:20" pubdate>
+        2021年10月20日 晚上
       </time>
     </span>
   
@@ -241,7 +241,7 @@
     
     <span class="post-meta mr-2">
       <i class="iconfont icon-chart"></i>
-      1.2k 字
+      2.1k 字
     </span>
   
 
@@ -251,7 +251,7 @@
       <i class="iconfont icon-clock-fill"></i>
       
       
-      12
+      21
        分钟
     </span>
   
@@ -281,30 +281,44 @@
         <div class="py-5" id="board">
           <article class="post-content mx-auto">
             <!-- SEO header -->
-            <h1 style="display: none">分布式快照捕获算法</h1>
+            <h1 style="display: none">并发控制</h1>
             
             <div class="markdown-body">
-              <h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>在许多情况下，知道分布式系统所处的全局状态是很有用的。<strong>分布式系统的全局状态（Global State）包括每个进程的本地状态和当前正在传输中的消息，所谓正在传输中的消息即该消息已经被发送但还没有被交付。</strong></p>
-<p>有很多原因表明，知道分布式系统的状态是很有用的。例如，当已知本地计算已经停止并且也没有消息在传输时，系统显然进入了一个不能继续前进的状态。此时，通过分析全局状态我们就能得知系统是进入了死锁还是分布式计算已经正确的结束了。</p>
-<p>注：本文内容主要摘自「分布式系统原理与范型」，主要用于本人学习回顾。</p>
-<h2 id="关于全局状态和分布式快照"><a href="#关于全局状态和分布式快照" class="headerlink" title="关于全局状态和分布式快照"></a>关于全局状态和分布式快照</h2><p>Chandy和Lamport在其1985年发表的论文<a target="_blank" rel="noopener" href="https://lamport.azurewebsites.net/pubs/chandy.pdf">Distributed Snapshots：Determining Global States of Distributed Systems </a>中提出了一个简单直接的<strong>记录分布式系统全局状态</strong>的方法，该方法引入了<strong>分布式快照</strong>（Distribute Snapshot）的概念。</p>
-<p><strong>分布式快照反映了该分布式系统可能处于的状态，且重要的是，该记录的状态是全局一致的。</strong>这意味着，如果快照已经记录了进程P收到了来自进程Q的一条信息，那么应该也记录了进程Q确实发送了这个消息。否则，快照将会记录一个已经被接受但从未被发送的消息。需要注意的是，相反的情况是可以接受的，也即快照可以记录一个已经被发送但还尚未被接受的消息。</p>
-<p>全局状态的概念可以用一个被称为切口（cut）的示意图来表达。如下图所示，穿越进程P1、P2和P3时间轴的虚线表示的是一个一致的切口。该切口表示了「为每个进程记录的最后事件」，记录了事件$m_1$的发送和接受，以及事件$m_2$的发送。</p>
-<img src="https://ap0l1o.oss-cn-qingdao.aliyuncs.com/img/IMG_6746735F12FC-1.jpeg" srcset="/img/loading.gif" lazyload alt="IMG_6746735F12FC-1" style="zoom: 50%;" />
+              <h2 id="分类"><a href="#分类" class="headerlink" title="分类"></a>分类</h2><p>并发控制算法通常根据<strong>读写操作同步的方式</strong>来分类。同步可以通过<strong>共享数据上的互斥机制</strong>（例如，锁🔒），或者通过显式地使用<strong>时间戳排序</strong>来实现。</p>
+<p>并发控制算法可以进一步区分为<strong>悲观算法</strong>和<strong>乐观算法</strong>。</p>
+<p>悲观算法（pessimistic approaches）的基本原则是Murphy定律（墨菲定律）：<strong>如果某事物可以出错，那么它就会出错。在悲观算法中，操作时在它们被执行前同步的，这意味着冲突在允许发生之前就解决了</strong>。</p>
+<p>相反，乐观算法（optimistic approachs）是<strong>基于错误一般不会发生的观点</strong>。所以操作被简单地执行，在事务结束的时候再进行同步。如果那是确实发生了冲突，一个或更多的事务将被迫终止。</p>
+<p>下面将讨论两个悲观算法和一个乐观算法。</p>
+<h2 id="两阶段锁定"><a href="#两阶段锁定" class="headerlink" title="两阶段锁定"></a>两阶段锁定</h2><p>最古老最简单也是最广泛使用的并发控制算法是锁定（locking🔒）。</p>
+<p>当一个进程要作为事务的一部分来读或写一个数据项时，它请求调度管理器允许它给该数据项加锁。同样，当它不再需要一个数据项时，就请求调度管理器释放该锁。</p>
+<p><strong>调度管理器的任务</strong>是以一种可以得到正确调度结果的方式来允许加锁和释放锁，即需要使用一种<strong>可以提供串行调度的算法</strong>。这样一个算法是两阶段锁定算法。</p>
+<p>如下图所示的两阶段锁定（two-phase locking，2PL）中，调度管理器先在增长阶段（growing phase）获得它所需要的所有锁，然后在收缩阶段（shrinking phase）释放它们。尤其要遵守下面三个规则：</p>
+<img src="https://ap0l1o.oss-cn-qingdao.aliyuncs.com/img/2PL.png" srcset="/img/loading.gif" lazyload alt="17105307_MZJc" style="zoom: 50%;" />
 
-<p>作为对比，下图是一个不一致的切口，快照中记录了事件$m_1$的发送和接受，但是仅记录了事件$m_3$的接受而未记录其发送。</p>
-<img src="https://ap0l1o.oss-cn-qingdao.aliyuncs.com/img/IMG_CC2C77FC7968-1.jpeg" srcset="/img/loading.gif" lazyload alt="IMG_CC2C77FC7968-1" style="zoom:50%;" />
+<ol>
+<li>当调度管理器收到来自事务管理器的<code>open(T,x)</code>操作时，它检测该操作是否跟它已经允许锁定的另一个进程冲突。如果存在冲突，操作<code>open(T,x)</code>被延迟（这样事务$T$也被延迟）。如果没有冲突，调度管理器就允许对数据项$x$加锁，并将这个操作传递给数据管理器。</li>
+<li>直到数据管理器通知它已经完成了对锁定数据项x的操作，调度管理器才会释放数据项x的锁。</li>
+<li>一旦调度管理器为事务$T$释放了锁，那么无论事务T请求为哪个数据项加锁，调度管理器都不会允许T加另外一把锁（即只能一次获取到所需的所有锁）。$T$获取另外一把锁的任何企图都是一个程序错误，都会终止事务$T$。</li>
+</ol>
+<p>在许多系统中，收缩阶段是在事务运行结束之后，要么提交、要么终止时出现，它导致锁的释放（<strong>同时释放</strong>），如下图所示。这种策略被称为严格的两阶段锁定。</p>
+<img src="https://ap0l1o.oss-cn-qingdao.aliyuncs.com/img/strict-2PL.png" srcset="/img/loading.gif" lazyload alt="17105326_2MZl" style="zoom:50%;" />
 
-<h2 id="分布式快照捕获算法的描述"><a href="#分布式快照捕获算法的描述" class="headerlink" title="分布式快照捕获算法的描述"></a>分布式快照捕获算法的描述</h2><p>为了简化对分布式快照捕获算法的解释，我们假设分布式系统可用一个彼此通过<strong>单向点对点通信通道</strong>相连的进程集合来表示。例如，进程可能在任何进一步通信发生前首先建立TCP连接。</p>
-<p>任何进程都可以启动该算法来捕获一个分布式快照。启动算法的<strong>进程P</strong>通过记录它自己的本地状态而启动。然后，它可以通过每个<strong>流出通道</strong>发送一个<strong>标记</strong>，表明接受者应该参与记录全局状态。</p>
-<p>当<strong>进程Q</strong>通过一个<strong>进入通道C</strong>接收到一个<strong>标记</strong>，该进程根据它是否已经保存了本地状态来决定下一步动作。</p>
+<p>严格的两阶段锁定有两个主要的优点：</p>
 <ul>
-<li>如果进程Q尚未保存其本地状态，它就先记录本地状态，然后也通过它自己的每个流出通道发送一个标记。</li>
-<li>如果进程Q已经保存了其本地状态，则通道C上的标记表明Q应该记录该通道的状态。该状态是从进程Q上次记录了它自己的本地状态开始，到它接受了该标记为止，Q所接受到的消息序列组成。</li>
+<li>事务总是读提交事务写入的值，所以我们从来都不会因为事务的计算是基于一个它不应该看到的数据项而终止它。</li>
+<li>所有锁的获得和释放都可以由系统来处理而无需事务关心。要访问一个数据项就要获得锁，当事务完成时就释放锁。这种策略消除了瀑布型终止（cascaded aborts），即不得不撤销一个已经提交的事务，因为它看到了它不该看见的数据项。</li>
 </ul>
-<p>当一个进程接受并处理了它的所有进入通道的标记时，就认为该进程已经完成了算法中与它有关的部分。此时可以将它记录的本地状态和它为每个进入通道记录的状态收集起来，发送给发起此快照的进程P。后者随后分析当前状态。需要注意的是，与此同时，分布式系统可以作为一个整体继续正常运行，也即分布式快照算法不会影响分布式系统的正常运行。</p>
-<p><img src="https://ap0l1o.oss-cn-qingdao.aliyuncs.com/img/cut.drawio.png" srcset="/img/loading.gif" lazyload alt="cut.drawio"></p>
-<p>还有一个需要注意的地方是，因为任何进程都能发起该算法，所以可能同时存在几个快照。为此，标记上附有发起该快照的进程的标识符（可能还有一个版本号）。只有在进程已经通过它的每个进入通道接收到了某个标记后，它才能完成与该标记相关的快照的创建。</p>
+<h2 id="悲观的时间戳排序"><a href="#悲观的时间戳排序" class="headerlink" title="悲观的时间戳排序"></a>悲观的时间戳排序</h2><p>一个完全不同的并发控制方法是在<strong>每个事务$T$开始时给它分配一个时间戳$ts(T)$。</strong></p>
+<p>使用Lamport算法，我们可以保证时间戳是惟一的。<strong>事务$T$的每个操作都被盖上时间戳$ts(T)$，并且系统中的每个数据项$x$都有一个相关的读时间戳$ts_{RD}(x)$和写时间戳$ts_{WR}(x)$。</strong>读时间戳被设置为<strong>最近</strong>读$x$的事务的时间戳，而写时间戳是<strong>最近</strong>修改$x$的事务的时间戳。使用时间戳排序，如果两个操作冲突，则数据管理器先处理时间戳最早的操作。</p>
+<p>现在假设调度管理器从具有时间戳$ts$的事务$T$收到一个操作，<code>read(T,x)</code>。但是$ts&lt;ts_{WR}(x)$。**换句话说，调度管理器发现一个对$x$的写操作在事务开始后已经完成（也即，在事务$T$启动到开始读之间，调度管理器发现一个对x的写操作在此期间完成了）。在这种情况下，事务$T$简单的被终止。**相反，如果$ts&gt;ts_{WR}(x)$，那么让读操作发生（即上一个对$x$的写操作是在事务$T$之前完成的）。此外，$ts_{RD}(x)$被设置为$max{ts, ts_{RD}(x)}$。</p>
+<p>同样，假设调度管理器收到一个具有时间戳$ts$并包含写操作<code>write(T, x)</code>的事务$T$。**如果$ts&lt;ts_{RD}(x)$，那么它只能取消事务$T$，这是因为$x$的当前值已经被更晚的事务读过**（也即，在事务$T$启动到开始写之前完成了一个事物对$x$的读操作，实际上应该事务$T$先来的，但是被别人插队了，为了大局，事务$T$只能取消）。另一方面，如果$ts&gt;ts_{RD}(x)$，那么它改变$x$的值，因为没有更晚的事务读过它。$ts_{WR}$也被设置为$max{ts, ts_{WR}(x)}$。</p>
+<p>时间戳具有与锁定不同的特性。当事务遇到一个更大（或更晚）的时间戳时，它中止，而在同样的情况下，如果使用锁定方法，事务将等待或立即执行（也即，要是被人插了队自己就中止退出）。另一方面，它不会造成死锁，这是一个很大的优点。</p>
+<h2 id="乐观的时间戳排序"><a href="#乐观的时间戳排序" class="headerlink" title="乐观的时间戳排序"></a>乐观的时间戳排序</h2><p>第三种处理多个事务同时执行的方法是乐观的并发控制（optimistic concurrency）。此技术的思想是：不关心别人在干什么，继续做自己要做的事情。如果有问题，等到后面再考虑（许多政客也使用这个算法，注：个人认为西方政客会这样做，咱们中国的政客都是特别怕出事情担责任的）。实际上，相对来讲冲突是很少的，所以系统大部分时间都运行正常。</p>
+<p>尽管冲突可能很少发生，但也不是不会发生，因此仍需要某种方法来处理冲突。乐观的并发控制所做的事情是跟踪哪些数据项被改写了。<strong>在某个事务被提交的时候，它检查其他所有事务，看看是否有某些数据项从这个事务开始后被改变了（即在某个事务提交的时候检查其数据项是否被其他事务改变了）。如果被改变了，该事务被终止；如果没有被改变，则该事务提交。</strong></p>
+<p>乐观的并发控制算法最适合基于<strong>私有工作空间</strong>的实现。在这种方式下，每个事务私下改变自己的数据，不受别的事务的干涉。最终，新数据要么被提交、要么被释放，这是一个相对简单直接的方法。</p>
+<p>乐观的并发控制的最大优点是它不会发生死锁，允许最大的并行性。这是因为没有进程需要等待一个锁。缺点是有时它可能会失败，那时事务将不得不再次执行。在负载较重的情况下，失败的可能性比较大，使得乐观的并发控制成为了一个较差的选择。</p>
+<p>此外，对乐观的并发控制的研究主要集中在非分布式系统中。</p>
+<p>注：本文内容摘自「分布式系统原理与范型」，供本人学习回顾使用。</p>
 
             </div>
             <hr>
@@ -326,7 +340,7 @@
                     
                       <a class="hover-with-bg" href="/tags/%E5%88%86%E5%B8%83%E5%BC%8F/">分布式</a>
                     
-                      <a class="hover-with-bg" href="/tags/%E5%85%A8%E5%B1%80%E7%8A%B6%E6%80%81/">全局状态</a>
+                      <a class="hover-with-bg" href="/tags/%E5%B9%B6%E5%8F%91%E6%8E%A7%E5%88%B6/">并发控制</a>
                     
                   </div>
                 
@@ -343,9 +357,9 @@
                   <article class="post-prev col-6">
                     
                     
-                      <a href="/2021/10/20/%E5%B9%B6%E5%8F%91%E6%8E%A7%E5%88%B6/">
+                      <a href="/2021/10/20/%E4%BA%8B%E5%8A%A1%E7%9A%84%E5%AE%9E%E7%8E%B0/">
                         <i class="iconfont icon-arrowleft"></i>
-                        <span class="hidden-mobile">并发控制</span>
+                        <span class="hidden-mobile">事务实现算法</span>
                         <span class="visible-mobile">上一篇</span>
                       </a>
                     
@@ -353,8 +367,8 @@
                   <article class="post-next col-6">
                     
                     
-                      <a href="/2021/10/13/%E9%80%BB%E8%BE%91%E6%97%B6%E9%92%9F/">
-                        <span class="hidden-mobile">逻辑时钟（Logical Clock）</span>
+                      <a href="/2021/10/14/%E5%85%A8%E5%B1%80%E7%8A%B6%E6%80%81/">
+                        <span class="hidden-mobile">分布式快照捕获算法</span>
                         <span class="visible-mobile">下一篇</span>
                         <i class="iconfont icon-arrowright"></i>
                       </a>

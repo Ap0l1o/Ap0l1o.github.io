@@ -14,11 +14,11 @@
   <meta http-equiv="x-ua-compatible" content="ie=edge">
   
   <meta name="theme-color" content="#2f4154">
-  <meta name="description" content="全局状态与分布式快照算法。">
+  <meta name="description" content="常见的事务实现算法介绍。">
   <meta name="author" content="ap0l1o">
   <meta name="keywords" content="">
   
-  <title>分布式快照捕获算法 - ap0l1o</title>
+  <title>事务实现算法 - ap0l1o</title>
 
   <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.0/dist/css/bootstrap.min.css" />
 
@@ -219,7 +219,7 @@
       <div class="full-bg-img">
         <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
           <div class="page-header text-center fade-in-up">
-            <span class="h2" id="subtitle" title="分布式快照捕获算法">
+            <span class="h2" id="subtitle" title="事务实现算法">
               
             </span>
 
@@ -229,8 +229,8 @@
   
     <span class="post-meta">
       <i class="iconfont icon-date-fill" aria-hidden="true"></i>
-      <time datetime="2021-10-14 21:43" pubdate>
-        2021年10月14日 晚上
+      <time datetime="2021-10-20 21:21" pubdate>
+        2021年10月20日 晚上
       </time>
     </span>
   
@@ -241,7 +241,7 @@
     
     <span class="post-meta mr-2">
       <i class="iconfont icon-chart"></i>
-      1.2k 字
+      976 字
     </span>
   
 
@@ -251,7 +251,7 @@
       <i class="iconfont icon-clock-fill"></i>
       
       
-      12
+      9
        分钟
     </span>
   
@@ -281,30 +281,18 @@
         <div class="py-5" id="board">
           <article class="post-content mx-auto">
             <!-- SEO header -->
-            <h1 style="display: none">分布式快照捕获算法</h1>
+            <h1 style="display: none">事务实现算法</h1>
             
             <div class="markdown-body">
-              <h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>在许多情况下，知道分布式系统所处的全局状态是很有用的。<strong>分布式系统的全局状态（Global State）包括每个进程的本地状态和当前正在传输中的消息，所谓正在传输中的消息即该消息已经被发送但还没有被交付。</strong></p>
-<p>有很多原因表明，知道分布式系统的状态是很有用的。例如，当已知本地计算已经停止并且也没有消息在传输时，系统显然进入了一个不能继续前进的状态。此时，通过分析全局状态我们就能得知系统是进入了死锁还是分布式计算已经正确的结束了。</p>
-<p>注：本文内容主要摘自「分布式系统原理与范型」，主要用于本人学习回顾。</p>
-<h2 id="关于全局状态和分布式快照"><a href="#关于全局状态和分布式快照" class="headerlink" title="关于全局状态和分布式快照"></a>关于全局状态和分布式快照</h2><p>Chandy和Lamport在其1985年发表的论文<a target="_blank" rel="noopener" href="https://lamport.azurewebsites.net/pubs/chandy.pdf">Distributed Snapshots：Determining Global States of Distributed Systems </a>中提出了一个简单直接的<strong>记录分布式系统全局状态</strong>的方法，该方法引入了<strong>分布式快照</strong>（Distribute Snapshot）的概念。</p>
-<p><strong>分布式快照反映了该分布式系统可能处于的状态，且重要的是，该记录的状态是全局一致的。</strong>这意味着，如果快照已经记录了进程P收到了来自进程Q的一条信息，那么应该也记录了进程Q确实发送了这个消息。否则，快照将会记录一个已经被接受但从未被发送的消息。需要注意的是，相反的情况是可以接受的，也即快照可以记录一个已经被发送但还尚未被接受的消息。</p>
-<p>全局状态的概念可以用一个被称为切口（cut）的示意图来表达。如下图所示，穿越进程P1、P2和P3时间轴的虚线表示的是一个一致的切口。该切口表示了「为每个进程记录的最后事件」，记录了事件$m_1$的发送和接受，以及事件$m_2$的发送。</p>
-<img src="https://ap0l1o.oss-cn-qingdao.aliyuncs.com/img/IMG_6746735F12FC-1.jpeg" srcset="/img/loading.gif" lazyload alt="IMG_6746735F12FC-1" style="zoom: 50%;" />
-
-<p>作为对比，下图是一个不一致的切口，快照中记录了事件$m_1$的发送和接受，但是仅记录了事件$m_3$的接受而未记录其发送。</p>
-<img src="https://ap0l1o.oss-cn-qingdao.aliyuncs.com/img/IMG_CC2C77FC7968-1.jpeg" srcset="/img/loading.gif" lazyload alt="IMG_CC2C77FC7968-1" style="zoom:50%;" />
-
-<h2 id="分布式快照捕获算法的描述"><a href="#分布式快照捕获算法的描述" class="headerlink" title="分布式快照捕获算法的描述"></a>分布式快照捕获算法的描述</h2><p>为了简化对分布式快照捕获算法的解释，我们假设分布式系统可用一个彼此通过<strong>单向点对点通信通道</strong>相连的进程集合来表示。例如，进程可能在任何进一步通信发生前首先建立TCP连接。</p>
-<p>任何进程都可以启动该算法来捕获一个分布式快照。启动算法的<strong>进程P</strong>通过记录它自己的本地状态而启动。然后，它可以通过每个<strong>流出通道</strong>发送一个<strong>标记</strong>，表明接受者应该参与记录全局状态。</p>
-<p>当<strong>进程Q</strong>通过一个<strong>进入通道C</strong>接收到一个<strong>标记</strong>，该进程根据它是否已经保存了本地状态来决定下一步动作。</p>
-<ul>
-<li>如果进程Q尚未保存其本地状态，它就先记录本地状态，然后也通过它自己的每个流出通道发送一个标记。</li>
-<li>如果进程Q已经保存了其本地状态，则通道C上的标记表明Q应该记录该通道的状态。该状态是从进程Q上次记录了它自己的本地状态开始，到它接受了该标记为止，Q所接受到的消息序列组成。</li>
-</ul>
-<p>当一个进程接受并处理了它的所有进入通道的标记时，就认为该进程已经完成了算法中与它有关的部分。此时可以将它记录的本地状态和它为每个进入通道记录的状态收集起来，发送给发起此快照的进程P。后者随后分析当前状态。需要注意的是，与此同时，分布式系统可以作为一个整体继续正常运行，也即分布式快照算法不会影响分布式系统的正常运行。</p>
-<p><img src="https://ap0l1o.oss-cn-qingdao.aliyuncs.com/img/cut.drawio.png" srcset="/img/loading.gif" lazyload alt="cut.drawio"></p>
-<p>还有一个需要注意的地方是，因为任何进程都能发起该算法，所以可能同时存在几个快照。为此，标记上附有发起该快照的进程的标识符（可能还有一个版本号）。只有在进程已经通过它的每个进入通道接收到了某个标记后，它才能完成与该标记相关的快照的创建。</p>
+              <h2 id="私有工作空间"><a href="#私有工作空间" class="headerlink" title="私有工作空间"></a>私有工作空间</h2><p>在概念上，当一个<strong>进程</strong>开始一个事务时，它被分配一个私有工作空间，该工作空间包含所有它有权访问的文件。在事务提交或中止前，它的所有读写操作都在私有空间内进行，而不是直接对文件系统进行操作。这就直接导致了第一种实现方法的产生；在进程开始一个事务的时刻，实际上为该进程分配了一个私有工作空间。</p>
+<p>此技术带来的问题是把所有的东西都<strong>复制到私有工作空间的开销</strong>是十分大的，但是各种各样的优化方法使这种方法可行。</p>
+<p>第一种优化方法是基于这样的认识，即<strong>当一个进程只读取一个文件而不对它做修改时，就不需要私有拷贝</strong>。该进程可以直接使用真正的文件（除非自事务开始以来文件已被改动）。因此，当进程开始一个事务时，就为它创建一个私有的工作空间，该空间是空的，除非当一个指针回指到它的父辈工作空间。当<strong>进程为了读取而打开文件时，指针将回指，直到可以在父辈（或者更老的祖先）工作空间中找到文件为止。</strong></p>
+<p>第二种优化方法可以大大减少复制工作量。因为它不是复制整个文件，而是<strong>只将索引复制到私有工作空间</strong>。索引是与判断文件所在磁盘块位置有关的数据块。在UNIX系统中，索引是$i$节点（index node，即索引节点）。通过<strong>私有索引</strong>，文件可以按通常方式读取，这是因为索引中所包含的地址指向的是文件所在的原始磁盘块。然而，<strong>当一个文件块第一次被修改时，将生成该块的副本，其地址也被插入索引中</strong>（如下图所示）。然后就可以在不影响原始块的情况下更新这个块。添加块也是用这种方法解决。新块有时会被称为影像块。（这是一种写时复制技术，即copy-on- write）</p>
+<p><img src="https://ap0l1o.oss-cn-qingdao.aliyuncs.com/img/%E5%86%99%E6%97%B6%E5%A4%8D%E5%88%B6.drawio.png" srcset="/img/loading.gif" lazyload alt="写时复制.drawio"></p>
+<p>在上图中，运行事务的进程看到了修改的文件，但是其他所有进程看到的仍是原始的文件。在更复杂的事务中，私有工作空间可能包含大量的文件而不仅仅是一个。<strong>如果事务中止，私有工作空间就被简单的删除，它所指向的私有块也将被释放回自由列表（free list）中。如果事务被提交了，那么私有索引被移到父辈工作空间中。</strong></p>
+<h2 id="写前日志"><a href="#写前日志" class="headerlink" title="写前日志"></a>写前日志</h2><p>另一个实现事务的常用方法是写前日志（write ahead log，WAL）。使用这种方法时，<strong>文件将真正被修改，但是在任何一个数据块被修改前，一条记录被写到了日志中以说明哪个事务正在对文件进行修改，哪个文件和哪个数据块被改动了，旧值和新值是什么。只有当日志被写入成功后，此改动才可以被写入文件。</strong></p>
+<p>如果事务执行成功并被提交，那么一条提交记录被写进日志，但是数据结构不需要变动，这是因为它们已经被更新了。如果事务中止，那么可以使用日志来回退到原来的状态。<strong>从日志的末尾开始向前读取每条记录，同时将在每条记录中描述的改动撤销</strong>（这也被称为「回退」或「回滚」，也即rollback）。</p>
+<p>注：本文内容摘自「分布式系统原理与范型」，供本人学习回顾使用。</p>
 
             </div>
             <hr>
@@ -326,7 +314,7 @@
                     
                       <a class="hover-with-bg" href="/tags/%E5%88%86%E5%B8%83%E5%BC%8F/">分布式</a>
                     
-                      <a class="hover-with-bg" href="/tags/%E5%85%A8%E5%B1%80%E7%8A%B6%E6%80%81/">全局状态</a>
+                      <a class="hover-with-bg" href="/tags/%E4%BA%8B%E5%8A%A1/">事务</a>
                     
                   </div>
                 
@@ -343,18 +331,12 @@
                   <article class="post-prev col-6">
                     
                     
-                      <a href="/2021/10/20/%E5%B9%B6%E5%8F%91%E6%8E%A7%E5%88%B6/">
-                        <i class="iconfont icon-arrowleft"></i>
-                        <span class="hidden-mobile">并发控制</span>
-                        <span class="visible-mobile">上一篇</span>
-                      </a>
-                    
                   </article>
                   <article class="post-next col-6">
                     
                     
-                      <a href="/2021/10/13/%E9%80%BB%E8%BE%91%E6%97%B6%E9%92%9F/">
-                        <span class="hidden-mobile">逻辑时钟（Logical Clock）</span>
+                      <a href="/2021/10/20/%E5%B9%B6%E5%8F%91%E6%8E%A7%E5%88%B6/">
+                        <span class="hidden-mobile">并发控制</span>
                         <span class="visible-mobile">下一篇</span>
                         <i class="iconfont icon-arrowright"></i>
                       </a>

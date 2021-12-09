@@ -14,11 +14,11 @@
   <meta http-equiv="x-ua-compatible" content="ie=edge">
   
   <meta name="theme-color" content="#2f4154">
-  <meta name="description" content="常见的事务实现算法介绍。">
+  <meta name="description" content="论文「TRIAD——Creating Synergies Between Memory, Disk and Log in Log Structured Key-Value Stores」阅读笔记。">
   <meta name="author" content="ap0l1o">
   <meta name="keywords" content="">
   
-  <title>事务实现算法 - ap0l1o</title>
+  <title>TRIAD——Creating Synergies Between Memory, Disk and Log in Log Structured Key-Value Stores - ap0l1o</title>
 
   <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.0/dist/css/bootstrap.min.css" />
 
@@ -219,7 +219,7 @@
       <div class="full-bg-img">
         <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
           <div class="page-header text-center fade-in-up">
-            <span class="h2" id="subtitle" title="事务实现算法">
+            <span class="h2" id="subtitle" title="TRIAD——Creating Synergies Between Memory, Disk and Log in Log Structured Key-Value Stores">
               
             </span>
 
@@ -229,8 +229,8 @@
   
     <span class="post-meta">
       <i class="iconfont icon-date-fill" aria-hidden="true"></i>
-      <time datetime="2021-10-20 21:21" pubdate>
-        2021年10月20日 晚上
+      <time datetime="2021-12-09 10:01" pubdate>
+        2021年12月9日 上午
       </time>
     </span>
   
@@ -241,7 +241,7 @@
     
     <span class="post-meta mr-2">
       <i class="iconfont icon-chart"></i>
-      976 字
+      2.6k 字
     </span>
   
 
@@ -251,7 +251,7 @@
       <i class="iconfont icon-clock-fill"></i>
       
       
-      9
+      29
        分钟
     </span>
   
@@ -281,18 +281,73 @@
         <div class="py-5" id="board">
           <article class="post-content mx-auto">
             <!-- SEO header -->
-            <h1 style="display: none">事务实现算法</h1>
+            <h1 style="display: none">TRIAD——Creating Synergies Between Memory, Disk and Log in Log Structured Key-Value Stores</h1>
             
             <div class="markdown-body">
-              <h2 id="私有工作空间"><a href="#私有工作空间" class="headerlink" title="私有工作空间"></a>私有工作空间</h2><p>在概念上，当一个<strong>进程</strong>开始一个事务时，它被分配一个私有工作空间，该工作空间包含所有它有权访问的文件。在事务提交或中止前，它的所有读写操作都在私有空间内进行，而不是直接对文件系统进行操作。这就直接导致了第一种实现方法的产生；在进程开始一个事务的时刻，实际上为该进程分配了一个私有工作空间。</p>
-<p>此技术带来的问题是把所有的东西都<strong>复制到私有工作空间的开销</strong>是十分大的，但是各种各样的优化方法使这种方法可行。</p>
-<p>第一种优化方法是基于这样的认识，即<strong>当一个进程只读取一个文件而不对它做修改时，就不需要私有拷贝</strong>。该进程可以直接使用真正的文件（除非自事务开始以来文件已被改动）。因此，当进程开始一个事务时，就为它创建一个私有的工作空间，该空间是空的，除非当一个指针回指到它的父辈工作空间。当<strong>进程为了读取而打开文件时，指针将回指，直到可以在父辈（或者更老的祖先）工作空间中找到文件为止。</strong></p>
-<p>第二种优化方法可以大大减少复制工作量。因为它不是复制整个文件，而是<strong>只将索引复制到私有工作空间</strong>。索引是与判断文件所在磁盘块位置有关的数据块。在UNIX系统中，索引是$i$节点（index node，即索引节点）。通过<strong>私有索引</strong>，文件可以按通常方式读取，这是因为索引中所包含的地址指向的是文件所在的原始磁盘块。然而，<strong>当一个文件块第一次被修改时，将生成该块的副本，其地址也被插入索引中</strong>（如下图所示）。然后就可以在不影响原始块的情况下更新这个块。添加块也是用这种方法解决。新块有时会被称为影像块。（这是一种写时复制技术，即copy-on- write）</p>
-<p><img src="https://ap0l1o.oss-cn-qingdao.aliyuncs.com/img/%E5%86%99%E6%97%B6%E5%A4%8D%E5%88%B6.drawio.png" srcset="/img/loading.gif" lazyload alt="写时复制.drawio"></p>
-<p>在上图中，运行事务的进程看到了修改的文件，但是其他所有进程看到的仍是原始的文件。在更复杂的事务中，私有工作空间可能包含大量的文件而不仅仅是一个。<strong>如果事务中止，私有工作空间就被简单的删除，它所指向的私有块也将被释放回自由列表（free list）中。如果事务被提交了，那么私有索引被移到父辈工作空间中。</strong></p>
-<h2 id="写前日志"><a href="#写前日志" class="headerlink" title="写前日志"></a>写前日志</h2><p>另一个实现事务的常用方法是写前日志（write ahead log，WAL）。使用这种方法时，<strong>文件将真正被修改，但是在任何一个数据块被修改前，一条记录被写到了日志中以说明哪个事务正在对文件进行修改，哪个文件和哪个数据块被改动了，旧值和新值是什么。只有当日志被写入成功后，此改动才可以被写入文件。</strong></p>
-<p>如果事务执行成功并被提交，那么一条提交记录被写进日志，但是数据结构不需要变动，这是因为它们已经被更新了。如果事务中止，那么可以使用日志来回退到原来的状态。<strong>从日志的末尾开始向前读取每条记录，同时将在每条记录中描述的改动撤销</strong>（这也被称为「回退」或「回滚」，也即rollback）。</p>
-<p>注：本文内容摘自「分布式系统原理与范型」，供本人学习回顾使用。</p>
+              <h2 id="0x00-Introduction-amp-Background"><a href="#0x00-Introduction-amp-Background" class="headerlink" title="0x00 Introduction &amp; Background"></a>0x00 Introduction &amp; Background</h2><p>LSM通常由两部分组件组成：</p>
+<ul>
+<li>内存组件（Memory Component）：主要用来absorb update（在内存组件中absorb update的同时会将数据写入到磁盘日志中，以用于数据恢复）；</li>
+<li>磁盘组件（Disk Component）：用于持久化数据，内存组件中的数据超过上限后会flush到磁盘，磁盘组件按照Level的形式进行组织，接近内存组件的Level保存着更新的数据，当某个$L_i$超过上限时会与$L_{i+1}$进行归并压缩，也即在后台执行$Compaction$操作；</li>
+</ul>
+<p><img src="https://ap0l1o.oss-cn-qingdao.aliyuncs.com/img/TRIAD_1.png" srcset="/img/loading.gif" lazyload alt="image-20211208161344551"></p>
+<p>$Compaction$和$Flush$是非常关键的操作，负责维护$LSM$的结构和属性，同时这也会占用大量的可用资源。</p>
+<p>作者在$Nutanix$的生产环境负载测试中，顶峰时$Compaction$操作对$CPU$的占用率会达到45%。此外，单个集群平均每天要花费两个小时在$Compaction$操作上，以维护元数据存储映射。</p>
+<p>文章提出了三种新的互补技术来弥补这些不足。这些技术同时减少了$Compaction$和$Flush$操作所占用的时间和空间资源，并带来了吞吐量的提升。</p>
+<ol>
+<li>第一项技术减少了倾斜工作负载（skewed workload）下的$Compaction$开销。将频繁更新的$KV$对（也即hot entries）保留在内存组件中，仅对cold entries执行$Flush$操作。这个分离操作减少了hot entry所触发的频繁Compaction操作。</li>
+<li>第二项技术的主要思想是推迟对文件的Compaction操作，只有当文件的重叠部分足够大时才进行Compaction。</li>
+<li>第三项技术主要是改变提交日志（commit log）在LSM中的角色，以类似SSTable的形式来使用它们，来避免双写（第一次写到日志，第二次是flush操作所引起的第二次写操作）；</li>
+</ol>
+<h2 id="0x10-Motivation"><a href="#0x10-Motivation" class="headerlink" title="0x10 Motivation"></a>0x10 Motivation</h2><p>尽管I/O操作不在面向用户操作的关键路径中，但是Flush、Compaction、Log等操作仍然会占用大量的计算资源。CPU协调这些操作会占用大量的处理能力，而这些处理能力本来是可以用于为用户提供更好性能体验的。因此I/O操作的频率和长度会对用户感知的最终性能有较大的影响。</p>
+<p>为证明I/O操作会导致性能下降，本文设计了相关实验进行验证。选择了两个方面具有负载倾斜的工作负载：</p>
+<ul>
+<li>数据流行度：skewed和uniform</li>
+<li>读写混合：write dominated 和 balanced</li>
+</ul>
+<p>将上述工作负载运行在普通RocksDB和关闭了后台I/O的RocksDB（例如，可以关闭$Flush$和$Compaction$）中，实验结果绘图如下：</p>
+<p><img src="https://ap0l1o.oss-cn-qingdao.aliyuncs.com/img/TRIAD_2.png" srcset="/img/loading.gif" lazyload alt="image-20211208171104923"></p>
+<p>可以看到在各个负载下，关闭了后台I/O的RocksDB都展现更优的性能。在此结果的驱动下，本文确定了触发频繁和密集I/O的三个主要原因：</p>
+<ul>
+<li> data-skew unawareness, at the memory component level，也即在内存组件层面上的无意识的数据倾斜（存在冷热键）;</li>
+<li> premature and iterative compaction, at the LSM tree level，也即在LSM树层面过早的迭代$Compaction$操作;</li>
+<li>duplicated writes at the logging level，也即在日志层面的双写操作； </li>
+</ul>
+<h3 id="0x11-Data-skew-unawareness-（数据倾斜）"><a href="#0x11-Data-skew-unawareness-（数据倾斜）" class="headerlink" title="0x11 Data skew unawareness （数据倾斜）"></a>0x11 Data skew unawareness （数据倾斜）</h3><p>很多KV Store的工作负载都表现出数据倾斜的特征，其中hot key的更新频率要远远高于cold key。</p>
+<p>数据倾斜导致commit log的增长速度远远大于$C_m$（也即内存中的MemTable和Immutable Memtable）。因为对相同key的更新，日志是以追加的方式存储的，而$C_m$采取的是就地吸收（absorbed in-place）的方式。这会导致$C_m$在达到其最大大小之前触发$Flush$操作，因为commit log过大会导致在数据恢复时所耗费的时间更长，所以MemTable必须频繁的$Flush$，从而可以让commit log可以清理掉，以减小commit log的大小来缩短数据恢复的时间。这不仅会增加$C_m$的$Flush$频率，而且由于其大小是小于其能达到的最大值的，导致$L_0$中打开和存储文件的固定成本并没有被实际写入数据更好的摊分。</p>
+<h3 id="0x12-Premature-and-iterative-compaction-（过早Compaction）"><a href="#0x12-Premature-and-iterative-compaction-（过早Compaction）" class="headerlink" title="0x12 Premature and iterative compaction （过早Compaction）"></a>0x12 Premature and iterative compaction （过早Compaction）</h3><p>现有的基于LSM的KV-Store在Compaction过程中表现出了两方面的限制。</p>
+<p>一些KV-store在$L_0$中仅保留一个SSTable，以加快读速率。但这样会导致每次内存组件的Flush操作都会触发一次$L_0$和底层Level的Compaction操作，也即导致了频繁的Compaction操作。这便是第一种限制。</p>
+<p>另外一些LSM的方案是在$L_0$保存多个SSTable，这会导致第二种限制。主要表现在，当$L_0$中有多个SSTable时，LSM如何将$L_0$ Compaction到$L_1$。事实上，$L_0$中的多个文件是一次性Compaction到更高的Level的，这从而也会导致多个连续的Compaction操作。也即如果$L_0$中的两个SSTable都有一个相同的key，那么这个key将会在底层的LSM树中执行两次Compaction操作。而数据倾斜会加剧这个问题，因为它增加了$L_0$中多个SSTable拥有共同key的概率。显然，当系统的负载越高时，这种事件发生的概率也会越高。</p>
+<h3 id="0x13-Duplicate-writes（双写）"><a href="#0x13-Duplicate-writes（双写）" class="headerlink" title="0x13 Duplicate writes（双写）"></a>0x13 Duplicate writes（双写）</h3><p>当$C_m$被Flush到$L_0$中后，相应的commit log便会被删除掉，因为$Flush$操作已经能够保证数据的持久化。Flush到$L_0$的每个KV对都是最新的版本，都对应了一个commit log，因此$Flush$操作不过是重放了在追加commit log时已经执行过的I/O操作。</p>
+<h2 id="0x20-Technique——TRIAD"><a href="#0x20-Technique——TRIAD" class="headerlink" title="0x20 Technique——TRIAD"></a>0x20 Technique——TRIAD</h2><p>文章用来解决I/O开销的方法体现在三个方面，每个解决方案都对应了前面提到的一个挑战：</p>
+<ul>
+<li> TRIAD-MEM 通过冷热键分离来解决内存组件中的data skew问题；</li>
+<li>TRIAD- DISK 通过推迟和批量Compaction来解决磁盘组件中的premature and iterative compaction问题；</li>
+<li>TRIAD- LOG 通过绕过$Flush$过程中创建新SSTable来解决日志层面中的duplicate write问题；</li>
+</ul>
+<h3 id="0x21-TRIAD-MEM"><a href="#0x21-TRIAD-MEM" class="headerlink" title="0x21 TRIAD-MEM"></a>0x21 TRIAD-MEM</h3><p>TRIAD-MEM的目标是利用大多数工作负载所表现出的数据倾斜的特点来减少Flush，并进一步减少Compaction的频率。为了做到这一点，TRIAD-MEM仅将cold key flush到磁盘上，而将hot key保留在内存中（但也要写commit log）。这能避免触发大量的Compaction操作，从而降低磁盘中重叠Key的数量。</p>
+<p>将hot key保留在内存中，便可以在内存中完成更新操作，这可以避免在磁盘上触发大量的Compaction操作。</p>
+<p>图3展示了Flush期间冷热键分离的过程，图4展示了Flush完成后的状态。</p>
+<p><img src="https://ap0l1o.oss-cn-qingdao.aliyuncs.com/img/TRIAD_3_4.png" srcset="/img/loading.gif" lazyload alt="image-20211208204615405"></p>
+<p>算法2展示了冷热键是如何分离的。旧的C_m中的前K个条目被选中，其中K是系统的参数。理想情况下，K的取值应该既能保存尽量多的hot key，还能避免引起较高的内存开销。</p>
+<p><img src="https://ap0l1o.oss-cn-qingdao.aliyuncs.com/img/TRIAD_A_2.png" srcset="/img/loading.gif" lazyload alt="image-20211208205815580"></p>
+<p>保留在内存中的hot key 不需要Flush到磁盘上，但在更新时仍然需要写commit log（如图3所示），以保证在宕机时能完成数据恢复。</p>
+<p>当$C_m$的大小不超过某个阈值（算法1中的FLUSH_TH）时，分离冷热键时不会进行$Flush$。因为在工作负载不均衡时，$Flush$ 可能是因为commit log满了而不是$C_m$满了所触发的（commit log太多会造成数据恢复时间过长，所以commit log过多时也会触发$Flush$）。所以，为了避免$Flush$小的$C_m$文件，算法会将所有条目都保存在内存中，并根据这些条目创建新的commit log，丢弃旧的commit log。</p>
+<p><img src="https://ap0l1o.oss-cn-qingdao.aliyuncs.com/img/TRIAD_A_1.png" srcset="/img/loading.gif" lazyload alt="image-20211208211005386"></p>
+<h3 id="0x22-TRIAD-DISK"><a href="#0x22-TRIAD-DISK" class="headerlink" title="0x22 TRIAD-DISK"></a>0x22 TRIAD-DISK</h3><p>TRIAD-DISK会推迟Compaction操作，直到需要Compaction的文件有足够多的key重叠。为了估计文件之间的key重叠，文章使用了HyperLogLog (HLL)概率基数估计器。</p>
+<p>为了计算一组文件之间的重叠，文章定义了一个重叠率（overlap ratio），假设在$L_0$中有$n$个文件，则重叠率可以定义为：<br>$$<br>1-\frac{ UniqueKeys(file_1, file_2,… ,file_n))}{sum(Keys(file_i))}<br>$$<br>其中：</p>
+<ul>
+<li>$Keys(file_i)$表示第$i$个SSTable中的key数量；</li>
+<li>$UniqueKeys(file_1, file_2,… ,file_n))$表示合并$n$个文件后的唯一key的数量；</li>
+</ul>
+<p>图5展示了overlap ratio 是如何来推迟Compaction的。</p>
+<p><img src="https://ap0l1o.oss-cn-qingdao.aliyuncs.com/img/TRIAD_F_5.png" srcset="/img/loading.gif" lazyload alt="image-20211208212910135"></p>
+<p>在$L_0$中执行每次Compaction之前，我们会看计算出$L_0$中所有文件的overlap ratio，如何overlap ratio小于阈值，则推迟Compaction（除非$L_0$中文件的数量超过允许的最大值，如果超过，那么不在考虑overlap ratio，允许Compaction）。</p>
+<h3 id="0x23-TRIAD-LOG"><a href="#0x23-TRIAD-LOG" class="headerlink" title="0x23 TRIAD-LOG"></a>0x23 TRIAD-LOG</h3><p>TRIAD-LOG的主要思路是，内存中需要Flush到磁盘中的数据已经在commit log中了，可以对commit log进行利用而不必通过Flush操作再重写一次。主要思想就是将CL转为$L_0$中一种特殊的SSTable，也即CL-SSTable，这种方式可以避免完整的Flush操作。</p>
+<p>TRIAD-LOG增强了commit log角色的能力。当向$C_m$写入数据时，commit log就扮演其普通WAL的角色。当触发Flush操作时，将commit log转为CL-SSTable而不是将$C_m$重写到$L_0$。</p>
+<p>将commit log作为$L_0$中的SSTable可以避免Flush操作所带来的I/O开销，但SSTable是有序的，而commit log是追加生成的、是无序的。SSTable有序的特性可以加速Compaction操作和检索操作。</p>
+<p>为了避免在$L_0$中查找某个条目时需要扫描整个CL-SSTable，TRIAD-LOG在$C_m$中保存每个KV对应的最近更新的commit log文件的偏移量，以帮助构建有序的CL-SSTable。一旦Flush操作被触发，只需要将与最新的commit log偏移量相关联的索引写到磁盘上（索引也即index的大小与整个KV相比是很小的，所以仅刷新index的开销很小，文章并没有对index有明确说明，我觉的这里的index可以是<code>(key, CL name, offset)</code>的组合，通过这个index再加上CL就可以组成有序的CL-SSTable了）。</p>
+<p>TRIAD-LOG并没有改变写操作的流程，不同之处仅在于，在$C_m$中执行更新时会把对应的commit log的偏移量和文件名也写入到$C_m$中（例如，<code>(key, value, offset, CL name)</code>）。其流程入下图所示。</p>
+<p><img src="https://ap0l1o.oss-cn-qingdao.aliyuncs.com/img/TRIAD_F_6.png" srcset="/img/loading.gif" lazyload alt="image-20211209093221560"></p>
 
             </div>
             <hr>
@@ -302,9 +357,9 @@
                   <div class="post-meta mr-3">
                     <i class="iconfont icon-category"></i>
                     
-                      <a class="hover-with-bg" href="/categories/%E5%88%86%E5%B8%83%E5%BC%8F/">分布式</a>
+                      <a class="hover-with-bg" href="/categories/Key-Value-Store/">Key-Value Store</a>
                     
-                      <a class="hover-with-bg" href="/categories/%E5%88%86%E5%B8%83%E5%BC%8F/%E5%88%86%E5%B8%83%E5%BC%8F%E7%B3%BB%E7%BB%9F%E5%8E%9F%E7%90%86%E4%B8%8E%E8%8C%83%E5%9E%8B/">分布式系统原理与范型</a>
+                      <a class="hover-with-bg" href="/categories/Key-Value-Store/%E8%AE%BA%E6%96%87%E9%98%85%E8%AF%BB/">论文阅读</a>
                     
                   </div>
                 
@@ -312,9 +367,9 @@
                   <div class="post-meta">
                     <i class="iconfont icon-tags"></i>
                     
-                      <a class="hover-with-bg" href="/tags/%E5%88%86%E5%B8%83%E5%BC%8F/">分布式</a>
+                      <a class="hover-with-bg" href="/tags/%E8%AE%BA%E6%96%87%E9%98%85%E8%AF%BB/">论文阅读</a>
                     
-                      <a class="hover-with-bg" href="/tags/%E4%BA%8B%E5%8A%A1/">事务</a>
+                      <a class="hover-with-bg" href="/tags/Key-Value-Store/">Key-Value Store</a>
                     
                   </div>
                 
@@ -331,18 +386,12 @@
                   <article class="post-prev col-6">
                     
                     
-                      <a href="/2021/12/09/TRIAD%EF%BC%9ACreating%20Synergies%20Between%20Memory,%20Disk%20and%20Log%20in%20Log%20Structured%20Key-Value%20Stores/">
-                        <i class="iconfont icon-arrowleft"></i>
-                        <span class="hidden-mobile">TRIAD——Creating Synergies Between Memory, Disk and Log in Log Structured Key-Value Stores</span>
-                        <span class="visible-mobile">上一篇</span>
-                      </a>
-                    
                   </article>
                   <article class="post-next col-6">
                     
                     
-                      <a href="/2021/10/20/%E5%B9%B6%E5%8F%91%E6%8E%A7%E5%88%B6/">
-                        <span class="hidden-mobile">并发控制</span>
+                      <a href="/2021/10/20/%E4%BA%8B%E5%8A%A1%E7%9A%84%E5%AE%9E%E7%8E%B0/">
+                        <span class="hidden-mobile">事务实现算法</span>
                         <span class="visible-mobile">下一篇</span>
                         <i class="iconfont icon-arrowright"></i>
                       </a>

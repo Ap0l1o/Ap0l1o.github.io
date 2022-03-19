@@ -1,0 +1,840 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=&#34;auto&#34;>
+
+
+
+<head>
+  <meta charset="UTF-8">
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/ap0l1o.png">
+  <link rel="icon" href="/img/ap0l1o.png">
+  <meta name="viewport"
+        content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="description" content="The Google File System（GFS）论文阅读与翻译。">
+  <meta name="author" content="ap0l1o">
+  <meta name="keywords" content="">
+  
+  <title>The Google File System - ap0l1o</title>
+
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.0/dist/css/bootstrap.min.css" />
+
+
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/github-markdown-css@4.0.0/github-markdown.min.css" />
+  <link  rel="stylesheet" href="/lib/hint/hint.min.css" />
+
+  
+    
+    
+      
+      <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/highlight.js@10.7.2/styles/github-gist.min.css" />
+    
+  
+
+  
+    <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.5.7/dist/jquery.fancybox.min.css" />
+  
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1749284_ba1fz6golrf.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1736178_kmeydafke9r.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+<!-- 自定义样式保持在最底部 -->
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    var CONFIG = {"hostname":"example.com","root":"/","version":"1.8.11","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"left","visible":"hover","icon":"§"},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"copy_btn":true,"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"baidu":null,"google":null,"gtag":null,"tencent":{"sid":null,"cid":null},"woyaola":null,"cnzz":null,"leancloud":{"app_id":null,"app_key":null,"server_url":null}},"search_path":"/local-search.xml"};
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+<meta name="generator" content="Hexo 5.4.0"></head>
+
+
+<body>
+  <header style="height: 70vh;">
+    <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand"
+       href="/">&nbsp;<strong>Ap0l1o</strong>&nbsp;</a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/">
+                <i class="iconfont icon-home-fill"></i>
+                主页
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/">
+                <i class="iconfont icon-archive-fill"></i>
+                归档
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item dropdown">
+              <a class="nav-link dropdown-toggle" target="_self" role="button"
+                 data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                <i class="iconfont icon-books"></i>
+                大概
+              </a>
+              <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                
+                  
+                  
+                  
+                  <a class="dropdown-item" href="/categories/%E6%8A%80%E6%9C%AF/">
+                    
+                    技术
+                  </a>
+                
+                  
+                  
+                  
+                  <a class="dropdown-item" href="/categories/%E7%94%9F%E6%B4%BB/">
+                    
+                    生活
+                  </a>
+                
+                  
+                  
+                  
+                  <a class="dropdown-item" href="/categories/%E8%B7%91%E6%AD%A5/">
+                    
+                    跑步
+                  </a>
+                
+                  
+                  
+                  
+                  <a class="dropdown-item" href="/categories/%E5%BD%B1%E9%9F%B3/">
+                    
+                    影音
+                  </a>
+                
+                  
+                  
+                  
+                  <a class="dropdown-item" href="/categories/%E8%AF%BB%E4%B9%A6/">
+                    
+                    读书
+                  </a>
+                
+              </div>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/">
+                <i class="iconfont icon-category-fill"></i>
+                分类
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/">
+                <i class="iconfont icon-tags-fill"></i>
+                标签
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/">
+                <i class="iconfont icon-user-fill"></i>
+                关于
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" data-toggle="modal" data-target="#modalSearch">&nbsp;<i
+                class="iconfont icon-search"></i>&nbsp;</a>
+          </li>
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self">&nbsp;<i
+                class="iconfont icon-dark" id="color-toggle-icon"></i>&nbsp;</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+    <div class="banner" id="banner" parallax=true
+         style="background: url('/img/hello.jpg') no-repeat center center;
+           background-size: cover;">
+      <div class="full-bg-img">
+        <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+          <div class="page-header text-center fade-in-up">
+            <span class="h2" id="subtitle" title="The Google File System">
+              
+            </span>
+
+            
+              <div class="mt-3">
+  
+  
+    <span class="post-meta">
+      <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+      <time datetime="2021-10-05 19:26" pubdate>
+        2021年10月5日 晚上
+      </time>
+    </span>
+  
+</div>
+
+<div class="mt-1">
+  
+    
+    <span class="post-meta mr-2">
+      <i class="iconfont icon-chart"></i>
+      21.6k 字
+    </span>
+  
+
+  
+    
+    <span class="post-meta mr-2">
+      <i class="iconfont icon-clock-fill"></i>
+      
+      
+      304
+       分钟
+    </span>
+  
+
+  
+  
+</div>
+
+            
+          </div>
+
+          
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="d-none d-lg-block col-lg-2"></div>
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div class="py-5" id="board">
+          <article class="post-content mx-auto">
+            <!-- SEO header -->
+            <h1 style="display: none">The Google File System</h1>
+            
+            <div class="markdown-body">
+              <h1 id="论文介绍"><a href="#论文介绍" class="headerlink" title="论文介绍"></a>论文介绍</h1><h2 id="论文信息"><a href="#论文信息" class="headerlink" title="论文信息"></a>论文信息</h2><h3 id="论文名"><a href="#论文名" class="headerlink" title="论文名"></a>论文名</h3><p>The Google File System</p>
+<h3 id="作者"><a href="#作者" class="headerlink" title="作者"></a>作者</h3><p>Sanjay Ghemawat, Howard Gobioff, and Shun-Tak Leung</p>
+<h3 id="期刊-会议"><a href="#期刊-会议" class="headerlink" title="期刊/会议"></a>期刊/会议</h3><p> SOSP’03, October 19–22, 2003, Bolton Landing, New York, USA. </p>
+<h2 id="论文摘要"><a href="#论文摘要" class="headerlink" title="论文摘要"></a>论文摘要</h2><h2 id="论文地址"><a href="#论文地址" class="headerlink" title="论文地址"></a>论文地址</h2><h3 id="原文地址"><a href="#原文地址" class="headerlink" title="原文地址"></a>原文地址</h3><p><a target="_blank" rel="noopener" href="https://static.googleusercontent.com/media/research.google.com/zh-CN//archive/gfs-sosp2003.pdf">「The Google File System」</a></p>
+<h3 id="阅读参考"><a href="#阅读参考" class="headerlink" title="阅读参考"></a>阅读参考</h3><p><a target="_blank" rel="noopener" href="http://duanple.com/?p=202">「google论文二Google文件系统(上)」</a></p>
+<h1 id="阅读摘要-amp-笔记"><a href="#阅读摘要-amp-笔记" class="headerlink" title="阅读摘要&amp;笔记"></a>阅读摘要&amp;笔记</h1><h1 id="Abstract"><a href="#Abstract" class="headerlink" title="Abstract"></a>Abstract</h1><p>We have designed and implemented the Google File System, a scalable distributed file system for large distributed data-intensive applications. It provides fault tolerance while running on inexpensive commodity hardware, and it delivers high aggregate performance to a large number of clients.</p>
+<p>我们设计实现了Google文件系统，一个应用于大型分布式数据密集型应用程序的可扩展分布式文件系统。它在运行于廉价硬件设备的同时提供容错性，并为大量的客户端提供高聚合性能。</p>
+<p>While sharing many of the same goals as previous distributed file systems, our design has been driven by observations of our application workloads and technological environment, both current and anticipated, that reflect a marked departure from some earlier file system assumptions. This has led us to reexamine traditional choices and explore radically different design points.</p>
+<p>虽然于很多之前的分布式文件系统有相同的目标，但是我们的设计是基于对我们的应用程序负载和技术环境的观察所驱动的，这反映了与早先的分布式文件系统的设计思想的明显背离。这促使我们重新审视传统的选择，并探索根本不同的设计要点。</p>
+<p>The file system has successfully met our storage needs. It is widely deployed within Google as the storage platform for the generation and processing of data used by our service as well as research and development efforts that require large data sets. The largest cluster to date provides hundreds of terabytes of storage across thousands of disks on over a thousand machines, and it is concurrently accessed by hundreds of clients.</p>
+<p>此文件系统成功的满足了我们的存储需要。它被广泛的部署在Google内部，并且作为产生和处理我们的服务所需要的数据，以及需要大型数据集的研究和开发工作的存储平台。迄今为止最大的集群在超过一千台机器上的数千个磁盘上提供数百 TB 的存储，并且它被数百个客户端同时访问。</p>
+<p>In this paper, we present file system interface extensions designed to support distributed applications, discuss many aspects of our design, and report measurements from both micro-benchmarks and real world use.</p>
+<p>在本文中，我们介绍了旨在支持分布式应用程序的文件系统接口扩展，讨论了我们设计的许多方面，并报告了来自微基准测试和现实世界使用的测试结果。</p>
+<h1 id="1-Introduction"><a href="#1-Introduction" class="headerlink" title="1 Introduction"></a>1 Introduction</h1><p>GFS shares many of the same goals as previous distributed file systems such as performance, scalability, reliability, and availability.</p>
+<p>GFS和之前的大多数分布式系统一样，其主要设计目标是：性能、可扩展性、可靠性和可用性。</p>
+<p>However, its design has been driven by key observations of our application workloads and technological environment, both current and anticipated, that reflect a marked departure from some earlier file system design assumptions.</p>
+<p>与早先的分布式系统的区别在于，它的设计是由我们当前和预期的应用负载和技术环境所驱动的。</p>
+<p>We have reexamined traditional choices and explored radically different points in the design space.</p>
+<p>我们重新审视了传统设计的选择，并在设计空间上探索了根本不同的设计要点。</p>
+<ul>
+<li>First, component failures are the norm rather than the exception.Therefore, constant monitoring, error detection, fault tolerance, and automatic recovery must be integral to the system.</li>
+<li>Second, files are huge by traditional standards. Multi-GB files are common.As a result, design assumptions and parameters such as I/O operation and block sizes have to be revisited.</li>
+<li>Third, most files are mutated by appending new data rather than overwriting existing data.Random writes within a file are practically non-existent. Once written, the files are only read, and often only sequentially.Given this access pattern on huge files, appending becomes the focus of performance optimization and atomicity guarantees, while caching data blocks in the client loses its appeal.</li>
+<li>Fourth, co-designing the applications and the file system API benefits the overall system by increasing our flexibility.For example, we have relaxed GFS’s consistency model to vastly simplify the file system without imposing an onerous burden on the applications. We have also introduced an atomic append operation so that multiple clients can append concurrently to a file without extra synchronization between them.</li>
+<li>我们将设备故障视为常态而不是意外。因此，持续监控、错误检测、容错性和自动恢复性必须作为系统不可或缺的一部分。</li>
+<li>按照传统的标准，文件是巨大的。GB大小的文件是常态。因此必须重新考虑设计假设和参数，例如I/O操作和块大小。</li>
+<li>大多数文件是通过追加操作而不是覆盖写来改变的。随机写操作很少出现，一旦写入后，大多数文件通常是只读的，并且是顺序读取。鉴于这种大文件的访问模式，追加操作成为性能优化和原子性保证的重点，而客户端的数据块缓存则失去了吸引力。</li>
+<li>结合应用程序和文件系统一块设计API，能通过提高灵活性来使整个系统收益。例如，我们通过放松对GFS的一致性模型来简化文件系统，而不会对应用程序带来较大的负担。我们还通过引入原子性的追加操作来使多个客户端可以并发行的对同一个文件进行追加操作，而无需在它们之间进行额外的同步。</li>
+</ul>
+<h1 id="2-Design-Overview"><a href="#2-Design-Overview" class="headerlink" title="2 Design Overview"></a>2 Design Overview</h1><h2 id="2-1-Assumptions"><a href="#2-1-Assumptions" class="headerlink" title="2.1 Assumptions"></a>2.1 Assumptions</h2><p>We alluded to some key observations earlier and now lay out our assumptions in more details.</p>
+<p>我们之前提到了一些关键性的观察结果，现在我们对它们进行更详细的描述。</p>
+<ul>
+<li>The system is built from many inexpensive commodity components that often fail. It must constantly monitor itself and detect, tolerate, and recover promptly from component failures on a routine basis.</li>
+<li>The system stores a modest number of large files.Multi-GB files are the common case<br>and should be managed efficiently. Small files must be supported, but we need not optimize for them.</li>
+<li>The workloads primarily consist of two kinds of reads: large streaming reads and small random reads.<ul>
+<li>In large streaming reads, individual operations typically read hundreds of KBs, more commonly 1 MB or more.Successive operations from the same client often read through a contiguous region of a file.</li>
+<li>A small random read typically reads a few KBs at some arbitrary offset. Performance-conscious applications often batch and sort their small reads to advance steadily through<br>the file rather than go back and forth.</li>
+</ul>
+</li>
+<li>The workloads also have many large, sequential writes that append data to files. Typical operation sizes are similar to those for reads. Once written, files are seldom modified again. Small writes at arbitrary positions in a file are supported but do not have to be efficient.</li>
+<li>The system must efficiently implement well-defined semantics for multiple clients that concurrently append to the same file.</li>
+<li>High sustained bandwidth is more important than low latency. Most of our target applications place a premium on processing data in bulk at a high rate, while few have stringent response time requirements for an individual read or write.</li>
+<li>系统由很多经常出问题的廉价设备组成。它们必须持续自我监视，并定期检测、容错并迅速从组件故障中恢复。</li>
+<li>系统中存储着大量的大文件数据。GB大小的文件是作为常态存在的，并且必须进行高效的管理。同时，系统也必须支持小型文件，但不必对此进行优化。</li>
+<li>工作负载主要由两种读操作组成：大规模的流读取和小规模的随机读取。<ul>
+<li>在大规模的流读取中，每次操作通常读取几百KB，更常见的是1MB或更多。来自同一客户端连续读操作通常会读取文件的连续区域。</li>
+<li>一个小的随机读操作通常会以任意偏移量读取几KB。注重性能的应用程序通常会对这些小的读取操作进行批处理和排序，以持续稳定推进文件的读操作，而不是来回读取。</li>
+</ul>
+</li>
+<li>工作负载中也会有很多大的连续写操作追加数据到文件。一般数据大小和读操作类似。一旦写入后文件很少被修改。小的任意写操作必须支持，但不必支持高效性。</li>
+<li>系统必须实现高效的、良好定义的语义，以支持大量客户端对同一文件的并发追加写操作。</li>
+<li>高持续带宽比低延迟更重要。我们的大多数目标应用程序都非常重视以高速率批量处理数据，而对单个读或写操作的响应时间并没有严格的要求。</li>
+</ul>
+<h2 id="2-2-Interface"><a href="#2-2-Interface" class="headerlink" title="2.2 Interface"></a>2.2 Interface</h2><p>GFS provides a familiar file system interface, though it does not implement a standard API such as POSIX. Files are organized hierarchically in directories and identified by pathnames. We support the usual operations to <code>create</code>, <code>delete</code>, <code>open</code>, <code>close</code>, <code>read</code>, and <code>write</code> files.</p>
+<p>GFS提供了一个熟悉的文件系统接口，虽然它并没有实现像POSIX标准那样的标准API接口。文件在目录中分层组织，并由路径名标识。我们还支持文件的一些常见操作，如<code>create</code>、<code>delete</code>、<code>open</code>、<code>close</code>、<code>read</code>、<code>write</code>。</p>
+<p>Moreover, GFS has <code>snapshot</code> and <code>record append</code> operations. Snapshot creates a copy of a file or a directory tree at low cost. Record append allows multiple clients to append data to the same file concurrently while guaranteeing the atomicity of each individual client’s append. It is useful for implementing multi-way merge results and producer-consumer queues that many clients can simultaneously append to without additional locking. We have found these types of files to be invaluable in building large distributed applications. Snapshot and record append are discussed further in Sections 3.4 and 3.3 respectively.</p>
+<p>此外，GFS支持<strong>快照</strong>和<strong>追加</strong>写操作。快照会以低开销创建一个文件或目录树的拷贝。追加写操作允许大量客户端并发向同一个文件追加写，并且保证每个客户端的追加写都是原子性的。这对实现多路合并操作和生产者-消费者队列非常有用，许多客户端可以同时进行追加操作而不需要额外的加锁处理。我们发现这些类型的文件对构建大型分布式应用非常宝贵。快照和追加写操作将在3.4节和3.3节中进一步讨论。</p>
+<h2 id="2-3-Architecture"><a href="#2-3-Architecture" class="headerlink" title="2.3 Architecture"></a>2.3 Architecture</h2><p><img src="https://ap0l1o.oss-cn-qingdao.aliyuncs.com/img/GFS_Figure1.png" srcset="/img/loading.gif" lazyload alt="Untitled"></p>
+<p>A GFS cluster consists of a single master and multiple chunk-servers and is accessed by multiple clients, as shown in Figure 1.</p>
+<p>如图1所示，一个GFS集群由一个Master和大量的被很多Client访问的Chunk Server组成。</p>
+<p>Files are divided into fixed-size chunks. Each chunks identified by an immutable and globally unique 64 bit chunk handle assigned by the master at the time of chunk creation.Chunk servers store chunks on local disks as Linux files and read or write chunk data specified by a chunk handle and byte range. For reliability, each chunks replicated on multiple chunk servers. By default, we store three replicas, though users can designate different replication levels for different regions of the file namespace.</p>
+<p>文件被划分为固定大小的Chunk。每个Chunk在创建时由Master分配一个不可变的，并且全局唯一的64位Chunk Handle标识。Chunk Server将Chunks作为Linux文件存储在本地磁盘上，读写操作都由Chunk Handle和字节边界来明确。为了可靠性，每个Chunk被复制存储到多个Chunk Server上。虽然用户可以为文件命名空间的不同区域指定不同的备份级别，但通常默认为三个备份。</p>
+<p>The master maintains all file system metadata. This includes the namespace, access control information, the mapping from files to chunks, and the current locations of chunks. It also controls system-wide activities such as chunk lease management, garbage collection of orphaned chunks, and chunk migration between chunk servers. The master periodically communicates with each chunk server in HeartBeat messages to give it instructions and collect its state.</p>
+<p>集群Master保存了文件系统的所有元数据。这包括，命名空间、访问控制信息、文件和Chunk的映射关系，以及Chunk的当前保存位置。它也控制系统范围内的一些活动，比如Chunk租约管理、孤立块的垃圾回收，以及Chunk在Chunk Server之间的迁移。 Master还会周期性的和Chunk Server进行交流，通过心跳信息下发指令和收集Chunk Server状态。</p>
+<p>GFS client code linked into each application implements the file system API and communicates with the master and chunk servers to read or write data on behalf of the application. Clients interact with the master for metadata operations, but all data-bearing communication goes directly to the chunk servers.</p>
+<p>链接到应用程序的客户端代码实现了文件系统API，并且代表应用程序与Master和Chunk Server通信以读写数据。客户端与主机交互以进行元数据操作，但所有的数据通信都是直接发送到Chunk Server。</p>
+<p>Neither the client nor the chunk server caches file data. Client caches offer little benefit because most applications stream through huge files or have working sets too large to be cached. Not having them simplifies the client and the overall system by eliminating cache coherence issues. (Clients do cache metadata, however.) Chunk servers need not cache file data because chunks are stored as local files and so Linux’s buffer cache already keeps frequently accessed data in memory.</p>
+<p>客户端和Chunk Server都不需要缓存文件数据。客户端缓存并不会带来明显的好处，因为大多数应用程序通过数据流与大型文件传输数据，或者因为数据量太大而无法缓存。去掉缓存可以简化客户端，以及整个系统（没有因缓存一致性而带来的问题）。Chunk Server不需要缓存文件数据，因为Chunk是作为本地文件存储的，所以Linux的Cache缓存已经将经常访问的数据保存在了内存中。（利用了操作系统的缓存）</p>
+<h2 id="2-4-Single-Master"><a href="#2-4-Single-Master" class="headerlink" title="2.4 Single Master"></a>2.4 Single Master</h2><p>Having a single master vastly simplifies our design and enables the master to make sophisticated chunk placement and replication decisions using global knowledge.However, we must minimize its involvement in reads and writes so that it does not become a bottleneck. Clients never read and write file data through the master. Instead, a client asks the master which chunk servers it should contact. It caches this information for a limited time and interacts with the chunk servers directly for many subsequent operations.</p>
+<p>仅有一个Master大大简化了我们的设计，并且使其能够利用全局知识做出复杂的决策以确定Chunk的放置位置和复制。但是，我们必须减少其所参与的读写操作，以保证它不会成为整个系统的瓶颈。客户端只是通过向Master询问它应该联系的Chunk Server信息，而不是通过Master直接读写数据，并且客户端会将其请求得到的信息缓存一段时间，在此时间段内它可以与Chunk Server直接交互而不需要向Master询问信息。</p>
+<p>Let us explain the interactions for a simple read with reference to Figure 1.</p>
+<ul>
+<li>First, using the fixed chunk size, the client translates the file name and byte offset specified by the application into a chunk index within the file.</li>
+<li>Then, it sends the master a request containing the file name and chunk index.</li>
+<li>The master replies with the corresponding chunk handle and locations of the replicas. The client caches this information using the file name and chunk index as the key.</li>
+<li>The client then sends a request to one of the replicas, most likely the closest one. The request specifies the chunk handle and a byte range within that chunk. Further reads of the same chunk require no more client-master interaction until the cached information expires or the file is reopened.</li>
+</ul>
+<p>In fact, the client typically asks for multiple chunks in the same request and the master can also include the information for chunks immediately following those requested. This extra information sidesteps several future client-master interactions at practically no extra cost.</p>
+<p>我们根据图1来解释一个读操作的交互过程：</p>
+<ul>
+<li>首先，根据Chunk的固定大小，客户端通过应用程序中标识的文件名和字节偏移量转换为Chunk索引。</li>
+<li>然后，客户端将包含文件名和Chunk索引的请求信息发送给Master。</li>
+<li>Master向客户端响应Chunk Handle和一个Chunk副本的位置信息，客户端使用Chunk索引作为键值对中的键来缓存该信息。</li>
+<li>客户端随后会向一个Chunk副本发送请求信息，通常是距离较近的副本。请求会标识Chunk Handle和字节边界。直到缓存信息到期或重新打开该文件前，客户端请求同一Chunk都不再需要和Master交互。</li>
+</ul>
+<p>实际上，会在一个查询请求信息中包含多个Chunk请求，Master也会将多个Chunk的信息封装在一个响应包中发回给客户端。这些额外的信息不需要其他成本就可以减少客户端和Master的几次交互操作。</p>
+<h2 id="2-5-Chunk-Size"><a href="#2-5-Chunk-Size" class="headerlink" title="2.5 Chunk Size"></a>2.5 Chunk Size</h2><p>Chunk size is one of the key design parameters. We have chosen 64 MB, which is much larger than typical file system block sizes. Each chunk replica is stored as a plain Linux file on a chunk server and is extended only as needed. Lazy space allocation avoids wasting space due to internal fragmentation, perhaps the greatest objection against such a large chunk size.</p>
+<p>Chunk的大小是设计中的关键参数。我们选择的64MB大小，远远大于典型的文件系统的块大小。每个Chunk副本都作为普通的Linux文件存储在Chunk Server中，并且只有在需要时才会进行扩展。懒空间分配避免了由于内部碎片所导致的空间浪费，可能产生的最大的碎片有一个Chunk那么大。</p>
+<blockquote>
+<p>惰性空间分配：使用惰性空间分配时，空间的物理分配会尽可能延迟，直到累积了块大小大小的数据(在GFS的默认情况为下为64 MB)。</p>
+</blockquote>
+<p>A large chunk size offers several important advantages.</p>
+<ul>
+<li>First, it reduces clients’ need to interact with the master because reads and writes on the same chunk require only one initial request to the master for chunk location information.</li>
+<li>Second, since on a large chunk, a client is more likely to perform many operations on a given chunk, it can reduce network overhead by keeping a persistent TCP connection to the chunk server over an extended period of time.</li>
+<li>Third, it reduces the size of the metadata stored on the master. This allows us to keep the metadata in memory, which in turn brings other advantages that we will discuss in Section 2.6.1.</li>
+</ul>
+<p>大的Chunk大小带来了以下重要的优势：</p>
+<ul>
+<li>首先，这减少了Client与Master多次交互的需要，因为Client可以将Chunk的位置信息缓存到本地，所以对于同一个Chunk的读写操作，Client只需要与Master进行一次请求。</li>
+<li>其次，对于一个较大的Chunk，客户端可能在此块上进行更多的操作，这样就可以通过延长TCP连接时间来减少网络开销。</li>
+<li>最后，这减少了存储在Master上的元数据大小。这就可以使master在内存保存更多的元数据，反过来这就带来了我们在2.6.1节中讨论的其他优势。</li>
+</ul>
+<p>On the other hand, a large chunk size, even with lazy space allocation, has its disadvantages. A small file consists of a small number of chunks, perhaps just one. The chunk servers storing those chunks may become hot spots if many clients are accessing the same file. In practice, hot spots have not been a major issue because our applications mostly read large multi-chunk files sequentially.</p>
+<p>另一方面，使用大的Chunk，即使利用了惰性空间分配，也存在它的缺点。一个小型文件只有几个Chunk组成，甚至可能只有一个。存储这些Chunk的Chunk Server可能因为会被大量客户端访问同一个文件而成为访问热点。实际上，访问热点并不是一个主要的问题，因为我们的应用主要是顺序读取那些由很多Chunk组成的大文件。</p>
+<h2 id="2-6-Metadata"><a href="#2-6-Metadata" class="headerlink" title="2.6 Metadata"></a>2.6 Metadata</h2><p>The master stores three major types of metadata: the file and chunk namespaces, the mapping from files to chunks, and the locations of each chunk’s replicas. </p>
+<p>Master存储三种类型的元数据：文件和Chunk命名空间、文件到Chunk的映射关系、每个Chunk副本的位置信息。</p>
+<p>All metadata is kept in the master’s memory. The first two types (namespaces and file-to-chunk mapping) are also kept persistent by logging mutations to an operation log stored on the master’s local disk and replicated on remote machines. Using a log allows us to update the master state simply, reliably, and without risking inconsistencies in the event of a master crash. The master does not store chunk location information persistently. Instead, it asks each chunk server about its chunks at master startup and whenever a chunk server joins the cluster.</p>
+<p>所有的元数据信息都被Master保存在它的内存中。前两种类型的元数据（命名空间和文件到Chunk的映射）还通过操作日志更新到本地磁盘以及备份到远程的机器来保证数据持久化。使用日志可以使我们简单、可靠的更新Master的状态，而不用担心在Master故障时造成不一致性的危险。Master不会持久化的存储Chunk的位置信息，因为，它会在启动的时候，以及Chunk Server加入集群的时候询问每个Chunk Server的Chunk信息。</p>
+<h3 id="2-6-1-In-Memory-Data-Structures"><a href="#2-6-1-In-Memory-Data-Structures" class="headerlink" title="2.6.1 In-Memory Data Structures"></a>2.6.1 In-Memory Data Structures</h3><p>Since metadata is stored in memory, master operations are fast. Furthermore, it is easy and efficient for the master to periodically scan through its entire state in the background. This periodic scanning is used to implement chunk garbage collection, re-replication in the presence of chunk server failures, and chunk migration to balance load and disk space usage across chunk servers. Sections 4.3 and 4.4 will discuss these activities further.</p>
+<p>元数据被存储到Master的内存中后，Master对元数据的操作会非常快。此外，Master能在后台简单有效的完成对整体状态的周期性扫描。这个周期性的扫描主要用于：Chunk的垃圾回收，Chunk Server出现问题时的重新复制，Chunk迁移以平衡负载，以及Chunk Server的磁盘空间利用。4.3节和4.4节将会进一步讨论这些活动。</p>
+<p>One potential concern for this memory-only approach is that the number of chunks and hence the capacity of the whole system is limited by how much memory the master has. This is not a serious limitation in practice. The master maintains less than 64 bytes of metadata for each 64 MB chunk. Most chunks are full because most files contain many chunks, only the last of which may be partially filled. Similarly, the file namespace data typically requires less than 64 bytes per file because it stores file names compactly using prefix compression.</p>
+<p>这种使用内存的方法潜存的一种担心是，这些Chunk的数量以及整个系统的容量会受到Master内存空间的限制。实际上，这并不是一个严重的问题。Master对于每个64MB大小的Chunk保存少于64字节的元数据。因为大多数文件包含大量的Chunk，因此大多数Chunk都是满的，可能只有最后一个Chunk是部分填充后的。类似的，文件命名空间通常对于每个文件也只需要少于64字节的，因为它们存储的文件名是使用前缀紧凑压缩后的。</p>
+<p>If necessary to support even larger file systems, the cost of adding extra memory to the master is a small price to pay for the simplicity, reliability, performance, and flexibility we gain by storing the metadata in memory.</p>
+<p>即使需要支持更大的文件系统，为Master增加内存来将元数据存储在内存中，以获得简单型、可靠性、性能以及灵活性而花费的额外的钱也是很小的代价。</p>
+<h3 id="2-6-2-Chunk-Locations"><a href="#2-6-2-Chunk-Locations" class="headerlink" title="2.6.2 Chunk Locations"></a>2.6.2 Chunk Locations</h3><p>The master does not keep a persistent record of which chunk servers have a replica of a given chunk. It simply polls chunk servers for that information at startup. The master can keep itself up-to-date thereafter because it controls all chunk placement and monitors chunk server status with regular HeartBeat messages.<br>Master并不会持久化那些拥有Chunk副本的Chunk Server给定的每个Chunk记录。它只是会在启动时轮询每个Chunk Server来获得这些信息。Master可以在此之后保证自己持有最新的信息，因为它控制Chunk的放置位置，以及通过与Chunk Server交换心跳信息来监听Chunk Server 状态。</p>
+<p>We initially attempted to keep chunk location information persistently at the master, but we decided that it was much simpler to request the data from chunk servers at startup, and periodically thereafter. This eliminated the problem of keeping the master and chunk servers in sync as chunk servers join and leave the cluster, change names, fail, restart, and so on. In a cluster with hundreds of servers, these events happen all too often.</p>
+<p>我们一开始也尝试过在Master中持久化Chunk的位置信息，但是后来我们发现，在启动时向每个Chunk Server来请求数据是更简单的方法。这消除了在Chunk Server加入和离开集群、更改名称、失败、重启等时，Master必须与Chunk Server保持同步的问题。而这些问题在具有几百台服务器的集群中是经常发生的。</p>
+<p>Another way to understand this design decision is to realize that a chunk server has the final word over what chunks it does or does not have on its own disks. There is no point in trying to maintain a consistent view of this information on the master because errors on a chunk server may cause chunks to vanish spontaneously (e.g., a disk may go bad and be disabled) or an operator may rename a chunk server.</p>
+<p>理解此设计决策的另一种方式是，意识到Chunk Server对它自己有没有某个Chunk拥有最终发言权（即只有Chunk Server才能确定他自己到底有没有某个Chunk）。试图在Master上维护此信息的一致性视图是没有意义的，因为在Chunk Server上发生的各种错误都可能会导致存储的Chunk自发性的消失（例如，磁盘可能会发生故障而无法使用），或者一个操作员可能会重命名一个Chunk Server。</p>
+<h3 id="2-6-3-Operation-log"><a href="#2-6-3-Operation-log" class="headerlink" title="2.6.3 Operation log"></a>2.6.3 Operation log</h3><p>The operation log contains a historical record of critical metadata changes. It is central to GFS. Not only is it the only persistent record of metadata, but it also serves as a logical time line that defines the order of concurrent operations. Files and chunks, as well as their versions (see Section 4.5), are all uniquely and eternally identified by the logical times at which they were created.</p>
+<p>操作日志包含了关键元数据改变的历史记录。它是GFS的核心。它不仅是元数据的唯一持久化数据，并且还充当定义并发操作顺序的时间线。文件和Chunk，以及它们的版本，都由它们创建时的逻辑时间唯一且永久标识。</p>
+<p>Since the operation log is critical, we must store it reliably and not make changes visible to clients until metadata changes are made persistent. Otherwise, we effectively lose the whole file system or recent client operations even if the chunks themselves survive. Therefore, we replicate it on multiple remote machines and respond to a client operation only after flushing the corresponding log record to disk both locally and remotely. The master batches several log records together before flushing thereby reducing the impact of flushing and replication on overall system throughput.</p>
+<p>因为操作日志非常重要，因此我们必须可靠的存储它，并且在对元数据的更改持久化之前不能使这些改变对客户端可见。否则，我们很可能失去整个的文件系统或最近的客户端操作，即使Chunks保存下来。因此，我们将其复制到多台远程的机器上，并且仅在本地和远程的机器将相应的日志刷新到磁盘上之后才向客户端响应。Master在刷新前将操作记录进行批处理，以减少刷新和复制对整个系统吞吐量的影响。</p>
+<p>The master recovers its file system state by replaying the operation log. To minimize startup time, we must keep the log small. The master checkpoints its state whenever the log grows beyond a certain size so that it can recover by loading the latest checkpoint from local disk and replaying only the limited number of log records after that. The checkpoint is in a compact B-tree like form that can be directly mapped into memory and used for namespace lookup without extra parsing. This further speeds up recovery and improves availability.</p>
+<p>Master通过重放操作日志来恢复其文件系统状态。为了减少启动时间，我们必须使日志记录尽可能的小。每当日志记录超过指定的大小时，Master都会检查它自身的状态，以便它可以通过从本地磁盘加载最新的检查点，再通过重放有限数量的日志记录来恢复文件系统状态。检查点采用类似B树的紧凑形式，可以直接映射到内存中，在无需额外解析的下用于命名空间的查找。这加速了文件系统的恢复过程，并且提高了可用性。</p>
+<p>Because building a checkpoint can take a while, the master’s internal state is structured in such a way that a new checkpoint can be created without delaying incoming mutations. The master switches to a new log file and creates the new checkpoint in a separate thread. The new checkpoint includes all mutations before the switch. It can be created in a minute or so for a cluster with a few million files. When completed, it is written to disk both locally and remotely.</p>
+<p>由于构建检查点需要一定的时间，因此，Master的内部状态以这样的一种方式来构建检查点，即在不延迟传入新的突变的情况下构建新的检查点。Master切换到一个新的日志文件中，并且在一个单独的线程中创建一个新的检查点。新的检查点包含在切换之前的所有突变。它需要1分钟左右的时间来为具有几百个文件的集群来创建检查点。创建完成后，它会被写到本地和远程的磁盘中。</p>
+<p>Recovery needs only the latest complete checkpoint and subsequent log files. Older checkpoints and log files can be freely deleted, though we keep a few around to guard against catastrophes. A failure during checkpointing does not affect correctness because the recovery code detects and skips incomplete checkpoints.</p>
+<p>文件系统恢复只需要最新的完整检查点以及后续的日志文件。较旧的检查点和日志文件可以自由删除，但我们也保留了一些来为抵抗灾难做保证。检查点期间的错误不会影响正确性，因为恢复代码会检测并跳过不完整的检查点。</p>
+<h2 id="2-7-Consistency-Model"><a href="#2-7-Consistency-Model" class="headerlink" title="2.7 Consistency Model"></a>2.7 Consistency Model</h2><p>GFS has a relaxed consistency model that supports our highly distributed applications well but remains relatively simple and efficient to implement. We now discuss GFS’s guarantees and what they mean to applications. We also highlight how GFS maintains these guarantees but leave the details to other parts of the paper.</p>
+<p>GFS使用的相对宽松的一致性模型不但能很好的支持我们的高度分布式应用程序，而且保证了实现上的简单和高效。我们现在讨论GFS所提供的保证，以及它们对应用程序来说意味着什么。我们还会强调GFS如何维护这些保证，但会将具体的细节留给论文的其他部分来描述。</p>
+<h3 id="2-7-1-Guarantees-by-GFS"><a href="#2-7-1-Guarantees-by-GFS" class="headerlink" title="2.7.1 Guarantees by GFS"></a>2.7.1 Guarantees by GFS</h3><p>File namespace mutations (e.g., file creation) are atomic.They are handled exclusively by the master: namespace locking guarantees atomicity and correctness (Section 4.1); the master’s operation log defines a global total order of these operations (Section 2.6.3).</p>
+<p>文件命名空间的改变是原子性的。它们仅由Master来处理：命名空间锁来保证原子性和正确性；Master的操作日志定义了这些操作的全局总顺序。</p>
+<p><img src="https://ap0l1o.oss-cn-qingdao.aliyuncs.com/img/GFS_Table1.png" srcset="/img/loading.gif" lazyload alt="Untitled"></p>
+<p>The state of a file region after a data mutation depends on the type of mutation, whether it succeeds or fails, and whether there are concurrent mutations. Table 1 summarizes the result. </p>
+<p>数据变更后文件区域的状态依赖于变更的类型，数据变更成功还是失败，以及是否存在并发行变更。表1对这些结果进行了总结。</p>
+<p>A file region is consistent if all clients will always see the same data, regardless of which replicas they read from. A region is defined after a file data mutation if it is consistent and clients will see what the mutation writes in its entirety. </p>
+<ul>
+<li>When a mutation succeeds without interference from concurrent writers, the affected region is defined (and by implication consistent): all clients will always see what the mutation has written.</li>
+<li>Concurrent successful mutations leave the region undefined but consistent: all clients see the same data, but it may not reflect what any one mutation has written. Typically, it consists of mingled fragments from multiple mutations.</li>
+<li>A failed mutation makes the region inconsistent (hence also undefined): different clients may see different data at different times.</li>
+</ul>
+<p>如果客户端无论从哪个副本都能看到一样的数据，则文件区域是一致性的。如果一个文件数据在变更后是一致性的，并且客户端能看到变更写入的内容，则该区域是定义良好的。</p>
+<ul>
+<li>当一个变更成功并且不受其他并发写入的干扰时，受影响的区域是定义良好的（同时意味着是一致性的）：所有客户端都能看到变更所写入的内容。</li>
+<li>并发的成功变更所影响的区域是一致的，但不是定义良好的：所有的客户端都能看到相同的数据，但并不能反映出每个变更所写入的内容。通常，这由多个变更混合片段组成。</li>
+<li>一个失败的变更会导致区域处于不一致的状态（因此也不是定义良好的）：不同的客户端在不同的时间段能看到不同的数据。</li>
+</ul>
+<p>We describe below how our applications can distinguish defined regions from undefined regions. The applications do not need to further distinguish between different kinds of undefined regions.</p>
+<p>我们会在下面描述我们的应用程序如何区分定义良好的区域和非定义良好的区域。应用程序不需要进一步区分各种不同的非定义良好的区域。</p>
+<p>Data mutations may be writes or record appends. A write causes data to be written at an application-specified file offset. A record append causes data (the “record”) to be appended atomically at least once even in the presence of concurrent mutations, but at an offset of GFS’s choosing (Section 3.3). (In contrast, a “regular” append is merely a write at an offset that the client believes to be the current end of file.) The offset is returned to the client and marks the beginning of a defined region that contains the record. In addition, GFS may insert padding or record duplicates in between. They occupy regions considered to be inconsistent and are typically dwarfed by the amount of user data.</p>
+<p>数据变更可能是写入或者是记录追加。写入会将数据写入到应用程序指定的文件偏移位置。记录追加会使数据（也即记录record）至少原子性的追加一次，即使是在并发变更的情况下，但是偏移位置是由GFS决定的（相比之下，「常规」追加只是一次客户端认为的文件当前结尾偏移处的写入操作）。偏移量返回给客户端，并且标记包含追加记录的定义良好的区域的开始位置。此外，GFS可能会在它们之间插入填充或者是记录副本。这些插入的内容会占据被认为是不一致的区域，通常它们比用户数据小很多。</p>
+<p>After a sequence of successful mutations, the mutated file region is guaranteed to be defined and contain the data written by the last mutation. GFS achieves this by </p>
+<ul>
+<li>(a) applying mutations to a chunk in the same order on all its replicas(Section 3.1),</li>
+<li>and (b) using chunk version numbers to detect any replica that has become stale because it has missed mutations while its chunk server was down (Section 4.5). Stale replicas will never be involved in a mutation or given to clients asking the master for chunk locations. They are garbage collected at the earliest opportunity.</li>
+</ul>
+<p>在一系列成功的变更后，文件变更区域会被保证是定义良好的，并且包含最后一次变更写入的数据。GFS通过以下方式来实现：</p>
+<ul>
+<li>将对一个Chunk的变更以同样的顺序应用到该Chunk的所有副本中；</li>
+<li>使用Chunk版本号来检测那些由于Chunk Server 宕机而错过变更数据的陈旧副本。陈旧的副本将不会在参与数据变更或者向客户端响应请求。它们会优先参与垃圾回收。</li>
+</ul>
+<p>Since clients cache chunk locations, they may read from a stale replica before that information is refreshed. This window is limited by the cache entry’s timeout and the next open of the file, which purges from the cache all chunk information for that file. Moreover, as most of our files are append-only, a stale replica usually returns a premature end of chunk rather than outdated data. When a reader retries and contacts the master, it will immediately get current chunk locations.</p>
+<p>客户端会缓存Chunk的位置信息，因此在信息刷新前，它们可能会从那些陈旧的副本中读取数据。此时间窗口会被缓存条目的超时时间以及下次打开文件的限制，这种文件的打开会使缓存清除掉所有该文件的Chunk信息。此外，因为我们的文件通常只是会被追加数据的，所以一个陈旧的副本通常返回的是一个提前结束的Chunk，而不是一个过时的数据。当一个读取者重试并且联系Master时，它会立即得到该Chunk当前的位置信息。</p>
+<p>Long after a successful mutation, component failures can of course still corrupt or destroy data. GFS identifies failed chunk servers by regular handshakes between master and all chunk servers and detects data corruption by checksumming (Section 5.2). Once a problem surfaces, the data is restored from valid replicas as soon as possible (Section 4.3). A chunk is lost irreversibly only if all its replicas are lost before GFS can react, typically within minutes. Even in this case, it becomes unavailable, not corrupted: applications receive clear errors rather than corrupt data.</p>
+<p>在数据变更很久之后，组件的故障仍然可能会损害或破坏数据。GFS通过定期的Master和所有Chunk Server之间的「握手」，来识别发生故障的Chunk Server，并且通过「检验和」来检测数据的损坏。一旦发生问题，数据将会尽快从可用副本中恢复。只有在Master反应之前丢失掉所有的Chunk副本（通常是几分钟以内），Chunk才会出现不可逆的丢失。即使是在这种情况，也只会发生Chunk的不可用而不是数据的损坏：应用程序会收到错误信息，而不是损坏的数据。</p>
+<h3 id="2-7-2-Implications-for-Applications"><a href="#2-7-2-Implications-for-Applications" class="headerlink" title="2.7.2 Implications for Applications"></a>2.7.2 Implications for Applications</h3><p>GFS applications can accommodate the relaxed consistency model with a few simple techniques already needed for other purposes: relying on appends rather than overwrites, checkpointing, and writing self-validating, self-identifying records.</p>
+<p>GFS应用程序可以通过已经被其他目的所需要的简单技术来实现这种宽松的一致性模型，例如：依赖于追加而不是覆盖写操作，检查点，写入时自我验证，自我标识记录。</p>
+<h1 id="3-System-Interactions"><a href="#3-System-Interactions" class="headerlink" title="3 System Interactions"></a>3 System Interactions</h1><p>We designed the system to minimize the master’s involvement in all operations. With that background, we now describe how the client, master, and chunk servers interact to implement data mutations, atomic record append, and snapshot.</p>
+<p>我们以减少Master参与所有操作的目的来设计这个系统。在这个背景之下，我们现在来描述客户端、Master以及Chunk Server之间是如何交互的以实现：数据变更、原子性的记录追加和快照。</p>
+<h2 id="3-1-Leases-and-Mutation-Order"><a href="#3-1-Leases-and-Mutation-Order" class="headerlink" title="3.1 Leases and Mutation Order"></a>3.1 Leases and Mutation Order</h2><p>A mutation is an operation that changes the contents or metadata of a chunk such as a write or an append operation. Each mutation is performed at all the chunk’s replicas. We use leases to maintain a consistent mutation order across replicas. The master grants a chunk lease to one of the replicas, which we call the primary. The primary picks a serial order for all mutations to the chunk. All replicas follow this order when applying mutations. Thus, the global mutation order is defined first by the lease grant order chosen by the master, and within a lease by the serial numbers assigned by the primary.</p>
+<p>变更是一种改变Chunk内容或元数据的操作，例如写和追加操作。每一个变更都会应用到相应Chunk的所有副本之中。我们使用租约来保证所有副本之间变更顺序的一致性。Master向其中一个包含指定副本的Chunk Server授予Chunk租约，这时我们将其称为主副本。主副本会为Chunk的所有变更操作制定一个串型化的顺序。所有的副本都会按照这个顺序来应用变更操作。因此，全局的变更操作的顺序首先由Master选择的租约授予顺序所决定，而同一个租约内的变更顺序则是由选择的主副本定义的。</p>
+<p>The lease mechanism is designed to minimize management overhead at the master. A lease has an initial timeout of 60 seconds. However, as long as the chunk is being mutated, the primary can request and typically receive extensions from the master indefinitely. These extension requests and grants are piggybacked on the HeartBeat messages regularly exchanged between the master and all chunk servers. The master may sometimes try to revoke a lease before it expires (e.g., when the master wants to disable mutations on a file that is being renamed). Even if the master loses communication with a primary, it can safely grant a new lease to another replica after the old lease expires.</p>
+<p>租约机制旨在最大程度的减少Master的管理开销。租约的初始超时时间为60秒。然而，只要Chunk正在被变更，选择的主副本就可以一直向Master请求延长租约。这些延长租约的请求和响应授权通过Master和Chunk Server之间周期交换的心跳报文来传送。Master有时也会在租约到期之前撤销租约（例如，Master想要禁用一个正在重命名的文件上的变更时）。即使Master与主副本断联了，Master也可以在旧的租约到期之后安全的将租约授予给另一个副本。</p>
+<p>In Figure 2, we illustrate this process by following the control flow of a write through these numbered steps.</p>
+<ol>
+<li>The client asks the master which chunk server holds the current lease for the chunk and the locations of the other replicas. If no one has a lease, the master grants one to a replica it chooses (not shown).</li>
+<li>The master replies with the identity of the primary and the locations of the other (secondary) replicas. The client caches this data for future mutations. It needs to contact the master again only when the primary becomes unreachable or replies that it no longer holds a lease.</li>
+<li>The client pushes the data to all the replicas. A client can do so in any order. Each chunk server will store the data in an internal LRU buffer cache until the data is used or aged out. By decoupling the data flow from the control flow, we can improve performance by scheduling the expensive data flow based on the network topology regardless of which chunk server is the primary. Section 3.2 discusses this further.</li>
+<li>Once all the replicas have acknowledged receiving the data, the client sends a write request to the primary. The request identifies the data pushed earlier to all of the replicas. The primary assigns consecutive serial numbers to all the mutations it receives, possibly from multiple clients, which provides the necessary serialization. It applies the mutation to its own local state in serial number order.</li>
+<li>The primary forwards the write request to all secondary replicas. Each secondary replica applies mutations in the same serial number order assigned by the primary.</li>
+<li>The secondaries all reply to the primary indicating that they have completed the operation.</li>
+<li>The primary replies to the client. Any errors encountered at any of the replicas are reported to the client. In case of errors, the write may have succeeded at the primary and an arbitrary subset of the secondary replicas. (If it had failed at the primary, it would not<br>have been assigned a serial number and forwarded.)The client request is considered to have failed, and the modified region is left in an inconsistent state. Our client code handles such errors by retrying the failed mutation. It will make a few attempts at steps (3)through (7) before falling back to a retry from the beginning of the write.</li>
+</ol>
+<p>在图2中我们将通过步骤的编号来表示一个写操作的控制流程：</p>
+<ol>
+<li>客户端会向Master询问哪个Chunk Server获取到了指定Chunk的当前租约，以及其他副本的位置信息。如果没有Chunk Server获取到租约，则Master会将租约授予到其选择的一个副本。</li>
+<li>Master回复主副本的标识，以及其他副本的位置。客户端会缓存此数据，以在将来数据变更时使用。只有当主副本不可达或者回复不再持有租约时，客户端才会需要再次联系Master。</li>
+<li>客户端会将数据推送到所有的副本。客户端可以按照任何顺序执行此操作。每个Chunk Server会将该数据存储到其LRU缓冲区缓存中，直到数据被使用或者超时。通过将数据流和控制流解耦，我们可以通过基于网络拓扑来调动昂贵的数据流，而不管哪个Chunk Server是主副本。3.2节将会进一步讨论这些。</li>
+<li>一旦所有的副本都确认接收到数据，客户端就会向主副本发送写请求。该写请求会标识之前推送到所有副本的数据。主副本会将其接收到的所有变更安排一个连续的序列号来提供必要的串型化，这些变更操作可能来自多个客户端。它会将所有变更按照序列号应用到本地的副本上。</li>
+<li>主副本会将写请求向前传递给所有的次副本。次副本将会按照主副本指定的同样的序列号顺序将所有变更应用到本地。</li>
+<li>次副本会响应主副本以暗示它们已经完成这些操作。</li>
+<li>主副本响应客户端。所有副本所遇到的错误信息都会向客户端报告。在出现错误时，写操作可能已经成功应用到主副本和一些次副本。（如果在主副本上已经出现错误，它将不会再把序列号信息发送给其他次副本）客户端请求将被认为是失败的，修改过的区域将会处于不一致的状态。我们的客户端代码将会通过重试这些变更来处理遇到的错误。他将会先在步骤3到7之间尝试几次后重试这个写操作。</li>
+</ol>
+<h2 id="3-2-Data-Flow"><a href="#3-2-Data-Flow" class="headerlink" title="3.2 Data Flow"></a>3.2 Data Flow</h2><p>We decouple the flow of data from the flow of control to use the network efficiently. While control flows from the client to the primary and then to all secondaries, data is pushed linearly along a carefully picked chain of chunk servers in a pipelined fashion. Our goals are to fully utilize each machine’s network bandwidth, avoid network bottlenecks and high-latency links, and minimize the latency to push through all the data.</p>
+<p>我们将控制流与数据流分离，以高效的利用网络。当控制流从客户端流向主副本，然后会流向所有的次副本，数据流将会以流水线方式按照精心挑选的Chunk Server链线性推送。我们的目标是充分利用每个机器的网络带宽，避免网络瓶颈和高延迟链路，并最大程度的减少推送数据的延迟。</p>
+<p>To fully utilize each machine’s network bandwidth, the data is pushed linearly along a chain of chunk servers rather than distributed in some other topology (e.g., tree). Thus, each machine’s full outbound bandwidth is used to transfer the data as fast as possible rather than divided among multiple recipients.</p>
+<p>为了充分利用每个机器的带宽，数据晚照Chunk Server链线性推送，而不是其他分散的拓扑（例如：树）。因此，每个机器的带宽可以尽可能的全部用来传输数据而不是为多个接受者进行划分。</p>
+<p>To avoid network bottlenecks and high-latency links (e.g., inter-switch links are often both) as much as possible, each machine forwards the data to the “closest” machine in the network topology that has not received it.</p>
+<p>为了尽可能避免网络瓶颈以及高延迟链路，每个机器会将数据推送到在网络拓扑中没收到数据且离它最近的机器。</p>
+<p>Finally, we minimize latency by pipelining the data transfer over TCP connections. Once a chunk server receives some data, it starts forwarding immediately. Pipelining is especially helpful to us because we use a switched network with full-duplex links. Sending the data immediately does not reduce the receive rate.</p>
+<p>最后，我们通过流水线化TCP连接上的数据传输来最小化延迟。Chunk Server一旦接收到数据将会立即传送。流水线对我们特别有帮助，因为我们使用了全双工链路的交换网络。立即发送数据并不会降低接收速率。</p>
+<h2 id="3-3-Atomic-Record-Appends"><a href="#3-3-Atomic-Record-Appends" class="headerlink" title="3.3 Atomic Record Appends"></a>3.3 Atomic Record Appends</h2><p>GFS provides an atomic append operation called record append. In a traditional write, the client specifies the offset at which data is to be written. Concurrent writes to the same region are not serializable: the region may end up containing data fragments from multiple clients. In a record append, however, the client specifies only the data. GFS appends it to the file at least once atomically (i.e., as one continuous sequence of bytes) at an offset of GFS’s choosing and returns that offset to the client.</p>
+<p>GFS提供了一种被称为记录追加的原子追加操作。在传统的写入操作中，客户端要指定数据写入的偏移位置。对于同一区域的并发写操作是不能串型化的：区域的末尾可能包含来自多个客户端的数据碎片。然而在记录追加中，客户端只需要指定数据。GFS会将其至少原子性的追加到文件中一次，追加的位置是由GFS选定的。</p>
+<p>Record append is heavily used by our distributed applications in which many clients on different machines append to the same file concurrently. Clients would need additional complicated and expensive synchronization, for example through a distributed lock manager, if they do so with traditional writes. In our workloads, such files often serve as multiple-producer/single-consumer queues or contain merged results from many different clients.</p>
+<p>我们的分布式应用程序中会大量的使用追加操作，不同机器上的大量客户端会并发的追加到同一个文件。如果使用传统的写操作，客户端需要复杂而又昂贵的同步操作，例如通过一个分布式锁管理。在我们的工作负载中，此类文件通常作为多生产者/单消费者队列或包含来自不同客户端的合并结果。</p>
+<p>Record append is a kind of mutation and follows the control flow in Section 3.1 with only a little extra logic at the primary. The client pushes the data to all replicas of the last chunk of the file Then, it sends its request to the primary. The primary checks to see if appending the record to the current chunk would cause the chunk to exceed the maximum size (64 MB). If so, it pads the chunk to the maximum size, tells secondaries to do the same, and replies to the client indicating that the operation should be retried on the next chunk. (Record append is restricted to be at most one-fourth of the maximum chunk size to keep worst-case fragmentation at an acceptable level.) If the record fits within the maximum size, which is the common case, the primary appends the data to its replica, tells the secondaries to write the data at the exact offset where it has, and finally replies success to the client.</p>
+<p>记录追加是一种变更操作，遵循3.1节中提到的控制流，除了在主副本中只需要一点额外的逻辑。客户端将所有数据（直到文件的最后一个Chunk）推送到所有的副本后，它向主副本发送请求。客户端会检查将记录追加到当前Chunk后是否会超过Chunk的最大值（64MB）。如果超过的话，它会填充当前Chunk到最大值，并且告诉其他次副本做同样的操作，然后告诉客户端在下一个Chunk上重复此操作（译者注：也即将此操作转移到另一个满足大小的Chunk上进行操作）（记录追加被严格限制在Chunk最大值的四分之一，以保证产生的最严重的碎片化在可接受的范围内）。如果记录没有超过最大值，则按普通情况处理，主副本将记录追加到它的副本，并且告诉次副本将此数据写到其拥有的确切偏移处（译者注：即写到与主副本相同的位置），最后向客户端回复成功消息。</p>
+<p>If a record append fails at any replica, the client retries the operation. As a result, replicas of the same chunk may contain different data possibly including duplicates of the same record in whole or in part. GFS does not guarantee that all replicas are byte wise identical. It only guarantees that the data is written at least once as an atomic unit.</p>
+<p>如何任何副本追加失败，客户端将会重试此操作。因此，对于同一个Chunk，副本可能会有不同的数据，这些数据可能包含了相同记录的整个或者部分的重复值。GFS并不会保证所有的副本在位级别上保证一致性。它只保证数据在所有副本上至少原子性的写入一次。</p>
+<h2 id="3-4-Snapshot"><a href="#3-4-Snapshot" class="headerlink" title="3.4 Snapshot"></a>3.4 Snapshot</h2><p>The snapshot operation makes a copy of a file or a directory tree (the “source”) almost instantaneously, while minimizing any interruptions of ongoing mutations. Our users use it to quickly create branch copies of huge data sets (and often copies of those copies, recursively), or to checkpoint the current state before experimenting with changes that can later be committed or rolled back easily.</p>
+<p>快照可以快速的创建一个文件或目录树的拷贝，而且能够最小化对于正在执行的变更的中断。我们的用户用它来创建一个大型数据集的分支，或者创建当前状态的检查点以验证稍后将要提交的更改或者快速回滚。</p>
+<p>Like AFS , we use standard copy-on-write techniques to implement snapshots. When the master receives a snapshot request, it first revokes any outstanding leases on the chunks in the files it is about to snapshot. This ensures that any subsequent writes to these chunks will require an interaction with the master to find the lease holder. This will give the master an opportunity to create a new copy of the chunk first.</p>
+<p>像AFS一样，我们使用标准的写时复制技术来实现快照。当Master接收到快照请求，它首先撤销关于快照的文件的有关Chunk的租约。这就确保对于这些Chunk的后续写操作都要先与Master交互以获得租约持有者。这首先给了Master机会去创建对于Chunk的一个新的拷贝。</p>
+<p>After the leases have been revoked or have expired, the master logs the operation to disk. It then applies this log record to its in-memory state by duplicating the metadata for the source file or directory tree. The newly created snapshot files point to the same chunks as the source files.</p>
+<p>当租约被撤销或者到期后，Master将操作记录到磁盘。然后通过复制源文件或目录树的元数据，将日志记录应用到其内存状态。新创建的快照文件和源文件指向相同的块。</p>
+<p>The first time a client wants to write to a chunk C after the snapshot operation, it sends a request to the master to find the current lease holder. The master notices that the reference count for chunk C is greater than one. It defers replying to the client request and instead picks a new chunk handle C’. It then asks each chunk server that has a current replica of C to create a new chunk called C’. By creating the new chunk on the same chunk servers as the original, we ensure that the data can be copied locally, not over the network(our disks are about three times as fast as our 100 Mb Ethernet links). From this point, request handling is no different from that for any chunk: the master grants one of the replicas a lease on the new chunk C’ and replies to the client, which can write the chunk normally, not knowing that it has just been created from an existing chunk.</p>
+<p>客户端在快照操作后第一次想要写入Chunk C时，它向Master发送请求以查询当前合约的持有者。Master注意到Chunk C的引用计数大于1。它延迟向客户端回复请求，而且选择一个新的Chunk Handle C‘。然后它要求所有拥有Chunk C副本的Chunk Server创建一个新的叫做C‘的Chunk。通过在与原始Chunk Server相同的Chunk Server上创建新的Chunk，我们可以确保数据是在本地复制的，而不是通过网络（我们的磁盘速度大概是100MB以太网链路的三倍）。通过这一点，对于任何Chunk的请求处理都没什么不同：master将新创建的Chunk C‘的租约授予给一个副本Chunk Server，然后回复客户端可以正常写入这个Chunk了，客户端不会知道这是刚刚从现有的Chunk中创建出来的副本。</p>
+<h1 id="4-Master-Operation"><a href="#4-Master-Operation" class="headerlink" title="4 Master Operation"></a>4 Master Operation</h1><p>The master executes all namespace operations. In addition, it manages chunk replicas throughout the system: it makes placement decisions, creates new chunks and hence replicas, and coordinates various system-wide activities to keep chunks fully replicated, to balance load across all the chunk servers, and to reclaim unused storage. We now discuss each of these topics.</p>
+<p>Master执行所有的命名空间操作。此外，它还管理整个系统的Chunk副本：它做出放置决策，创建新的Chunk和副本，协调整个系统范围内的活动以保证Chunk被备份，平衡所有Chunk Server之间的负载，以及回收未使用的存储。我们现在将逐个讨论这些话题。</p>
+<h2 id="4-1-Namespace-Management-and-Locking"><a href="#4-1-Namespace-Management-and-Locking" class="headerlink" title="4.1 Namespace Management and Locking"></a>4.1 Namespace Management and Locking</h2><p>Many master operations can take a long time: for example, a snapshot operation has to revoke chunk server leases on all chunks covered by the snapshot. We do not want to delay other master operations while they are running. Therefore, we allow multiple operations to be active and use locks over regions of the namespace to ensure proper serialization.</p>
+<p>许多的Master操作需要花费很长的时间：比如，一个快照操作不得不使快照所覆盖的所有的块都撤销其租约。我们并不想延迟其他正在运行的Master操作。因此，我们允许多个操作处于活跃状态，并且在命名空间的区域上使用锁来保证正确的序列化。</p>
+<p>Unlike many traditional file systems, GFS does not have a per-directory data structure that lists all the files in that directory. Nor does it support aliases for the same file or directory (i.e, hard or symbolic links in Unix terms). GFS logically represents its namespace as a lookup table mapping full pathnames to metadata. With prefix compression, this table can be efficiently represented in memory. Each node in the namespace tree (either an absolute file name or an absolute directory name) has an associated read-write lock.</p>
+<p>与许多的传统文件系统不同，GFS并没有一个能列举出目录中所有文件的目录数据结构。此外，它也不支持对于同一个文件和目录的别名（例如Unix系统中的硬链接和符号链接）。GFS在逻辑上将其命名空间表示为将完整的目录名映射到元数据的查找表。通过前缀压缩能有效的在内存中展示该表。命名空间树中的每个节点（包括绝对文件名和绝对目录名）都有一个关联的读写锁。</p>
+<p>Each master operation acquires a set of locks before it runs. Typically, if it involves <code>/d1/d2/.../dn/leaf,</code> it will acquire read-locks on the directory names <code>/d1, /d1/d2, ..., /d1/d2/.../dn</code>, and either a read lock or a write lock on the full pathname <code>/d1/d2/.../dn/leaf</code>.Note that leaf may be a file or directory depending on the operation.</p>
+<p>每个Master的操作在它运行之前都需要获得一个锁的集合。典型的，如果它需要操作<code>/d1/d2/.../dn/leaf</code> ，那么它需要获得在目录<code>/d1,/d1/d2,.../d1/d2/.../dn</code> 上的读锁，以及一个在全路径<code>/d1/d2/..../dn/leaf</code>上的读锁或写锁。需要注意的是，leaf可能是个文件或目录，这取决于具体的操作。</p>
+<p>We now illustrate how this locking mechanism can prevent a file <code>/home/user/foo</code> from being created while <code>/home/user</code> is being snapshotted to <code>/save/user</code>. The snapshot operation acquires read locks on <code>/home</code> and <code>/save</code>, and write locks on <code>/home/user</code> and <code>/save/user</code>. The file creation acquires read locks on <code>/home</code> and <code>/home/user</code>, and a write lock on <code>/home/user/foo</code>. The two operations will be serialized properly because they try to obtain conflicting locks on <code>/home/user</code>. File creation does not require a write lock on the parent directory because there is no “directory”, or <em><code>inode-like</code></em>, data structure to be protected from modification. The read lock on the name is sufficient to protect the parent directory from deletion.</p>
+<p>我们现在来列举锁机制是如何避免<code>/home/user/foo</code>被创建的，当在创建<code>/home/user</code>的快照<code>/save/user</code>时。快照操作需要获得<code>/home</code>和<code>/save</code>的读锁，以及<code>/home/user</code>和<code>/save/user</code>的写锁。文件创建需要获得<code>/home</code>和<code>/home/user</code>的读锁，以及<code>/home/user/foo</code>的写锁。这两个操作将被正确的序列化，因为它们试图获得在<code>/home/user</code>上的冲突锁。文件创建不需要获得副目录的写锁，因为这里并没有目录或者类似<code>inode</code>的数据结构需要被保护以防止修改。读锁已经足够用来保护副目录被删除。</p>
+<p>One nice property of this locking scheme is that it allows concurrent mutations in the same directory. For example, multiple file creations can be executed concurrently in the same directory: each acquires a read lock on the directory name and a write lock on the file name. The read lock on the directory name suffices to prevent the directory from being deleted, renamed, or snapshotted. The write locks on file names serialize attempts to create a file with the same name twice.</p>
+<p>这种锁机制的一个好处是允许同一个目录内的并发变更操作。例如，可以在同一个目录内同时执行多个文件的创建操作：每个创建操作需要一个对于目录名的读锁，以及对于文件名的写锁。目录名的写锁用于放置目录被删除、重命名或被执行快照操作。在文件名上的写锁用于序列化对于同一个文件名的创建操作。</p>
+<p>Since the namespace can have many nodes, read-write lock objects are allocated lazily and deleted once they are not in use. Also, locks are acquired in a consistent total order to prevent deadlock: they are first ordered by level in the namespace tree and lexicographically within the same level.</p>
+<p>由于命名空间可以有多个节点，所以读写锁对象会被惰性分配，一旦不使用就被删除。 此外，以一致的总顺序获取锁以防止死锁：它们首先在命名空间树中按级别排序，并在同一级别内按字典顺序排列。</p>
+<h2 id="4-2-Replica-Placement"><a href="#4-2-Replica-Placement" class="headerlink" title="4.2 Replica Placement"></a>4.2 Replica Placement</h2><p>A GFS cluster is highly distributed at more levels than one. It typically has hundreds of chunk servers spread across many machine racks. These chunk servers in turn may be accessed from hundreds of clients from the same or different racks. Communication between two machines on different racks may cross one or more network switches. Additionally, bandwidth into or out of a rack may be less than the aggregate bandwidth of all the machines within the rack. Multi-level distribution presents a unique challenge to distribute data for scalability, reliability, and availability.</p>
+<p>GFS在各个层级上都实现了高度的分布式。它通常由几百个分布在多个机架上的Chunk Server组成。这些Chunk Server又可能被几百个来自相同或不同机架上的客户端访问。来自不同机架上的两个机器之间的通信可能或跨一个或多个交换机。此外，进出一个机架的带宽可能会小于一个机架上所有机器的总带宽。多层级的分布式也面临着独一无二的挑战：分布式数据的扩展性、可靠性和可用性。</p>
+<p>The chunk replica placement policy serves two purposes: maximize data reliability and availability, and maximize network bandwidth utilization. For both, it is not enough to spread replicas across machines, which only guards against disk or machine failures and fully utilizes each machine’s network bandwidth. We must also spread chunk replicas across racks. This ensures that some replicas of a chunk will survive and remain available even if an entire rack is damaged or offline (for example, due to failure of a shared resource like a network switch or power circuit). It also means that traffic, especially reads, for a chunk can exploit the aggregate bandwidth of multiple racks. On the other hand, write traffic has to flow through multiple racks, a trade off we make willingly.</p>
+<p>Chunk副本的放置策略主要服务于两个目的：最大化数据的可靠性和可用性，最大化利用网络带宽。对于两者来说，仅仅实现跨机器的副本是不够的，这只能保证抵抗磁盘或机器的错误，以及最大化利用每个机器的网络带宽。我们必须实现Chunk副本的跨机架。这能保证一个Chunk的副本是可用的，即使一整个机架都被破坏或者下线（例如，网络交换机和电源电路等共享资源的故障）。这也意味着，对于一个Chunk的流量特别是读操作，可以充分利用多个机架的总带宽。另一方面，写流量需要在多个机架之间进行，这也是我们自愿做出的权衡。</p>
+<h2 id="4-3-Creation-Replication-Rebalancing"><a href="#4-3-Creation-Replication-Rebalancing" class="headerlink" title="4.3 Creation, Replication, Rebalancing"></a>4.3 Creation, Replication, Rebalancing</h2><p>Chunk replicas are created for three reasons: chunk creation, re-replication, and rebalancing.</p>
+<p>Chunk副本的创建有三种原因：Chunk的创建，重备份，重平衡。</p>
+<p>When the master creates a chunk, it chooses where to place the initially empty replicas. It considers several factors. (1) We want to place new replicas on chunk servers with below-average disk space utilization. Over time this will equalize disk utilization across chunk servers. (2) We want to limit the number of “recent” creations on each chunk server. Although creation itself is cheap, it reliably predicts imminent heavy write traffic because chunks are created when demanded by writes, and in our append-once-read-many workload they typically become practically read-only once they have been completely written. (3) As discussed above, we want to spread replicas of a chunk across racks.</p>
+<p>当Master创建一个Chunk的时候，它会选择在何处放置初始化为空的副本。它会考虑以下几个因素：</p>
+<ol>
+<li>我们会希望将新的副本放置在低于平均磁盘利用率的Chunk Serve上。随着时间的推移，这将会平衡各个Chunk Server的磁盘利用率。</li>
+<li>我们希望能限制在每个Chunk Server 上的「最近」创建Chunk的数量。尽管创建本身是比较廉价的，但是这能可靠的预测即将到来的大量的写流量，因为Chunk是为了写操作而创建的，并且在我们的一次写入多次读的负载模型中，一旦写入完成它们通常都是只读的。</li>
+<li>正如我们在上面讨论的那样，我们希望实现Chunk副本的跨机架放置。</li>
+</ol>
+<p>The master re-replicates a chunk as soon as the number of available replicas falls below a user-specified goal. This could happen for various reasons: a chunk server becomes unavailable, it reports that  it‘s replica may be corrupted, one of its disks is disabled because of errors, or the replication goal is increased. Each chunk that needs to be re-replicated is prioritized based on several factors. One is how far it is from its replication goal. For example, we give higher priority to a chunk that has lost two replicas than to a chunk that has lost only one. In addition, we prefer to first re-replicate chunks for live files as opposed to chunks that belong to recently deleted files (see Section 4.4). Finally, to minimize the impact of failures on running applications, we boost the priority of any chunk that is blocking client progress.</p>
+<p>Master会在当Chunk副本的数量少于用户预定义的数量时进行重备份。这可能发生在以下情况：一个Chunk Server变得不可达，它报告自己的副本可能被污染了，它的一个磁盘由于错误变得不可用了，或者预设的副本数量增加了。需要重新备份的Chunk的优先级主要有以下几个因素来确定。一个是它与备份的目标数量差了多少。例如，我们将更高的优先级给丢失了两个副本的Chunk而不是只丢失了一个副本的Chunk。</p>
+<p>The master picks the highest priority chunk and “clones” it by instructing some chunk server to copy the chunk data directly from an existing valid replica. The new replica is placed with goals similar to those for creation: equalizing disk space utilization, limiting active clone operations on any single chunk server, and spreading replicas across racks. To keep cloning traffic from overwhelming client traffic, the master limits the numbers of active clone operations both for the cluster and for each chunk server. Additionally, each chunk server limits the amount of bandwidth it spends on each clone operation by throttling its read requests to the source chunk server.</p>
+<p>Master挑选具有最高优先级的Chunk，并且通过命令其他Chunk Server直接通过其他可用的副本来复制Chunk数据来进行Chunk的克隆操作。这个新的副本的放置目标类似创建操作：平衡磁盘空间利用率，限制对于单个Chunk Server上的活跃克隆操作数量，实现副本的跨机架放置。为了防止克隆流量超过客户端流量，Master 限制了集群和每个Chunk服务器的活跃克隆操作的数量。 此外，每个Chunk服务器通过限制对源Chunk服务器的读取请求来限制它在每个克隆操作上花费的带宽量。</p>
+<p>Finally, the master rebalances replicas periodically: it examines the current replica distribution and moves replicas for better disk space and load balancing. Also through this process, the master gradually fills up a new chunk server rather than instantly swamps it with new chunks and the heavy write traffic that comes with them. The placement criteria for the new replica are similar to those discussed above. In addition, the master must also choose which existing replica to remove. In general, it prefers to remove those on chunk servers with below-average free space so as to equalize disk space usage.</p>
+<p>最后，Master会周期性的重平衡副本：它会检验当前副本的分布，移动副本以实现更好的磁盘空间和负载的平衡。通过这个过程，Master会逐渐填满一个新的Chunk Server，而不是将大量的新Chunk和随之而来的写流量来淹没它。新副本的放置标准和我们之前讨论的类似。此外，Master还必须要选择删除哪个现有的副本。通常，它更偏向于删除那些位于低于平均空闲空间Chunk Server上的副本，以平衡磁盘上的可用空间。</p>
+<h2 id="4-4-Garbage-Collection"><a href="#4-4-Garbage-Collection" class="headerlink" title="4.4 Garbage Collection"></a>4.4 Garbage Collection</h2><p>After a file is deleted, GFS does not immediately reclaim the available physical storage. It does so only lazily during regular garbage collection at both the file and chunk levels. We find that this approach makes the system much simpler and more reliable.</p>
+<p>文件被删除后，GFS并不会立即回收可用的物理存储。它只会在文件和Chunk级别上的常规垃圾回收期间惰性的执行这样的操作。我们发现这样可以使系统更简单和可靠。</p>
+<h3 id="4-4-1-Mechanism"><a href="#4-4-1-Mechanism" class="headerlink" title="4.4.1 Mechanism"></a>4.4.1 Mechanism</h3><p>When a file is deleted by the application, the master logs the deletion immediately just like other changes. However instead of reclaiming resources immediately, the file is just renamed to a hidden name that includes the deletion times-tamp. During the master’s regular scan of the file system namespace, it removes any such hidden files if they have existed for more than three days (the interval is configurable). Until then, the file can still be read under the new, special name and can be undeleted by renaming it back to normal. When the hidden file is removed from the namespace, its in-memory metadata is erased. This effectively severs its links to all its chunks.</p>
+<p>当一个文件被应用程序删除后，Master会像记录其他更改一样立刻记录删除操作。然而，文件只是被重命名为一个包含了删除时间戳的隐藏名称，而不是立刻回收资源。在Master定期扫描系统命名空间时，它会删除那些存在超过三天的隐藏文件（时间间隔是可配置的）。在此之前，仍可以使用新的特殊名称读取该文件，并且可以通过将其重命名为正常名称来取消删除该文件。 当隐藏文件从命名空间中移除时，其内存中的元数据将被擦除。 这有效地切断了它与所有块的链接。</p>
+<p>In a similar regular scan of the chunk namespace, the master identifies orphaned chunks (i.e., those not reachable from any file) and erases the metadata for those chunks. In a HeartBeat message regularly exchanged with the master, each chunk server reports a subset of the chunks it has, and the master replies with the identity of all chunks that are no longer present in the master’s metadata. The chunk server is free to delete its replicas of such chunks. </p>
+<p>在类似的Chunk命名空间的定期扫描中，Master会识别孤儿Chunk（例如那些不被任何文件可达的Chunk）并且擦除这些Chunk的元数据。在定期与Master交换的心跳报文中，每个Chunk Server都会报告它所拥有的Chunk的子集，Master会回复它已经没有其元数据的所有Chunk的标识。Chunk Server可以自由的删除这些块的副本。</p>
+<h3 id="4-4-2-Discussion"><a href="#4-4-2-Discussion" class="headerlink" title="4.4.2 Discussion"></a>4.4.2 Discussion</h3><p>Although distributed garbage collection is a hard problem that demands complicated solutions in the context of programming languages, it is quite simple in our case. We can easily identify all references to chunks: they are in the file-to-chunk mappings maintained exclusively by the master. We can also easily identify all the chunk replicas: they are Linux files under designated directories on each chunk server. Any such replica not known to the master is “garbage.”</p>
+<p>尽管分布式垃圾回收在编程语言的上下文中是一个需要复杂解决方案的难题，但在我们的案例中却非常简单。 我们可以很容易地识别出所有对Chunk的引用：它们位于由Master专门维护的文件到块的映射中。 我们还可以轻松识别所有Chunk副本：它们是每个Chunk Server上指定目录下的 Linux 文件。 Master不知道的任何此类副本都是“垃圾”。</p>
+<p>The garbage collection approach to storage reclamation offers several advantages over eager deletion. First, it is simple and reliable in a large-scale distributed system where component failures are common. Chunk creation may succeed on some chunk servers but not others, leaving replicas that the master does not know exist. Replica deletion messages may be lost, and the master has to remember to resend them across failures, both its own and the chunk server’s. Garbage collection provides a uniform and dependable way to clean up any replicas not known to be useful. Second, it merges storage reclamation into the regular background activities of the master, such as the regular scans of namespaces and handshakes with chunk servers. Thus, it is done in batches and the cost is amortized. Moreover, it is done only when the master is relatively free. The master can respond more promptly to client requests that demand timely attention. Third, the delay in reclaiming storage provides a safety net against accidental, irreversible deletion.</p>
+<p>与立刻删除相比，存储回收的垃圾回收方法提供了几个优点。首先，它在组件故障常见的大型分布式系统中简单可靠。Chunk创建可能在某些Chunk Server上成功但在其他Chunk Server上不会成功，从而留下Master不知道存在的副本。副本删除消息可能会丢失，并且 Master 必须记住在失败时重新发送它们，包括它自己的和Chunk Server的。垃圾收集提供了一种统一且可靠的方法来清理任何已知无用的副本。其次，它将存储回收合并到 Master 的常规后台活动中，例如命名空间的常规扫描和与Chunk Server的握手。因此，它是分批完成的，成本被摊销。而且，只有在Master比较空闲的时候才做。 Master 可以更迅速地响应需要及时关注的客户端请求。第三，回收存储的延迟提供了防止意外、不可逆删除的安全网。</p>
+<h2 id="4-5-Stale-Replica-Detection"><a href="#4-5-Stale-Replica-Detection" class="headerlink" title="4.5 Stale Replica Detection"></a>4.5 Stale Replica Detection</h2><p>Chunk replicas may become stale if a chunk server fails and misses mutations to the chunk while it is down. For each chunk, the master maintains a chunk version number to distinguish between up-to-date and stale replicas.</p>
+<p>如果Chunk Server发生故障并且在它关闭时错过了对Chunk的变更，则Chunk副本可能会变得过时。 对于每个Chunk，Master都会维护一个Chunk版本号以区分最新和陈旧的副本。</p>
+<p>Whenever the master grants a new lease on a chunk, it increases the chunk version number and informs the up-to-date replicas. The master and these replicas all record the new version number in their persistent state. This occurs before any client is notified and therefore before it can start writing to the chunk. If another replica is currently unavailable, its chunk version number will not be advanced. The master will detect that this chunk server has a stale replica when the chunk server restarts and reports its set of chunks and their associated version numbers. If the master sees a version number greater than the one in its records, the master assumes that it failed when granting the lease and so takes the higher version to be up-to-date.</p>
+<p>每当Master授予一个Chunk新的租约时，它就会增加Chunk版本号并通知最新的副本。 Master 和这些副本都在它们的持久状态中记录了新的版本号。 这发生在任何客户端被通知之前，因此在它可以开始写入Chunk之前。 如果另一个副本当前不可用，则其Chunk版本号不会继续增加。 当Chunk Server重新启动并报告其Chunk集合及其相关联的版本号时，Master将检测到该Chunk Server具有过时的副本。 如果 Master 看到版本号大于其记录中的版本号，则 Master 假定它在授予租约时失败，因此将更高的版本更新为最新版本。</p>
+<h1 id="5-Fault-Tolerance-And-Diagnosis"><a href="#5-Fault-Tolerance-And-Diagnosis" class="headerlink" title="5 Fault Tolerance And Diagnosis"></a>5 Fault Tolerance And Diagnosis</h1><p>One of our greatest challenges in designing the system is dealing with frequent component failures. The quality and quantity of components together make these problems more the norm than the exception: we cannot completely trust the machines, nor can we completely trust the disks. Component failures can result in an unavailable system or, worse, corrupted data. We discuss how we meet these challenges and the tools we have built into the system to diagnose problems when they inevitably occur.</p>
+<p>我们在设计系统时遇到的最大的挑战之一是处理频繁的组件故障。组件的质量和数量共同导致这些问题成为常态而不是意外：我们既不能完全信任这些机器，也不能完全信任这些磁盘。组件故障会导致系统不可用，甚至更严重的是会导致数据的损坏。我们讨论了我们是如何应对这些挑战的，以及我们在系统中内置的工具，以便在问题不可避免地发生时进行诊断。</p>
+<h2 id="5-1-High-Availability"><a href="#5-1-High-Availability" class="headerlink" title="5.1 High Availability"></a>5.1 High Availability</h2><p>Among hundreds of servers in a GFS cluster, some are bound to be unavailable at any given time. We keep the overall system highly available with two simple yet effective strategies: fast recovery and replication.</p>
+<p>在GFS的数百台机器中，在任何给定的时间总有些机器是不可用的。我们通过两个简单却有效的策略来保证整个系统的高可用性：快速恢复和备份。</p>
+<h3 id="5-1-1-Fast-Recovery"><a href="#5-1-1-Fast-Recovery" class="headerlink" title="5.1.1 Fast Recovery"></a>5.1.1 Fast Recovery</h3><p>Both the master and the chunk server are designed to restore their state and start in seconds no matter how they terminated. In fact, we do not distinguish between normal and abnormal termination; servers are routinely shut down just by killing the process. Clients and other servers experience a minor hiccup as they time out on their outstanding requests, reconnect to the restarted server, and retry. Section 6.2.2 reports observed startup times.</p>
+<p>Master和Chunk Server都被设计为恢复它们的状态和在几秒后重启而不管他们是如何被终止的。实际上，我们并不会区分正常和异常终止。服务器会例行的通过杀死进程来关闭。客户端和其他服务器在处理未完成的请求时会遇到小问题，重新连接到重新启动的服务器并重试。 第 6.2.2 节报告观察到的启动时间。</p>
+<h3 id="5-1-2-Chunk-Replication"><a href="#5-1-2-Chunk-Replication" class="headerlink" title="5.1.2 Chunk Replication"></a>5.1.2 Chunk Replication</h3><p>As discussed earlier, each chunk is replicated on multiple chunk servers on different racks. Users can specify different replication levels for different parts of the file namespace. The default is three. The master clones existing replicas as needed to keep each chunk fully replicated as chunk servers go offline or detect corrupted replicas through checksum verification (see Section 5.2). Although replication has served us well, we are exploring other forms of cross-server redundancy such as parity or erasure codes for our increasing read- only storage requirements. We expect that it is challenging but manageable to implement these more complicated redundancy schemes in our very loosely coupled system be- cause our traffic is dominated by appends and reads rather than small random writes.</p>
+<p>正如前面讨论的那样，每个Chunk被复制到多个位于不同机架上的Chunk Server上。用户可以为文件命名空间的不同部分设置不同的备份级别。默认为3。</p>
+<h3 id="5-1-3-Master-Replication"><a href="#5-1-3-Master-Replication" class="headerlink" title="5.1.3 Master Replication"></a>5.1.3 Master Replication</h3><p>The master state is replicated for reliability. Its operation log and checkpoints are replicated on multiple machines. A mutation to the state is considered committed only after its log record has been flushed to disk locally and on all master replicas. For simplicity, one master process remains in charge of all mutations as well as background activities such as garbage collection that change the system internally. When it fails, it can restart almost instantly. If its machine or disk fails, monitoring infrastructure outside GFS starts a new master process elsewhere with the replicated operation log. Clients use only the canonical name of the master (e.g. gfs-test), which is a DNS alias that can be changed if the master is relocated to another machine.</p>
+<p>Master的状态被备份以保证可靠性。它的操作日志和检查点被复制到多台机器上。对于状态的变更只有当它的日志记录被刷新到本地磁盘和所有的Master副本上后才会被确认提交。为了简单起见，一个Master进程负责处理所有的变更和后台活动，就像更改内部系统的垃圾回收那样。当出现故障时，它几乎可以立即重启。如果它的机器或者磁盘出现故障，GFS之外的监控基础设施会在其他地方重新启动一个带有复制的操作日志的新的Master进程。客户端仅使用Master 的规范名称（例如 gfs-test），这是一个 DNS 别名，如果 master 重新定位到另一台机器，则可以更改该别名。</p>
+<p>Moreover, “shadow” masters provide read-only access to the file system even when the primary master is down. They are shadows, not mirrors, in that they may lag the primary slightly, typically fractions of a second. They enhance read availability for files that are not being actively mutated or applications that do not mind getting slightly stale results. In fact, since file content is read from chunk servers, applications do not observe stale file content. What could be stale within short windows is file metadata, like directory contents or access control information.</p>
+<p>此外，「影子」Master提供对文件系统的只读访问，即使主Master宕掉。它们是影子，而不是镜子，因为它们可能稍微滞后于主Master，通常是几分之一秒。 它们增强了未主动变更的文件或不介意获得稍微过时的结果的应用程序的读取可用性。 事实上，由于文件内容是从Chunk Server读取的，应用程序不会观察到陈旧的文件内容。 在短窗口中可能过时的是文件元数据，如目录内容或访问控制信息。</p>
+<p>To keep itself informed, a shadow master reads a replica of the growing operation log and applies the same sequence of changes to its data structures exactly as the primary does. Like the primary, it polls chunk servers at startup (and infrequently thereafter) to locate chunk replicas and exchanges frequent handshake messages with them to monitor their status. It depends on the primary master only for replica location updates resulting from the primary’s decisions to create and delete replicas.</p>
+<p>为了保证它被通知，影子Master读取不断增长的操作日志的副本，并且按照和主Master同样的更改序列应用到它的数据结构。与主Master一样，它在启动时（之后很少）轮询Chunk Server以定位Chunk副本并与它们交换频繁的握手消息以监控它们的状态。 它仅依赖于主Master来更新由主Master创建和删除副本的决定所导致的副本位置更新。</p>
+<h2 id="5-2-Data-Integrity"><a href="#5-2-Data-Integrity" class="headerlink" title="5.2 Data Integrity"></a>5.2 Data Integrity</h2><p>Each chunk server uses checksumming to detect corruption of stored data. Given that a GFS cluster often has thousands of disks on hundreds of machines, it regularly experiences disk failures that cause data corruption or loss on both the read and write paths. (See Section 7 for one cause.) We can recover from corruption using other chunk replicas, but it would be impractical to detect corruption by comparing replicas across chunk servers. Moreover, divergent replicas may be legal: the semantics of GFS mutations, in particular atomic record append as discussed earlier, does not guarantee identical replicas. Therefore, each chunk server must independently verify the integrity of its own copy by maintaining checksums.</p>
+<p>每个Chunk Server使用检验和来检测存储数据的损坏。因为每个GFS集群通常在几百台机器上有几千个磁盘，这会经常遇到磁盘故障，并导致在读或写路径上的数据损坏和丢失。我们可以使用其他的Chunk副本来从损坏中恢复数据，但通过跨Chunk Server的方式来比较副本以检验数据损坏是不切实际的。此外，不同的副本可能是合法的：GFS变更的语义，特别是在我们之前讨论过的原子追加记录上，并不会保证一致的副本。因此，每个Chunk Server必须通过维护独立检验和的方式来保证它自己副本数据的完整性。</p>
+<p>A chunk is broken up into 64 KB blocks. Each has a corresponding 32 bit checksum. Like other metadata, checksums are kept in memory and stored persistently with logging, separate from user data.</p>
+<p>每个Chunk被划分为64KB大小的块。每个块都有对应的32位的检验和。像元数据一样，检验和被保存在内存中，并通过日志的方式持久化，独立于用户数据。</p>
+<p>For reads, the chunk server verifies the checksum of data blocks that overlap the read range before returning any data to the requester, whether a client or another chunk server. Therefore chunk servers will not propagate corruptions to other machines. If a block does not match the recorded checksum, the chunk server returns an error to the requestor and reports the mismatch to the master. In response, the requestor will read from other replicas, while the master will clone the chunk from another replica. After a valid new replica is in place, the master instructs the chunk server that reported the mismatch to delete its replica.</p>
+<p>对于读操作，Chunk Server在将数据返回给请求者之前（无论是客户端还是其他的Chunk Server），都会验证读操作范围内的数据块的检验和。因此，Chunk Server不会将损坏的数据传播到其他机器。如果一个块不匹配记录的检验和，Chunk Server将会向请求者返回一个错误信息，并且向Master报告不匹配信息。作为响应，请求者将会从其他的副本读取数据，并且Master将会从其他的副本克隆Chunk。在有效的新副本就位后，Master会指示报告不匹配的Chunk Server删除其副本。</p>
+<p>Checksumming has little effect on read performance for several reasons. Since most of our reads span at least a few blocks, we need to read and checksum only a relatively small amount of extra data for verification. GFS client code further reduces this overhead by trying to align reads at checksum block boundaries. Moreover, checksum lookups and comparison on the chunk server are done without any I/O, and checksum calculation can often be overlapped with I/Os.</p>
+<p>出于多个原因，检验和对读操作的性能机会没有影响。因为我们的读操作至少跨越几个块，我们只需要读取和检验相对很少的额外数据进行验证。GFS客户端代码尝试通过在检验和的块边界对齐读取以进一步减少该开销。此外，Chunk Server上的检验和查找和比较是在没有任何IO的情况下完成的，并且检验和的计算通常会与IO重叠。</p>
+<p>Checksum computation is heavily optimized for writes that append to the end of a chunk(as opposed to writes that overwrite existing data) because they are dominant in our workloads. We just incrementally update the checksum for the last partial checksum block, and compute new checksums for any brand new checksum blocks filled by the append. Even if the last partial checksum block is already corrupted and we fail to detect it now, the new checksum value will not match the stored data, and the corruption will be detected as usual when the block is next read.</p>
+<p>检验和计算针对附加到块的末尾的写入（而不是覆盖现有数据的写入）因为在我们的工作负载中它们占主导地位。我们只会增量更新最后部分检验和块的检验和，并为由追加填充得到的新的检验和块计算新的检验和。即使最后的部分检验和块已经损坏了，而且我们现在没法检测到它，新的检验和值也不会匹配到存储的数据，并且会在下次读取块时检测到损坏。</p>
+<p>In contrast, if a write overwrites an existing range of the chunk, we must read and verify the first and last blocks of the range being overwritten, then perform the write, and finally compute and record the new checksums. If we do not verify the first and last blocks before overwriting them partially, the new checksums may hide corruption that exists in the regions not being overwritten.</p>
+<p>相反，如果写入操作覆盖写了Chunk的现有范围，我们必须读取和检测覆盖写范围内的第一个和最后一个块，然后执行写入，最后计算并记录新的检验和。如果我们不对部分覆盖写范围内的第一个和最后一个块进行验证，新的检验和可能会隐藏存在于覆盖写范围之外的损坏。</p>
+<p>During idle periods, chunk servers can scan and verify the contents of inactive chunks. This allows us to detect corruption in chunks that are rarely read. Once the corruption is detected, the master can create a new uncorrupted replica and delete the corrupted replica. This prevents an inactive but corrupted chunk replica from fooling the master into thinking that it has enough valid replicas of a chunk.</p>
+<p>在空闲时期，Chunk Server会扫描和验证非活动Chunk的内容。这使我们可以检测到那些很少读取的Chunk中的损坏。一旦检测到损坏，Master就可以创建一个新的未损坏的副本并删除已损坏的副本。这避免了不活跃但已损坏的Chunk副本欺骗Master，使其以为我们已经拥有了足够的可用Chunk副本。</p>
+<h2 id="5-3-Diagnostic-Tools"><a href="#5-3-Diagnostic-Tools" class="headerlink" title="5.3 Diagnostic Tools"></a>5.3 Diagnostic Tools</h2><p>Extensive and detailed diagnostic logging has helped immeasurably in problem isolation, debugging, and performance analysis, while incurring only a minimal cost. Without logs, it is hard to understand transient, non-repeatable interactions between machines. GFS servers generate diagnostic logs that record many significant events (such as chunk servers going up and down) and all RPC requests and replies. These diagnostic logs can be freely deleted without affecting the correctness of the system. However, we try to keep these logs around as far as space permits.</p>
+<p>广泛而详细的诊断日志在问题隔离、调试和性能分析方面起到了不可估量的作用，同时只产生了最低限度的成本。 没有日志，就很难理解机器之间短暂的、不可重复的交互。 GFS 服务器生成诊断日志，来记录许多重要事件（例如Chunk Server启动和关闭）以及所有 RPC 请求和回复。 这些诊断日志可以随意删除，不影响系统的正确性。 但是，我们会尽量在空间允许的范围内保留这些日志。</p>
+<p>The RPC logs include the exact requests and responses sent on the wire, except for the file data being read or written. By matching requests with replies and collating RPC records on different machines, we can reconstruct the entire interaction history to diagnose a problem. The logs also serve as traces for load testing and performance analysis.</p>
+<p>RPC 日志包括在线路上发送的确切请求和响应，但正在读取或写入的文件数据除外。 通过将请求与回复匹配并整理不同机器上的 RPC 记录，我们可以重建整个交互历史以诊断问题。 日志还用作负载测试和性能分析的跟踪。</p>
+<p>The performance impact of logging is minimal (and far outweighed by the benefits) because these logs are written sequentially and asynchronously. The most recent events are also kept in memory and available for continuous online monitoring.</p>
+<p>日志记录对性能的影响很小（并且远远超过好处），因为这些日志是按顺序和异步写入的。 最近的事件也保存在内存中，可用于持续在线监控。</p>
+<h1 id="6-Measurements"><a href="#6-Measurements" class="headerlink" title="6 Measurements"></a>6 Measurements</h1><p>以下内容略。</p>
+<h2 id="6-1-Micro-benchmarks"><a href="#6-1-Micro-benchmarks" class="headerlink" title="6.1 Micro-benchmarks"></a>6.1 Micro-benchmarks</h2><h3 id="6-1-1-Reads"><a href="#6-1-1-Reads" class="headerlink" title="6.1.1 Reads"></a>6.1.1 Reads</h3><h3 id="6-1-2-Writes"><a href="#6-1-2-Writes" class="headerlink" title="6.1.2 Writes"></a>6.1.2 Writes</h3><h3 id="6-1-3-Record-Appends"><a href="#6-1-3-Record-Appends" class="headerlink" title="6.1.3 Record Appends"></a>6.1.3 Record Appends</h3><h2 id="6-2-Real-World-Cluster"><a href="#6-2-Real-World-Cluster" class="headerlink" title="6.2 Real World Cluster"></a>6.2 Real World Cluster</h2><h3 id="6-2-1-Storage"><a href="#6-2-1-Storage" class="headerlink" title="6.2.1 Storage"></a>6.2.1 Storage</h3><h3 id="6-2-2-Metadata"><a href="#6-2-2-Metadata" class="headerlink" title="6.2.2 Metadata"></a>6.2.2 Metadata</h3><h3 id="6-2-3-Read-and-Write-Rates"><a href="#6-2-3-Read-and-Write-Rates" class="headerlink" title="6.2.3 Read and Write Rates"></a>6.2.3 Read and Write Rates</h3><h3 id="6-2-4-Master-Load"><a href="#6-2-4-Master-Load" class="headerlink" title="6.2.4 Master Load"></a>6.2.4 Master Load</h3><h3 id="6-2-5-Recovery-Time"><a href="#6-2-5-Recovery-Time" class="headerlink" title="6.2.5 Recovery Time"></a>6.2.5 Recovery Time</h3><h2 id="6-3-Workload-Breakdown"><a href="#6-3-Workload-Breakdown" class="headerlink" title="6.3 Workload Breakdown"></a>6.3 Workload Breakdown</h2><h3 id="6-3-1-Methodology-and-Caveats"><a href="#6-3-1-Methodology-and-Caveats" class="headerlink" title="6.3.1 Methodology and Caveats"></a>6.3.1 Methodology and Caveats</h3><h3 id="6-3-2-Chunk-server-Workload"><a href="#6-3-2-Chunk-server-Workload" class="headerlink" title="6.3.2 Chunk-server Workload"></a>6.3.2 Chunk-server Workload</h3><h3 id="6-3-3-Appends-versus-Writes"><a href="#6-3-3-Appends-versus-Writes" class="headerlink" title="6.3.3 Appends versus Writes"></a>6.3.3 Appends versus Writes</h3><h3 id="6-3-4-Master-Workload"><a href="#6-3-4-Master-Workload" class="headerlink" title="6.3.4 Master Workload"></a>6.3.4 Master Workload</h3><h1 id="7-Experiences"><a href="#7-Experiences" class="headerlink" title="7 Experiences"></a>7 Experiences</h1><h1 id="8-Related-Work"><a href="#8-Related-Work" class="headerlink" title="8 Related Work"></a>8 Related Work</h1><h1 id="9-Conclusions"><a href="#9-Conclusions" class="headerlink" title="9 Conclusions"></a>9 Conclusions</h1>
+            </div>
+            <hr>
+            <div>
+              <div class="post-metas mb-3">
+                
+                  <div class="post-meta mr-3">
+                    <i class="iconfont icon-category"></i>
+                    
+                      <a class="hover-with-bg" href="/categories/%E5%88%86%E5%B8%83%E5%BC%8F%E5%AD%98%E5%82%A8%E8%AE%BA%E6%96%87/">分布式存储论文</a>
+                    
+                      <a class="hover-with-bg" href="/categories/%E5%88%86%E5%B8%83%E5%BC%8F%E5%AD%98%E5%82%A8%E8%AE%BA%E6%96%87/Goole%E8%AE%BA%E6%96%87/">Goole论文</a>
+                    
+                      <a class="hover-with-bg" href="/categories/%E5%88%86%E5%B8%83%E5%BC%8F%E5%AD%98%E5%82%A8%E8%AE%BA%E6%96%87/Goole%E8%AE%BA%E6%96%87/%E8%AE%BA%E6%96%87%E9%98%85%E8%AF%BB/">论文阅读</a>
+                    
+                  </div>
+                
+                
+                  <div class="post-meta">
+                    <i class="iconfont icon-tags"></i>
+                    
+                      <a class="hover-with-bg" href="/tags/%E8%AE%BA%E6%96%87%E9%98%85%E8%AF%BB/">论文阅读</a>
+                    
+                      <a class="hover-with-bg" href="/tags/%E5%88%86%E5%B8%83%E5%BC%8F%E6%96%87%E4%BB%B6%E7%B3%BB%E7%BB%9F/">分布式文件系统</a>
+                    
+                  </div>
+                
+              </div>
+              
+                <p class="note note-warning">
+                  
+                    本博客所有文章除特别声明外，均采用 <a target="_blank" href="https://creativecommons.org/licenses/by-sa/4.0/deed.zh" rel="nofollow noopener noopener">CC BY-SA 4.0 协议</a> ，转载请注明出处！
+                  
+                </p>
+              
+              
+                <div class="post-prevnext">
+                  <article class="post-prev col-6">
+                    
+                    
+                      <a href="/2021/10/13/%E5%88%86%E5%B8%83%E5%BC%8F/%E9%80%BB%E8%BE%91%E6%97%B6%E9%92%9F/">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">逻辑时钟（Logical Clock）</span>
+                        <span class="visible-mobile">上一篇</span>
+                      </a>
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2021/09/24/C%E5%92%8CC++/%E5%8A%A8%E6%80%81%E5%86%85%E5%AD%98%E5%88%86%E9%85%8D/">
+                        <span class="hidden-mobile">动态内存分配</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+          </article>
+        </div>
+      </div>
+    </div>
+    
+      <div class="d-none d-lg-block col-lg-2 toc-container" id="toc-ctn">
+        <div id="toc">
+  <p class="toc-header"><i class="iconfont icon-list"></i>&nbsp;目录</p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+      </div>
+    
+  </div>
+</div>
+
+<!-- Custom -->
+
+
+    
+
+    
+      <a id="scroll-top-button" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v"
+                 for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+    
+
+    
+  </main>
+
+  <footer class="text-center mt-5 py-3">
+  <div class="footer-content">
+     <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
+  </div>
+  
+
+  
+
+  
+</footer>
+
+
+  <!-- SCRIPTS -->
+  
+  <script  src="https://cdn.jsdelivr.net/npm/nprogress@0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/nprogress@0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://cdn.jsdelivr.net/npm/jquery@3.6.0/dist/jquery.min.js" ></script>
+<script  src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.0/dist/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+<!-- Plugins -->
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+  
+
+
+
+  <script  src="https://cdn.jsdelivr.net/npm/tocbot@4.12.3/dist/tocbot.min.js" ></script>
+
+
+
+  <script  src="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.5.7/dist/jquery.fancybox.min.js" ></script>
+
+
+
+  <script  src="https://cdn.jsdelivr.net/npm/anchor-js@4.3.1/anchor.min.js" ></script>
+
+
+
+  <script defer src="https://cdn.jsdelivr.net/npm/clipboard@2.0.8/dist/clipboard.min.js" ></script>
+
+
+
+  <script  src="/js/local-search.js" ></script>
+
+
+
+
+
+
+  <script  src="https://cdn.jsdelivr.net/npm/typed.js@2.0.12/lib/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var title = document.getElementById('subtitle').title;
+      
+      typing(title)
+      
+    })(window, document);
+  </script>
+
+
+
+
+
+  
+
+  
+    <!-- MathJax -->
+    <script>
+      MathJax = {
+        tex: {
+          inlineMath: [['$', '$'], ['\\(', '\\)']]
+        },
+        options: {
+          renderActions: {
+            findScript: [10, doc => {
+              document.querySelectorAll('script[type^="math/tex"]').forEach(node => {
+                const display = !!node.type.match(/; *mode=display/);
+                const math = new doc.options.MathItem(node.textContent, doc.inputJax[0], display);
+                const text = document.createTextNode('');
+                node.parentNode.replaceChild(text, node);
+                math.start = { node: text, delim: '', n: 0 };
+                math.end = { node: text, delim: '', n: 0 };
+                doc.math.push(math);
+              });
+            }, '', false],
+            insertedScript: [200, () => {
+              document.querySelectorAll('mjx-container').forEach(node => {
+                let target = node.parentNode;
+                if (target.nodeName.toLowerCase() === 'li') {
+                  target.parentNode.classList.add('has-jax');
+                }
+              });
+            }, '', false]
+          }
+        }
+      };
+    </script>
+
+    <script async src="https://cdn.jsdelivr.net/npm/mathjax@3.1.4/es5/tex-svg.js" ></script>
+
+  
+
+
+
+
+
+
+
+
+
+
+
+<!-- 主题的启动项 保持在最底部 -->
+<script  src="/js/boot.js" ></script>
+
+
+</body>
+</html>

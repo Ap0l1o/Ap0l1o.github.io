@@ -4,6 +4,31 @@
   
   
   <entry>
+    <title>2022-07-25记</title>
+    <link href="/2022/07/25/%E4%BA%BA%E7%94%9F%E4%B8%80%E4%BA%8B/20220725/"/>
+    <url>/2022/07/25/%E4%BA%BA%E7%94%9F%E4%B8%80%E4%BA%8B/20220725/</url>
+    
+    <content type="html"><![CDATA[<p>我听人说，这世界第一快乐的是只顾自己的人，第二快乐的是不会回头的人。</p>]]></content>
+    
+    
+    <categories>
+      
+      <category>人生一事</category>
+      
+    </categories>
+    
+    
+    <tags>
+      
+      <tag>人生一事</tag>
+      
+    </tags>
+    
+  </entry>
+  
+  
+  
+  <entry>
     <title>Dynamo论文阅读</title>
     <link href="/2022/07/10/%E8%AF%BB%E8%AE%BA%E6%96%87/Dynamo/"/>
     <url>/2022/07/10/%E8%AF%BB%E8%AE%BA%E6%96%87/Dynamo/</url>
@@ -39,7 +64,7 @@
     <link href="/2022/07/05/%E4%BA%BA%E7%94%9F%E4%B8%80%E4%BA%8B/20220705/"/>
     <url>/2022/07/05/%E4%BA%BA%E7%94%9F%E4%B8%80%E4%BA%8B/20220705/</url>
     
-    <content type="html"><![CDATA[<div class="hbe hbe-container" id="hexo-blog-encrypt" data-wpm="抱歉, 这个密码看着不太对, 请再试试." data-whm="抱歉, 这个文章不能被校验, 不过您还是能看看解密后的内容.">  <script id="hbeData" type="hbeData" data-hmacdigest="56dcb56027ac5e94188194be773b7f7257091582fb18912a4153d0b1afe1e142">2db7724a954bda8868d66cd7c16a6f372051d357271c915bfb563b1f7db9d2532b1e75882fae551806b0c4fd21ed4b4385b511ae8b35c120ebb5378f51095ab6bb1602e51e2cded36b31227ef7a7c1b2</script>  <div class="hbe hbe-content">    <div class="hbe hbe-input hbe-input-xray">      <input class="hbe hbe-input-field hbe-input-field-xray" type="password" id="hbePass">      <label class="hbe hbe-input-label hbe-input-label-xray" for="hbePass">        <span class="hbe hbe-input-label-content hbe-input-label-content-xray">请输入密码查看.</span>      </label>      <svg class="hbe hbe-graphic hbe-graphic-xray" width="300%" height="100%" viewBox="0 0 1200 60" preserveAspectRatio="none">        <path d="M0,56.5c0,0,298.666,0,399.333,0C448.336,56.5,513.994,46,597,46c77.327,0,135,10.5,200.999,10.5c95.996,0,402.001,0,402.001,0"></path>        <path d="M0,2.5c0,0,298.666,0,399.333,0C448.336,2.5,513.994,13,597,13c77.327,0,135-10.5,200.999-10.5c95.996,0,402.001,0,402.001,0"></path>      </svg>    </div>  </div></div><script data-pjax src="/lib/hbe.js"></script><link href="/css/hbe.style.css" rel="stylesheet" type="text/css">]]></content>
+    <content type="html"><![CDATA[<div class="hbe hbe-container" id="hexo-blog-encrypt" data-wpm="Oh, this is an invalid password. Check and try again, please." data-whm="OOPS, these decrypted content may changed, but you can still have a look.">  <script id="hbeData" type="hbeData" data-hmacdigest="56dcb56027ac5e94188194be773b7f7257091582fb18912a4153d0b1afe1e142">2db7724a954bda8868d66cd7c16a6f372051d357271c915bfb563b1f7db9d2532b1e75882fae551806b0c4fd21ed4b4385b511ae8b35c120ebb5378f51095ab6bb1602e51e2cded36b31227ef7a7c1b2</script>  <div class="hbe hbe-content">    <div class="hbe hbe-input hbe-input-default">      <input class="hbe hbe-input-field hbe-input-field-default" type="password" id="hbePass">      <label class="hbe hbe-input-label hbe-input-label-default" for="hbePass">        <span class="hbe hbe-input-label-content hbe-input-label-content-default">Hey, password is required here.</span>      </label>    </div>  </div></div><script data-pjax src="/lib/hbe.js"></script><link href="/css/hbe.style.css" rel="stylesheet" type="text/css">]]></content>
     
     
     <categories>
@@ -85,11 +110,11 @@
   
   
   <entry>
-    <title>C++类型转换</title>
-    <link href="/2022/05/02/C%E5%92%8CC++/%E7%B1%BB%E5%9E%8B%E8%BD%AC%E6%8D%A2/"/>
-    <url>/2022/05/02/C%E5%92%8CC++/%E7%B1%BB%E5%9E%8B%E8%BD%AC%E6%8D%A2/</url>
+    <title>C++内联函数</title>
+    <link href="/2022/05/02/C%E5%92%8CC++/%E5%86%85%E8%81%94%E5%87%BD%E6%95%B0/"/>
+    <url>/2022/05/02/C%E5%92%8CC++/%E5%86%85%E8%81%94%E5%87%BD%E6%95%B0/</url>
     
-    <content type="html"><![CDATA[<h1 id="类型转换"><a href="#类型转换" class="headerlink" title="类型转换"></a>类型转换</h1><p>类型转换是指将一种类型的值转换为另一种类型的值。C++中有两种形式的类型转换：<strong>显式类型转换</strong>和<strong>隐式类型转换</strong>。</p><h2 id="隐式类型转换"><a href="#隐式类型转换" class="headerlink" title="隐式类型转换"></a>隐式类型转换</h2><p>隐式类型转换发生在以下几种情况：</p><ul><li><strong>混合运算</strong>：级别低的类型向级别高的类型转换。（一般来说，某个类型的一个数据占用的存储空间越多，则该类型的级别越高）</li><li><strong>将表达式的值赋给变量</strong>：表达式的值向变量类型的值转换。</li><li><strong>函数实参向函数形参传值</strong>：实参的值向形参的值转换。</li><li><strong>函数返回结果</strong>：返回的值向函数返回类型的值进行转换。</li></ul><p>需要注意的是，<strong>隐式转换是在编译时进行的</strong>，因此不需要运算符的参与。</p><h2 id="显式类型转换"><a href="#显式类型转换" class="headerlink" title="显式类型转换"></a>显式类型转换</h2><p>显示类型转换有下面几种风格：</p><ol><li>C风格：<code>(类型名)表达式</code>或<code>(类型名)(表达式)</code>;</li><li>C++风格：<code>类型名(表达式)</code>。此时，<strong>类型名</strong>就是一个<strong>类型转换运算符</strong>。</li><li><strong>类型安全的显式类型转换运算符</strong>：<ol><li><code>static_cast&lt;类型名&gt;(表达式)</code>：作用类似于C风格和C++风格的转换功能，同时也能用在不需要显式转换的地方。</li><li><code>const_cast&lt;类型名&gt;(表达式)</code>：将const或volaile数据转换为非<code>const</code>或非<code>volatile</code>的数据。</li><li><code>dynamic_cast&lt;类型名&gt;(表达式)</code>：将父类指针转换为子类指针。</li><li><code>reinterpret_cast&lt;类型名&gt;(表达式)</code>：将一个数据转换成一个完全不同意义的数据，在使用时一般要在这样的转换后再做逆转换。（这是一种具有潜在危险性的转换）</li></ol></li></ol><p>需要注意的是，无论是哪种类型转换，都需要申请一个临时单元，将要转换的值先复制到临时单元，转换发生在临时单元中。</p>]]></content>
+    <content type="html"><![CDATA[<h1 id="内联函数"><a href="#内联函数" class="headerlink" title="内联函数"></a>内联函数</h1><p>许多程序员使用带有参数的宏来完成简单函数的调用。宏替换的好处是没有函数调用的开销，能够加快代码的执行。</p><p>但宏替换是一种无类型机制，只能实现比较简单的功能，有时还会产生预期之外的副作用。而函数正好相反。</p><p>为了结合宏替换和函数的优点，C++语言允许定义内联函数。在函数原型前加上<code>inline</code>表示这是一个内联函数。例如：</p><figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs C++"><span class="hljs-function"><span class="hljs-keyword">inline</span> <span class="hljs-keyword">void</span> <span class="hljs-title">function</span><span class="hljs-params">(<span class="hljs-keyword">int</span> a, <span class="hljs-keyword">int</span> b)</span></span>;<br></code></pre></td></tr></table></figure><p>在编译时，会将将调用内联函数的地方用相应的函数体替换，能够加快代码的执行，减少函数调用的开销。</p><p>需要注意的是，不是所有的函数都需要定义为内联函数，在使用内联函数时要注意一下事项：</p><ul><li>内联函数内不允许有循环语句和开关语句。如果内联函数内有这些语句，则按普通函数处理。</li><li>内联函数的函数体不宜过长，以1～5行为宜。</li></ul>]]></content>
     
     
     <categories>
@@ -112,11 +137,11 @@
   
   
   <entry>
-    <title>C++内联函数</title>
-    <link href="/2022/05/02/C%E5%92%8CC++/%E5%86%85%E8%81%94%E5%87%BD%E6%95%B0/"/>
-    <url>/2022/05/02/C%E5%92%8CC++/%E5%86%85%E8%81%94%E5%87%BD%E6%95%B0/</url>
+    <title>C++类型转换</title>
+    <link href="/2022/05/02/C%E5%92%8CC++/%E7%B1%BB%E5%9E%8B%E8%BD%AC%E6%8D%A2/"/>
+    <url>/2022/05/02/C%E5%92%8CC++/%E7%B1%BB%E5%9E%8B%E8%BD%AC%E6%8D%A2/</url>
     
-    <content type="html"><![CDATA[<h1 id="内联函数"><a href="#内联函数" class="headerlink" title="内联函数"></a>内联函数</h1><p>许多程序员使用带有参数的宏来完成简单函数的调用。宏替换的好处是没有函数调用的开销，能够加快代码的执行。</p><p>但宏替换是一种无类型机制，只能实现比较简单的功能，有时还会产生预期之外的副作用。而函数正好相反。</p><p>为了结合宏替换和函数的优点，C++语言允许定义内联函数。在函数原型前加上<code>inline</code>表示这是一个内联函数。例如：</p><figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs C++"><span class="hljs-function"><span class="hljs-keyword">inline</span> <span class="hljs-keyword">void</span> <span class="hljs-title">function</span><span class="hljs-params">(<span class="hljs-keyword">int</span> a, <span class="hljs-keyword">int</span> b)</span></span>;<br></code></pre></td></tr></table></figure><p>在编译时，会将将调用内联函数的地方用相应的函数体替换，能够加快代码的执行，减少函数调用的开销。</p><p>需要注意的是，不是所有的函数都需要定义为内联函数，在使用内联函数时要注意一下事项：</p><ul><li>内联函数内不允许有循环语句和开关语句。如果内联函数内有这些语句，则按普通函数处理。</li><li>内联函数的函数体不宜过长，以1～5行为宜。</li></ul>]]></content>
+    <content type="html"><![CDATA[<h1 id="类型转换"><a href="#类型转换" class="headerlink" title="类型转换"></a>类型转换</h1><p>类型转换是指将一种类型的值转换为另一种类型的值。C++中有两种形式的类型转换：<strong>显式类型转换</strong>和<strong>隐式类型转换</strong>。</p><h2 id="隐式类型转换"><a href="#隐式类型转换" class="headerlink" title="隐式类型转换"></a>隐式类型转换</h2><p>隐式类型转换发生在以下几种情况：</p><ul><li><strong>混合运算</strong>：级别低的类型向级别高的类型转换。（一般来说，某个类型的一个数据占用的存储空间越多，则该类型的级别越高）</li><li><strong>将表达式的值赋给变量</strong>：表达式的值向变量类型的值转换。</li><li><strong>函数实参向函数形参传值</strong>：实参的值向形参的值转换。</li><li><strong>函数返回结果</strong>：返回的值向函数返回类型的值进行转换。</li></ul><p>需要注意的是，<strong>隐式转换是在编译时进行的</strong>，因此不需要运算符的参与。</p><h2 id="显式类型转换"><a href="#显式类型转换" class="headerlink" title="显式类型转换"></a>显式类型转换</h2><p>显示类型转换有下面几种风格：</p><ol><li>C风格：<code>(类型名)表达式</code>或<code>(类型名)(表达式)</code>;</li><li>C++风格：<code>类型名(表达式)</code>。此时，<strong>类型名</strong>就是一个<strong>类型转换运算符</strong>。</li><li><strong>类型安全的显式类型转换运算符</strong>：<ol><li><code>static_cast&lt;类型名&gt;(表达式)</code>：作用类似于C风格和C++风格的转换功能，同时也能用在不需要显式转换的地方。</li><li><code>const_cast&lt;类型名&gt;(表达式)</code>：将const或volaile数据转换为非<code>const</code>或非<code>volatile</code>的数据。</li><li><code>dynamic_cast&lt;类型名&gt;(表达式)</code>：将父类指针转换为子类指针。</li><li><code>reinterpret_cast&lt;类型名&gt;(表达式)</code>：将一个数据转换成一个完全不同意义的数据，在使用时一般要在这样的转换后再做逆转换。（这是一种具有潜在危险性的转换）</li></ol></li></ol><p>需要注意的是，无论是哪种类型转换，都需要申请一个临时单元，将要转换的值先复制到临时单元，转换发生在临时单元中。</p>]]></content>
     
     
     <categories>

@@ -1,0 +1,849 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/ap0l1o.png">
+  <link rel="icon" href="/img/ap0l1o.png">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="author" content="ap0l1o">
+  <meta name="keywords" content="">
+  
+    <meta name="description" content="Web运作原理简介。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Web运作原理简介">
+<meta property="og:url" content="http://example.com/2021/04/18/Web%E7%9B%B8%E5%85%B3/Web%E8%BF%90%E4%BD%9C%E5%8E%9F%E7%90%86/index.html">
+<meta property="og:site_name" content="ap0l1o">
+<meta property="og:description" content="Web运作原理简介。">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/Ap0l1o/ImageHostingService@main/img/Web%E8%BF%90%E4%BD%9C%E5%8E%9F%E7%90%86/F-1.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/Ap0l1o/ImageHostingService@main/img/Web%E8%BF%90%E4%BD%9C%E5%8E%9F%E7%90%86/F-2.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/Ap0l1o/ImageHostingService@main/img/Web%E8%BF%90%E4%BD%9C%E5%8E%9F%E7%90%86/F-3.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/Ap0l1o/ImageHostingService@main/img/Web%E8%BF%90%E4%BD%9C%E5%8E%9F%E7%90%86/F-4.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/Ap0l1o/ImageHostingService@main/img/Web%E8%BF%90%E4%BD%9C%E5%8E%9F%E7%90%86/F-5.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/Ap0l1o/ImageHostingService@main/img/Web%E8%BF%90%E4%BD%9C%E5%8E%9F%E7%90%86/F-6.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/Ap0l1o/ImageHostingService@main/img/Web%E8%BF%90%E4%BD%9C%E5%8E%9F%E7%90%86/F-7.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/Ap0l1o/ImageHostingService@main/img/Web%E8%BF%90%E4%BD%9C%E5%8E%9F%E7%90%86/F-8.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/Ap0l1o/ImageHostingService@main/img/%20Web%E8%BF%90%E4%BD%9C%E5%8E%9F%E7%90%86/F-9.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/Ap0l1o/ImageHostingService@main/img/Web%E8%BF%90%E4%BD%9C%E5%8E%9F%E7%90%86/F-10png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/Ap0l1o/ImageHostingService@main/img/Web%E8%BF%90%E4%BD%9C%E5%8E%9F%E7%90%86/F-11.png">
+<meta property="article:published_time" content="2021-04-18T12:44:00.000Z">
+<meta property="article:modified_time" content="2022-08-09T09:29:12.787Z">
+<meta property="article:author" content="ap0;1o">
+<meta property="article:tag" content="Web技术">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://cdn.jsdelivr.net/gh/Ap0l1o/ImageHostingService@main/img/Web%E8%BF%90%E4%BD%9C%E5%8E%9F%E7%90%86/F-1.png">
+  
+  
+  
+  <title>Web运作原理简介 - ap0l1o</title>
+
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.0/dist/css/bootstrap.min.css" />
+
+
+
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/github-markdown-css@4.0.0/github-markdown.min.css" />
+
+  <link  rel="stylesheet" href="/lib/hint/hint.min.css" />
+
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.5.7/dist/jquery.fancybox.min.css" />
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+<!-- Do not modify the link that theme dependent icons -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1749284_hj8rtnfg7um.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1736178_kmeydafke9r.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+
+  <link id="highlight-css" rel="stylesheet" href="/css/highlight.css" />
+  
+    <link id="highlight-css-dark" rel="stylesheet" href="/css/highlight-dark.css" />
+  
+
+
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    Fluid.ctx = Object.assign({}, Fluid.ctx)
+    var CONFIG = {"hostname":"example.com","root":"/","version":"1.9.2","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false,"scope":[]},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"left","visible":"hover","icon":"§"},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"follow_dnt":true,"baidu":null,"google":null,"gtag":null,"tencent":{"sid":null,"cid":null},"woyaola":null,"cnzz":null,"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false}},"search_path":"/local-search.xml"};
+
+    if (CONFIG.web_analytics.follow_dnt) {
+      var dntVal = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
+      Fluid.ctx.dnt = dntVal && (dntVal.startsWith('1') || dntVal.startsWith('yes') || dntVal.startsWith('on'));
+    }
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+  
+
+
+  
+<meta name="generator" content="Hexo 5.4.0"></head>
+
+
+<body>
+  
+
+  <header>
+    
+
+<div class="header-inner" style="height: 70vh;">
+  <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>Ap0l1o</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/">
+                <i class="iconfont icon-home-fill"></i>
+                主页
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/">
+                <i class="iconfont icon-archive-fill"></i>
+                归档
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item dropdown">
+              <a class="nav-link dropdown-toggle" target="_self" href="javascript:;" role="button"
+                 data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                <i class="iconfont icon-books"></i>
+                大概
+              </a>
+              <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                
+                  
+                  
+                  
+                  <a class="dropdown-item" href="/categories/%E6%8A%80%E6%9C%AF/">
+                    
+                    技术
+                  </a>
+                
+                  
+                  
+                  
+                  <a class="dropdown-item" href="/categories/%E7%94%9F%E6%B4%BB/">
+                    
+                    生活
+                  </a>
+                
+                  
+                  
+                  
+                  <a class="dropdown-item" href="/categories/%E5%BD%B1%E9%9F%B3/">
+                    
+                    影音
+                  </a>
+                
+                  
+                  
+                  
+                  <a class="dropdown-item" href="/categories/%E8%AE%BA%E6%96%87/">
+                    
+                    论文
+                  </a>
+                
+              </div>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/running/">
+                
+                跑步
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/">
+                <i class="iconfont icon-category-fill"></i>
+                分类
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/">
+                <i class="iconfont icon-tags-fill"></i>
+                标签
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/">
+                <i class="iconfont icon-user-fill"></i>
+                关于
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              &nbsp;<i class="iconfont icon-search"></i>&nbsp;
+            </a>
+          </li>
+          
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">&nbsp;<i
+                class="iconfont icon-dark" id="color-toggle-icon"></i>&nbsp;</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+  
+
+<div id="banner" class="banner" parallax=true
+     style="background: url('/img/hello.jpg') no-repeat center center; background-size: cover;">
+  <div class="full-bg-img">
+    <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+      <div class="banner-text text-center fade-in-up">
+        <div class="h2">
+          
+            <span id="subtitle" data-typed-text="Web运作原理简介"></span>
+          
+        </div>
+
+        
+          
+  <div class="mt-3">
+    
+    
+      <span class="post-meta">
+        <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+        <time datetime="2021-04-18 20:44" pubdate>
+          2021年4月18日 晚上
+        </time>
+      </span>
+    
+  </div>
+
+  <div class="mt-1">
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-chart"></i>
+        
+          <!-- compatible with older versions-->
+          9k 字
+        
+      </span>
+    
+
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-clock-fill"></i>
+        
+        
+        
+          <!-- compatible with older versions-->
+          76 分钟
+        
+      </span>
+    
+
+    
+    
+  </div>
+
+
+        
+      </div>
+
+      
+    </div>
+  </div>
+</div>
+
+</div>
+
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+
+    </div>
+
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div id="board">
+          <article class="post-content mx-auto">
+            <!-- SEO header -->
+            <h1 style="display: none">Web运作原理简介</h1>
+            
+            
+              <div class="markdown-body">
+                
+                <h2 id="0x00-Web的概念"><a href="#0x00-Web的概念" class="headerlink" title="0x00 Web的概念"></a>0x00 Web的概念</h2><p>Web是一种分布式应用架构，旨在共享分布在网络上的各个Web服务器中的所有互相链接的信息。Web采用客户/服务器模式，客户与服务器之间用HTTP协议通信。Web使用超文本标记语言 （HTML）来链接网络上的信息。信息存放在服务器端，客户机通过浏览器就可以查找网络中的各个Web服务器上的信息。</p>
+<p>Web的特征：</p>
+<ul>
+<li>信息的表达：用超级文本技术HTML来表达信息，以及建立信息与信息的链接。</li>
+<li>信息的定位：用统一资源定位技术URL来实现网络上信息的精确定位。</li>
+<li>信息的传输：用网络应用层协议HTTP来规范浏览器与Web服务器之间的通信过程。</li>
+</ul>
+<blockquote>
+<p>注：<strong>Web服务器</strong>是指驻留于因特网上某种类型计算机的程序。当Web浏览器（客户端）连到服务器上并请求文件时，服务器将处理该请求并将文件反馈到该浏览器上，附带的信息会高速浏览器如何查看该文件（即文件类型）。服务器使用HTTP（超文本传输协议）与客户机浏览器进行信息交流，因此也常被称为<strong>HTTP服务器</strong>。</p>
+</blockquote>
+<h2 id="0x10-HTML简介"><a href="#0x10-HTML简介" class="headerlink" title="0x10 HTML简介"></a>0x10 HTML简介</h2><p>HTML（Hyper Text Markup Language）即超文本标记语言。用HTML语言编写的文档，即HTML文档，它不仅可以直接包含文本内容，还可以把其他形式的信息包含进来。其特点如下：</p>
+<ul>
+<li>允许直接包含纯文本形式的信息。</li>
+<li>利用<code>&lt;img&gt;</code>和<code>&lt;embed&gt;</code>等标记来包含图片和声音等多媒体形式的信息。</li>
+<li>利用<code>&lt;p&gt;</code>、<code>&lt;br&gt;</code> 、<code>&lt;font&gt;</code>等标记来设定信息在浏览器中的展示格式。</li>
+<li>利用超级链接<code>&lt;a&lt;</code>来链接到其他信息。</li>
+</ul>
+<p>浏览器能够解析HTML文档中的标记，并且可以在浏览器窗口中直观的展示HTML文档。人们通常所说的网页或者Web页面，就是指HTML文档在浏览器中的展示页面。</p>
+<h2 id="0x20-URL简介"><a href="#0x20-URL简介" class="headerlink" title="0x20 URL简介"></a>0x20 URL简介</h2><p><code>URL</code>是<code>Uniform Resource Locator</code>的缩写，表示统一资源定位器，它是专门为标识网络上的资源位置而设的一种编址方式。<code>URL</code>一般由三个部分组成：</p>
+<ul>
+<li>应用层协议</li>
+<li>主机IP地址或域名</li>
+<li>资源所在路径/文件名</li>
+</ul>
+<p><code>URL</code> 的格式：<code>应用层协议://主机IP地址或域名/路径/文件名</code></p>
+<h2 id="0x30-HTTP协议简介"><a href="#0x30-HTTP协议简介" class="headerlink" title="0x30 HTTP协议简介"></a>0x30 HTTP协议简介</h2><p>略。</p>
+<h2 id="0x40-用Java套接字创建HTTP客户与服务器程序"><a href="#0x40-用Java套接字创建HTTP客户与服务器程序" class="headerlink" title="0x40 用Java套接字创建HTTP客户与服务器程序"></a>0x40 用Java套接字创建HTTP客户与服务器程序</h2><p>当用户在浏览器中输入一个指向特定网页的URL时，浏览器会通过DNS解析域名，根据域名解析出服务器的IP地址后，浏览器会向这个IP地址发送请求，建立与远程服务器的TCP连接，然后浏览器将生成的HTTP请求发送给远程服务器，服务器再返回包含响应网页数据的HTTP响应，最后浏览器会把这个网页显示出来。</p>
+<p>浏览器应该具备的功能：</p>
+<ul>
+<li>请求与Web服务器建立TCP连接</li>
+<li>创建并发送HTTP请求</li>
+<li>接收并解析HTTP响应</li>
+<li>在窗口展示HTTP文档</li>
+</ul>
+<p>Web服务器应该具备的功能：</p>
+<ul>
+<li>接收来自浏览器的TCP连接请求</li>
+<li>接收并解析HTTP请求</li>
+<li>创建并发送HTTP响应</li>
+</ul>
+<p>HTTP客户程序和HTTP服务器分别由不同的软件开发商开发，目前最常用的HTTP客户程序包括Firefox、Chrome等，在Unix和Linux平台下使用最广泛的免费HTTP服务器是Apache和Nginx服务器，而Windows平台使用IIS服务器。HTTP客户程序和服务器程序都可以用任意的编程语言编写，并且可以运行在不同的平台上，其顺利通信归功于HTTP协议。HTTP协议严格规定了HTTP请求和HTTP响应的数据格式，只要HTTP服务器与客户程序之间的交换数据都遵守HTTP协议，双方就能看得懂对方发送的数据，从而顺利交流。</p>
+<p>HTTP服务器的简单实现：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-keyword">import</span> java.io.FileInputStream;<br><span class="hljs-keyword">import</span> java.io.InputStream;<br><span class="hljs-keyword">import</span> java.io.OutputStream;<br><span class="hljs-keyword">import</span> java.net.ServerSocket;<br><span class="hljs-keyword">import</span> java.net.Socket;<br><br><span class="hljs-keyword">public</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">HttpServer</span> </span>&#123;<br>    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">void</span> <span class="hljs-title">main</span><span class="hljs-params">(String[] args)</span></span>&#123;<br>        <span class="hljs-keyword">int</span> port = <span class="hljs-number">8090</span>;<br>        ServerSocket serverSocket;<br>        <span class="hljs-keyword">try</span>&#123;<br>            <span class="hljs-comment">/*</span><br><span class="hljs-comment">                服务器监听端口</span><br><span class="hljs-comment">             */</span><br>            serverSocket = <span class="hljs-keyword">new</span> ServerSocket(port);<br>            System.out.println(<span class="hljs-string">&quot;服务器正在监听端口：&quot;</span> + serverSocket.getLocalPort());<br>            <span class="hljs-keyword">while</span>(<span class="hljs-keyword">true</span>)&#123;<br><br>                Socket socket = serverSocket.accept();<br>                System.out.println(<span class="hljs-string">&quot;与客户端建立了一个TCP连接，客户端地址为：&quot;</span> + socket.getInetAddress());<br>                <span class="hljs-comment">// 调用service 方法解析HTTP请求</span><br>                service(socket);<br><br>            &#125;<br><br>        &#125;<br>        <span class="hljs-keyword">catch</span> (Exception e)<br>        &#123;<br>            e.printStackTrace();<br>        &#125;<br>    &#125;<br><br>    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">void</span> <span class="hljs-title">service</span><span class="hljs-params">(Socket socket)</span> <span class="hljs-keyword">throws</span> Exception</span>&#123;<br>        <span class="hljs-comment">// 获取来自客户端(浏览器)的输入流</span><br>        InputStream socketIs = socket.getInputStream();<br><br>        <span class="hljs-comment">// 睡眠500毫秒来等待HTTP请求</span><br>        Thread.sleep(<span class="hljs-number">500</span>);<br><br>        <span class="hljs-keyword">try</span>&#123;<br>            <span class="hljs-comment">/*</span><br><span class="hljs-comment">                从输入流中读取HTTP请求</span><br><span class="hljs-comment">             */</span><br>            <span class="hljs-keyword">int</span> sizeIs = socketIs.available();<br>            <span class="hljs-keyword">byte</span>[] buffer = <span class="hljs-keyword">new</span> <span class="hljs-keyword">byte</span>[sizeIs];<br>            socketIs.read(buffer);<br>            String request = <span class="hljs-keyword">new</span> String(buffer);<br>            <span class="hljs-comment">// 打印HTTP请求信息</span><br>            System.out.println(request);<br><br><br>            <span class="hljs-comment">/*</span><br><span class="hljs-comment">                解析HTTP请求</span><br><span class="hljs-comment">            */</span><br><br>            <span class="hljs-comment">// 获得Http请求的第一行</span><br>            String firstLineOfRequest = request.substring(<span class="hljs-number">0</span>, request.indexOf(<span class="hljs-string">&quot;\r\n&quot;</span>));<br>            <span class="hljs-comment">// 解析HTTP请求的第一行</span><br>            String[] parts = firstLineOfRequest.split(<span class="hljs-string">&quot; &quot;</span>);<br>            String uri = parts[<span class="hljs-number">1</span>]; <span class="hljs-comment">// 获得请求URI</span><br><br>            <span class="hljs-comment">/*</span><br><span class="hljs-comment">                决定HTTP响应正文的类型;</span><br><span class="hljs-comment">                这里做简化处理，仅考虑两种类型;</span><br><span class="hljs-comment">            */</span><br>            String contentType;<br>            <span class="hljs-keyword">if</span>(uri.indexOf(<span class="hljs-string">&quot;html&quot;</span>) != -<span class="hljs-number">1</span> || uri.indexOf(<span class="hljs-string">&quot;htm&quot;</span>) != -<span class="hljs-number">1</span>)<br>                contentType = <span class="hljs-string">&quot;text/html&quot;</span>;<br>            <span class="hljs-keyword">else</span> <span class="hljs-keyword">if</span>(uri.indexOf(<span class="hljs-string">&quot;jpg&quot;</span>) != -<span class="hljs-number">1</span> || uri.indexOf(<span class="hljs-string">&quot;jpeg&quot;</span>) != -<span class="hljs-number">1</span>)<br>                contentType = <span class="hljs-string">&quot;image/jpeg&quot;</span>;<br>            <span class="hljs-keyword">else</span><br>                contentType = <span class="hljs-string">&quot;application/octet-stream&quot;</span>; <span class="hljs-comment">// 字节流类型</span><br><br>            <span class="hljs-comment">/*</span><br><span class="hljs-comment">                创建响应HTTP响应结果</span><br><span class="hljs-comment">            */</span><br>            <span class="hljs-comment">// HTTP响应的第一行</span><br>            String responseFirstLine = <span class="hljs-string">&quot;HTTP1.1 200 OK\r\n&quot;</span>;<br>            <span class="hljs-comment">// HTTP响应头</span><br>            String responseHeader = <span class="hljs-string">&quot;Content-Type:&quot;</span> + contentType + <span class="hljs-string">&quot;\r\n\r\n&quot;</span>; <span class="hljs-comment">// 注意响应头和正文之间有一个空行</span><br>            <span class="hljs-comment">// 根据请求URI获取响应正文数据的输入流</span><br>            System.out.println(uri);<br>            InputStream is = <span class="hljs-keyword">new</span> FileInputStream(<span class="hljs-string">&quot;JavaWeb/WEB-INFO/&quot;</span> + uri);<br><br>            <span class="hljs-comment">/*</span><br><span class="hljs-comment">                发送HTTP响应结果</span><br><span class="hljs-comment">            */</span><br>            <span class="hljs-comment">// 获得套接字的输出流</span><br>            OutputStream socketOs = socket.getOutputStream();<br>            <span class="hljs-comment">// 发送HTTP响应的第一行</span><br>            socketOs.write(responseFirstLine.getBytes());<br>            <span class="hljs-comment">// 发送HTTP响应头</span><br>            socketOs.write(responseHeader.getBytes());<br>            <span class="hljs-comment">// 发送HTTP响应正文</span><br>            <span class="hljs-keyword">int</span> len = <span class="hljs-number">0</span>;<br>            buffer = <span class="hljs-keyword">new</span> <span class="hljs-keyword">byte</span>[<span class="hljs-number">128</span>];<br>            <span class="hljs-keyword">while</span>( (len = is.read(buffer)) != -<span class="hljs-number">1</span>)&#123;<br>                socketOs.write(buffer, <span class="hljs-number">0</span>, len);<br>                System.out.println(<span class="hljs-keyword">new</span> String(buffer));<br>            &#125;<br><br>            System.out.println(<span class="hljs-string">&quot;发送完成&quot;</span>);<br>            Thread.sleep(<span class="hljs-number">1000</span>);<br>            socket.close();<br>        &#125;<br>        <span class="hljs-keyword">catch</span> (Exception e)&#123;<br><br>        &#125;<br>    &#125;<br>&#125;<br><br></code></pre></td></tr></table></figure>
+
+<p>HTTP客户端的简单实现：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-keyword">import</span> java.io.InputStream;<br><span class="hljs-keyword">import</span> java.io.OutputStream;<br><span class="hljs-keyword">import</span> java.net.Socket;<br><br><span class="hljs-keyword">public</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">HttpClient</span> </span>&#123;<br>    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">void</span> <span class="hljs-title">main</span><span class="hljs-params">(String[] args)</span></span>&#123;<br>        String uri = <span class="hljs-string">&quot;index.html&quot;</span>;<br>        doGet(<span class="hljs-string">&quot;127.0.0.1&quot;</span>, <span class="hljs-number">8090</span>, uri);<br>    &#125;<br>    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">void</span> <span class="hljs-title">doGet</span><span class="hljs-params">(String host, <span class="hljs-keyword">int</span> port, String uri)</span></span>&#123;<br>        Socket socket = <span class="hljs-keyword">null</span>;<br>        <span class="hljs-keyword">try</span>&#123;<br>            <span class="hljs-comment">// 与HTTP服务器建立TCP连接</span><br>            socket = <span class="hljs-keyword">new</span> Socket(host, port);<br>        &#125;<br>        <span class="hljs-keyword">catch</span> (Exception e)&#123;<br>            e.printStackTrace();<br><br>        &#125;<br>        <span class="hljs-keyword">try</span>&#123;<br>            <span class="hljs-comment">/*</span><br><span class="hljs-comment">                构造HTTP请求头</span><br><span class="hljs-comment">             */</span><br>            StringBuffer sb = <span class="hljs-keyword">new</span> StringBuffer(<span class="hljs-string">&quot;GET &quot;</span> + uri + <span class="hljs-string">&quot; HTTP/1.1\r\n&quot;</span>);<br>            sb.append(<span class="hljs-string">&quot;Accept: */*\r\n&quot;</span>);<br>            sb.append(<span class="hljs-string">&quot;Accept-Language: zh-cn\r\n&quot;</span>);<br>            sb.append(<span class="hljs-string">&quot;Accept-Encoding: gzip, deflate\r\n&quot;</span>);<br>            sb.append(<span class="hljs-string">&quot;User-Agent: HttpClient\r\n&quot;</span>);<br><br>            <span class="hljs-comment">/*</span><br><span class="hljs-comment">                发送HTTP请求</span><br><span class="hljs-comment">             */</span><br>            OutputStream socketOs = socket.getOutputStream();<br>            socketOs.write(sb.toString().getBytes());<br><br>            <span class="hljs-comment">// 睡眠2秒，等待HTTP响应</span><br>            Thread.sleep(<span class="hljs-number">2000</span>);<br>            <span class="hljs-comment">/*</span><br><span class="hljs-comment">                接收HTTP响应并打印出响应结果</span><br><span class="hljs-comment">             */</span><br>            InputStream socketIs = socket.getInputStream(); <span class="hljs-comment">// 获得输入流</span><br>            <span class="hljs-keyword">int</span> size = socketIs.available();<br>            <span class="hljs-keyword">byte</span>[] buffer = <span class="hljs-keyword">new</span> <span class="hljs-keyword">byte</span>[size];<br>            socketIs.read(buffer);<br>            System.out.println(<span class="hljs-keyword">new</span> String(buffer)); <span class="hljs-comment">// 打印响应结果</span><br><br>        &#125;<br>        <span class="hljs-keyword">catch</span> (Exception e)&#123;<br>            e.printStackTrace();<br>        &#125;<br>        <span class="hljs-keyword">finally</span> &#123;<br>            <span class="hljs-keyword">try</span>&#123;<br>                socket.close(); <span class="hljs-comment">// 断开TCP连接</span><br>            &#125;<br>            <span class="hljs-keyword">catch</span> (Exception e)&#123;<br>                e.printStackTrace();<br>            &#125;<br>        &#125;<br>    &#125;<br>&#125;<br><br></code></pre></td></tr></table></figure>
+
+
+
+<h3 id="0x41-用HttpClient客户程序访问HttpServer程序"><a href="#0x41-用HttpClient客户程序访问HttpServer程序" class="headerlink" title="0x41 用HttpClient客户程序访问HttpServer程序"></a>0x41 用HttpClient客户程序访问HttpServer程序</h3><ol>
+<li><p>运行HttpServer程序，监听8090端口</p>
+<img src="https://cdn.jsdelivr.net/gh/Ap0l1o/ImageHostingService@main/img/Web%E8%BF%90%E4%BD%9C%E5%8E%9F%E7%90%86/F-1.png" srcset="/img/loading.gif" lazyload alt="image.png" style="zoom:80%;" /></li>
+<li><p>运行HttpClient程序，与HttpServer的8090端口建立TCP连接，发送一个HTTP请求，收到一个HTTP响应</p>
+<img src="https://cdn.jsdelivr.net/gh/Ap0l1o/ImageHostingService@main/img/Web%E8%BF%90%E4%BD%9C%E5%8E%9F%E7%90%86/F-2.png" srcset="/img/loading.gif" lazyload alt="image.png" style="zoom: 50%;" /></li>
+<li><p>查看HttpServer的响应，HttpServer与HttpClient成功建立TCP连接，接收并解析来自HttpClient的HTTP请求并返回一个HTTP响应</p>
+<img src="https://cdn.jsdelivr.net/gh/Ap0l1o/ImageHostingService@main/img/Web%E8%BF%90%E4%BD%9C%E5%8E%9F%E7%90%86/F-3.png" srcset="/img/loading.gif" lazyload alt="image.png" style="zoom: 50%;" /></li>
+</ol>
+<h3 id="0x42-浏览器访问HttpServer程序"><a href="#0x42-浏览器访问HttpServer程序" class="headerlink" title="0x42 浏览器访问HttpServer程序"></a>0x42 浏览器访问HttpServer程序</h3><ol>
+<li><p>运行HttpServer程序，监听8090端口</p>
+<img src="https://cdn.jsdelivr.net/gh/Ap0l1o/ImageHostingService@main/img/Web%E8%BF%90%E4%BD%9C%E5%8E%9F%E7%90%86/F-4.png" srcset="/img/loading.gif" lazyload alt="image.png" style="zoom:80%;" /></li>
+<li><p>浏览器访问HttpServer程序，与HttpServer建立TCP连接并发送HTTP请求，收到HTTP响应并解析显示在浏览器窗口</p>
+<img src="https://cdn.jsdelivr.net/gh/Ap0l1o/ImageHostingService@main/img/Web%E8%BF%90%E4%BD%9C%E5%8E%9F%E7%90%86/F-5.png" srcset="/img/loading.gif" lazyload alt="image.png" style="zoom:50%;" /></li>
+<li><p>HttpServer程序与浏览器建立TCP连接，接收其HTTP请求并返回一个HTTP响应</p>
+<img src="https://cdn.jsdelivr.net/gh/Ap0l1o/ImageHostingService@main/img/Web%E8%BF%90%E4%BD%9C%E5%8E%9F%E7%90%86/F-6.png" srcset="/img/loading.gif" lazyload alt="image.png" style="zoom: 50%;" /></li>
+</ol>
+<h2 id="0x50-Web的发展历程"><a href="#0x50-Web的发展历程" class="headerlink" title="0x50 Web的发展历程"></a>0x50 Web的发展历程</h2><h3 id="0x51-阶段一：发布静态HTML文档"><a href="#0x51-阶段一：发布静态HTML文档" class="headerlink" title="0x51 阶段一：发布静态HTML文档"></a>0x51 阶段一：发布静态HTML文档</h3><p>静态HTML文档就是指事先存放在Web服务器端的文件系统中的HTML文档。当用户在浏览器中输入指向特定HTML文档的URL时，WEB服务器就会把该HTML文档的数据发送到浏览器端。在这个阶段，HTML文档只能包含文本及图片。</p>
+<p><img src="https://cdn.jsdelivr.net/gh/Ap0l1o/ImageHostingService@main/img/Web%E8%BF%90%E4%BD%9C%E5%8E%9F%E7%90%86/F-7.png" srcset="/img/loading.gif" lazyload alt="未命名文件.png"></p>
+<h3 id="0x52-阶段二：发布静态多媒体信息"><a href="#0x52-阶段二：发布静态多媒体信息" class="headerlink" title="0x52 阶段二：发布静态多媒体信息"></a>0x52 阶段二：发布静态多媒体信息</h3><p>在上一个阶段，信息只能以文本和图片的形式来发布，这满足不了用户对信息形式多样化的强烈需求。用户的需求使得多媒体信息被引入到Web领域，在这个阶段，信息可以用文本、图片、动画、声音和视频等形式来表示。</p>
+<p>从技术角度来看，这个阶段主要增强了浏览器的功能，要求浏览器能集成一些插件，并利用这些插件来展示特定形式的信息；而Web服务器并不需要做改进，不管是任何形式的静态信息，它们都作为文件事先存放在Web服务器端的文件系统中，Web服务器只需把包含特定信息的文件中的数据发送给浏览器即可，然后由浏览器来负责解析和展示数据。</p>
+<h3 id="0x53-阶段三：提供浏览器端与用户的动态交互功能"><a href="#0x53-阶段三：提供浏览器端与用户的动态交互功能" class="headerlink" title="0x53 阶段三：提供浏览器端与用户的动态交互功能"></a>0x53 阶段三：提供浏览器端与用户的动态交互功能</h3><p>在上述几个阶段，用户在浏览器端都只能被动的观看来自服务器的静态信息。到了本阶段，用户不仅可以通过浏览器浏览信息，还可以与浏览器交互。该功能的实现归功于<code>Java Applet</code>、<code>JavaScript</code>等脚本语言的问世，此外，浏览器还必须能够解析和运行用脚本语言编写的小程序。</p>
+<p>在这个阶段，Web服务器不需要做改进，执行用脚本语言编写的小程序的任务由浏览器来完成，Web服务器只要把包含小程序代码的文件中的数据发送到浏览器端即可。</p>
+<h3 id="0x54-阶段四：提供服务器端与用户的动态交互功能"><a href="#0x54-阶段四：提供服务器端与用户的动态交互功能" class="headerlink" title="0x54 阶段四：提供服务器端与用户的动态交互功能"></a>0x54 阶段四：提供服务器端与用户的动态交互功能</h3><p>以上第三个阶段为用户提供了一些动态交互功能，该功能是由浏览器来完成的，并对用户的浏览器提出了诸多技术要求，如果浏览器不支持某种脚本语言，就无法运行网页中的脚本程序。</p>
+<p>可以说，以上三个阶段的技术发展点都是在客户端，而对Web服务器端都没有做特别要求。到了本阶段，Web服务器端增加了动态执行特定程序代码的功能，这使得Web服务器能利用特定程序代码来动态生成HTML文档。Web服务器动态执行的程序分为两种：</p>
+<ul>
+<li>完全用编程语言编写的程序，如CGI（Common Gateway Interface）程序和用Java编写的Servlet程序。</li>
+<li>嵌入了程序代码的HTML文档，如PHP、ASP和JSP文档。JSP文档是指嵌入了Java程序代码的HTML文档。</li>
+</ul>
+<blockquote>
+<p>注：Web服务器动态执行特定程序代码的特征是Web服务器在运行时加载并执行由第三方提供的程序代码。所谓Web服务器动态生成HTML文档，就是指Web服务器再运行时才通过执行特定程序代码来生成HTML文档，而不是直接从文件系统中获取已经存在的HTML文档。</p>
+</blockquote>
+<p><strong>Servlet的简单模拟</strong></p>
+<p>下面以Servlet为例，简单介绍Web服务器动态执行完全用编程语言编写的程序的原理。</p>
+<p>我们在服务器端存放一个用Java语言编写的程序的<code>.class</code>文件——<code>HelloServlet.class</code>。当用户在浏览器端输入指向该类的URL时，Web服务器就会运行<code>HelloServlet</code>类，<code>HelloServlet</code>类生成<code>HTML</code>文档，并把它发给浏览器。</p>
+<p><img src="https://cdn.jsdelivr.net/gh/Ap0l1o/ImageHostingService@main/img/Web%E8%BF%90%E4%BD%9C%E5%8E%9F%E7%90%86/F-8.png" srcset="/img/loading.gif" lazyload alt="image"></p>
+<p>我们首先定义了一个<a href="../server/Servlet.java" title="Servlet接口">Servlet接口</a>（这个Servlet接口与SUN公司的Servlet规范中的Servlet接口有相似之处，这个简化了的Servlet接口能帮助我们理解Servlet的作用和运行原理），这个接口有一个<code>init()</code>方法和<code>service()</code>方法：</p>
+<ul>
+<li><code>init()</code>方法：初始化方法，当<a href="../server/HttpServerOne.java">HttpServerOne</a>类创建了该接口的实现类的一个实例后，就会立即调用该实例的<code>init()</code>方法</li>
+<li><code>service()</code>方法：用于响应HTTP请求，产生具体的HTTP响应结果。<code>HttpServerOne</code>服务器在响应HTTP请求时，会调用实现了Servlet接口的特定类的<code>service()</code>方法。</li>
+</ul>
+<p>所谓的Web服务器动态执行程序代码，在本范例中就是<code>HttpServerOne</code>在运行时动态加载<code>Servlet</code>接口的实现类，创建它的实例，然后调用它的相关方法，这利用了Java语言的动态加载类的功能。</p>
+<p><a href="../server/HelloServlet.java">HelloServlet类</a>实现了<code>Servlet</code>接口，其<code>service()</code>方法能解析HTTP请求中的请求参数，并会根据请求参数<code>username</code>的取值来生成HTML文档。</p>
+<p>下面我们运行HttpServerOne服务器，然后用浏览器访问：</p>
+<ol>
+<li><p>启动服务器，监听端口</p>
+<p><img src="https://cdn.jsdelivr.net/gh/Ap0l1o/ImageHostingService@main/img/%20Web%E8%BF%90%E4%BD%9C%E5%8E%9F%E7%90%86/F-9.png" srcset="/img/loading.gif" lazyload alt="image"></p>
+</li>
+<li><p>浏览器访问，指定请求参数，得到对应的响应</p>
+<p><img src="https://cdn.jsdelivr.net/gh/Ap0l1o/ImageHostingService@main/img/Web%E8%BF%90%E4%BD%9C%E5%8E%9F%E7%90%86/F-10png" srcset="/img/loading.gif" lazyload alt="image"></p>
+<p>在上面的<a href="../server/HelloServlet.java">HelloServlet类</a>中我们必须费劲的解析原始的字符串形式的HTTP请求，而真正的Servlet技术无需我们自己动手解析字符串形式的HTTP请求，这个繁琐的工作由<strong>Servlet容器</strong>代劳了。</p>
+</li>
+</ol>
+<h3 id="0x55-发布Web应用"><a href="#0x55-发布Web应用" class="headerlink" title="0x55 发布Web应用"></a>0x55 发布Web应用</h3><p>本阶段是在上一个阶段的基础上发展起来的。Web服务器端可动态执行的程序的功能变得越来越强大，不仅能动态生成HTML文档，还能处理各种应用领域里的业务逻辑，还能访问数据库。在这个阶段出现了Web应用的概念。所谓的Web应用，是指需要通过编程来创建的Web站点。在Web应用中不仅包括普通的静态HTML文档，还包含大量可被Web服务器动态执行的程序。用户在Internet上能开展业务的各种Web站点都可看作Web应用。</p>
+<p>Web应用与传统桌面应用程序相比，具有以下特点：</p>
+<ul>
+<li>以浏览器作为展示客户端界面的窗口</li>
+<li>客户端界面一律表现为网页形式，网页由HTML语言写成，具有交互功能</li>
+<li>能完成与桌面应用程序类似的功能</li>
+<li>使用浏览器-服务器架构，浏览器与服务器之间采用HTTP协议通信</li>
+<li>Web应用通过Web服务器来发布</li>
+</ul>
+<h3 id="0x56-发布Web服务"><a href="#0x56-发布Web服务" class="headerlink" title="0x56 发布Web服务"></a>0x56 发布Web服务</h3><p><strong>Web</strong>是基于HTTP协议的分布式架构。HTTP协议采用客户/服务器通信模式，该协议规定了服务器与浏览器之间的交换数据的通信细节。</p>
+<p><strong>Web服务架构</strong>与Web一样，也是网络应用层的一种分布式架构，同时也是基于客户/服务器通信模式，并且也能实现异构系统之间的通信。在Web服务架构中，服务端负责提供Web服务，而客户端则请求Web服务。Web服务可以看做是被客户端远程调用的各种方法，这些方法能处理特定业务逻辑，或者进行复杂运算等。请求过程如下；</p>
+<p><img src="https://cdn.jsdelivr.net/gh/Ap0l1o/ImageHostingService@main/img/Web%E8%BF%90%E4%BD%9C%E5%8E%9F%E7%90%86/F-11.png" srcset="/img/loading.gif" lazyload alt="未命名文件 (2)"></p>
+<p>Web服务架构采用SOAP（Simple Object Access Protocol，简单对象访问协议）作为通信协议。SOAP协议规定客户与服务器之间一律用XML语言进行通信。XML（Extensible Markup Language，可扩展标记语言）是一种可扩展的跨平台的标记语言。SOAP协议规定了客户端向服务器端发送的Web服务请求的具体数据格式，以及服务器端向客户端发送的Web服务响应结果的具体数据格式。</p>
+<p>Web服务实际上是借助Web服务器来发布到网络上的，借用Web服务器来发布Web服务，就不必再创建专门的基于SOAP协议的服务器程序了。以下是客户程序访问特定Web服务的过程：</p>
+<ol>
+<li>客户程序发出一个<strong>原始请求</strong>。</li>
+<li>客户端协议解析器负责把客户程序的原始请求包装为一个XML格式的<strong>SOAP请求</strong>。SOAP请求是基于SOAP协议的Web服务请求的简称。</li>
+<li>客户端协议连接器把SOAP请求包装成一个<strong>HTTP请求</strong>，其中SOAP请求变成了HTTP请求的正文部分。客户端协议连接器接着把HTTP请求发送给Web服务器。</li>
+<li>Web服务器接收到HTTP请求，取出HTTP请求的正文部分，即获得了<strong>SOAP请求</strong>。</li>
+<li>服务器端协议解析器从SOAP请求中获取客户程序的<strong>原始请求数据</strong>，对其解析，然后调用Web服务。</li>
+<li>Web服务返回<strong>原始的响应结果</strong>。</li>
+<li>服务器端协议解析器把Web服务返回的原始响应结果包装为<strong>SOAP响应结果</strong>。SOAP响应结果是基于SOAP协议的Web服务响应结果的简称。</li>
+<li>Web服务器把SOAP响应结果包装成一个<strong>HTTP响应结果</strong>，其中SOAP响应结果变成了HTTP响应结果的正文部分。Web服务器接着把HTTP响应结果发送给客户端协议连接器。</li>
+<li>客户端协议连接器接收到HTTP响应结果，取出HTTP响应结果的正文部分，即得到了<strong>SOAP响应结果</strong>。</li>
+<li>客户端协议解析器从SOAP响应结果中得到<strong>Web服务的原始响应结果</strong>，把它交给客户程序。</li>
+</ol>
+<p>Web的基本功能是提供客户程序与服务器之间的数据传输（主要是服务器发送给浏览器的HTML文档），而Web服务的基本功能是客户程序远程调用服务器端的方法。由于在进行远程方法调用时，客户端与服务器之间也涉及到数据的交换，因此Web服务可以借助Web来传输双方的通信数据。</p>
+
+                
+              </div>
+            
+            <hr/>
+            <div>
+              <div class="post-metas my-3">
+  
+    <div class="post-meta mr-3 d-flex align-items-center">
+      <i class="iconfont icon-category"></i>
+      
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/%E6%8A%80%E6%9C%AF/" class="category-chain-item">技术</a>
+  
+  
+
+      </span>
+    
+  
+</span>
+
+    </div>
+  
+  
+    <div class="post-meta">
+      <i class="iconfont icon-tags"></i>
+      
+        <a href="/tags/Web%E6%8A%80%E6%9C%AF/">#Web技术</a>
+      
+    </div>
+  
+</div>
+
+
+              
+  
+
+  <div class="license-box my-3">
+    <div class="license-title">
+      <div>Web运作原理简介</div>
+      <div>http://example.com/2021/04/18/Web相关/Web运作原理/</div>
+    </div>
+    <div class="license-meta">
+      
+        <div class="license-meta-item">
+          <div>作者</div>
+          <div>ap0l1o</div>
+        </div>
+      
+      
+        <div class="license-meta-item license-meta-date">
+          <div>发布于</div>
+          <div>2021年4月18日</div>
+        </div>
+      
+      
+      <div class="license-meta-item">
+        <div>许可协议</div>
+        <div>
+          
+            
+            
+              <a target="_blank" href="https://creativecommons.org/licenses/by/4.0/">
+              <span class="hint--top hint--rounded" aria-label="BY - 署名">
+                <i class="iconfont icon-by"></i>
+              </span>
+              </a>
+            
+          
+        </div>
+      </div>
+    </div>
+    <div class="license-icon iconfont"></div>
+  </div>
+
+
+
+              
+                <div class="post-prevnext my-3">
+                  <article class="post-prev col-6">
+                    
+                    
+                      <a href="/2021/09/24/C%E5%92%8CC++/%E5%8A%A8%E6%80%81%E5%86%85%E5%AD%98%E5%88%86%E9%85%8D/" title="动态内存分配">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">动态内存分配</span>
+                        <span class="visible-mobile">上一篇</span>
+                      </a>
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+          </article>
+        </div>
+      </div>
+    </div>
+
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+  <aside class="sidebar" style="margin-left: -1rem">
+    <div id="toc">
+  <p class="toc-header"><i class="iconfont icon-list"></i>&nbsp;目录</p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+
+
+  </aside>
+
+
+    </div>
+  </div>
+</div>
+
+
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+  
+  
+
+
+
+
+
+
+
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v" for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    
+
+    
+  </main>
+
+  <footer>
+    <div class="footer-inner">
+  
+    <div class="footer-content">
+       <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
+    </div>
+  
+  
+  
+  
+</div>
+
+  </footer>
+
+  <!-- Scripts -->
+  
+  <script  src="https://cdn.jsdelivr.net/npm/nprogress@0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/nprogress@0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://cdn.jsdelivr.net/npm/jquery@3.6.0/dist/jquery.min.js" ></script>
+<script  src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.0/dist/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+
+  <script  src="https://cdn.jsdelivr.net/npm/typed.js@2.0.12/lib/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var subtitle = document.getElementById('subtitle');
+      if (!subtitle || !typing) {
+        return;
+      }
+      var text = subtitle.getAttribute('data-typed-text');
+      
+        typing(text);
+      
+    })(window, document);
+  </script>
+
+
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+
+  
+<script>
+  Fluid.utils.createScript('https://cdn.jsdelivr.net/npm/tocbot@4.12.3/dist/tocbot.min.js', function() {
+    var toc = jQuery('#toc');
+    if (toc.length === 0 || !window.tocbot) { return; }
+    var boardCtn = jQuery('#board-ctn');
+    var boardTop = boardCtn.offset().top;
+
+    window.tocbot.init({
+      tocSelector     : '#toc-body',
+      contentSelector : '.markdown-body',
+      headingSelector : CONFIG.toc.headingSelector || 'h1,h2,h3,h4,h5,h6',
+      linkClass       : 'tocbot-link',
+      activeLinkClass : 'tocbot-active-link',
+      listClass       : 'tocbot-list',
+      isCollapsedClass: 'tocbot-is-collapsed',
+      collapsibleClass: 'tocbot-is-collapsible',
+      collapseDepth   : CONFIG.toc.collapseDepth || 0,
+      scrollSmooth    : true,
+      headingsOffset  : -boardTop
+    });
+    if (toc.find('.toc-list-item').length > 0) {
+      toc.css('visibility', 'visible');
+    }
+  });
+</script>
+
+
+  <script src=https://cdn.jsdelivr.net/npm/clipboard@2.0.8/dist/clipboard.min.js></script>
+
+  <script>Fluid.plugins.codeWidget();</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://cdn.jsdelivr.net/npm/anchor-js@4.3.1/anchor.min.js', function() {
+    window.anchors.options = {
+      placement: CONFIG.anchorjs.placement,
+      visible  : CONFIG.anchorjs.visible
+    };
+    if (CONFIG.anchorjs.icon) {
+      window.anchors.options.icon = CONFIG.anchorjs.icon;
+    }
+    var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+    var res = [];
+    for (var item of el) {
+      res.push('.markdown-body > ' + item.trim());
+    }
+    if (CONFIG.anchorjs.placement === 'left') {
+      window.anchors.options.class = 'anchorjs-link-left';
+    }
+    window.anchors.add(res.join(', '));
+  });
+</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.5.7/dist/jquery.fancybox.min.js', function() {
+    Fluid.plugins.fancyBox();
+  });
+</script>
+
+
+  <script>Fluid.plugins.imageCaption();</script>
+
+  
+      <script>
+        if (!window.MathJax) {
+          window.MathJax = {
+            tex    : {
+              inlineMath: { '[+]': [['$', '$']] }
+            },
+            loader : {
+              
+            },
+            options: {
+              renderActions: {
+                insertedScript: [200, () => {
+                  document.querySelectorAll('mjx-container').forEach(node => {
+                    let target = node.parentNode;
+                    if (target.nodeName.toLowerCase() === 'li') {
+                      target.parentNode.classList.add('has-jax');
+                    }
+                  });
+                }, '', false]
+              }
+            }
+          };
+        } else {
+          MathJax.startup.document.state(0);
+          MathJax.texReset();
+          MathJax.typeset();
+          MathJax.typesetPromise();
+        }
+      </script>
+    
+
+  <script  src="https://cdn.jsdelivr.net/npm/mathjax@3.1.4/es5/tex-mml-chtml.js" ></script>
+
+  <script  src="/js/local-search.js" ></script>
+
+
+
+
+
+<!-- 主题的启动项，将它保持在最底部 -->
+<!-- the boot of the theme, keep it at the bottom -->
+<script  src="/js/boot.js" ></script>
+
+
+  
+
+  <noscript>
+    <div class="noscript-warning">博客在允许 JavaScript 运行的环境下浏览效果更佳</div>
+  </noscript>
+</body>
+</html>

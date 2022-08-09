@@ -11,6 +11,12 @@
     <content type="html"><![CDATA[<h1 id="TriangleKV"><a href="#TriangleKV" class="headerlink" title="TriangleKV"></a>TriangleKV</h1><ul><li>论文名称：TriangleKV_Reducing_Write_Stalls_and_Write_Amplification_in_LSM-tree_Based_KV_Stores_with_Triangle_Container_in_NVM</li><li>期刊：TPDS</li><li>时间：2022</li></ul><h2 id="Introduction"><a href="#Introduction" class="headerlink" title="Introduction"></a><strong>Introduction</strong></h2><p>为了更好的理解基于LSM的KV存储，论文对传统使用DRAM-SSD的RocksDB进行了实验评估，发现了两个具有挑战性的问题，及其根本原因：</p><ul><li><strong>写停滞（write stalls）</strong>会导致应用程序的吞吐量周期性的骤降到接近为0，从而会导致性能的剧烈波动和长尾延迟。论文的研究表明，导致<strong>写停滞</strong>的主要原因是L0-L1之间Compaction的数据量过大，发生L0-L1之间的Compaction时，几乎涉及到这两个Level的所有数据（L0的数据是无序的，SSTable之间有Key Range的重叠）。</li><li><strong>写放大（write amplification，WA）</strong>会降低系统的性能和存储设备的耐用性。写放大与LSM-Tree的深度直接相关，更大的数据集会产生更深的LSM-Tree，从而增加Compaction的数量。</li></ul><p>已有的大量研究都局限于解决上述的单个问题，而本篇论文的研究旨在同时解决这两个挑战。</p><p>针对这两个挑战和其根本原因，本篇论文提出了TriangleKV，一个使用DRAM-NVM-SSD混合存储设备的LSM-Tree KV存储。</p><p>TriangleKV的设计原则包括：</p><ul><li>利用NVM来为L0和L1提供代价更低，更细粒度的Compaction操作；</li><li>减少LSM-Tree的深度以减少写放大；</li></ul><h2 id="Background-and-Motivation"><a href="#Background-and-Motivation" class="headerlink" title="Background and Motivation"></a><strong>Background and Motivation</strong></h2><p>NVM是一种按字节寻址，持久化的快速存储设备。它有望以更低的成本提供类似DRAM的性能、磁盘的持久性和比DRAM更高的容量。和SSD相比，NVM有望提供100倍的低读写延迟和10倍的高带宽。</p><p>NVM既可以作为通过PCIe接口访问的持久化块存储设备，也可以作为通过内存总线访问的主存。现有的研究表明，第一种使用方式只能实现边缘性能的提高，浪费了NVM的高介质性能；对于第二种方式来说，NVM可以替代或者作为DRAM的补充，比如作为一个单级内存系统、一个NVM-SSD混合系统或一个DRAM-NVM-SSD混合系统。</p><p>基于以下原因，具有DRAM-NVM-SSD的混合存储系统被认为是利用NVM的最高效方式：</p><ul><li>NVM在未来几年有望与大容量SSD共存；</li><li>与DRAM相比，NVM仍然有低5倍的带宽和高3倍的读延迟；</li><li>混合系统平衡了TCP（Total Cost of Ownership）和系统性能；</li></ul><p>因此，TriangleKV旨在具有DRAM、NVM和SSD的混合存储系统中更有效的使用NVM作为持久存储。</p><h3 id="写停滞（Write-Stalls）"><a href="#写停滞（Write-Stalls）" class="headerlink" title="写停滞（Write Stalls）"></a>写停滞（Write Stalls）</h3><p>在基于LSM的KV存储中，存在三种类型的「停滞」：</p><ul><li>插入停滞（Insert Stalls）：如果<code>MemTable</code>在后台完成刷新操作之前写满了，所有的插入操作都会停滞；</li><li>刷新停滞（Flush Stalls）：如果L0中的SSTable数量达到上限，后台刷新操作就会被阻塞；</li><li>压缩停滞（Compaction Stalls）：挂起的Compaction操作太多会阻塞前台操作；</li></ul><p>这三种停滞都会对写性能造成影响，并导致写停滞。</p><h3 id="NoveLSM"><a href="#NoveLSM" class="headerlink" title="NoveLSM"></a><strong>NoveLSM</strong></h3><p>如图1(a)所示，NoveLSM利用NVM为具有DRAM-NVM-SSD的系统提供高吞吐量。</p><p><img src="https://cdn.jsdelivr.net/gh/Ap0l1o/ImageHostingService@main/img/TriangleKV/1.png" alt="Untitled"></p><p>NoveLSM的设计选择包括：</p><ul><li>采用NVMs作为DRAM的备选来增加<code>MemTable</code>和 <code>immutable MemTable</code>的大小；</li><li>使NVM中的<code>MemTable</code>可变，允许直接更新，从而减少<code>Compaction</code>的次数；</li></ul><p>但是这些设计选择仅仅只是推迟了「写停滞」。当数据集的大小超过NVM MemTable的容量时，「刷新停滞」还是会发生，并阻塞前台的请求。</p><p>此外，当NVM中扩大的<code>MemTable</code>刷新到L0，会显著增加L0-L1的Compaction中的数据量，这会导致更长的Compaction延迟和更严重的写停滞（如图4所示）。</p><p><img src="https://cdn.jsdelivr.net/gh/Ap0l1o/ImageHostingService@main/img/TriangleKV/F2.png" alt="Untitled"></p><p>通过以上分析可以得出，L0-L1之间的Compaction中涉及的大量数据是导致「写停滞」的主要原因，而「写放大」增加的主要原因是LSM-Tree深度的加深。「写停滞」和「写放大」的综合影响会降低系统吞吐量，并延长尾延迟。</p><h3 id="MatrixKV"><a href="#MatrixKV" class="headerlink" title="MatrixKV"></a>MatrixKV</h3><p>如图5所示，MatrixKV仍然使用DRAM来管理<code>MemTable</code>和<code>ImmMemTable</code>，但是使用NVM来管理WAL。没有将<code>MemTable</code>和<code>ImmMemTable</code>放在NVM是因为：</p><ul><li>与DRAM相比，NVM仍然有5倍高的低带宽和3倍高的读延迟，使用NVM可能会降低读写性能；</li><li>往MemTable中插入数据需要查询「跳表」，并且会涉及到多个指针的修改，这些操作对于NVM来说开销也是昂贵的；</li></ul><p><img src="https://cdn.jsdelivr.net/gh/Ap0l1o/ImageHostingService@main/img/TriangleKV/F3.png" alt="Untitled"></p><p>此外，MatrixKV还将L0移动到NVM中，将L0放在NVM中有以下优势：</p><ul><li>与SSD相比，NVM有更高的带宽和更低的延迟，因此在将ImmMemTable刷新到L0中时会更快，这会减少「插入停滞」；此外，这还隔离了L0-L1的Compaction操作和刷新操作之间的交互，此时两者之间没有带宽的竞争，从而能减少写停滞；</li><li>NVM是字节寻址的，这意味着L0-L1的Compaction可以在非常细的粒度上完成，并且<strong>在每次细粒度Compaction之后可以立即释放空间，而将L0放在SSD上不能实现这一点，因为SSD上的SSTable在整个文件压缩之前不能被删除</strong>；</li></ul><p>MatrixKV使用「矩阵容器」来管理L0，其中包括一个「接收器（Receiver）」和一个「压缩器（Compactor）」。不可变的MemTable首先被「刷新」到「接收器」，当「接收器」达到其大小限制时，它被转换为「压缩器」，并生成一个新的「接收器」来接受「刷新」操作。</p><p>通过一个「细粒度列压缩（Column Compaction）」，「压缩器」中的数据被Compacted到SSD上的L1中。每次只Compact特定键范围内的一小部分数据，这大大减少了「写停滞」。</p><p><img src="https://cdn.jsdelivr.net/gh/Ap0l1o/ImageHostingService@main/img/TriangleKV/F4.png" alt="Untitled"></p><p>但是列压缩只能对「压缩器」使用，「接收器」中与「压缩器」重叠的键范围并不能参与「列压缩」过程。</p><p>如图6所示，「压缩器」中的<code>a-c</code>键范围首先通过「列压缩」被Compact到L1，而「接收器」中与其重叠的键范围仍然在L0中。当「接收器」转变为「压缩器」后，这些键范围需要被再次执行Compact操作，这意味着在L1中写入了两次键范围为<code>a-c</code>的数据，带来了额外的「写放大」。</p><h2 id="TriangleKV-Design"><a href="#TriangleKV-Design" class="headerlink" title="TriangleKV Design"></a>TriangleKV Design</h2><p>TriangleKV 在MatrixKV的基础上进行了改进，将后者的Matrix数据结构替换为Triangle数据结构，来对L0进行更有效的管理。</p><p>图7展示了TriangleKV的架构，从上到下依次为：</p><ul><li>DRAM，用于批量写<code>MemTable</code>；</li><li><code>MemTable</code>刷新到L0，并由NVM中的「三角形容器」（Triangle Container）来存储和管理；</li><li>L0中的数据通过「直角边压缩」（right-angle side compaction）压缩到SSD中的L1层；</li><li>SSD中存储一个扁平化的LSM-Tree的剩余Level；</li></ul><h3 id="TriangleKV-Container"><a href="#TriangleKV-Container" class="headerlink" title="TriangleKV Container"></a>TriangleKV Container</h3><p>L0-L1的Compaction所带来的大量I/O被认为是导致「写停滞」的根本原因。因此，基于LSM-Tree的KV存储，最小化或者消除「写停滞」的设计原则就是<strong>降低L0和L1的Compaction粒度</strong>以及<strong>减少SSD上的I/O次数。</strong></p><p>基于以上设计原则，TriangleKV将L0从SSD移动到NVM，并将L0组织为一个「三角形容器」，以利用NVM的可字节寻址和高速随机访问能力。所谓的「三角形容器」是L0的一种数据管理结构（图8展示了其组织结构）。</p><p><img src="https://cdn.jsdelivr.net/gh/Ap0l1o/ImageHostingService@main/img/TriangleKV/F5.png" alt="Untitled"></p><p><strong>三角形数据结构</strong>：</p><p>在三角形容器中，从DRAM刷新下来的ImmMemTable按「row」堆在NVM中。每一个这样的MemTable根据其键范围被重组为一个RowTable。RowTable作为三角形的底边不断堆叠增加，也即从0到n。三角形数据结构的大小从一个RowTable开始，当三角形数据结构达到其大小上限时（例如NVM容量的60%），会触发一个L0-L1的「子范围合并」操作。</p><p>参与「子范围合并」合并操作的是三角形数据结构的「垂直直角边的数据」，也即最长时间未被合并的子键值范围数据。</p><p>L0-L1的子范围合并操作与DRAM的刷新操作是同步执行的，因此NVM中的数据结构保持在三角平衡状态。</p><p><img src="https://cdn.jsdelivr.net/gh/Ap0l1o/ImageHostingService@main/img/TriangleKV/F6.png" alt="Untitled"></p><p>图9展示了在刷新和L0-L1子范围合并过程中三角形数据结构的动态变化示例。</p><p>在图9(a)中共有9个RowTable，序号从0到5。假设总键值空间为<code>a-f</code>，则参与合并的子键值范围为<code>a</code>。完成子范围<code>a</code>的L0-L1合并后，所有属于此范围的数据都被写到SSD中，此时NVM中的每个RowTable都不再包含属于键值范围<code>a</code>的数据。</p><p>如图9(b)所示，当DRAM刷新另一个<code>ImmMemTable</code>时，一个RowTable 6被添加到NVM的三角形数据结构中，RowTable 6的键值范围为<code>a-f</code>，此时只有RowTable 6包含键值范围<code>a</code>。L0-L1子范围合并被旋转到键值范围<code>b</code>，这样每个RowTable中属于键值范围<code>b</code>的数据都会被合并到L1层。</p><p>如图9所示，在L0-L1的不断子范围合并过程中，RowTable从DRAM刷新到NVM，并不断地向三角形数据结构的底部增加新的RowTable。始终选择最长时间未参与子范围合并的子键范围进行合并，并将新添加的RowTable相关子范围旋转到后面，如图9(a)所示，将未参与子范围<code>a</code>合并的RowTable 5的范围<code>a</code>旋转到了尾部。这会构成一个「动态三角形」，也即「三角形数据结构」的名称来源。</p><p><strong>RowTable：</strong></p><p>图10(a)展示了RowTable的结构组成：数据区域和元数据区域。</p><p><img src="https://cdn.jsdelivr.net/gh/Ap0l1o/ImageHostingService@main/img/TriangleKV/F7.png" alt="Untitled"></p><p>为了构造一个RowTable，首先将ImmMemTable中的KV项按照键顺序序列化，并将其存储在数据区域。然后用一个排序数组构建所有KV项的元数据。每个数组元素维护「键」、「页编号」、「页内偏移量」和一个「前向指针」。</p><p>为了定位RowTable中的一个KV项，对有序元数据数组执行二分查找，以获取Key，并通过页编号和页偏移量获取Key对应的Value。每个数组元素中的前向指针用于「跨行提示搜索」，这有助于提高三角形容器内的读取效率。</p><p>图10(b)展示了一个传统LSM-Tree SSTable的结构。SSTable是使用SSD和HDD的存储单元以「块」为基本单元进行组织的。而RowTable使用NVM中的「页」作为它的基本单元。</p><p><strong>L0-L1 sub-range merge：</strong></p><p>「三角形容器」的一个主要作用就是从L0中选择数据并合并到NVM上的L1中去。利用NVM的可字节寻址能力，以及前面所提出的RowTable，TriangleKV允许L0中的指定子键范围与L1中SSTable的子集进行合并，实现了更低代价的Compaction操作，而不需要合并整个的L0和L1。</p><p>这种新的L0-L1合并方式被称为「直角边压缩」。</p><p>在「三角形容器」中，KV项采用逻辑三角形数据结构进行管理。三角形数据结构的「直角边」是具有有限数据量的键空间的子集，它是三角形容器中「直角边压缩」的基本单元。</p><p>具体来说，来自不同RowTable的属于「直角边压缩」键范围的的KV项在逻辑上构成直角边。这些KV项的数量是直角边的大小，这个大小不是严格固定的，而是受「直角边压缩」大小的阈值所决定的。</p><p><strong>Space management：</strong></p><p>完成「直角边压缩」后，「直角边」所占用的NVM空间会被释放。为了管理这些空闲空间，TriangleKV应用了「分页算法」。</p><p>「直角边压缩」后释放的空闲页作为一组页单元加入到一个「空闲列表」中。然后将使用「空闲列表」中的空闲页来存储从DRAM刷新得到RowTable。</p><p>8GB大小的「三角形容器」包含$2^{11}$个4KB大小的页。每个页由一个<code>unsigned integer</code>作为页编号来标识。为每个列表元素添加一个8字节的指针，因此列表中每个页的元数据大小为12字节。</p><p>空间管理的元数据包含一个「空闲列表」以及一个将RowTable 编号映射到对应元数据页的「数组列表」，在NVM中总共只占用24KB的空间。</p><h3 id="Right-angle-Side-Compaction"><a href="#Right-angle-Side-Compaction" class="headerlink" title="Right-angle Side Compaction"></a>Right-angle Side Compaction</h3><p>「直角边压缩」是一种细粒度的L0-L1压缩，每次只压缩直角边，也即特定键范围内数据的一个子集。因此「直角边压缩」能显著减少「写停滞」。</p><p>「直角边压缩」的主要工作过程可以描述为以下七步：</p><ol><li>TriangleKV将L1的键空间划分为多个连续的键范围。由于L1中的SSTable是有序的，且每个SSTable都有一个最大和最小Key，L1中所有SSTable的最大和最小Key组成一个有序的Key列表。每两个相邻的Key组成一个键范围，由此得到L1中的多个连续键范围。</li><li>「直角边压缩」从L1的第一个键范围开始。它选择L1中的一个键范围作为压缩键范围。</li><li>在三角形容器中，压缩键范围内的KV项从多个RowTable中<strong>并发选取</strong>；</li><li>如果当前「直角边压缩」的键范围内的数据量小于压缩的下限，则将L1中的下一个键范围也加入压缩过程，这个键范围扩展过程持续到参与压缩的键范围内的数据量处于压缩下限和压缩上限之间。这个边界保证了压缩过程的适当开销。</li><li>在压缩键范围内的N个RowTable中的KV项组成一条逻辑直角边。</li><li>直角边中的数据和L1中SSTable重叠数据在内存中进行合并排序；</li><li>合并排序后生成的SSTable被写回SSD中的L1。</li></ol><p><img src="https://cdn.jsdelivr.net/gh/Ap0l1o/ImageHostingService@main/img/TriangleKV/F8.png" alt="Untitled"></p><p>图10展示了一个「直角边压缩」的例子。</p><ul><li>首先，TriangleKV从L1中选择具有键范围<code>0-3</code>的SSTable作为参与压缩过程的候选SSTable；</li><li>然后，查询「三角形容器」中4个RowTable的元数据数组，如果键范围<code>0-3</code>内的数据量小于压缩下限，则下一个邻接键范围也加入压缩，构成一个更大的键范围<code>0-5</code>，如果此键范围内的数据还小于压缩下限则键范围<code>5-8</code>内的数据也加入压缩，键范围扩大到<code>0-8</code>。</li><li>最后，一旦键范围内的数据查过压缩下限，便构成了压缩过程的一个逻辑直角边。键范围<code>0-8</code>所组成的逻辑直角边与SSD上L1中的前两个SSTable进行合并。</li></ul><h3 id="Reducing-LSM-tree-Depth"><a href="#Reducing-LSM-tree-Depth" class="headerlink" title="Reducing LSM-tree Depth"></a>Reducing LSM-tree Depth</h3><p>LSM-Tree中Level的数量随着数据库中数据量的增加而增加。而将SSTable压缩到更高的Level会带来AF（Amplification Factor）级别的的写放大，因此总体WA会随着LSM-Tree深度的增加而增加。</p><p>因此TriangleKV的另一个设计原则是减小LSM-Tree的深度来缓解写放大。TriangleKV增加每一Level的大小限制，使相邻的AF保持不变，从而减少了LSM-Tree的深度。</p><p>因此，对于L1及以上级别的Compaction操作，SSTable到下一Level的压缩WA保持不变，但由于Level的减少，整体的写放大会减少。</p><p>使传统的LSM-Tree扁平化会带来两个负面影响：</p><ul><li>首先，放大L0后会有更多的SSTable与L0有范围重叠，这增加了参与L0-L1压缩的数据量，这不仅增加了压缩开销，而且延长了「写停滞」的持续时间。</li><li>其次，当遍历一个更大的未排序的L0时，搜索效率会降低；</li></ul><p>TriangleKV不存在第一个问题，因为「直角边压缩」使L0-L1压缩始终处于细粒度。「直角边」所涉及的数据量在很大程度上与水平宽度无关，因为直角边所包含的数据量是有限的。唯一的缺点是，搜索较大的L0的效率比较低，这可能会降低读取效率。</p><h3 id="Cross-row-Hint-Search"><a href="#Cross-row-Hint-Search" class="headerlink" title="Cross-row Hint Search"></a>Cross-row Hint Search</h3><p>为了提高「三角形容器」内的读效率，TriangleKV构建了一个「跨行提示搜索」。</p><p><strong>Constructing cross-row hints：</strong></p><p>当在「三角形容器」中构建一个RowTable时，为有序元数据数组中的每个元素添加一个前向指针（如图10）。具体来说，对于RowTable <code>i</code>中的键<code>x</code>，其前向指针指向前面RowTable <code>i-1</code>中的键<code>y</code>，键<code>y</code> 是第一个不小于<code>x</code>的键，也即<code>y≥x</code> 。</p><p>这些前向指针提供了对于不同行的所有键进行逻辑排序的提示。由于每个前向指针只记录前一个RowTable的数组索引，所以前向指针的大小只有4字节，因此存储开销非常小。</p><p><strong>Search process in the triangle container：</strong></p><p>查询过程从最后到达的RowTable <code>i</code>开始。如果该RowTable的键范围并没有覆盖目标键，则跳到它的前一个RowTable，也即RowTable <code>i-1</code>；如果覆盖了目标键，则在RowTable <code>i</code>中执行二分查找，以找到目标键所在的键范围。</p><p>使用前向指针可以缩小前面RowTable中的搜索区域。因此，不需要完全遍历所有表来获得一个键或扫描一个键范围。跨行提示搜索通过显著减少搜索过程中涉及的表和元素的数量，提高了L0的读取效率。</p><p><img src="https://cdn.jsdelivr.net/gh/Ap0l1o/ImageHostingService@main/img/TriangleKV/F9.png" alt="Untitled"></p><p>图12展示了一个跨行提示搜索的例子。其中蓝色箭头表示前向指针所提供的跨行提示。</p><p>假设我们想在三角形容器中查找一个目标键<code>k=12</code> 。</p><ul><li>首先对RowTable <code>1</code>执行二分查找，得到一个缩小的从<code>key=10</code>到<code>key=23</code>的键范围。</li><li>通过它们的前向指针提示，查找到RowTable <code>3</code>中的键<code>13</code>和键<code>36</code>。当目标键不在两个提示键的键范围内时，将上述键添加到搜索区域。</li><li>接下来，在<code>key=8</code>和<code>key=36</code>之间执行二分查找，如果找不到目标键，就根据前向指针的提示查找RowTable <code>2</code>，然后是查找RowTable <code>1</code>，最后在RowTable <code>1</code>中查找到键<code>12</code> 。</li></ul>]]></content>
     
     
+    <categories>
+      
+      <category>论文</category>
+      
+    </categories>
+    
     
     <tags>
       
@@ -34,7 +40,7 @@
     
     <categories>
       
-      <category>人生一事</category>
+      <category>生活</category>
       
     </categories>
     
@@ -59,9 +65,7 @@
     
     <categories>
       
-      <category>论文阅读</category>
-      
-      <category>分布式系统</category>
+      <category>论文</category>
       
     </categories>
     
@@ -90,7 +94,7 @@
     
     <categories>
       
-      <category>人生一事</category>
+      <category>生活</category>
       
     </categories>
     
@@ -98,6 +102,35 @@
     <tags>
       
       <tag>人生一事</tag>
+      
+    </tags>
+    
+  </entry>
+  
+  
+  
+  <entry>
+    <title>SSD简单了解</title>
+    <link href="/2022/05/29/%E5%AD%98%E5%82%A8/%E5%9B%BA%E6%80%81%E7%A1%AC%E7%9B%98/"/>
+    <url>/2022/05/29/%E5%AD%98%E5%82%A8/%E5%9B%BA%E6%80%81%E7%A1%AC%E7%9B%98/</url>
+    
+    <content type="html"><![CDATA[<h2 id="固态硬盘基础"><a href="#固态硬盘基础" class="headerlink" title="固态硬盘基础"></a>固态硬盘基础</h2><p>存储介质的革命为提高存储系统的性能同时带来了机会和挑战。面向传统磁盘设备所设计的存储系统很难发挥新型存储设备的性能优势。面向新型存储介质重构存储软件栈、重构存储系统是最近几年存储领域的热门技术话题。</p><h2 id="SSD概述"><a href="#SSD概述" class="headerlink" title="SSD概述"></a>SSD概述</h2><p>固态硬盘（solid-state drive，简称SSD），是用固态电子存储芯片阵列而制成的硬盘，由控制单元和存储单元（FLASH芯片、DRAM芯片）组成。SSD的结构如下图所示。</p><img src="https://ap0l1o.oss-cn-qingdao.aliyuncs.com/img/SSD/F-component-4.jpg" alt="08图.jpg" style="zoom:50%;" /><p>其采用的存储介质（存储单元）主要分为两种：</p><ul><li><p>一种是采用闪存（FLASH芯片）作为存储介质</p><p>闪存是<strong>非易失性随机访问存储器（NVRAM）</strong>的俗称，特点是断电后数据不会丢失，因此可以作为外部存储器使用。闪存也有不同类型，主要分为以下两大类：</p><ul><li>NOR型：NOR型闪存更像内存，有独立的地址线和数据线，容量比较小，价格比较贵；</li><li>NAND型：NAND型闪存的地址线和数据线是共用的I/O总线，与NOR型闪存相比容量更大，价格也相对较低。</li></ul><p>内存和NOR型闪存的基本存储单元是bit，用户可以随机访问任何一个bit的信息。而NAND型闪存的基本存储单元是页（Page）</p><p><strong>我们通常所说的固态硬盘指的就是使用NAND FLASH作为存储介质的存储设备。</strong></p></li><li><p>另一种是采用DRAM作为存储介质</p><p>采用DRAM作为存储介质，应用范围较窄。它仿效传统硬盘的设计，可被绝大部分操作系统的文件系统工具进行卷设置和管理，并提供工业标准的PCI和FC接口用于连接主机或者服务器。应用方式可分为SSD硬盘和SSD硬盘阵列两种。它是一种高性能的存储器，理论上可以无限写入，美中不足的是需要独立电源来保护数据安全。DRAM固态硬盘属于比较非主流的设备。</p></li><li><p>最新的还有英特尔的3D XPoint技术</p><p>原理上接近DRAM，但是属于非易失存储。读取延时极低，可轻松达到现有固态硬盘的百分之一，并且有接近无限的存储寿命。缺点是密度相对NAND较低，成本极高，多用于发烧级台式机和数据中心。</p></li></ul><h2 id="SSD通信层次"><a href="#SSD通信层次" class="headerlink" title="SSD通信层次"></a>SSD通信层次</h2><p>SSD的通信自上而下可以分为三层：</p><ul><li>传输协议：传输规范、传输标准，也就是数据传输的方式。</li><li>传输总线：总线就像一条公路，公路上的车好比总线上的电信号；公路的大小和车流量就决定了公路的车流量，故总线的位宽大小和传输频率决定了一次传输中能够提供的最大速度。</li><li>传输接口：硬盘的物理接口。</li></ul><p>三者的关系可以用下图表示。</p><img src="https://ap0l1o.oss-cn-qingdao.aliyuncs.com/img/SSD/F-relation-1.jpg" alt="01图.jpg" style="zoom:50%;" /><blockquote><p>类似TCP/IP协议的分层设计</p></blockquote><h3 id="传输接口"><a href="#传输接口" class="headerlink" title="传输接口"></a>传输接口</h3><img src="https://www.ajl-newtech.com/ueditor/php/upload/image/20201223/1608701936385215.jpg" alt="04.jpg" style="zoom:50%;" /><p>固态硬盘在接口的规范和定义、功能及使用方法上与普通硬盘的完全相同，在产品外形和尺寸上也完全与普通硬盘一致。常见的接口类型如下所示：</p><ul><li><p>SATA接口</p><p>SATA 3.0（SATA 6Gbps）是SATA接口中最为常见的固态硬盘接口。普通2.5英寸SSD以及HDD硬盘都使用这种接口，理论传输带宽6Gbps。SATA3.0接口将持续读写速度限制在550MB/s左右。</p></li><li><p>PCIe接口</p><p>在传统SATA硬盘中，当我们进行数据操作时，数据会先从硬盘读取到内存，再将数据提取至CPU内部进行计算，计算后再反馈给内存，最后写入至硬盘中。而PCIe接口就不一样了，数据直接通过总线与CPU直连，省去了内存调用硬盘的过程，传输效率与速度都成倍提升。</p></li><li><p>M.2固态硬盘接口</p><p>M.2是一种接口/插槽类型。M.2接口（硬盘上的叫接口）和插槽（插到主板上的位置叫插槽）又被细分为B Key（又称为Socket2）和M Key（又称为Socket3），因此M.2接口可以同时支持SATA及PCI-E通道。</p><p><img src="https://ap0l1o.oss-cn-qingdao.aliyuncs.com/img/SSD/F-interface-3.png" alt="image-20220529105900503"></p></li><li><p>U.2 接口</p><p>主要用在服务器领域。</p></li></ul><h3 id="传输总线"><a href="#传输总线" class="headerlink" title="传输总线"></a>传输总线</h3><p>总线是计算机各功能部件之间传输信息的通信干线，也即数据传输要走的路。</p><p>在SSD存储领域，总线主要有</p><ul><li>SATA总线</li><li>PCIe总线</li></ul><p>两种总线最大的区别就是带宽，也即速度不同。SATA总线就像乡间小道儿，又窄又泥泞，数据走SATA路，最高传输速度是600MB/s；而PCIE总线就像高速公路，数据走PCIE路，最高传输速度可达2000MB/s。SATA接口只能走SATA总线；M.2接口的SSD绝大数走的是PCIE总线，也有少数是走SATA总线。</p><blockquote><p>目前，大多数主板、SSD接口使用的都PCIE3.0版本。</p><p>根据通道数量不同，PCIE3.0总线又分为x1、x2、x4、x8、x16。通道越多，带宽越高，读写速度越快。SSD固态多用x2、x4，而x8、x16多用在显卡上。</p></blockquote><h3 id="传输协议"><a href="#传输协议" class="headerlink" title="传输协议"></a>传输协议</h3><p>传输协议定义了数据传输的方式，主要有以下几种：</p><ul><li><p>IDE</p></li><li><p>AHCI</p><p>Serial ATA Advanced Host Controller Interface，串行ATA高级主控接口/高级主机控制器接口，IDE速度太低，协议老旧，所以有了AHCI；但AHCI是为了机械硬盘而设计的产物。</p></li><li><p>SATA</p><p>Serial Advanced Technology Attachment即为Serial ATA，串行高级技术附件。支持的接口类型包括：SATA接口、mSATA接口、B-key M.2接口。</p></li><li><p>NVMe</p><p>一种建立在M.2接口上的类似AHCI的一种协议，是专门为闪存类存储设计的协议。NVMe协议本质上建立了多个计算机与存储设备的通路，多个通路其实就是多个队列。而在SATA中，计算机与存储设备只能有一个队列，即使是多CPU情况下，所有请求只能经过这样一个狭窄的道路。而NVMe协议可以最多有64K个队列，每个CPU或者核心都可以有一个队列，这样并发程度大大提升，性能也自然更高了。</p></li></ul><h2 id="参考链接"><a href="#参考链接" class="headerlink" title="参考链接"></a>参考链接</h2><ul><li><a href="https://blog.csdn.net/BtB5e6Nsu1g511Eg5XEg/article/details/83745666">https://blog.csdn.net/BtB5e6Nsu1g511Eg5XEg/article/details/83745666</a></li><li><a href="https://www.ajl-newtech.com/article-237.html">https://www.ajl-newtech.com/article-237.html</a></li><li><a href="https://www.ajl-newtech.com/article-234.html">https://www.ajl-newtech.com/article-234.html</a></li><li><a href="https://www.cnblogs.com/luxiaodai/p/13444756.html#_label2">https://www.cnblogs.com/luxiaodai/p/13444756.html#_label2</a></li></ul>]]></content>
+    
+    
+    <categories>
+      
+      <category>存储</category>
+      
+    </categories>
+    
+    
+    <tags>
+      
+      <tag>存储</tag>
+      
+      <tag>固态硬盘</tag>
+      
+      <tag>技术</tag>
       
     </tags>
     
@@ -140,7 +173,7 @@
     
     <categories>
       
-      <category>C/C++</category>
+      <category>技术</category>
       
     </categories>
     
@@ -167,7 +200,7 @@
     
     <categories>
       
-      <category>C/C++</category>
+      <category>技术</category>
       
     </categories>
     
@@ -244,9 +277,7 @@
     
     <categories>
       
-      <category>Key-Value Store</category>
-      
-      <category>论文阅读</category>
+      <category>论文</category>
       
     </categories>
     
@@ -298,9 +329,7 @@
     
     <categories>
       
-      <category>Key-Value Store</category>
-      
-      <category>论文阅读</category>
+      <category>论文</category>
       
     </categories>
     
@@ -327,9 +356,7 @@
     
     <categories>
       
-      <category>Key-Value Store</category>
-      
-      <category>论文阅读</category>
+      <category>论文</category>
       
     </categories>
     
@@ -356,9 +383,7 @@
     
     <categories>
       
-      <category>Key-Value Store</category>
-      
-      <category>论文阅读</category>
+      <category>论文</category>
       
     </categories>
     
@@ -385,7 +410,7 @@
     
     <categories>
       
-      <category>C/C++</category>
+      <category>技术</category>
       
     </categories>
     
@@ -412,9 +437,7 @@
     
     <categories>
       
-      <category>Key-Value Store</category>
-      
-      <category>论文阅读</category>
+      <category>论文</category>
       
     </categories>
     
@@ -441,9 +464,7 @@
     
     <categories>
       
-      <category>Key-Value Store</category>
-      
-      <category>论文阅读</category>
+      <category>论文</category>
       
     </categories>
     
@@ -470,9 +491,7 @@
     
     <categories>
       
-      <category>分布式</category>
-      
-      <category>分布式系统原理与范型</category>
+      <category>技术</category>
       
     </categories>
     
@@ -482,6 +501,8 @@
       <tag>分布式</tag>
       
       <tag>事务</tag>
+      
+      <tag>分布式系统原理与范型</tag>
       
     </tags>
     
@@ -499,9 +520,7 @@
     
     <categories>
       
-      <category>分布式</category>
-      
-      <category>分布式系统原理与范型</category>
+      <category>技术</category>
       
     </categories>
     
@@ -511,6 +530,8 @@
       <tag>分布式</tag>
       
       <tag>并发控制</tag>
+      
+      <tag>分布式系统原理与范型</tag>
       
     </tags>
     
@@ -528,9 +549,7 @@
     
     <categories>
       
-      <category>分布式</category>
-      
-      <category>分布式系统原理与范型</category>
+      <category>技术</category>
       
     </categories>
     
@@ -540,6 +559,8 @@
       <tag>分布式</tag>
       
       <tag>全局状态</tag>
+      
+      <tag>分布式系统原理与范型</tag>
       
     </tags>
     
@@ -557,9 +578,7 @@
     
     <categories>
       
-      <category>分布式</category>
-      
-      <category>分布式系统原理与范型</category>
+      <category>技术</category>
       
     </categories>
     
@@ -569,6 +588,8 @@
       <tag>分布式</tag>
       
       <tag>时钟同步</tag>
+      
+      <tag>分布式系统原理与范型</tag>
       
     </tags>
     
@@ -586,11 +607,7 @@
     
     <categories>
       
-      <category>分布式存储论文</category>
-      
-      <category>Goole论文</category>
-      
-      <category>论文阅读</category>
+      <category>论文</category>
       
     </categories>
     
@@ -617,7 +634,7 @@
     
     <categories>
       
-      <category>C/C++</category>
+      <category>技术</category>
       
     </categories>
     
@@ -627,6 +644,31 @@
       <tag>C/C++</tag>
       
       <tag>编程语言</tag>
+      
+    </tags>
+    
+  </entry>
+  
+  
+  
+  <entry>
+    <title>Web运作原理简介</title>
+    <link href="/2021/04/18/Web%E7%9B%B8%E5%85%B3/Web%E8%BF%90%E4%BD%9C%E5%8E%9F%E7%90%86/"/>
+    <url>/2021/04/18/Web%E7%9B%B8%E5%85%B3/Web%E8%BF%90%E4%BD%9C%E5%8E%9F%E7%90%86/</url>
+    
+    <content type="html"><![CDATA[<h2 id="0x00-Web的概念"><a href="#0x00-Web的概念" class="headerlink" title="0x00 Web的概念"></a>0x00 Web的概念</h2><p>Web是一种分布式应用架构，旨在共享分布在网络上的各个Web服务器中的所有互相链接的信息。Web采用客户/服务器模式，客户与服务器之间用HTTP协议通信。Web使用超文本标记语言 （HTML）来链接网络上的信息。信息存放在服务器端，客户机通过浏览器就可以查找网络中的各个Web服务器上的信息。</p><p>Web的特征：</p><ul><li>信息的表达：用超级文本技术HTML来表达信息，以及建立信息与信息的链接。</li><li>信息的定位：用统一资源定位技术URL来实现网络上信息的精确定位。</li><li>信息的传输：用网络应用层协议HTTP来规范浏览器与Web服务器之间的通信过程。</li></ul><blockquote><p>注：<strong>Web服务器</strong>是指驻留于因特网上某种类型计算机的程序。当Web浏览器（客户端）连到服务器上并请求文件时，服务器将处理该请求并将文件反馈到该浏览器上，附带的信息会高速浏览器如何查看该文件（即文件类型）。服务器使用HTTP（超文本传输协议）与客户机浏览器进行信息交流，因此也常被称为<strong>HTTP服务器</strong>。</p></blockquote><h2 id="0x10-HTML简介"><a href="#0x10-HTML简介" class="headerlink" title="0x10 HTML简介"></a>0x10 HTML简介</h2><p>HTML（Hyper Text Markup Language）即超文本标记语言。用HTML语言编写的文档，即HTML文档，它不仅可以直接包含文本内容，还可以把其他形式的信息包含进来。其特点如下：</p><ul><li>允许直接包含纯文本形式的信息。</li><li>利用<code>&lt;img&gt;</code>和<code>&lt;embed&gt;</code>等标记来包含图片和声音等多媒体形式的信息。</li><li>利用<code>&lt;p&gt;</code>、<code>&lt;br&gt;</code> 、<code>&lt;font&gt;</code>等标记来设定信息在浏览器中的展示格式。</li><li>利用超级链接<code>&lt;a&lt;</code>来链接到其他信息。</li></ul><p>浏览器能够解析HTML文档中的标记，并且可以在浏览器窗口中直观的展示HTML文档。人们通常所说的网页或者Web页面，就是指HTML文档在浏览器中的展示页面。</p><h2 id="0x20-URL简介"><a href="#0x20-URL简介" class="headerlink" title="0x20 URL简介"></a>0x20 URL简介</h2><p><code>URL</code>是<code>Uniform Resource Locator</code>的缩写，表示统一资源定位器，它是专门为标识网络上的资源位置而设的一种编址方式。<code>URL</code>一般由三个部分组成：</p><ul><li>应用层协议</li><li>主机IP地址或域名</li><li>资源所在路径/文件名</li></ul><p><code>URL</code> 的格式：<code>应用层协议://主机IP地址或域名/路径/文件名</code></p><h2 id="0x30-HTTP协议简介"><a href="#0x30-HTTP协议简介" class="headerlink" title="0x30 HTTP协议简介"></a>0x30 HTTP协议简介</h2><p>略。</p><h2 id="0x40-用Java套接字创建HTTP客户与服务器程序"><a href="#0x40-用Java套接字创建HTTP客户与服务器程序" class="headerlink" title="0x40 用Java套接字创建HTTP客户与服务器程序"></a>0x40 用Java套接字创建HTTP客户与服务器程序</h2><p>当用户在浏览器中输入一个指向特定网页的URL时，浏览器会通过DNS解析域名，根据域名解析出服务器的IP地址后，浏览器会向这个IP地址发送请求，建立与远程服务器的TCP连接，然后浏览器将生成的HTTP请求发送给远程服务器，服务器再返回包含响应网页数据的HTTP响应，最后浏览器会把这个网页显示出来。</p><p>浏览器应该具备的功能：</p><ul><li>请求与Web服务器建立TCP连接</li><li>创建并发送HTTP请求</li><li>接收并解析HTTP响应</li><li>在窗口展示HTTP文档</li></ul><p>Web服务器应该具备的功能：</p><ul><li>接收来自浏览器的TCP连接请求</li><li>接收并解析HTTP请求</li><li>创建并发送HTTP响应</li></ul><p>HTTP客户程序和HTTP服务器分别由不同的软件开发商开发，目前最常用的HTTP客户程序包括Firefox、Chrome等，在Unix和Linux平台下使用最广泛的免费HTTP服务器是Apache和Nginx服务器，而Windows平台使用IIS服务器。HTTP客户程序和服务器程序都可以用任意的编程语言编写，并且可以运行在不同的平台上，其顺利通信归功于HTTP协议。HTTP协议严格规定了HTTP请求和HTTP响应的数据格式，只要HTTP服务器与客户程序之间的交换数据都遵守HTTP协议，双方就能看得懂对方发送的数据，从而顺利交流。</p><p>HTTP服务器的简单实现：</p><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-keyword">import</span> java.io.FileInputStream;<br><span class="hljs-keyword">import</span> java.io.InputStream;<br><span class="hljs-keyword">import</span> java.io.OutputStream;<br><span class="hljs-keyword">import</span> java.net.ServerSocket;<br><span class="hljs-keyword">import</span> java.net.Socket;<br><br><span class="hljs-keyword">public</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">HttpServer</span> </span>&#123;<br>    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">void</span> <span class="hljs-title">main</span><span class="hljs-params">(String[] args)</span></span>&#123;<br>        <span class="hljs-keyword">int</span> port = <span class="hljs-number">8090</span>;<br>        ServerSocket serverSocket;<br>        <span class="hljs-keyword">try</span>&#123;<br>            <span class="hljs-comment">/*</span><br><span class="hljs-comment">                服务器监听端口</span><br><span class="hljs-comment">             */</span><br>            serverSocket = <span class="hljs-keyword">new</span> ServerSocket(port);<br>            System.out.println(<span class="hljs-string">&quot;服务器正在监听端口：&quot;</span> + serverSocket.getLocalPort());<br>            <span class="hljs-keyword">while</span>(<span class="hljs-keyword">true</span>)&#123;<br><br>                Socket socket = serverSocket.accept();<br>                System.out.println(<span class="hljs-string">&quot;与客户端建立了一个TCP连接，客户端地址为：&quot;</span> + socket.getInetAddress());<br>                <span class="hljs-comment">// 调用service 方法解析HTTP请求</span><br>                service(socket);<br><br>            &#125;<br><br>        &#125;<br>        <span class="hljs-keyword">catch</span> (Exception e)<br>        &#123;<br>            e.printStackTrace();<br>        &#125;<br>    &#125;<br><br>    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">void</span> <span class="hljs-title">service</span><span class="hljs-params">(Socket socket)</span> <span class="hljs-keyword">throws</span> Exception</span>&#123;<br>        <span class="hljs-comment">// 获取来自客户端(浏览器)的输入流</span><br>        InputStream socketIs = socket.getInputStream();<br><br>        <span class="hljs-comment">// 睡眠500毫秒来等待HTTP请求</span><br>        Thread.sleep(<span class="hljs-number">500</span>);<br><br>        <span class="hljs-keyword">try</span>&#123;<br>            <span class="hljs-comment">/*</span><br><span class="hljs-comment">                从输入流中读取HTTP请求</span><br><span class="hljs-comment">             */</span><br>            <span class="hljs-keyword">int</span> sizeIs = socketIs.available();<br>            <span class="hljs-keyword">byte</span>[] buffer = <span class="hljs-keyword">new</span> <span class="hljs-keyword">byte</span>[sizeIs];<br>            socketIs.read(buffer);<br>            String request = <span class="hljs-keyword">new</span> String(buffer);<br>            <span class="hljs-comment">// 打印HTTP请求信息</span><br>            System.out.println(request);<br><br><br>            <span class="hljs-comment">/*</span><br><span class="hljs-comment">                解析HTTP请求</span><br><span class="hljs-comment">            */</span><br><br>            <span class="hljs-comment">// 获得Http请求的第一行</span><br>            String firstLineOfRequest = request.substring(<span class="hljs-number">0</span>, request.indexOf(<span class="hljs-string">&quot;\r\n&quot;</span>));<br>            <span class="hljs-comment">// 解析HTTP请求的第一行</span><br>            String[] parts = firstLineOfRequest.split(<span class="hljs-string">&quot; &quot;</span>);<br>            String uri = parts[<span class="hljs-number">1</span>]; <span class="hljs-comment">// 获得请求URI</span><br><br>            <span class="hljs-comment">/*</span><br><span class="hljs-comment">                决定HTTP响应正文的类型;</span><br><span class="hljs-comment">                这里做简化处理，仅考虑两种类型;</span><br><span class="hljs-comment">            */</span><br>            String contentType;<br>            <span class="hljs-keyword">if</span>(uri.indexOf(<span class="hljs-string">&quot;html&quot;</span>) != -<span class="hljs-number">1</span> || uri.indexOf(<span class="hljs-string">&quot;htm&quot;</span>) != -<span class="hljs-number">1</span>)<br>                contentType = <span class="hljs-string">&quot;text/html&quot;</span>;<br>            <span class="hljs-keyword">else</span> <span class="hljs-keyword">if</span>(uri.indexOf(<span class="hljs-string">&quot;jpg&quot;</span>) != -<span class="hljs-number">1</span> || uri.indexOf(<span class="hljs-string">&quot;jpeg&quot;</span>) != -<span class="hljs-number">1</span>)<br>                contentType = <span class="hljs-string">&quot;image/jpeg&quot;</span>;<br>            <span class="hljs-keyword">else</span><br>                contentType = <span class="hljs-string">&quot;application/octet-stream&quot;</span>; <span class="hljs-comment">// 字节流类型</span><br><br>            <span class="hljs-comment">/*</span><br><span class="hljs-comment">                创建响应HTTP响应结果</span><br><span class="hljs-comment">            */</span><br>            <span class="hljs-comment">// HTTP响应的第一行</span><br>            String responseFirstLine = <span class="hljs-string">&quot;HTTP1.1 200 OK\r\n&quot;</span>;<br>            <span class="hljs-comment">// HTTP响应头</span><br>            String responseHeader = <span class="hljs-string">&quot;Content-Type:&quot;</span> + contentType + <span class="hljs-string">&quot;\r\n\r\n&quot;</span>; <span class="hljs-comment">// 注意响应头和正文之间有一个空行</span><br>            <span class="hljs-comment">// 根据请求URI获取响应正文数据的输入流</span><br>            System.out.println(uri);<br>            InputStream is = <span class="hljs-keyword">new</span> FileInputStream(<span class="hljs-string">&quot;JavaWeb/WEB-INFO/&quot;</span> + uri);<br><br>            <span class="hljs-comment">/*</span><br><span class="hljs-comment">                发送HTTP响应结果</span><br><span class="hljs-comment">            */</span><br>            <span class="hljs-comment">// 获得套接字的输出流</span><br>            OutputStream socketOs = socket.getOutputStream();<br>            <span class="hljs-comment">// 发送HTTP响应的第一行</span><br>            socketOs.write(responseFirstLine.getBytes());<br>            <span class="hljs-comment">// 发送HTTP响应头</span><br>            socketOs.write(responseHeader.getBytes());<br>            <span class="hljs-comment">// 发送HTTP响应正文</span><br>            <span class="hljs-keyword">int</span> len = <span class="hljs-number">0</span>;<br>            buffer = <span class="hljs-keyword">new</span> <span class="hljs-keyword">byte</span>[<span class="hljs-number">128</span>];<br>            <span class="hljs-keyword">while</span>( (len = is.read(buffer)) != -<span class="hljs-number">1</span>)&#123;<br>                socketOs.write(buffer, <span class="hljs-number">0</span>, len);<br>                System.out.println(<span class="hljs-keyword">new</span> String(buffer));<br>            &#125;<br><br>            System.out.println(<span class="hljs-string">&quot;发送完成&quot;</span>);<br>            Thread.sleep(<span class="hljs-number">1000</span>);<br>            socket.close();<br>        &#125;<br>        <span class="hljs-keyword">catch</span> (Exception e)&#123;<br><br>        &#125;<br>    &#125;<br>&#125;<br><br></code></pre></td></tr></table></figure><p>HTTP客户端的简单实现：</p><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-keyword">import</span> java.io.InputStream;<br><span class="hljs-keyword">import</span> java.io.OutputStream;<br><span class="hljs-keyword">import</span> java.net.Socket;<br><br><span class="hljs-keyword">public</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">HttpClient</span> </span>&#123;<br>    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">void</span> <span class="hljs-title">main</span><span class="hljs-params">(String[] args)</span></span>&#123;<br>        String uri = <span class="hljs-string">&quot;index.html&quot;</span>;<br>        doGet(<span class="hljs-string">&quot;127.0.0.1&quot;</span>, <span class="hljs-number">8090</span>, uri);<br>    &#125;<br>    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">void</span> <span class="hljs-title">doGet</span><span class="hljs-params">(String host, <span class="hljs-keyword">int</span> port, String uri)</span></span>&#123;<br>        Socket socket = <span class="hljs-keyword">null</span>;<br>        <span class="hljs-keyword">try</span>&#123;<br>            <span class="hljs-comment">// 与HTTP服务器建立TCP连接</span><br>            socket = <span class="hljs-keyword">new</span> Socket(host, port);<br>        &#125;<br>        <span class="hljs-keyword">catch</span> (Exception e)&#123;<br>            e.printStackTrace();<br><br>        &#125;<br>        <span class="hljs-keyword">try</span>&#123;<br>            <span class="hljs-comment">/*</span><br><span class="hljs-comment">                构造HTTP请求头</span><br><span class="hljs-comment">             */</span><br>            StringBuffer sb = <span class="hljs-keyword">new</span> StringBuffer(<span class="hljs-string">&quot;GET &quot;</span> + uri + <span class="hljs-string">&quot; HTTP/1.1\r\n&quot;</span>);<br>            sb.append(<span class="hljs-string">&quot;Accept: */*\r\n&quot;</span>);<br>            sb.append(<span class="hljs-string">&quot;Accept-Language: zh-cn\r\n&quot;</span>);<br>            sb.append(<span class="hljs-string">&quot;Accept-Encoding: gzip, deflate\r\n&quot;</span>);<br>            sb.append(<span class="hljs-string">&quot;User-Agent: HttpClient\r\n&quot;</span>);<br><br>            <span class="hljs-comment">/*</span><br><span class="hljs-comment">                发送HTTP请求</span><br><span class="hljs-comment">             */</span><br>            OutputStream socketOs = socket.getOutputStream();<br>            socketOs.write(sb.toString().getBytes());<br><br>            <span class="hljs-comment">// 睡眠2秒，等待HTTP响应</span><br>            Thread.sleep(<span class="hljs-number">2000</span>);<br>            <span class="hljs-comment">/*</span><br><span class="hljs-comment">                接收HTTP响应并打印出响应结果</span><br><span class="hljs-comment">             */</span><br>            InputStream socketIs = socket.getInputStream(); <span class="hljs-comment">// 获得输入流</span><br>            <span class="hljs-keyword">int</span> size = socketIs.available();<br>            <span class="hljs-keyword">byte</span>[] buffer = <span class="hljs-keyword">new</span> <span class="hljs-keyword">byte</span>[size];<br>            socketIs.read(buffer);<br>            System.out.println(<span class="hljs-keyword">new</span> String(buffer)); <span class="hljs-comment">// 打印响应结果</span><br><br>        &#125;<br>        <span class="hljs-keyword">catch</span> (Exception e)&#123;<br>            e.printStackTrace();<br>        &#125;<br>        <span class="hljs-keyword">finally</span> &#123;<br>            <span class="hljs-keyword">try</span>&#123;<br>                socket.close(); <span class="hljs-comment">// 断开TCP连接</span><br>            &#125;<br>            <span class="hljs-keyword">catch</span> (Exception e)&#123;<br>                e.printStackTrace();<br>            &#125;<br>        &#125;<br>    &#125;<br>&#125;<br><br></code></pre></td></tr></table></figure><h3 id="0x41-用HttpClient客户程序访问HttpServer程序"><a href="#0x41-用HttpClient客户程序访问HttpServer程序" class="headerlink" title="0x41 用HttpClient客户程序访问HttpServer程序"></a>0x41 用HttpClient客户程序访问HttpServer程序</h3><ol><li><p>运行HttpServer程序，监听8090端口</p><img src="https://cdn.jsdelivr.net/gh/Ap0l1o/ImageHostingService@main/img/Web%E8%BF%90%E4%BD%9C%E5%8E%9F%E7%90%86/F-1.png" alt="image.png" style="zoom:80%;" /></li><li><p>运行HttpClient程序，与HttpServer的8090端口建立TCP连接，发送一个HTTP请求，收到一个HTTP响应</p><img src="https://cdn.jsdelivr.net/gh/Ap0l1o/ImageHostingService@main/img/Web%E8%BF%90%E4%BD%9C%E5%8E%9F%E7%90%86/F-2.png" alt="image.png" style="zoom: 50%;" /></li><li><p>查看HttpServer的响应，HttpServer与HttpClient成功建立TCP连接，接收并解析来自HttpClient的HTTP请求并返回一个HTTP响应</p><img src="https://cdn.jsdelivr.net/gh/Ap0l1o/ImageHostingService@main/img/Web%E8%BF%90%E4%BD%9C%E5%8E%9F%E7%90%86/F-3.png" alt="image.png" style="zoom: 50%;" /></li></ol><h3 id="0x42-浏览器访问HttpServer程序"><a href="#0x42-浏览器访问HttpServer程序" class="headerlink" title="0x42 浏览器访问HttpServer程序"></a>0x42 浏览器访问HttpServer程序</h3><ol><li><p>运行HttpServer程序，监听8090端口</p><img src="https://cdn.jsdelivr.net/gh/Ap0l1o/ImageHostingService@main/img/Web%E8%BF%90%E4%BD%9C%E5%8E%9F%E7%90%86/F-4.png" alt="image.png" style="zoom:80%;" /></li><li><p>浏览器访问HttpServer程序，与HttpServer建立TCP连接并发送HTTP请求，收到HTTP响应并解析显示在浏览器窗口</p><img src="https://cdn.jsdelivr.net/gh/Ap0l1o/ImageHostingService@main/img/Web%E8%BF%90%E4%BD%9C%E5%8E%9F%E7%90%86/F-5.png" alt="image.png" style="zoom:50%;" /></li><li><p>HttpServer程序与浏览器建立TCP连接，接收其HTTP请求并返回一个HTTP响应</p><img src="https://cdn.jsdelivr.net/gh/Ap0l1o/ImageHostingService@main/img/Web%E8%BF%90%E4%BD%9C%E5%8E%9F%E7%90%86/F-6.png" alt="image.png" style="zoom: 50%;" /></li></ol><h2 id="0x50-Web的发展历程"><a href="#0x50-Web的发展历程" class="headerlink" title="0x50 Web的发展历程"></a>0x50 Web的发展历程</h2><h3 id="0x51-阶段一：发布静态HTML文档"><a href="#0x51-阶段一：发布静态HTML文档" class="headerlink" title="0x51 阶段一：发布静态HTML文档"></a>0x51 阶段一：发布静态HTML文档</h3><p>静态HTML文档就是指事先存放在Web服务器端的文件系统中的HTML文档。当用户在浏览器中输入指向特定HTML文档的URL时，WEB服务器就会把该HTML文档的数据发送到浏览器端。在这个阶段，HTML文档只能包含文本及图片。</p><p><img src="https://cdn.jsdelivr.net/gh/Ap0l1o/ImageHostingService@main/img/Web%E8%BF%90%E4%BD%9C%E5%8E%9F%E7%90%86/F-7.png" alt="未命名文件.png"></p><h3 id="0x52-阶段二：发布静态多媒体信息"><a href="#0x52-阶段二：发布静态多媒体信息" class="headerlink" title="0x52 阶段二：发布静态多媒体信息"></a>0x52 阶段二：发布静态多媒体信息</h3><p>在上一个阶段，信息只能以文本和图片的形式来发布，这满足不了用户对信息形式多样化的强烈需求。用户的需求使得多媒体信息被引入到Web领域，在这个阶段，信息可以用文本、图片、动画、声音和视频等形式来表示。</p><p>从技术角度来看，这个阶段主要增强了浏览器的功能，要求浏览器能集成一些插件，并利用这些插件来展示特定形式的信息；而Web服务器并不需要做改进，不管是任何形式的静态信息，它们都作为文件事先存放在Web服务器端的文件系统中，Web服务器只需把包含特定信息的文件中的数据发送给浏览器即可，然后由浏览器来负责解析和展示数据。</p><h3 id="0x53-阶段三：提供浏览器端与用户的动态交互功能"><a href="#0x53-阶段三：提供浏览器端与用户的动态交互功能" class="headerlink" title="0x53 阶段三：提供浏览器端与用户的动态交互功能"></a>0x53 阶段三：提供浏览器端与用户的动态交互功能</h3><p>在上述几个阶段，用户在浏览器端都只能被动的观看来自服务器的静态信息。到了本阶段，用户不仅可以通过浏览器浏览信息，还可以与浏览器交互。该功能的实现归功于<code>Java Applet</code>、<code>JavaScript</code>等脚本语言的问世，此外，浏览器还必须能够解析和运行用脚本语言编写的小程序。</p><p>在这个阶段，Web服务器不需要做改进，执行用脚本语言编写的小程序的任务由浏览器来完成，Web服务器只要把包含小程序代码的文件中的数据发送到浏览器端即可。</p><h3 id="0x54-阶段四：提供服务器端与用户的动态交互功能"><a href="#0x54-阶段四：提供服务器端与用户的动态交互功能" class="headerlink" title="0x54 阶段四：提供服务器端与用户的动态交互功能"></a>0x54 阶段四：提供服务器端与用户的动态交互功能</h3><p>以上第三个阶段为用户提供了一些动态交互功能，该功能是由浏览器来完成的，并对用户的浏览器提出了诸多技术要求，如果浏览器不支持某种脚本语言，就无法运行网页中的脚本程序。</p><p>可以说，以上三个阶段的技术发展点都是在客户端，而对Web服务器端都没有做特别要求。到了本阶段，Web服务器端增加了动态执行特定程序代码的功能，这使得Web服务器能利用特定程序代码来动态生成HTML文档。Web服务器动态执行的程序分为两种：</p><ul><li>完全用编程语言编写的程序，如CGI（Common Gateway Interface）程序和用Java编写的Servlet程序。</li><li>嵌入了程序代码的HTML文档，如PHP、ASP和JSP文档。JSP文档是指嵌入了Java程序代码的HTML文档。</li></ul><blockquote><p>注：Web服务器动态执行特定程序代码的特征是Web服务器在运行时加载并执行由第三方提供的程序代码。所谓Web服务器动态生成HTML文档，就是指Web服务器再运行时才通过执行特定程序代码来生成HTML文档，而不是直接从文件系统中获取已经存在的HTML文档。</p></blockquote><p><strong>Servlet的简单模拟</strong></p><p>下面以Servlet为例，简单介绍Web服务器动态执行完全用编程语言编写的程序的原理。</p><p>我们在服务器端存放一个用Java语言编写的程序的<code>.class</code>文件——<code>HelloServlet.class</code>。当用户在浏览器端输入指向该类的URL时，Web服务器就会运行<code>HelloServlet</code>类，<code>HelloServlet</code>类生成<code>HTML</code>文档，并把它发给浏览器。</p><p><img src="https://cdn.jsdelivr.net/gh/Ap0l1o/ImageHostingService@main/img/Web%E8%BF%90%E4%BD%9C%E5%8E%9F%E7%90%86/F-8.png" alt="image"></p><p>我们首先定义了一个<a href="../server/Servlet.java" title="Servlet接口">Servlet接口</a>（这个Servlet接口与SUN公司的Servlet规范中的Servlet接口有相似之处，这个简化了的Servlet接口能帮助我们理解Servlet的作用和运行原理），这个接口有一个<code>init()</code>方法和<code>service()</code>方法：</p><ul><li><code>init()</code>方法：初始化方法，当<a href="../server/HttpServerOne.java">HttpServerOne</a>类创建了该接口的实现类的一个实例后，就会立即调用该实例的<code>init()</code>方法</li><li><code>service()</code>方法：用于响应HTTP请求，产生具体的HTTP响应结果。<code>HttpServerOne</code>服务器在响应HTTP请求时，会调用实现了Servlet接口的特定类的<code>service()</code>方法。</li></ul><p>所谓的Web服务器动态执行程序代码，在本范例中就是<code>HttpServerOne</code>在运行时动态加载<code>Servlet</code>接口的实现类，创建它的实例，然后调用它的相关方法，这利用了Java语言的动态加载类的功能。</p><p><a href="../server/HelloServlet.java">HelloServlet类</a>实现了<code>Servlet</code>接口，其<code>service()</code>方法能解析HTTP请求中的请求参数，并会根据请求参数<code>username</code>的取值来生成HTML文档。</p><p>下面我们运行HttpServerOne服务器，然后用浏览器访问：</p><ol><li><p>启动服务器，监听端口</p><p><img src="https://cdn.jsdelivr.net/gh/Ap0l1o/ImageHostingService@main/img/%20Web%E8%BF%90%E4%BD%9C%E5%8E%9F%E7%90%86/F-9.png" alt="image"></p></li><li><p>浏览器访问，指定请求参数，得到对应的响应</p><p><img src="https://cdn.jsdelivr.net/gh/Ap0l1o/ImageHostingService@main/img/Web%E8%BF%90%E4%BD%9C%E5%8E%9F%E7%90%86/F-10png" alt="image"></p><p>在上面的<a href="../server/HelloServlet.java">HelloServlet类</a>中我们必须费劲的解析原始的字符串形式的HTTP请求，而真正的Servlet技术无需我们自己动手解析字符串形式的HTTP请求，这个繁琐的工作由<strong>Servlet容器</strong>代劳了。</p></li></ol><h3 id="0x55-发布Web应用"><a href="#0x55-发布Web应用" class="headerlink" title="0x55 发布Web应用"></a>0x55 发布Web应用</h3><p>本阶段是在上一个阶段的基础上发展起来的。Web服务器端可动态执行的程序的功能变得越来越强大，不仅能动态生成HTML文档，还能处理各种应用领域里的业务逻辑，还能访问数据库。在这个阶段出现了Web应用的概念。所谓的Web应用，是指需要通过编程来创建的Web站点。在Web应用中不仅包括普通的静态HTML文档，还包含大量可被Web服务器动态执行的程序。用户在Internet上能开展业务的各种Web站点都可看作Web应用。</p><p>Web应用与传统桌面应用程序相比，具有以下特点：</p><ul><li>以浏览器作为展示客户端界面的窗口</li><li>客户端界面一律表现为网页形式，网页由HTML语言写成，具有交互功能</li><li>能完成与桌面应用程序类似的功能</li><li>使用浏览器-服务器架构，浏览器与服务器之间采用HTTP协议通信</li><li>Web应用通过Web服务器来发布</li></ul><h3 id="0x56-发布Web服务"><a href="#0x56-发布Web服务" class="headerlink" title="0x56 发布Web服务"></a>0x56 发布Web服务</h3><p><strong>Web</strong>是基于HTTP协议的分布式架构。HTTP协议采用客户/服务器通信模式，该协议规定了服务器与浏览器之间的交换数据的通信细节。</p><p><strong>Web服务架构</strong>与Web一样，也是网络应用层的一种分布式架构，同时也是基于客户/服务器通信模式，并且也能实现异构系统之间的通信。在Web服务架构中，服务端负责提供Web服务，而客户端则请求Web服务。Web服务可以看做是被客户端远程调用的各种方法，这些方法能处理特定业务逻辑，或者进行复杂运算等。请求过程如下；</p><p><img src="https://cdn.jsdelivr.net/gh/Ap0l1o/ImageHostingService@main/img/Web%E8%BF%90%E4%BD%9C%E5%8E%9F%E7%90%86/F-11.png" alt="未命名文件 (2)"></p><p>Web服务架构采用SOAP（Simple Object Access Protocol，简单对象访问协议）作为通信协议。SOAP协议规定客户与服务器之间一律用XML语言进行通信。XML（Extensible Markup Language，可扩展标记语言）是一种可扩展的跨平台的标记语言。SOAP协议规定了客户端向服务器端发送的Web服务请求的具体数据格式，以及服务器端向客户端发送的Web服务响应结果的具体数据格式。</p><p>Web服务实际上是借助Web服务器来发布到网络上的，借用Web服务器来发布Web服务，就不必再创建专门的基于SOAP协议的服务器程序了。以下是客户程序访问特定Web服务的过程：</p><ol><li>客户程序发出一个<strong>原始请求</strong>。</li><li>客户端协议解析器负责把客户程序的原始请求包装为一个XML格式的<strong>SOAP请求</strong>。SOAP请求是基于SOAP协议的Web服务请求的简称。</li><li>客户端协议连接器把SOAP请求包装成一个<strong>HTTP请求</strong>，其中SOAP请求变成了HTTP请求的正文部分。客户端协议连接器接着把HTTP请求发送给Web服务器。</li><li>Web服务器接收到HTTP请求，取出HTTP请求的正文部分，即获得了<strong>SOAP请求</strong>。</li><li>服务器端协议解析器从SOAP请求中获取客户程序的<strong>原始请求数据</strong>，对其解析，然后调用Web服务。</li><li>Web服务返回<strong>原始的响应结果</strong>。</li><li>服务器端协议解析器把Web服务返回的原始响应结果包装为<strong>SOAP响应结果</strong>。SOAP响应结果是基于SOAP协议的Web服务响应结果的简称。</li><li>Web服务器把SOAP响应结果包装成一个<strong>HTTP响应结果</strong>，其中SOAP响应结果变成了HTTP响应结果的正文部分。Web服务器接着把HTTP响应结果发送给客户端协议连接器。</li><li>客户端协议连接器接收到HTTP响应结果，取出HTTP响应结果的正文部分，即得到了<strong>SOAP响应结果</strong>。</li><li>客户端协议解析器从SOAP响应结果中得到<strong>Web服务的原始响应结果</strong>，把它交给客户程序。</li></ol><p>Web的基本功能是提供客户程序与服务器之间的数据传输（主要是服务器发送给浏览器的HTML文档），而Web服务的基本功能是客户程序远程调用服务器端的方法。由于在进行远程方法调用时，客户端与服务器之间也涉及到数据的交换，因此Web服务可以借助Web来传输双方的通信数据。</p>]]></content>
+    
+    
+    <categories>
+      
+      <category>技术</category>
+      
+    </categories>
+    
+    
+    <tags>
+      
+      <tag>Web技术</tag>
       
     </tags>
     

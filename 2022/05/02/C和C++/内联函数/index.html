@@ -291,7 +291,7 @@
               <h1 id="内联函数"><a href="#内联函数" class="headerlink" title="内联函数"></a>内联函数</h1><p>许多程序员使用带有参数的宏来完成简单函数的调用。宏替换的好处是没有函数调用的开销，能够加快代码的执行。</p>
 <p>但宏替换是一种无类型机制，只能实现比较简单的功能，有时还会产生预期之外的副作用。而函数正好相反。</p>
 <p>为了结合宏替换和函数的优点，C++语言允许定义内联函数。在函数原型前加上<code>inline</code>表示这是一个内联函数。例如：</p>
-<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs C++"><span class="hljs-function"><span class="hljs-keyword">inline</span> <span class="hljs-keyword">void</span> <span class="hljs-title">function</span><span class="hljs-params">(<span class="hljs-keyword">int</span> a, <span class="hljs-keyword">int</span> b)</span></span>;<br></code></pre></td></tr></table></figure>
+<figure class="highlight c++"><table><tr><td class="gutter hljs"><div class="hljs code-wrapper"><pre><span class="line">1</span><br></pre></div></td><td class="code"><div class="hljs code-wrapper"><pre><code class="hljs C++"><span class="hljs-function"><span class="hljs-keyword">inline</span> <span class="hljs-keyword">void</span> <span class="hljs-title">function</span><span class="hljs-params">(<span class="hljs-keyword">int</span> a, <span class="hljs-keyword">int</span> b)</span></span>;<br></code></pre></div></td></tr></table></figure>
 
 <p>在编译时，会将将调用内联函数的地方用相应的函数体替换，能够加快代码的执行，减少函数调用的开销。</p>
 <p>需要注意的是，不是所有的函数都需要定义为内联函数，在使用内联函数时要注意一下事项：</p>
@@ -369,7 +369,7 @@
       Fluid.utils.createCssLink('/css/gitalk.css')
       Fluid.utils.createScript('https://cdn.jsdelivr.net/npm/gitalk@1.7.2/dist/gitalk.min.js', function() {
         var options = Object.assign(
-          {"clientID":"6ea770bf22abf781c224","clientSecret":"af10c8b29047aede4963f4d93f77f6abc18ade91","repo":"https://github.com/Ap0l1o/blog_gitalk","owner":"ap0l1o","admin":["name"],"language":"zh-CN","labels":["Gitalk"],"perPage":10,"pagerDirection":"last","distractionFreeMode":false,"createIssueManually":true,"proxy":"https://cors-anywhere.azm.workers.dev/https://github.com/login/oauth/access_token"},
+          {"clientID":"6ea770bf22abf781c224","clientSecret":"af10c8b29047aede4963f4d93f77f6abc18ade91","repo":"blog_gitalk","owner":"ap0l1o","admin":["ap0l1o"],"language":"zh-CN","labels":["Gitalk"],"perPage":10,"pagerDirection":"last","distractionFreeMode":false,"createIssueManually":true,"proxy":"https://cors-anywhere.azm.workers.dev/https://github.com/login/oauth/access_token"},
           {
             id: '355110957e3adef7d22205e4edf9eb61'
           }

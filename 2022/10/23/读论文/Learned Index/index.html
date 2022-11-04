@@ -288,16 +288,16 @@
             <h1 style="display: none">Learned Index</h1>
             
             <div class="markdown-body">
-              <h1 id="Learned-Index"><a href="#Learned-Index" class="headerlink" title="Learned Index"></a>Learned Index</h1><h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a><strong>前言</strong></h2><p>在数据库中，索引用于实现数据的快速访问检索，得到数据的存在信息：是否存在、存在的位置。</p>
+              <h1 id="Learned-Index"><a href="#Learned-Index" class="headerlink" title="Learned Index"></a>Learned Index</h1><h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>在数据库中，索引用于实现数据的快速访问检索，得到数据的存在信息：是否存在、存在的位置。</p>
 <p>通过机器学习能够学习到数据库中数据的「分布特征」，从而根据此特征动态建立起专用的索引方式。</p>
-<h1 id="The-Case-For-Learned-Index-Structures（SIGMOD-2018）"><a href="#The-Case-For-Learned-Index-Structures（SIGMOD-2018）" class="headerlink" title="The Case For Learned Index Structures（SIGMOD-2018）"></a><strong>The Case For Learned Index Structures（SIGMOD-2018）</strong></h1><h2 id="文章信息"><a href="#文章信息" class="headerlink" title="文章信息"></a><strong>文章信息</strong></h2><h3 id="主要作者及单位"><a href="#主要作者及单位" class="headerlink" title="主要作者及单位"></a><strong>主要作者及单位</strong></h3><ul>
+<h1 id="The-Case-For-Learned-Index-Structures（SIGMOD-2018）"><a href="#The-Case-For-Learned-Index-Structures（SIGMOD-2018）" class="headerlink" title="The Case For Learned Index Structures（SIGMOD-2018）"></a>The Case For Learned Index Structures（SIGMOD-2018）</h1><h2 id="文章信息"><a href="#文章信息" class="headerlink" title="文章信息"></a>文章信息</h2><h3 id="主要作者及单位"><a href="#主要作者及单位" class="headerlink" title="主要作者及单位"></a>主要作者及单位</h3><ul>
 <li>Tim Kraska （MIT）</li>
 <li>Jeff Dean （Google）</li>
 </ul>
-<h3 id="会议-期刊"><a href="#会议-期刊" class="headerlink" title="会议/期刊"></a><strong>会议/期刊</strong></h3><ul>
+<h3 id="会议-期刊"><a href="#会议-期刊" class="headerlink" title="会议/期刊"></a>会议/期刊</h3><ul>
 <li>SIGMOD-2018</li>
 </ul>
-<h2 id="内容"><a href="#内容" class="headerlink" title="内容"></a><strong>内容</strong></h2><h3 id="简介"><a href="#简介" class="headerlink" title="简介"></a><strong>简介</strong></h3><p>提出了「Learned Index」的基本概念和构建思路，并提供了替换传统索引方案的一些案例和优化方法。「Learned Index」的开山之作。</p>
+<h2 id="内容"><a href="#内容" class="headerlink" title="内容"></a>内容</h2><h3 id="简介"><a href="#简介" class="headerlink" title="简介"></a>简介</h3><p>本文提出了「Learned Index」的基本概念和构建思路，并提供了替换传统索引方案的一些案例和优化方法，是「Learned Index」的开山之作。</p>
 <p>索引是模型的一种：</p>
 <ul>
 <li>「Range Index」索引：以B-Tree为代表的Range Index索引可以看作是一个从给定Key到一个「排序数组」的Position的预测过程；</li>
@@ -312,7 +312,7 @@
 <li>训练问题：如何避免过拟合，当数据更新、插入和删除后，数据分布会发生变化，变化后的重新训练。</li>
 <li>开销问题：训练开销和计算开销。</li>
 </ul>
-<h3 id="Range-Index-代替B树"><a href="#Range-Index-代替B树" class="headerlink" title="Range Index - 代替B树"></a><strong>Range Index - 代替B树</strong></h3><p>数据库系统通常使用B-Tree或B+-Tree来实现Range Index。查询时给定一个key，B-Tree能索引到包含该key对应范围的叶子节点。</p>
+<h3 id="Range-Index-代替B树"><a href="#Range-Index-代替B树" class="headerlink" title="Range Index - 代替B树"></a>Range Index - 代替B树</h3><p>数据库系统通常使用B-Tree或B+-Tree来实现Range Index。查询时给定一个key，B-Tree能索引到包含该key对应范围的叶子节点。</p>
 <p>从机器学习的角度来看，可以把B-Tree看作一个「Regression Tree」，B-Tree的建立过程也是依赖数据的，不过它不是通过「梯度下降」的训练方式得到的，而是通过预先定义的规则得到的。</p>
 <p><img src="https://cdn.jsdelivr.net/gh/Ap0l1o/ImageHostingService@main/img/Learned%20Index/F-1.png" srcset="/img/loading.gif" lazyload alt="Untitled"></p>
 <ul>
@@ -330,13 +330,13 @@
 <li>Recursive Model Index（RMI）：RMI主要用来解决模型的「最后一公里」准确度问题。RMI用一个模型树通过层层的模型来不断缩小数据的查找范围，直至叶节点可以拟合最小范围的数据分布。根节点往往采用简单的神经网络模型，其他节点使用线性回归模型，如果数据分布过于复杂而无法拟合，叶子可以直接换成B-Tree结构。</li>
 </ul>
 <p><img src="https://cdn.jsdelivr.net/gh/Ap0l1o/ImageHostingService@main/img/Learned%20Index/F-2.png" srcset="/img/loading.gif" lazyload alt="Untitled"></p>
-<h3 id="Point-Index-代替哈希"><a href="#Point-Index-代替哈希" class="headerlink" title="Point Index - 代替哈希"></a><strong>Point Index - 代替哈希</strong></h3><p>Hash-Map通过使用哈希函数来决定将Key映射到比特数组中的位置。这里的主要挑战在于哈希碰撞问题，也即不同的Key映射到的比特位会有重叠。</p>
+<h3 id="Point-Index-代替哈希"><a href="#Point-Index-代替哈希" class="headerlink" title="Point Index - 代替哈希"></a>Point Index - 代替哈希</h3><p>Hash-Map通过使用哈希函数来决定将Key映射到比特数组中的位置。这里的主要挑战在于哈希碰撞问题，也即不同的Key映射到的比特位会有重叠。</p>
 <p>常见的哈希碰撞解决方法有：邻接链表法、二级探测等。</p>
 <p><strong>而机器学习模型提供了减少哈希冲突数量的替代方案</strong>。虽然将机器学习模型作为哈希函数使用的方法并不新鲜，但现有的技术并没有利用底层的数据分布。</p>
 <p><img src="https://cdn.jsdelivr.net/gh/Ap0l1o/ImageHostingService@main/img/Learned%20Index/F-3.png" srcset="/img/loading.gif" lazyload alt="Untitled"></p>
-<h3 id="Existence-Index-代替Bloom-Filter"><a href="#Existence-Index-代替Bloom-Filter" class="headerlink" title="Existence Index - 代替Bloom Filter"></a><strong>Existence Index - 代替Bloom Filter</strong></h3><p>使用机器学习模型来代替Bloom Filter有两种思路：</p>
+<h3 id="Existence-Index-代替Bloom-Filter"><a href="#Existence-Index-代替Bloom-Filter" class="headerlink" title="Existence Index - 代替Bloom Filter"></a>Existence Index - 代替Bloom Filter</h3><p>使用机器学习模型来代替Bloom Filter有两种思路：</p>
 <ul>
-<li>仅使用机器学习模型来代替Bloom Filter中的<strong>哈希函数，</strong>来减少哈希冲突；</li>
+<li>仅使用机器学习模型来代替Bloom Filter中的<strong>哈希函数</strong>，来减少哈希冲突；</li>
 <li>直接用一个<strong>二分类机器学习模型</strong>来代替Bloom Filter去判断数据是否存在；</li>
 </ul>
 <p><img src="https://cdn.jsdelivr.net/gh/Ap0l1o/ImageHostingService@main/img/Learned%20Index/F-4.png" srcset="/img/loading.gif" lazyload alt="Untitled"></p>

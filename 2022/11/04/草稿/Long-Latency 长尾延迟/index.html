@@ -18,9 +18,25 @@
   <meta name="author" content="ap0;1o">
   <meta name="keywords" content="">
   
-  <title>This is my movie title - ap0l1o</title>
+  <title>LSM-tree长尾延迟 - ap0l1o</title>
 
   <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.0/dist/css/bootstrap.min.css" />
+
+
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/github-markdown-css@4.0.0/github-markdown.min.css" />
+  <link  rel="stylesheet" href="/lib/hint/hint.min.css" />
+
+  
+    
+    
+      
+      <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/highlight.js@10.7.2/styles/github-gist.min.css" />
+    
+  
+
+  
+    <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.5.7/dist/jquery.fancybox.min.css" />
+  
 
 
 
@@ -48,7 +64,7 @@
 
 
 <body>
-  <header style="height: 60vh;">
+  <header style="height: 70vh;">
     <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
   <div class="container">
     <a class="navbar-brand"
@@ -202,14 +218,51 @@
 </nav>
 
     <div class="banner" id="banner" parallax=true
-         style="background: url('/img/default.png') no-repeat center center;
+         style="background: url('/img/hello.jpg') no-repeat center center;
            background-size: cover;">
       <div class="full-bg-img">
         <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
           <div class="page-header text-center fade-in-up">
-            <span class="h2" id="subtitle" title="This is my movie title">
+            <span class="h2" id="subtitle" title="LSM-tree长尾延迟">
               
             </span>
+
+            
+              <div class="mt-3">
+  
+  
+    <span class="post-meta">
+      <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+      <time datetime="2022-11-04 14:53" pubdate>
+        2022年11月4日 下午
+      </time>
+    </span>
+  
+</div>
+
+<div class="mt-1">
+  
+    
+    <span class="post-meta mr-2">
+      <i class="iconfont icon-chart"></i>
+      294 字
+    </span>
+  
+
+  
+    
+    <span class="post-meta mr-2">
+      <i class="iconfont icon-clock-fill"></i>
+      
+      
+      3
+       分钟
+    </span>
+  
+
+  
+  
+</div>
 
             
           </div>
@@ -222,268 +275,99 @@
 
   <main>
     
-      <div class="container nopadding-x-md">
-        <div class="py-5" id="board"
-          >
-          
-          <div class="container">
-            <div class="row">
-              <div class="col-12 col-md-10 m-auto">
-                
+      
 
-<article class="page-content">
-  <blockquote>
-    <p>This is my movie quote</p>
-</blockquote>
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="d-none d-lg-block col-lg-2"></div>
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div class="py-5" id="board">
+          <article class="post-content mx-auto">
+            <!-- SEO header -->
+            <h1 style="display: none">LSM-tree长尾延迟</h1>
+            
+            <div class="markdown-body">
+              <h2 id="0x01-长尾延迟"><a href="#0x01-长尾延迟" class="headerlink" title="0x01 长尾延迟"></a>0x01 长尾延迟</h2><p><img src="https://cdn.jsdelivr.net/gh/Ap0l1o/ImageHostingService@main/img/long-latency/F-1.png" srcset="/img/loading.gif" lazyload><br>以RocksDB为例，在Nutanix生产环境中的写密集型工作负载下，99%分位的操作尾延迟达到了$10^6$微秒级，也即秒级。</p>
+<h2 id="0x02-长尾延迟的原因"><a href="#0x02-长尾延迟的原因" class="headerlink" title="0x02 长尾延迟的原因"></a>0x02 长尾延迟的原因</h2><p>出现「长尾延迟」的主要原因是内存中的MemTable写满后无法及时刷新到LSM-Tree中的L0，进而阻塞了「写操作」。</p>
+<p>回顾LSM-Tree的写操作流程：</p>
+<ol>
+<li>首先追加写到WAL中；</li>
+<li>WAL写入成功后再写内存中的MemTable，根据写MemTable的情况返回「写操作」的结果；</li>
+<li>MemTable写满后转为Immutable MemTable；</li>
+<li>后台线程执行Minor Compaction（也即Flush操作）将Immutable MemTable持久化为磁盘上LSM-Tree中L0的SSTable文件；</li>
+<li>当L0中的文件数量达到上限或其他Level中的问价大小超过容量上限时执行Major Compaction操作，将本Level的SSTable文件合并写到下一个Level中；</li>
+</ol>
+<p>上面的写操作流程中隐含了一些限制写操作的细节，主要包含以下两点：</p>
+<ul>
+<li>当L0中的SSTable文件数量过多时，会阻塞写操作；</li>
+<li>当底层Compaction过多时，会与Flush操作和WAL竞争IO带宽，从而限制用户的写操作；</li>
+</ul>
 
-<style>
-    
-.hexo-douban-tabs {
-    margin-bottom: 15px;
-    margin-top: 15px;
-}
-
-.hexo-douban-tab {
-    padding: 5px;
-}
-
-.hexo-douban-active {
-    background: #657b83;
-    color: #fff;
-}
-
-.hexo-douban-item {
-    padding-bottom: 10px;
-    position: relative;
-    clear: both;
-    min-height: 170px;
-    padding: 10px 0;
-    border-bottom: 1px #ddd solid;
-}
-
-@media screen and (max-width: 600px) {
-    .hexo-douban-item {
-        width: 100%;
-    }
-}
-
-.hexo-douban-picture {
-    position: absolute;
-    left: 0;
-    top: 10px;
-    width: 100px;
-}
-
-.hexo-douban-info {
-    padding-left: 120px;
-}
-
-.hexo-douban-meta {
-    font-size: 12px;
-    padding-right: 10px;
-}
-
-.hexo-douban-comments {
-    font-size: 12px;
-}
-
-.hexo-douban-pagination {
-    margin-top: 15px;
-    text-align: center;
-    margin-bottom: 10px;
-}
-
-.hexo-douban-button {
-    padding: 5px;
-}
-
-.hexo-douban-button:hover {
-    background: #657b83;
-    color: #fff;
-}
-
-.hexo-douban-hide {
-    display: none;
-}
-
-.hexo-douban-show {
-    display: block;
-}
-
-
-</style>
-
-<div class="hexo-douban-tabs">
-    <a class="hexo-douban-tab" id="hexo-douban-tab1" href="javascript:;"
-       rel="external">
-        在看
-        (0)</a>
-    <a class="hexo-douban-tab" id="hexo-douban-tab2" href="javascript:;"
-       rel="external">
-        想看
-        (0)</a>
-    <a class="hexo-douban-tab" id="hexo-douban-tab3" href="javascript:;"
-       rel="external">
-        已看
-        (0)</a>
-</div>
-<div>
-    <div id="hexo-douban-item1">
-        
-        <div class="hexo-douban-pagination">
-    <a class="hexo-douban-button hexo-douban-firstpage" href="javascript:;"> 首页</a>
-    <a class="hexo-douban-button hexo-douban-previouspage" href="javascript:;">上一页</a>
-    <span class="hexo-douban-pagenum">2 / 3</span>
-    <a class="hexo-douban-button hexo-douban-nextpage" href="javascript:;">下一页</a>
-    <a class="hexo-douban-button hexo-douban-lastpage" href="javascript:;">尾页</a>
-</div>
-    </div>
-    <div id="hexo-douban-item2">
-        
-        <div class="hexo-douban-pagination">
-    <a class="hexo-douban-button hexo-douban-firstpage" href="javascript:;"> 首页</a>
-    <a class="hexo-douban-button hexo-douban-previouspage" href="javascript:;">上一页</a>
-    <span class="hexo-douban-pagenum">2 / 3</span>
-    <a class="hexo-douban-button hexo-douban-nextpage" href="javascript:;">下一页</a>
-    <a class="hexo-douban-button hexo-douban-lastpage" href="javascript:;">尾页</a>
-</div>
-    </div>
-    <div id="hexo-douban-item3">
-        
-        <div class="hexo-douban-pagination">
-    <a class="hexo-douban-button hexo-douban-firstpage" href="javascript:;"> 首页</a>
-    <a class="hexo-douban-button hexo-douban-previouspage" href="javascript:;">上一页</a>
-    <span class="hexo-douban-pagenum">2 / 3</span>
-    <a class="hexo-douban-button hexo-douban-nextpage" href="javascript:;">下一页</a>
-    <a class="hexo-douban-button hexo-douban-lastpage" href="javascript:;">尾页</a>
-</div>
-    </div>
-</div>
-
-<script>
-    /**
- * Created by myths on 18-2-8.
- */
-
-Element.prototype.siblings = function () {
-    var siblingElement = [];
-    var sibs = this.parentNode.children;
-    for (var i = 0; i < sibs.length; i++) {
-        if (sibs[i] !== this) {
-            siblingElement.push(sibs[i]);
-        }
-    }
-    return siblingElement;
-};
-function tabClick() {
-    //修改标签样式
-    this.classList.add('hexo-douban-active');
-    var sibs = this.siblings();
-    for (var j = 0; j < sibs.length; j++) {
-        sibs[j].classList.remove('hexo-douban-active');
-    }
-    //显示对应板块
-    var itemId = this.id.replace('tab', 'item');
-    var target = document.getElementById(itemId);
-    target.classList.remove('hexo-douban-hide');
-    target.classList.add('hexo-douban-show');
-    sibs = document.getElementById(itemId).siblings();
-    for (var k = 0; k < sibs.length; k++) {
-        sibs[k].classList.remove('hexo-douban-show');
-        sibs[k].classList.add('hexo-douban-hide');
-    }
-}
-var tabs = document.getElementsByClassName("hexo-douban-tab");
-for (var i = 0; i < tabs.length; i++) {
-    tabs[i].onclick = tabClick;
-    tabs[i].onclick.apply(tabs[i]);
-}
-tabs[2].click();
-
-    var firstpages = document.getElementsByClassName("hexo-douban-firstpage");
-var previouspages = document.getElementsByClassName("hexo-douban-previouspage");
-var nextpages = document.getElementsByClassName("hexo-douban-nextpage");
-var lastpages = document.getElementsByClassName("hexo-douban-lastpage");
-var pagenums = document.getElementsByClassName("hexo-douban-pagenum");
-
-function makePageNum(num, arr) {
-    return (num + 1) + ' / ' + (Math.ceil(arr.length / 10 === 0 ? 1 : Math.ceil(arr.length / 10)));
-}
-
-function firstBtn() {
-    var sibs = this.parentNode.siblings();
-    displayPage(sibs, 0);
-    this.parentNode.getElementsByClassName('hexo-douban-pagenum')[0].innerText = makePageNum(0, sibs);
-}
-
-function previousBtn() {
-    var sibs = this.parentNode.siblings();
-    var currNum = this.parentNode.getElementsByClassName('hexo-douban-pagenum')[0].innerText;
-    currNum = currNum.substr(0, currNum.indexOf('/') - 1);
-    currNum = parseInt(currNum, 10) - 1;
-    if (currNum > 0) {
-        currNum--;
-    }
-    displayPage(sibs, currNum);
-    this.parentNode.getElementsByClassName('hexo-douban-pagenum')[0].innerText = makePageNum(currNum, sibs);
-}
-
-function nextBtn() {
-    var sibs = this.parentNode.siblings();
-    var currNum = this.parentNode.getElementsByClassName('hexo-douban-pagenum')[0].innerText;
-    currNum = currNum.substr(0, currNum.indexOf('/') - 1);
-    currNum = parseInt(currNum, 10) - 1;
-    if (currNum < Math.ceil(sibs.length / 10) - 1) {
-        currNum++;
-    }
-    displayPage(sibs, currNum);
-    this.parentNode.getElementsByClassName('hexo-douban-pagenum')[0].innerText = makePageNum(currNum, sibs);
-}
-
-function lastBtn() {
-    var sibs = this.parentNode.siblings();
-    displayPage(sibs, Math.ceil(sibs.length / 10) - 1);
-    this.parentNode.getElementsByClassName('hexo-douban-pagenum')[0].innerText = makePageNum(Math.ceil(sibs.length / 10) - 1 === -1 ? 0 : Math.ceil(sibs.length / 10) - 1, sibs);
-}
-
-function displayPage(arr, num) {
-    for (var i = 0; i < arr.length; i++) {
-        if (Math.floor(i / 10) === num) {
-            arr[i].classList.remove('hexo-douban-hide');
-            var img = arr[i].getElementsByTagName('img')[0];
-            img.src = img.getAttribute('data-src');
-        } else {
-            arr[i].classList.add('hexo-douban-hide');
-        }
-    }
-}
-
-for (var i = 0; i < firstpages.length; i++) {
-
-    //add listener
-    firstpages[i].onclick = firstBtn;
-    previouspages[i].onclick = previousBtn;
-    nextpages[i].onclick = nextBtn;
-    lastpages[i].onclick = lastBtn;
-
-    //set page num
-    var size = pagenums[i].parentNode.siblings().length;
-    pagenums[i].innerText = '1 / ' + (Math.ceil(size / 10) === 0 ? 1 : Math.ceil(size / 10));
-    firstpages[i].click();
-}
-
-</script>
-
-
-
-  
-</article>
-
-              </div>
             </div>
-          </div>
+            <hr>
+            <div>
+              <div class="post-metas mb-3">
+                
+                
+              </div>
+              
+                <p class="note note-warning">
+                  
+                    本博客所有文章除特别声明外，均采用 <a target="_blank" href="https://creativecommons.org/licenses/by-sa/4.0/deed.zh" rel="nofollow noopener noopener">CC BY-SA 4.0 协议</a> ，转载请注明出处！
+                  
+                </p>
+              
+              
+            </div>
+
+            
+              <!-- Comments -->
+              <article class="comments" id="comments" lazyload>
+                
+                  
+                
+                
+  <div id="gitalk-container"></div>
+  <script type="text/javascript">
+    Fluid.utils.loadComments('#gitalk-container', function() {
+      Fluid.utils.createCssLink('/css/gitalk.css')
+      Fluid.utils.createScript('https://cdn.jsdelivr.net/npm/gitalk@1.7.2/dist/gitalk.min.js', function() {
+        var options = Object.assign(
+          {"clientID":"6ea770bf22abf781c224","clientSecret":"af10c8b29047aede4963f4d93f77f6abc18ade91","repo":"blog_gitalk","owner":"ap0l1o","admin":["ap0l1o"],"language":"zh-CN","labels":["Gitalk"],"perPage":10,"pagerDirection":"last","distractionFreeMode":false,"createIssueManually":true,"proxy":"https://cors-anywhere.azm.workers.dev/https://github.com/login/oauth/access_token"},
+          {
+            id: '5c70421d481a1fd4beb4d880ea28da08'
+          }
+        )
+        var gitalk = new Gitalk(options);
+        gitalk.render('gitalk-container');
+      });
+    });
+  </script>
+  <noscript>Please enable JavaScript to view the comments</noscript>
+
+
+              </article>
+            
+          </article>
         </div>
       </div>
+    </div>
+    
+      <div class="d-none d-lg-block col-lg-2 toc-container" id="toc-ctn">
+        <div id="toc">
+  <p class="toc-header"><i class="iconfont icon-list"></i>&nbsp;目录</p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+      </div>
+    
+  </div>
+</div>
+
+<!-- Custom -->
+
+
     
 
     
@@ -563,9 +447,15 @@ for (var i = 0; i < firstpages.length; i++) {
 
 
 
+  <script  src="https://cdn.jsdelivr.net/npm/tocbot@4.12.3/dist/tocbot.min.js" ></script>
 
 
 
+  <script  src="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.5.7/dist/jquery.fancybox.min.js" ></script>
+
+
+
+  <script  src="https://cdn.jsdelivr.net/npm/anchor-js@4.3.1/anchor.min.js" ></script>
 
 
 
@@ -594,6 +484,45 @@ for (var i = 0; i < firstpages.length; i++) {
 
 
 
+
+  
+
+  
+    <!-- MathJax -->
+    <script>
+      MathJax = {
+        tex: {
+          inlineMath: [['$', '$'], ['\\(', '\\)']]
+        },
+        options: {
+          renderActions: {
+            findScript: [10, doc => {
+              document.querySelectorAll('script[type^="math/tex"]').forEach(node => {
+                const display = !!node.type.match(/; *mode=display/);
+                const math = new doc.options.MathItem(node.textContent, doc.inputJax[0], display);
+                const text = document.createTextNode('');
+                node.parentNode.replaceChild(text, node);
+                math.start = { node: text, delim: '', n: 0 };
+                math.end = { node: text, delim: '', n: 0 };
+                doc.math.push(math);
+              });
+            }, '', false],
+            insertedScript: [200, () => {
+              document.querySelectorAll('mjx-container').forEach(node => {
+                let target = node.parentNode;
+                if (target.nodeName.toLowerCase() === 'li') {
+                  target.parentNode.classList.add('has-jax');
+                }
+              });
+            }, '', false]
+          }
+        }
+      };
+    </script>
+
+    <script async src="https://cdn.jsdelivr.net/npm/mathjax@3.1.4/es5/tex-svg.js" ></script>
+
+  
 
 
 

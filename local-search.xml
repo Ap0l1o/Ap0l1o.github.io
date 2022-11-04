@@ -4,19 +4,6 @@
   
   
   <entry>
-    <title>LSM-tree长尾延迟</title>
-    <link href="/2022/11/04/%E8%8D%89%E7%A8%BF/Long-Latency%20%E9%95%BF%E5%B0%BE%E5%BB%B6%E8%BF%9F/"/>
-    <url>/2022/11/04/%E8%8D%89%E7%A8%BF/Long-Latency%20%E9%95%BF%E5%B0%BE%E5%BB%B6%E8%BF%9F/</url>
-    
-    <content type="html"><![CDATA[<h2 id="0x01-长尾延迟"><a href="#0x01-长尾延迟" class="headerlink" title="0x01 长尾延迟"></a>0x01 长尾延迟</h2><p><img src="https://cdn.jsdelivr.net/gh/Ap0l1o/ImageHostingService@main/img/long-latency/F-1.png"><br>以RocksDB为例，在Nutanix生产环境中的写密集型工作负载下，99%分位的操作尾延迟达到了$10^6$微秒级，也即秒级。</p><h2 id="0x02-长尾延迟的原因"><a href="#0x02-长尾延迟的原因" class="headerlink" title="0x02 长尾延迟的原因"></a>0x02 长尾延迟的原因</h2><p>出现「长尾延迟」的主要原因是内存中的MemTable写满后无法及时刷新到LSM-Tree中的L0，进而阻塞了「写操作」。</p><p>回顾LSM-Tree的写操作流程：</p><ol><li>首先追加写到WAL中；</li><li>WAL写入成功后再写内存中的MemTable，根据写MemTable的情况返回「写操作」的结果；</li><li>MemTable写满后转为Immutable MemTable；</li><li>后台线程执行Minor Compaction（也即Flush操作）将Immutable MemTable持久化为磁盘上LSM-Tree中L0的SSTable文件；</li><li>当L0中的文件数量达到上限或其他Level中的问价大小超过容量上限时执行Major Compaction操作，将本Level的SSTable文件合并写到下一个Level中；</li></ol><p>上面的写操作流程中隐含了一些限制写操作的细节，主要包含以下两点：</p><ul><li>当L0中的SSTable文件数量过多时，会阻塞写操作；</li><li>当底层Compaction过多时，会与Flush操作和WAL竞争IO带宽，从而限制用户的写操作；<br><img src="https://cdn.jsdelivr.net/gh/Ap0l1o/ImageHostingService@main/img/long-latency/F-2.png"></li></ul>]]></content>
-    
-    
-    
-  </entry>
-  
-  
-  
-  <entry>
     <title>Learned Index</title>
     <link href="/2022/10/23/%E8%AF%BB%E8%AE%BA%E6%96%87/Learned%20Index/"/>
     <url>/2022/10/23/%E8%AF%BB%E8%AE%BA%E6%96%87/Learned%20Index/</url>

@@ -238,47 +238,6 @@
     <article class="col-12 col-md-12 mx-auto index-info">
       <h1 class="index-header">
         
-        <a href="/2022/11/04/%E8%8D%89%E7%A8%BF/Long-Latency%20%E9%95%BF%E5%B0%BE%E5%BB%B6%E8%BF%9F/" target="_self">
-          LSM-tree长尾延迟
-        </a>
-      </h1>
-
-      <p class="index-excerpt">
-        <a href="/2022/11/04/%E8%8D%89%E7%A8%BF/Long-Latency%20%E9%95%BF%E5%B0%BE%E5%BB%B6%E8%BF%9F/" target="_self">
-          
-          
-            
-          
-          0x01 长尾延迟以RocksDB为例，在Nutanix生产环境中的写密集型工作负载下，99%分位的操作尾延迟达到了$10^6$微秒级，也即秒级。
-0x02 长尾延迟的原因出现「长尾延迟」的主要原因是内存中的MemTable写满后无法及时刷新到LSM-Tree中的L0，进而阻塞了「写操作」。
-回顾LSM-Tree的写操作流程：
-
-首先追加写到WAL中；
-WAL写入成功后再写内存中的MemTable
-        </a>
-      </p>
-
-      <div class="index-btm post-metas">
-        
-          <div class="post-meta mr-3">
-            <i class="iconfont icon-date"></i>
-            <time datetime="2022-11-04 14:53" pubdate>
-              2022-11-04
-            </time>
-          </div>
-        
-        
-        
-      </div>
-    </article>
-  </div>
-
-  <div class="row mx-auto index-card">
-    
-    
-    <article class="col-12 col-md-12 mx-auto index-info">
-      <h1 class="index-header">
-        
         <a href="/2022/10/23/%E8%AF%BB%E8%AE%BA%E6%96%87/Learned%20Index/" target="_self">
           Learned Index
         </a>
@@ -731,6 +690,58 @@ WAL写入成功后再写内存中的MemTable
             <i class="iconfont icon-tags"></i>
             
               <a href="/tags/%E9%87%91%E5%BA%B8%E6%AD%A6%E4%BE%A0/">金庸武侠</a>
+            
+          </div>
+        
+      </div>
+    </article>
+  </div>
+
+  <div class="row mx-auto index-card">
+    
+    
+    <article class="col-12 col-md-12 mx-auto index-info">
+      <h1 class="index-header">
+        
+        <a href="/2022/05/02/C%E5%92%8CC++/%E5%86%85%E8%81%94%E5%87%BD%E6%95%B0/" target="_self">
+          C++内联函数
+        </a>
+      </h1>
+
+      <p class="index-excerpt">
+        <a href="/2022/05/02/C%E5%92%8CC++/%E5%86%85%E8%81%94%E5%87%BD%E6%95%B0/" target="_self">
+          
+          
+            
+          
+          C++内联函数
+        </a>
+      </p>
+
+      <div class="index-btm post-metas">
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-date"></i>
+            <time datetime="2022-05-02 21:00" pubdate>
+              2022-05-02
+            </time>
+          </div>
+        
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-category"></i>
+            
+              <a href="/categories/%E6%8A%80%E6%9C%AF/">技术</a>
+            
+          </div>
+        
+        
+          <div class="post-meta">
+            <i class="iconfont icon-tags"></i>
+            
+              <a href="/tags/C-C/">C/C++</a>
+            
+              <a href="/tags/%E7%BC%96%E7%A8%8B%E8%AF%AD%E8%A8%80/">编程语言</a>
             
           </div>
         

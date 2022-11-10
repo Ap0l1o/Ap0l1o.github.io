@@ -14,11 +14,11 @@
   <meta http-equiv="x-ua-compatible" content="ie=edge">
   
   <meta name="theme-color" content="#2f4154">
-  <meta name="description" content="并发控制算法介绍。">
+  <meta name="description" content="SpanDB论文阅读笔记。">
   <meta name="author" content="ap0l1o">
   <meta name="keywords" content="">
   
-  <title>并发控制 - ap0l1o</title>
+  <title>SpanDB论文阅读 - ap0l1o</title>
 
   <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.0/dist/css/bootstrap.min.css" />
 
@@ -223,7 +223,7 @@
       <div class="full-bg-img">
         <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
           <div class="page-header text-center fade-in-up">
-            <span class="h2" id="subtitle" title="并发控制">
+            <span class="h2" id="subtitle" title="SpanDB论文阅读">
               
             </span>
 
@@ -233,8 +233,8 @@
   
     <span class="post-meta">
       <i class="iconfont icon-date-fill" aria-hidden="true"></i>
-      <time datetime="2021-10-20 21:20" pubdate>
-        2021年10月20日 晚上
+      <time datetime="2022-05-29 15:30" pubdate>
+        2022年5月29日 下午
       </time>
     </span>
   
@@ -245,7 +245,7 @@
     
     <span class="post-meta mr-2">
       <i class="iconfont icon-chart"></i>
-      2.1k 字
+      2.8k 字
     </span>
   
 
@@ -255,7 +255,7 @@
       <i class="iconfont icon-clock-fill"></i>
       
       
-      21
+      31
        分钟
     </span>
   
@@ -285,44 +285,123 @@
         <div class="py-5" id="board">
           <article class="post-content mx-auto">
             <!-- SEO header -->
-            <h1 style="display: none">并发控制</h1>
+            <h1 style="display: none">SpanDB论文阅读</h1>
             
             <div class="markdown-body">
-              <h2 id="分类"><a href="#分类" class="headerlink" title="分类"></a>分类</h2><p>并发控制算法通常根据<strong>读写操作同步的方式</strong>来分类。同步可以通过<strong>共享数据上的互斥机制</strong>（例如，锁🔒），或者通过显式地使用<strong>时间戳排序</strong>来实现。</p>
-<p>并发控制算法可以进一步区分为<strong>悲观算法</strong>和<strong>乐观算法</strong>。</p>
-<p>悲观算法（pessimistic approaches）的基本原则是Murphy定律（墨菲定律）：<strong>如果某事物可以出错，那么它就会出错。在悲观算法中，操作时在它们被执行前同步的，这意味着冲突在允许发生之前就解决了</strong>。</p>
-<p>相反，乐观算法（optimistic approachs）是<strong>基于错误一般不会发生的观点</strong>。所以操作被简单地执行，在事务结束的时候再进行同步。如果那是确实发生了冲突，一个或更多的事务将被迫终止。</p>
-<p>下面将讨论两个悲观算法和一个乐观算法。</p>
-<h2 id="两阶段锁定"><a href="#两阶段锁定" class="headerlink" title="两阶段锁定"></a>两阶段锁定</h2><p>最古老最简单也是最广泛使用的并发控制算法是锁定（locking🔒）。</p>
-<p>当一个进程要作为事务的一部分来读或写一个数据项时，它请求调度管理器允许它给该数据项加锁。同样，当它不再需要一个数据项时，就请求调度管理器释放该锁。</p>
-<p><strong>调度管理器的任务</strong>是以一种可以得到正确调度结果的方式来允许加锁和释放锁，即需要使用一种<strong>可以提供串行调度的算法</strong>。这样一个算法是两阶段锁定算法。</p>
-<p>如下图所示的两阶段锁定（two-phase locking，2PL）中，调度管理器先在增长阶段（growing phase）获得它所需要的所有锁，然后在收缩阶段（shrinking phase）释放它们。尤其要遵守下面三个规则：</p>
-<img src="https://ap0l1o.oss-cn-qingdao.aliyuncs.com/img/2PL.png" srcset="/img/loading.gif" lazyload alt="17105307_MZJc" style="zoom: 50%;" />
-
-<ol>
-<li>当调度管理器收到来自事务管理器的<code>open(T,x)</code>操作时，它检测该操作是否跟它已经允许锁定的另一个进程冲突。如果存在冲突，操作<code>open(T,x)</code>被延迟（这样事务$T$也被延迟）。如果没有冲突，调度管理器就允许对数据项$x$加锁，并将这个操作传递给数据管理器。</li>
-<li>直到数据管理器通知它已经完成了对锁定数据项x的操作，调度管理器才会释放数据项x的锁。</li>
-<li>一旦调度管理器为事务$T$释放了锁，那么无论事务T请求为哪个数据项加锁，调度管理器都不会允许T加另外一把锁（即只能一次获取到所需的所有锁）。$T$获取另外一把锁的任何企图都是一个程序错误，都会终止事务$T$。</li>
-</ol>
-<p>在许多系统中，收缩阶段是在事务运行结束之后，要么提交、要么终止时出现，它导致锁的释放（<strong>同时释放</strong>），如下图所示。这种策略被称为严格的两阶段锁定。</p>
-<img src="https://ap0l1o.oss-cn-qingdao.aliyuncs.com/img/strict-2PL.png" srcset="/img/loading.gif" lazyload alt="17105326_2MZl" style="zoom:50%;" />
-
-<p>严格的两阶段锁定有两个主要的优点：</p>
-<ul>
-<li>事务总是读提交事务写入的值，所以我们从来都不会因为事务的计算是基于一个它不应该看到的数据项而终止它。</li>
-<li>所有锁的获得和释放都可以由系统来处理而无需事务关心。要访问一个数据项就要获得锁，当事务完成时就释放锁。这种策略消除了瀑布型终止（cascaded aborts），即不得不撤销一个已经提交的事务，因为它看到了它不该看见的数据项。</li>
+              <h1 id="SpanDB-A-Fast-Cost-Effective-LSM-tree-Based-KV-Store-on-Hybrid-Storage"><a href="#SpanDB-A-Fast-Cost-Effective-LSM-tree-Based-KV-Store-on-Hybrid-Storage" class="headerlink" title="SpanDB: A Fast, Cost-Effective LSM-tree Based KV Store on Hybrid Storage"></a>SpanDB: A Fast, Cost-Effective LSM-tree Based KV Store on Hybrid Storage</h1><h2 id="Background"><a href="#Background" class="headerlink" title="Background"></a>Background</h2><ul>
+<li>基于LSM-Tree的KV-Store 正变的越来越受欢迎和重要<ul>
+<li>主要用于在企业服务中存储半结构化数据（例如：Google的LevelDB，Facebook的RocksDB）；</li>
+<li>一些分布式数据库的存储引擎也使用了KV-Store（例如：Ceph，MyRocks，TiDB，Cassandra）；</li>
 </ul>
-<h2 id="悲观的时间戳排序"><a href="#悲观的时间戳排序" class="headerlink" title="悲观的时间戳排序"></a>悲观的时间戳排序</h2><p>一个完全不同的并发控制方法是在<strong>每个事务$T$开始时给它分配一个时间戳$ts(T)$。</strong></p>
-<p>使用Lamport算法，我们可以保证时间戳是惟一的。<strong>事务$T$的每个操作都被盖上时间戳$ts(T)$，并且系统中的每个数据项$x$都有一个相关的读时间戳$ts_{RD}(x)$和写时间戳$ts_{WR}(x)$。</strong>读时间戳被设置为<strong>最近</strong>读$x$的事务的时间戳，而写时间戳是<strong>最近</strong>修改$x$的事务的时间戳。使用时间戳排序，如果两个操作冲突，则数据管理器先处理时间戳最早的操作。</p>
-<p>现在假设调度管理器从具有时间戳$ts$的事务$T$收到一个操作，<code>read(T,x)</code>。但是$ts&lt;ts_{WR}(x)$。**换句话说，调度管理器发现一个对$x$的写操作在事务开始后已经完成（也即，在事务$T$启动到开始读之间，调度管理器发现一个对x的写操作在此期间完成了）。在这种情况下，事务$T$简单的被终止。**相反，如果$ts&gt;ts_{WR}(x)$，那么让读操作发生（即上一个对$x$的写操作是在事务$T$之前完成的）。此外，$ts_{RD}(x)$被设置为$max{ts, ts_{RD}(x)}$。</p>
-<p>同样，假设调度管理器收到一个具有时间戳$ts$并包含写操作<code>write(T, x)</code>的事务$T$。**如果$ts&lt;ts_{RD}(x)$，那么它只能取消事务$T$，这是因为$x$的当前值已经被更晚的事务读过**（也即，在事务$T$启动到开始写之前完成了一个事物对$x$的读操作，实际上应该事务$T$先来的，但是被别人插队了，为了大局，事务$T$只能取消）。另一方面，如果$ts&gt;ts_{RD}(x)$，那么它改变$x$的值，因为没有更晚的事务读过它。$ts_{WR}$也被设置为$max{ts, ts_{WR}(x)}$。</p>
-<p>时间戳具有与锁定不同的特性。当事务遇到一个更大（或更晚）的时间戳时，它中止，而在同样的情况下，如果使用锁定方法，事务将等待或立即执行（也即，要是被人插了队自己就中止退出）。另一方面，它不会造成死锁，这是一个很大的优点。</p>
-<h2 id="乐观的时间戳排序"><a href="#乐观的时间戳排序" class="headerlink" title="乐观的时间戳排序"></a>乐观的时间戳排序</h2><p>第三种处理多个事务同时执行的方法是乐观的并发控制（optimistic concurrency）。此技术的思想是：不关心别人在干什么，继续做自己要做的事情。如果有问题，等到后面再考虑（许多政客也使用这个算法，注：个人认为西方政客会这样做，咱们中国的政客都是特别怕出事情担责任的）。实际上，相对来讲冲突是很少的，所以系统大部分时间都运行正常。</p>
-<p>尽管冲突可能很少发生，但也不是不会发生，因此仍需要某种方法来处理冲突。乐观的并发控制所做的事情是跟踪哪些数据项被改写了。<strong>在某个事务被提交的时候，它检查其他所有事务，看看是否有某些数据项从这个事务开始后被改变了（即在某个事务提交的时候检查其数据项是否被其他事务改变了）。如果被改变了，该事务被终止；如果没有被改变，则该事务提交。</strong></p>
-<p>乐观的并发控制算法最适合基于<strong>私有工作空间</strong>的实现。在这种方式下，每个事务私下改变自己的数据，不受别的事务的干涉。最终，新数据要么被提交、要么被释放，这是一个相对简单直接的方法。</p>
-<p>乐观的并发控制的最大优点是它不会发生死锁，允许最大的并行性。这是因为没有进程需要等待一个锁。缺点是有时它可能会失败，那时事务将不得不再次执行。在负载较重的情况下，失败的可能性比较大，使得乐观的并发控制成为了一个较差的选择。</p>
-<p>此外，对乐观的并发控制的研究主要集中在非分布式系统中。</p>
-<p>注：本文内容摘自「分布式系统原理与范型」，供本人学习回顾使用。</p>
+</li>
+<li>最新出现了一些高速商用NVMe SSD，其超低延迟和高带宽的优势，为推动新的KV-Store的设计提供了机会；</li>
+<li>==但是当前基于LSM-Tree的KV-Store并未能完全发挥NVMe设备的潜力==：<ul>
+<li>在50%写负载的情况下，在Optane PX4800X上部署的RocksDB与SATA SSD相比吞吐仅仅提高了23.58%；</li>
+<li>常见的KV-Store设计的IO路径未能充分利用低延迟的NVMe SSD，尤其是对于一些较小的写操作。这对于写WAL尤为不利，WAL位于写操作的关键路径上，容易成为性能瓶颈。</li>
+</ul>
+</li>
+</ul>
+<h2 id="Challenge"><a href="#Challenge" class="headerlink" title="Challenge"></a>Challenge</h2><h3 id="Challenge-1：Fast-Accesses-to-Fast-Devices"><a href="#Challenge-1：Fast-Accesses-to-Fast-Devices" class="headerlink" title="Challenge 1：Fast Accesses to Fast Devices"></a>Challenge 1：Fast Accesses to Fast Devices</h3><p><img src="https://ap0l1o.oss-cn-qingdao.aliyuncs.com/img/SpanDB-F-1.png" srcset="/img/loading.gif" lazyload alt="image-20220526214313571"></p>
+<p>第一个挑战是如何做到快速访问这些快速存储设备。<br>现在虽然有使用NVMe SSD的KV-Store，但是并没有能充分利用其低延迟和高带宽，其中一个原因就是：操作系统的I/O栈严重拖垮了NVMe SSD的性能。<br>考虑到Linux内核I/O栈开销在总I/O延迟中不再是可以忽略的，Intel 开发了 SPDK，SPDK是一组用于访问高速 NVMe 设备的用户态库。<strong>SPDK 把驱动移动到了用户空间，避免了系统调用并支持了零拷贝访问。它轮询硬件完成，而不是使用中断，并避免I/O路径中的锁</strong>。<br>通过使用SPDK（Storage Performance Development Kit）绕过文件系统和Linux I/O stack来直接访问NVMe SSD设备，则能充分发挥NVMe SSD设备的性能优势。通过使用SPDK来直接访问块设备，可以做到:</p>
+<ul>
+<li>将存储用到的驱动转移到用户态，避免系统调用</li>
+<li>使用轮询硬件，而不是中断（中断模式带来了不稳定的性能和延时的提升）</li>
+</ul>
+<p>这样所带来的代价是：</p>
+<ul>
+<li>需要在没有文件系统支持的情况下管理裸设备的存储空间；</li>
+<li>『忙等待』会浪费GPU周期（新的NVMe接口附带了访问约束，例如要求绑定整个设备以进行SPDK访问，或者建议将线程固定在core上）；<blockquote>
+<p>注 1：考虑到Linux内核I/O栈开销在总I/O延迟中不再是可以忽略的，Intel 开发了 SPDK，一组用户态的库/工具来访问高速的 NVMe 设备。<strong>SPDK 把驱动移动到了用户空间，避免了系统调用并支持了零拷贝访问。它轮询硬件完成，而不是使用中断，并避免I/O路径中的锁</strong>。<br>注 2：『忙等待』是指指在单CPU情况下，一个进程进入临界区之后，其他进程因无法满足竞争条件而循环探测竞争条件。其缺点是，在单CPU情况下，等待进程循环探测竞争条件，浪费了时间片。</p>
+</blockquote>
+</li>
+</ul>
+<h3 id="Challenge-2：Thread-Sync-Overhead-in-Group-Logging"><a href="#Challenge-2：Thread-Sync-Overhead-in-Group-Logging" class="headerlink" title="Challenge 2：Thread Sync Overhead in Group Logging"></a>Challenge 2：Thread Sync Overhead in Group Logging</h3><p><img src="https://ap0l1o.oss-cn-qingdao.aliyuncs.com/img/SpanDB-F-2.png" srcset="/img/loading.gif" lazyload alt="image-20220526214643956"></p>
+<p>第二个挑战是Group Logging的线程同步开销。<br>当前基于LSM-Tree的KV-Store多采用Group Logging来加速写WAL，Group Logging机制采用线程同步顺序写的实现方式。步骤如下：</p>
+<ul>
+<li>当已经有一个正在进行中的写操作时（已经有一个Group在写WAL），处理写请求的 workers 线程通过加入一个共享队列组成一个新的组，第一个进入队列的线程被指定为组的 leader；</li>
+<li>leader 从所在Group的其他写线程中收集日志项，直到前一个组的 leader (刚刚完成写入)通知它可以开始写WAL。此时将关闭当前组的大门，随后到达的线程将启动一个新的组；</li>
+<li>leader将收集到的日志项批量写入到WAL，然后唤醒当前Group中的其他线程，此时Group中的所有线程可以并发写Memtable来执行内存更新（跳表支持无锁并发）；</li>
+<li>最后同步等待Group中所有线程完成内存更新，然后唤醒下一个Group的leader线程；</li>
+</ul>
+<p>这种设计存在两个问题：</p>
+<ul>
+<li>单个leader线程的顺序logging操作不能充分利用SSD的带宽；</li>
+<li>线程的同步开销过大，Optane SSD的WAL写延迟超过80%；</li>
+</ul>
+<h2 id="Related-Work"><a href="#Related-Work" class="headerlink" title="Related Work"></a>Related Work</h2><p>最近也有一些相关的优化工作，但是都存在一些关于兼容性、性能以及成本的问题。</p>
+<ul>
+<li>基于LSM-tree的KV-Store的优化：PebblesDB [SOSP’17], SILK [ATC’19], ElasticBF [ATC’19], SplinterDB [ATC’20]<ul>
+<li>修改了一些数据结构，但还是采用了传统的Linux I/O栈；</li>
+</ul>
+</li>
+<li>基于NVMe SSD的KV-Store：KVSSD [SYSTOR’19], KVell [SOSP’19], FlatStore [ASPLOS’20]<ul>
+<li>硬件成本过高，且在一些情况下没有事务支持；</li>
+</ul>
+</li>
+</ul>
+<p>这篇论文的主要切入点和方法是：</p>
+<ul>
+<li>成本效益：将『小而快』的设备和『大而慢』的设备结合使用；</li>
+<li>充分利用快速设备：主要包括延迟、带宽和容量优势；</li>
+<li>兼容性：没有对数据结构进行修改，能兼容RocksDB的数据文件；</li>
+</ul>
+<h2 id="Design-SpanDB"><a href="#Design-SpanDB" class="headerlink" title="Design: SpanDB"></a>Design: SpanDB</h2><h3 id="SpanDB-Overview"><a href="#SpanDB-Overview" class="headerlink" title="SpanDB Overview"></a>SpanDB Overview</h3><p><img src="https://ap0l1o.oss-cn-qingdao.aliyuncs.com/img/SpanDB-F-3.png" srcset="/img/loading.gif" lazyload alt="image-20220526215032782"></p>
+<ol>
+<li>首先在 DRAM 中保留了 RocksDB Memtable 的相关设计，使用一个可变memtable和多个不可变memtable。SpanDB 几乎不会对 RocksDB 的 KV 数据结构、算法或者操作语义进行修改。这里的主要区别在于它的异步处理模型，以减少同步开销和自适应调度任务。</li>
+<li>将磁盘分为SD和CD。SD意为speed disk，即高速磁盘，这里是指NVMe设备。CD意为capacity disk，是低速大容量盘，例如传统机械硬盘。<ul>
+<li>SD：SD被进一步划分为WAL区域和LSM Top level区域（数据区域）<ul>
+<li>WAL区域：SpanDB 通过 SPDK 将 SD 当作裸设备管理并重新设计了 RocksDB 的 WAL 批量写入，以实现快速、并行的日志记录</li>
+<li>数据区域：为了最小化 RocksDB 的修改，SpanDB 基于SPDK设计实现了一个轻量级的自带缓存的文件系统 TopFS，该区域接收所有的Flush操作，同时接收LSM-Tree相关层的读操作；</li>
+</ul>
+</li>
+<li>CD：将LSM-Tree的剩余层放入CD中，这一部分数据大多是冷数据，且数据量大。将这一部分数据放入CD主要是基于成本考虑</li>
+</ul>
+</li>
+<li>SpanDB对不同类型的流量进行了区分。<ul>
+<li>SD的WAL 区域只进行 log 的操作，SD 的数据区域接受所有 flush 操作。</li>
+<li>此外，SD 数据区和 CD 都可以容纳用户读和Compaction操作，SpanDB 还执行了额外的优化，以支持在两个分区上同时进行压缩，并自动协调前台/后台任务。</li>
+<li>最后，SpanDB 能够基于对两个分区的实时带宽监控实现动态调整 LSM-tree level的布局。</li>
+</ul>
+</li>
+<li>使用SPDK可以绕过文件系统和Linux I/O stack直接访问NVMe SSD设备来写WAL。SPDK通过引入以下技术，实现高性能存储技术:<ul>
+<li>将存储用到的驱动转移到用户态，避免系统调用</li>
+<li>支持零拷贝</li>
+<li>避免在IO链路上使用锁</li>
+<li>使用轮询硬件，而不是中断，中断模式带来了不稳定的性能，并且增加了延时</li>
+</ul>
+</li>
+</ol>
+<h3 id="Async-KV-Request-Processing"><a href="#Async-KV-Request-Processing" class="headerlink" title="Async. KV Request Processing"></a>Async. KV Request Processing</h3><p><img src="https://ap0l1o.oss-cn-qingdao.aliyuncs.com/img/SpanDB-F-4.png" srcset="/img/loading.gif" lazyload alt="image-20220526215837102"></p>
+<p>SpanDB设计了异步的KV请求处理。<br>在慢速设备的时代，我们通常使用多线程技术，采用远多于CPU核心数的线程数量，尽可能避免慢速设备造成的较长时间的等待。<br>进入NVMe SSD时代，在SPDK技术加持下，线程同步(比如睡眠和唤醒)很容易花费比 I/O 请求更长的时间。在这种情况下，线程过度配置不仅增加了延迟，还会降低总体资源利用率，从而降低吞吐量。<br>因此SpanDB采用了异步请求处理。在多核机器上，为每个CPU核分配一个线程，然后将线程分为==客户端线程和SpanDB内部线程，SpanDB内部线程进一步被分为两个角色：loggers线程和workers线程==。</p>
+<ul>
+<li>loggers主要负责写WAL；</li>
+<li>Workers负责后台任务处理（flush/compaction）以及一些非I/O任务，例如Memtables的写入和更新、WAL日志项的准备、事务相关的加锁与同步；</li>
+</ul>
+<p><strong>asynchronous read</strong>（<code>A_get</code>）：</p>
+<ul>
+<li>client线程会首先尝试进行memtable读取，若命中则可直接获取返回结果。</li>
+<li>若未命中，则将读取请求放入到$Q_{read}$中，随后通过获取请求状态接口获取结果。</li>
+<li>worker线程会随后读取并执行$Q_{read}$中的读请求，并设置读取结果。</li>
+</ul>
+<p><strong>asynchronous write</strong>（<code>A_put</code>）：</p>
+<ul>
+<li>client线程直接将写请求压入$Q_{ProLog}$队列，随后通过获取请求状态接口获取结果。</li>
+<li>worker线程读取$Q_{ProLog}$中的写入请求，序列化得到WAL 数据项并压入到$Q_{log}$。$Q_{ProLog}$队列和$Q_{Log}$队列是设计用于实现batched logging。</li>
+<li>logger线程会一次性读取$Q_{log}$队列中所有的请求，执行group logging，并将写入请求压入到$Q_{EpiLog}$队列。</li>
+<li>worker线程会从$Q_{EpiLog}$线程读取请求，执行最终的memtable更新操作。</li>
+</ul>
+<h3 id="Parallel-Logging-via-SPDK"><a href="#Parallel-Logging-via-SPDK" class="headerlink" title="Parallel Logging via SPDK"></a>Parallel Logging via SPDK</h3><p><img src="https://ap0l1o.oss-cn-qingdao.aliyuncs.com/img/SpanDB-F-5.png" srcset="/img/loading.gif" lazyload alt="image-20220526221023619"></p>
+<p>通过SPDK执行并行的Logging操作。<br>SpanDB配置了多个logger线程并发写入，每个logger有单独的WAL data buffer。</p>
+<ul>
+<li>为实现并行写入，每个logger通过原子操作分配得到下一个写入位置。</li>
+<li>每个Logger抓取它在$Q_{log}$队列中看到的所有WAL数据项，并将这些WAL数据项聚合到尽可能少的4KB块中</li>
+<li>然后通过窃取一个请求的 SPDK 忙等待时间来准备或检查其他请求来执行流水线操作</li>
+</ul>
+<p>通过两个专门的Logger就能满足使用Optane作为WAL的写入需要。此外，SpanDB通过分配一个page作为元数据页来在没有文件系统支持的情况下记录/管理元数据信息。</p>
+<blockquote>
+<p>SpanDB在SD的WAL area预先分配若干个逻辑page，每个page有一个唯一的LPN(Log Page Number)。其中一个page作为metadata page。若干个连续的page组成一个log page group，每个group对应一个memtable，容量足够容纳一个memtable的WAL。当memtable flush完成后，log group将会被回收重用。meta data page记录每个log page group的起始LPN。</p>
+</blockquote>
+<h3 id="Dynamic-LSM-Tree-Level-Placement"><a href="#Dynamic-LSM-Tree-Level-Placement" class="headerlink" title="Dynamic LSM-Tree Level Placement"></a>Dynamic LSM-Tree Level Placement</h3><p><img src="https://ap0l1o.oss-cn-qingdao.aliyuncs.com/img/SpanDB-F-6.png" srcset="/img/loading.gif" lazyload alt="image-20220526221358140"><br>SpanDB 采用了动态分区的方法，它维护了一个 head-server 线程来监视 SD的带宽使用情况，并在其带宽利用率低于$BW_L$时触发SSTable文件重定位，直到达到 $BW_H$ 或 SD 满，其中$BW_H$和$BW_L$是两个可配置的阈值。<br>这里对SSTable文件进行重定位而不是将文件在SD与CD之间进行搬迁，随着compaction的进行，新创建的文件会被放置到相应的位置。有一个指针来表明该LSM-Tree的哪一层应该放入NVMe，例如：当该指针指向3时，表明top 3层应该放入NVMe。然而，该指针仅仅只是代表新创建的文件的目的位置，有可能出现新创建的L3层的文件在SD，而老的L2层文件在CD。当然这种情况比较少见，因为高层的文件更小，他们会更频繁的被compaction</p>
 
             </div>
             <hr>
@@ -332,7 +411,7 @@
                   <div class="post-meta mr-3">
                     <i class="iconfont icon-category"></i>
                     
-                      <a class="hover-with-bg" href="/categories/%E6%8A%80%E6%9C%AF/">技术</a>
+                      <a class="hover-with-bg" href="/categories/%E8%AE%BA%E6%96%87/">论文</a>
                     
                   </div>
                 
@@ -340,11 +419,9 @@
                   <div class="post-meta">
                     <i class="iconfont icon-tags"></i>
                     
-                      <a class="hover-with-bg" href="/tags/%E5%88%86%E5%B8%83%E5%BC%8F/">分布式</a>
+                      <a class="hover-with-bg" href="/tags/Key-Value-Store/">Key-Value Store</a>
                     
-                      <a class="hover-with-bg" href="/tags/%E5%B9%B6%E5%8F%91%E6%8E%A7%E5%88%B6/">并发控制</a>
-                    
-                      <a class="hover-with-bg" href="/tags/%E5%88%86%E5%B8%83%E5%BC%8F%E7%B3%BB%E7%BB%9F%E5%8E%9F%E7%90%86%E4%B8%8E%E8%8C%83%E5%9E%8B/">分布式系统原理与范型</a>
+                      <a class="hover-with-bg" href="/tags/%E8%AE%BA%E6%96%87%E9%98%85%E8%AF%BB/">论文阅读</a>
                     
                   </div>
                 
@@ -361,9 +438,9 @@
                   <article class="post-prev col-6">
                     
                     
-                      <a href="/2021/10/20/%E5%88%86%E5%B8%83%E5%BC%8F/%E4%BA%8B%E5%8A%A1%E7%9A%84%E5%AE%9E%E7%8E%B0/">
+                      <a href="/2022/07/05/%E4%BA%BA%E7%94%9F%E4%B8%80%E4%BA%8B/2022-07-05/">
                         <i class="iconfont icon-arrowleft"></i>
-                        <span class="hidden-mobile">事务实现算法</span>
+                        <span class="hidden-mobile">2022-07-05记</span>
                         <span class="visible-mobile">上一篇</span>
                       </a>
                     
@@ -371,8 +448,8 @@
                   <article class="post-next col-6">
                     
                     
-                      <a href="/2021/10/14/%E5%88%86%E5%B8%83%E5%BC%8F/%E5%85%A8%E5%B1%80%E7%8A%B6%E6%80%81/">
-                        <span class="hidden-mobile">分布式快照捕获算法</span>
+                      <a href="/2022/05/29/%E5%AD%98%E5%82%A8/%E5%9B%BA%E6%80%81%E7%A1%AC%E7%9B%98/">
+                        <span class="hidden-mobile">SSD简单了解</span>
                         <span class="visible-mobile">下一篇</span>
                         <i class="iconfont icon-arrowright"></i>
                       </a>
@@ -397,7 +474,7 @@
         var options = Object.assign(
           {"clientID":"6ea770bf22abf781c224","clientSecret":"af10c8b29047aede4963f4d93f77f6abc18ade91","repo":"blog_gitalk","owner":"ap0l1o","admin":["ap0l1o"],"language":"zh-CN","labels":["Gitalk"],"perPage":10,"pagerDirection":"last","distractionFreeMode":false,"createIssueManually":true,"proxy":"https://cors-anywhere.azm.workers.dev/https://github.com/login/oauth/access_token"},
           {
-            id: 'b0dbdf1e5a9b52edd37224b64771df41'
+            id: 'ace8ef32f070cfdacf0d21decaaa72da'
           }
         )
         var gitalk = new Gitalk(options);

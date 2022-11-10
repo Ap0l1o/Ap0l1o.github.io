@@ -293,10 +293,10 @@
 <li>期刊：TPDS</li>
 <li>时间：2022</li>
 </ul>
-<h2 id="Introduction"><a href="#Introduction" class="headerlink" title="Introduction"></a><strong>Introduction</strong></h2><p>为了更好的理解基于LSM的KV存储，论文对传统使用DRAM-SSD的RocksDB进行了实验评估，发现了两个具有挑战性的问题，及其根本原因：</p>
+<h2 id="Introduction"><a href="#Introduction" class="headerlink" title="Introduction"></a>Introduction</h2><p>为了更好的理解基于LSM的KV存储，论文对传统使用DRAM-SSD的RocksDB进行了实验评估，发现了两个具有挑战性的问题，及其根本原因：</p>
 <ul>
-<li><strong>写停滞（write stalls）</strong>会导致应用程序的吞吐量周期性的骤降到接近为0，从而会导致性能的剧烈波动和长尾延迟。论文的研究表明，导致<strong>写停滞</strong>的主要原因是L0-L1之间Compaction的数据量过大，发生L0-L1之间的Compaction时，几乎涉及到这两个Level的所有数据（L0的数据是无序的，SSTable之间有Key Range的重叠）。</li>
-<li><strong>写放大（write amplification，WA）</strong>会降低系统的性能和存储设备的耐用性。写放大与LSM-Tree的深度直接相关，更大的数据集会产生更深的LSM-Tree，从而增加Compaction的数量。</li>
+<li>写停滞（write stalls）会导致应用程序的吞吐量周期性的骤降到接近为0，从而会导致性能的剧烈波动和长尾延迟。论文的研究表明，导致<strong>写停滞</strong>的主要原因是L0-L1之间Compaction的数据量过大，发生L0-L1之间的Compaction时，几乎涉及到这两个Level的所有数据（L0的数据是无序的，SSTable之间有Key Range的重叠）。</li>
+<li>写放大（write amplification，WA）会降低系统的性能和存储设备的耐用性。写放大与LSM-Tree的深度直接相关，更大的数据集会产生更深的LSM-Tree，从而增加Compaction的数量。</li>
 </ul>
 <p>已有的大量研究都局限于解决上述的单个问题，而本篇论文的研究旨在同时解决这两个挑战。</p>
 <p>针对这两个挑战和其根本原因，本篇论文提出了TriangleKV，一个使用DRAM-NVM-SSD混合存储设备的LSM-Tree KV存储。</p>
@@ -305,7 +305,7 @@
 <li>利用NVM来为L0和L1提供代价更低，更细粒度的Compaction操作；</li>
 <li>减少LSM-Tree的深度以减少写放大；</li>
 </ul>
-<h2 id="Background-and-Motivation"><a href="#Background-and-Motivation" class="headerlink" title="Background and Motivation"></a><strong>Background and Motivation</strong></h2><p>NVM是一种按字节寻址，持久化的快速存储设备。它有望以更低的成本提供类似DRAM的性能、磁盘的持久性和比DRAM更高的容量。和SSD相比，NVM有望提供100倍的低读写延迟和10倍的高带宽。</p>
+<h2 id="Background-and-Motivation"><a href="#Background-and-Motivation" class="headerlink" title="Background and Motivation"></a>Background and Motivation</h2><p>NVM是一种按字节寻址，持久化的快速存储设备。它有望以更低的成本提供类似DRAM的性能、磁盘的持久性和比DRAM更高的容量。和SSD相比，NVM有望提供100倍的低读写延迟和10倍的高带宽。</p>
 <p>NVM既可以作为通过PCIe接口访问的持久化块存储设备，也可以作为通过内存总线访问的主存。现有的研究表明，第一种使用方式只能实现边缘性能的提高，浪费了NVM的高介质性能；对于第二种方式来说，NVM可以替代或者作为DRAM的补充，比如作为一个单级内存系统、一个NVM-SSD混合系统或一个DRAM-NVM-SSD混合系统。</p>
 <p>基于以下原因，具有DRAM-NVM-SSD的混合存储系统被认为是利用NVM的最高效方式：</p>
 <ul>
@@ -321,7 +321,7 @@
 <li>压缩停滞（Compaction Stalls）：挂起的Compaction操作太多会阻塞前台操作；</li>
 </ul>
 <p>这三种停滞都会对写性能造成影响，并导致写停滞。</p>
-<h3 id="NoveLSM"><a href="#NoveLSM" class="headerlink" title="NoveLSM"></a><strong>NoveLSM</strong></h3><p>如图1(a)所示，NoveLSM利用NVM为具有DRAM-NVM-SSD的系统提供高吞吐量。</p>
+<h3 id="NoveLSM"><a href="#NoveLSM" class="headerlink" title="NoveLSM"></a>NoveLSM</h3><p>如图1(a)所示，NoveLSM利用NVM为具有DRAM-NVM-SSD的系统提供高吞吐量。</p>
 <p><img src="https://cdn.jsdelivr.net/gh/Ap0l1o/ImageHostingService@main/img/TriangleKV/1.png" srcset="/img/loading.gif" lazyload alt="Untitled"></p>
 <p>NoveLSM的设计选择包括：</p>
 <ul>

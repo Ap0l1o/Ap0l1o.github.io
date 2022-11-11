@@ -296,40 +296,28 @@
 <h2 id="Introduction"><a href="#Introduction" class="headerlink" title="Introduction"></a>Introduction</h2><p>为了更好的理解基于LSM的KV存储，论文对传统使用DRAM-SSD的RocksDB进行了实验评估，发现了两个具有挑战性的问题，及其根本原因：</p>
 <ul>
 <li>写停滞（write stalls）会导致应用程序的吞吐量周期性的骤降到接近为0，从而会导致性能的剧烈波动和长尾延迟。论文的研究表明，导致<strong>写停滞</strong>的主要原因是L0-L1之间Compaction的数据量过大，发生L0-L1之间的Compaction时，几乎涉及到这两个Level的所有数据（L0的数据是无序的，SSTable之间有Key Range的重叠）。</li>
-<li>写放大（write amplification，WA）会降低系统的性能和存储设备的耐用性。写放大与LSM-Tree的深度直接相关，更大的数据集会产生更深的LSM-Tree，从而增加Compaction的数量。</li>
-</ul>
-<p>已有的大量研究都局限于解决上述的单个问题，而本篇论文的研究旨在同时解决这两个挑战。</p>
-<p>针对这两个挑战和其根本原因，本篇论文提出了TriangleKV，一个使用DRAM-NVM-SSD混合存储设备的LSM-Tree KV存储。</p>
-<p>TriangleKV的设计原则包括：</p>
-<ul>
+<li>写放大（write amplification，WA）会降低系统的性能和存储设备的耐用性。写放大与LSM-Tree的深度直接相关，更大的数据集会产生更深的LSM-Tree，从而增加Compaction的数量。<br>已有的大量研究都局限于解决上述的单个问题，而本篇论文的研究旨在同时解决这两个挑战。<br>针对这两个挑战和其根本原因，本篇论文提出了TriangleKV，一个使用DRAM-NVM-SSD混合存储设备的LSM-Tree KV存储。<br>TriangleKV的设计原则包括：</li>
 <li>利用NVM来为L0和L1提供代价更低，更细粒度的Compaction操作；</li>
 <li>减少LSM-Tree的深度以减少写放大；</li>
 </ul>
-<h2 id="Background-and-Motivation"><a href="#Background-and-Motivation" class="headerlink" title="Background and Motivation"></a>Background and Motivation</h2><p>NVM是一种按字节寻址，持久化的快速存储设备。它有望以更低的成本提供类似DRAM的性能、磁盘的持久性和比DRAM更高的容量。和SSD相比，NVM有望提供100倍的低读写延迟和10倍的高带宽。</p>
-<p>NVM既可以作为通过PCIe接口访问的持久化块存储设备，也可以作为通过内存总线访问的主存。现有的研究表明，第一种使用方式只能实现边缘性能的提高，浪费了NVM的高介质性能；对于第二种方式来说，NVM可以替代或者作为DRAM的补充，比如作为一个单级内存系统、一个NVM-SSD混合系统或一个DRAM-NVM-SSD混合系统。</p>
-<p>基于以下原因，具有DRAM-NVM-SSD的混合存储系统被认为是利用NVM的最高效方式：</p>
+<h2 id="Background-and-Motivation"><a href="#Background-and-Motivation" class="headerlink" title="Background and Motivation"></a>Background and Motivation</h2><p>NVM是一种按字节寻址，持久化的快速存储设备。它有望以更低的成本提供类似DRAM的性能、磁盘的持久性和比DRAM更高的容量。和SSD相比，NVM有望提供100倍的低读写延迟和10倍的高带宽。<br>NVM既可以作为通过PCIe接口访问的持久化块存储设备，也可以作为通过内存总线访问的主存。现有的研究表明，第一种使用方式只能实现边缘性能的提高，浪费了NVM的高介质性能；对于第二种方式来说，NVM可以替代或者作为DRAM的补充，比如作为一个单级内存系统、一个NVM-SSD混合系统或一个DRAM-NVM-SSD混合系统。<br>基于以下原因，具有DRAM-NVM-SSD的混合存储系统被认为是利用NVM的最高效方式：</p>
 <ul>
 <li>NVM在未来几年有望与大容量SSD共存；</li>
 <li>与DRAM相比，NVM仍然有低5倍的带宽和高3倍的读延迟；</li>
-<li>混合系统平衡了TCP（Total Cost of Ownership）和系统性能；</li>
+<li>混合系统平衡了TCP（Total Cost of Ownership）和系统性能；<br>因此，TriangleKV旨在具有DRAM、NVM和SSD的混合存储系统中更有效的使用NVM作为持久存储。</li>
 </ul>
-<p>因此，TriangleKV旨在具有DRAM、NVM和SSD的混合存储系统中更有效的使用NVM作为持久存储。</p>
 <h3 id="写停滞（Write-Stalls）"><a href="#写停滞（Write-Stalls）" class="headerlink" title="写停滞（Write Stalls）"></a>写停滞（Write Stalls）</h3><p>在基于LSM的KV存储中，存在三种类型的「停滞」：</p>
 <ul>
 <li>插入停滞（Insert Stalls）：如果<code>MemTable</code>在后台完成刷新操作之前写满了，所有的插入操作都会停滞；</li>
 <li>刷新停滞（Flush Stalls）：如果L0中的SSTable数量达到上限，后台刷新操作就会被阻塞；</li>
-<li>压缩停滞（Compaction Stalls）：挂起的Compaction操作太多会阻塞前台操作；</li>
+<li>压缩停滞（Compaction Stalls）：挂起的Compaction操作太多会阻塞前台操作；<br>这三种停滞都会对写性能造成影响，并导致写停滞。</li>
 </ul>
-<p>这三种停滞都会对写性能造成影响，并导致写停滞。</p>
-<h3 id="NoveLSM"><a href="#NoveLSM" class="headerlink" title="NoveLSM"></a>NoveLSM</h3><p>如图1(a)所示，NoveLSM利用NVM为具有DRAM-NVM-SSD的系统提供高吞吐量。</p>
-<p><img src="https://cdn.jsdelivr.net/gh/Ap0l1o/ImageHostingService@main/img/TriangleKV/1.png" srcset="/img/loading.gif" lazyload alt="Untitled"></p>
+<h3 id="NoveLSM"><a href="#NoveLSM" class="headerlink" title="NoveLSM"></a>NoveLSM</h3><p>如图1(a)所示，NoveLSM利用NVM为具有DRAM-NVM-SSD的系统提供高吞吐量。<br><img src="https://cdn.jsdelivr.net/gh/Ap0l1o/ImageHostingService@main/img/TriangleKV/1.png" srcset="/img/loading.gif" lazyload alt="Untitled"></p>
 <p>NoveLSM的设计选择包括：</p>
 <ul>
 <li>采用NVMs作为DRAM的备选来增加<code>MemTable</code>和 <code>immutable MemTable</code>的大小；</li>
-<li>使NVM中的<code>MemTable</code>可变，允许直接更新，从而减少<code>Compaction</code>的次数；</li>
+<li>使NVM中的<code>MemTable</code>可变，允许直接更新，从而减少<code>Compaction</code>的次数；<br>但是这些设计选择仅仅只是推迟了「写停滞」。当数据集的大小超过NVM MemTable的容量时，「刷新停滞」还是会发生，并阻塞前台的请求。<br>此外，当NVM中扩大的<code>MemTable</code>刷新到L0，会显著增加L0-L1的Compaction中的数据量，这会导致更长的Compaction延迟和更严重的写停滞（如图4所示）。</li>
 </ul>
-<p>但是这些设计选择仅仅只是推迟了「写停滞」。当数据集的大小超过NVM MemTable的容量时，「刷新停滞」还是会发生，并阻塞前台的请求。</p>
-<p>此外，当NVM中扩大的<code>MemTable</code>刷新到L0，会显著增加L0-L1的Compaction中的数据量，这会导致更长的Compaction延迟和更严重的写停滞（如图4所示）。</p>
 <p><img src="https://cdn.jsdelivr.net/gh/Ap0l1o/ImageHostingService@main/img/TriangleKV/F2.png" srcset="/img/loading.gif" lazyload alt="Untitled"></p>
 <p>通过以上分析可以得出，L0-L1之间的Compaction中涉及的大量数据是导致「写停滞」的主要原因，而「写放大」增加的主要原因是LSM-Tree深度的加深。「写停滞」和「写放大」的综合影响会降低系统吞吐量，并延长尾延迟。</p>
 <h3 id="MatrixKV"><a href="#MatrixKV" class="headerlink" title="MatrixKV"></a>MatrixKV</h3><p>如图5所示，MatrixKV仍然使用DRAM来管理<code>MemTable</code>和<code>ImmMemTable</code>，但是使用NVM来管理WAL。没有将<code>MemTable</code>和<code>ImmMemTable</code>放在NVM是因为：</p>
@@ -343,49 +331,27 @@
 <li>与SSD相比，NVM有更高的带宽和更低的延迟，因此在将ImmMemTable刷新到L0中时会更快，这会减少「插入停滞」；此外，这还隔离了L0-L1的Compaction操作和刷新操作之间的交互，此时两者之间没有带宽的竞争，从而能减少写停滞；</li>
 <li>NVM是字节寻址的，这意味着L0-L1的Compaction可以在非常细的粒度上完成，并且<strong>在每次细粒度Compaction之后可以立即释放空间，而将L0放在SSD上不能实现这一点，因为SSD上的SSTable在整个文件压缩之前不能被删除</strong>；</li>
 </ul>
-<p>MatrixKV使用「矩阵容器」来管理L0，其中包括一个「接收器（Receiver）」和一个「压缩器（Compactor）」。不可变的MemTable首先被「刷新」到「接收器」，当「接收器」达到其大小限制时，它被转换为「压缩器」，并生成一个新的「接收器」来接受「刷新」操作。</p>
-<p>通过一个「细粒度列压缩（Column Compaction）」，「压缩器」中的数据被Compacted到SSD上的L1中。每次只Compact特定键范围内的一小部分数据，这大大减少了「写停滞」。</p>
+<p>MatrixKV使用「矩阵容器」来管理L0，其中包括一个「接收器（Receiver）」和一个「压缩器（Compactor）」。不可变的MemTable首先被「刷新」到「接收器」，当「接收器」达到其大小限制时，它被转换为「压缩器」，并生成一个新的「接收器」来接受「刷新」操作。<br>通过一个「细粒度列压缩（Column Compaction）」，「压缩器」中的数据被Compacted到SSD上的L1中。每次只Compact特定键范围内的一小部分数据，这大大减少了「写停滞」。</p>
 <p><img src="https://cdn.jsdelivr.net/gh/Ap0l1o/ImageHostingService@main/img/TriangleKV/F4.png" srcset="/img/loading.gif" lazyload alt="Untitled"></p>
-<p>但是列压缩只能对「压缩器」使用，「接收器」中与「压缩器」重叠的键范围并不能参与「列压缩」过程。</p>
-<p>如图6所示，「压缩器」中的<code>a-c</code>键范围首先通过「列压缩」被Compact到L1，而「接收器」中与其重叠的键范围仍然在L0中。当「接收器」转变为「压缩器」后，这些键范围需要被再次执行Compact操作，这意味着在L1中写入了两次键范围为<code>a-c</code>的数据，带来了额外的「写放大」。</p>
-<h2 id="TriangleKV-Design"><a href="#TriangleKV-Design" class="headerlink" title="TriangleKV Design"></a>TriangleKV Design</h2><p>TriangleKV 在MatrixKV的基础上进行了改进，将后者的Matrix数据结构替换为Triangle数据结构，来对L0进行更有效的管理。</p>
-<p>图7展示了TriangleKV的架构，从上到下依次为：</p>
+<p>但是列压缩只能对「压缩器」使用，「接收器」中与「压缩器」重叠的键范围并不能参与「列压缩」过程。<br>如图6所示，「压缩器」中的<code>a-c</code>键范围首先通过「列压缩」被Compact到L1，而「接收器」中与其重叠的键范围仍然在L0中。当「接收器」转变为「压缩器」后，这些键范围需要被再次执行Compact操作，这意味着在L1中写入了两次键范围为<code>a-c</code>的数据，带来了额外的「写放大」。</p>
+<h2 id="TriangleKV-Design"><a href="#TriangleKV-Design" class="headerlink" title="TriangleKV Design"></a>TriangleKV Design</h2><p>TriangleKV 在MatrixKV的基础上进行了改进，将后者的Matrix数据结构替换为Triangle数据结构，来对L0进行更有效的管理。<br>图7展示了TriangleKV的架构，从上到下依次为：</p>
 <ul>
 <li>DRAM，用于批量写<code>MemTable</code>；</li>
 <li><code>MemTable</code>刷新到L0，并由NVM中的「三角形容器」（Triangle Container）来存储和管理；</li>
 <li>L0中的数据通过「直角边压缩」（right-angle side compaction）压缩到SSD中的L1层；</li>
 <li>SSD中存储一个扁平化的LSM-Tree的剩余Level；</li>
 </ul>
-<h3 id="TriangleKV-Container"><a href="#TriangleKV-Container" class="headerlink" title="TriangleKV Container"></a>TriangleKV Container</h3><p>L0-L1的Compaction所带来的大量I/O被认为是导致「写停滞」的根本原因。因此，基于LSM-Tree的KV存储，最小化或者消除「写停滞」的设计原则就是<strong>降低L0和L1的Compaction粒度</strong>以及<strong>减少SSD上的I/O次数。</strong></p>
-<p>基于以上设计原则，TriangleKV将L0从SSD移动到NVM，并将L0组织为一个「三角形容器」，以利用NVM的可字节寻址和高速随机访问能力。所谓的「三角形容器」是L0的一种数据管理结构（图8展示了其组织结构）。</p>
+<h3 id="TriangleKV-Container"><a href="#TriangleKV-Container" class="headerlink" title="TriangleKV Container"></a>TriangleKV Container</h3><p>L0-L1的Compaction所带来的大量I/O被认为是导致「写停滞」的根本原因。因此，基于LSM-Tree的KV存储，最小化或者消除「写停滞」的设计原则就是<strong>降低L0和L1的Compaction粒度</strong>以及<strong>减少SSD上的I/O次数。</strong><br>基于以上设计原则，TriangleKV将L0从SSD移动到NVM，并将L0组织为一个「三角形容器」，以利用NVM的可字节寻址和高速随机访问能力。所谓的「三角形容器」是L0的一种数据管理结构（图8展示了其组织结构）。</p>
 <p><img src="https://cdn.jsdelivr.net/gh/Ap0l1o/ImageHostingService@main/img/TriangleKV/F5.png" srcset="/img/loading.gif" lazyload alt="Untitled"></p>
 <p><strong>三角形数据结构</strong>：</p>
-<p>在三角形容器中，从DRAM刷新下来的ImmMemTable按「row」堆在NVM中。每一个这样的MemTable根据其键范围被重组为一个RowTable。RowTable作为三角形的底边不断堆叠增加，也即从0到n。三角形数据结构的大小从一个RowTable开始，当三角形数据结构达到其大小上限时（例如NVM容量的60%），会触发一个L0-L1的「子范围合并」操作。</p>
-<p>参与「子范围合并」合并操作的是三角形数据结构的「垂直直角边的数据」，也即最长时间未被合并的子键值范围数据。</p>
-<p>L0-L1的子范围合并操作与DRAM的刷新操作是同步执行的，因此NVM中的数据结构保持在三角平衡状态。</p>
+<p>在三角形容器中，从DRAM刷新下来的ImmMemTable按「row」堆在NVM中。每一个这样的MemTable根据其键范围被重组为一个RowTable。RowTable作为三角形的底边不断堆叠增加，也即从0到n。三角形数据结构的大小从一个RowTable开始，当三角形数据结构达到其大小上限时（例如NVM容量的60%），会触发一个L0-L1的「子范围合并」操作。<br>参与「子范围合并」合并操作的是三角形数据结构的「垂直直角边的数据」，也即最长时间未被合并的子键值范围数据。<br>L0-L1的子范围合并操作与DRAM的刷新操作是同步执行的，因此NVM中的数据结构保持在三角平衡状态。</p>
 <p><img src="https://cdn.jsdelivr.net/gh/Ap0l1o/ImageHostingService@main/img/TriangleKV/F6.png" srcset="/img/loading.gif" lazyload alt="Untitled"></p>
-<p>图9展示了在刷新和L0-L1子范围合并过程中三角形数据结构的动态变化示例。</p>
-<p>在图9(a)中共有9个RowTable，序号从0到5。假设总键值空间为<code>a-f</code>，则参与合并的子键值范围为<code>a</code>。完成子范围<code>a</code>的L0-L1合并后，所有属于此范围的数据都被写到SSD中，此时NVM中的每个RowTable都不再包含属于键值范围<code>a</code>的数据。</p>
-<p>如图9(b)所示，当DRAM刷新另一个<code>ImmMemTable</code>时，一个RowTable 6被添加到NVM的三角形数据结构中，RowTable 6的键值范围为<code>a-f</code>，此时只有RowTable 6包含键值范围<code>a</code>。L0-L1子范围合并被旋转到键值范围<code>b</code>，这样每个RowTable中属于键值范围<code>b</code>的数据都会被合并到L1层。</p>
-<p>如图9所示，在L0-L1的不断子范围合并过程中，RowTable从DRAM刷新到NVM，并不断地向三角形数据结构的底部增加新的RowTable。始终选择最长时间未参与子范围合并的子键范围进行合并，并将新添加的RowTable相关子范围旋转到后面，如图9(a)所示，将未参与子范围<code>a</code>合并的RowTable 5的范围<code>a</code>旋转到了尾部。这会构成一个「动态三角形」，也即「三角形数据结构」的名称来源。</p>
-<p><strong>RowTable：</strong></p>
-<p>图10(a)展示了RowTable的结构组成：数据区域和元数据区域。</p>
-<p><img src="https://cdn.jsdelivr.net/gh/Ap0l1o/ImageHostingService@main/img/TriangleKV/F7.png" srcset="/img/loading.gif" lazyload alt="Untitled"></p>
-<p>为了构造一个RowTable，首先将ImmMemTable中的KV项按照键顺序序列化，并将其存储在数据区域。然后用一个排序数组构建所有KV项的元数据。每个数组元素维护「键」、「页编号」、「页内偏移量」和一个「前向指针」。</p>
-<p>为了定位RowTable中的一个KV项，对有序元数据数组执行二分查找，以获取Key，并通过页编号和页偏移量获取Key对应的Value。每个数组元素中的前向指针用于「跨行提示搜索」，这有助于提高三角形容器内的读取效率。</p>
-<p>图10(b)展示了一个传统LSM-Tree SSTable的结构。SSTable是使用SSD和HDD的存储单元以「块」为基本单元进行组织的。而RowTable使用NVM中的「页」作为它的基本单元。</p>
-<p><strong>L0-L1 sub-range merge：</strong></p>
-<p>「三角形容器」的一个主要作用就是从L0中选择数据并合并到NVM上的L1中去。利用NVM的可字节寻址能力，以及前面所提出的RowTable，TriangleKV允许L0中的指定子键范围与L1中SSTable的子集进行合并，实现了更低代价的Compaction操作，而不需要合并整个的L0和L1。</p>
-<p>这种新的L0-L1合并方式被称为「直角边压缩」。</p>
-<p>在「三角形容器」中，KV项采用逻辑三角形数据结构进行管理。三角形数据结构的「直角边」是具有有限数据量的键空间的子集，它是三角形容器中「直角边压缩」的基本单元。</p>
-<p>具体来说，来自不同RowTable的属于「直角边压缩」键范围的的KV项在逻辑上构成直角边。这些KV项的数量是直角边的大小，这个大小不是严格固定的，而是受「直角边压缩」大小的阈值所决定的。</p>
-<p><strong>Space management：</strong></p>
-<p>完成「直角边压缩」后，「直角边」所占用的NVM空间会被释放。为了管理这些空闲空间，TriangleKV应用了「分页算法」。</p>
-<p>「直角边压缩」后释放的空闲页作为一组页单元加入到一个「空闲列表」中。然后将使用「空闲列表」中的空闲页来存储从DRAM刷新得到RowTable。</p>
-<p>8GB大小的「三角形容器」包含$2^{11}$个4KB大小的页。每个页由一个<code>unsigned integer</code>作为页编号来标识。为每个列表元素添加一个8字节的指针，因此列表中每个页的元数据大小为12字节。</p>
-<p>空间管理的元数据包含一个「空闲列表」以及一个将RowTable 编号映射到对应元数据页的「数组列表」，在NVM中总共只占用24KB的空间。</p>
-<h3 id="Right-angle-Side-Compaction"><a href="#Right-angle-Side-Compaction" class="headerlink" title="Right-angle Side Compaction"></a>Right-angle Side Compaction</h3><p>「直角边压缩」是一种细粒度的L0-L1压缩，每次只压缩直角边，也即特定键范围内数据的一个子集。因此「直角边压缩」能显著减少「写停滞」。</p>
-<p>「直角边压缩」的主要工作过程可以描述为以下七步：</p>
+<p>图9展示了在刷新和L0-L1子范围合并过程中三角形数据结构的动态变化示例。<br>在图9(a)中共有9个RowTable，序号从0到5。假设总键值空间为<code>a-f</code>，则参与合并的子键值范围为<code>a</code>。完成子范围<code>a</code>的L0-L1合并后，所有属于此范围的数据都被写到SSD中，此时NVM中的每个RowTable都不再包含属于键值范围<code>a</code>的数据。<br>如图9(b)所示，当DRAM刷新另一个<code>ImmMemTable</code>时，一个RowTable 6被添加到NVM的三角形数据结构中，RowTable 6的键值范围为<code>a-f</code>，此时只有RowTable 6包含键值范围<code>a</code>。L0-L1子范围合并被旋转到键值范围<code>b</code>，这样每个RowTable中属于键值范围<code>b</code>的数据都会被合并到L1层。<br>如图9所示，在L0-L1的不断子范围合并过程中，RowTable从DRAM刷新到NVM，并不断地向三角形数据结构的底部增加新的RowTable。始终选择最长时间未参与子范围合并的子键范围进行合并，并将新添加的RowTable相关子范围旋转到后面，如图9(a)所示，将未参与子范围<code>a</code>合并的RowTable 5的范围<code>a</code>旋转到了尾部。这会构成一个「动态三角形」，也即「三角形数据结构」的名称来源。</p>
+<p><strong>RowTable：</strong><br>图10(a)展示了RowTable的结构组成：数据区域和元数据区域。<br><img src="https://cdn.jsdelivr.net/gh/Ap0l1o/ImageHostingService@main/img/TriangleKV/F7.png" srcset="/img/loading.gif" lazyload alt="Untitled"></p>
+<p>为了构造一个RowTable，首先将ImmMemTable中的KV项按照键顺序序列化，并将其存储在数据区域。然后用一个排序数组构建所有KV项的元数据。每个数组元素维护「键」、「页编号」、「页内偏移量」和一个「前向指针」。<br>为了定位RowTable中的一个KV项，对有序元数据数组执行二分查找，以获取Key，并通过页编号和页偏移量获取Key对应的Value。每个数组元素中的前向指针用于「跨行提示搜索」，这有助于提高三角形容器内的读取效率。<br>图10(b)展示了一个传统LSM-Tree SSTable的结构。SSTable是使用SSD和HDD的存储单元以「块」为基本单元进行组织的。而RowTable使用NVM中的「页」作为它的基本单元。</p>
+<p><strong>L0-L1 sub-range merge：</strong><br>「三角形容器」的一个主要作用就是从L0中选择数据并合并到NVM上的L1中去。利用NVM的可字节寻址能力，以及前面所提出的RowTable，TriangleKV允许L0中的指定子键范围与L1中SSTable的子集进行合并，实现了更低代价的Compaction操作，而不需要合并整个的L0和L1。<br>这种新的L0-L1合并方式被称为「直角边压缩」。<br>在「三角形容器」中，KV项采用逻辑三角形数据结构进行管理。三角形数据结构的「直角边」是具有有限数据量的键空间的子集，它是三角形容器中「直角边压缩」的基本单元。<br>具体来说，来自不同RowTable的属于「直角边压缩」键范围的的KV项在逻辑上构成直角边。这些KV项的数量是直角边的大小，这个大小不是严格固定的，而是受「直角边压缩」大小的阈值所决定的。</p>
+<p><strong>Space management：</strong><br>完成「直角边压缩」后，「直角边」所占用的NVM空间会被释放。为了管理这些空闲空间，TriangleKV应用了「分页算法」。<br>「直角边压缩」后释放的空闲页作为一组页单元加入到一个「空闲列表」中。然后将使用「空闲列表」中的空闲页来存储从DRAM刷新得到RowTable。<br>8GB大小的「三角形容器」包含$2^{11}$个4KB大小的页。每个页由一个<code>unsigned integer</code>作为页编号来标识。为每个列表元素添加一个8字节的指针，因此列表中每个页的元数据大小为12字节。<br>空间管理的元数据包含一个「空闲列表」以及一个将RowTable 编号映射到对应元数据页的「数组列表」，在NVM中总共只占用24KB的空间。</p>
+<h3 id="Right-angle-Side-Compaction"><a href="#Right-angle-Side-Compaction" class="headerlink" title="Right-angle Side Compaction"></a>Right-angle Side Compaction</h3><p>「直角边压缩」是一种细粒度的L0-L1压缩，每次只压缩直角边，也即特定键范围内数据的一个子集。因此「直角边压缩」能显著减少「写停滞」。<br>「直角边压缩」的主要工作过程可以描述为以下七步：</p>
 <ol>
 <li>TriangleKV将L1的键空间划分为多个连续的键范围。由于L1中的SSTable是有序的，且每个SSTable都有一个最大和最小Key，L1中所有SSTable的最大和最小Key组成一个有序的Key列表。每两个相邻的Key组成一个键范围，由此得到L1中的多个连续键范围。</li>
 <li>「直角边压缩」从L1的第一个键范围开始。它选择L1中的一个键范围作为压缩键范围。</li>
@@ -402,25 +368,15 @@
 <li>然后，查询「三角形容器」中4个RowTable的元数据数组，如果键范围<code>0-3</code>内的数据量小于压缩下限，则下一个邻接键范围也加入压缩，构成一个更大的键范围<code>0-5</code>，如果此键范围内的数据还小于压缩下限则键范围<code>5-8</code>内的数据也加入压缩，键范围扩大到<code>0-8</code>。</li>
 <li>最后，一旦键范围内的数据查过压缩下限，便构成了压缩过程的一个逻辑直角边。键范围<code>0-8</code>所组成的逻辑直角边与SSD上L1中的前两个SSTable进行合并。</li>
 </ul>
-<h3 id="Reducing-LSM-tree-Depth"><a href="#Reducing-LSM-tree-Depth" class="headerlink" title="Reducing LSM-tree Depth"></a>Reducing LSM-tree Depth</h3><p>LSM-Tree中Level的数量随着数据库中数据量的增加而增加。而将SSTable压缩到更高的Level会带来AF（Amplification Factor）级别的的写放大，因此总体WA会随着LSM-Tree深度的增加而增加。</p>
-<p>因此TriangleKV的另一个设计原则是减小LSM-Tree的深度来缓解写放大。TriangleKV增加每一Level的大小限制，使相邻的AF保持不变，从而减少了LSM-Tree的深度。</p>
-<p>因此，对于L1及以上级别的Compaction操作，SSTable到下一Level的压缩WA保持不变，但由于Level的减少，整体的写放大会减少。</p>
-<p>使传统的LSM-Tree扁平化会带来两个负面影响：</p>
+<h3 id="Reducing-LSM-tree-Depth"><a href="#Reducing-LSM-tree-Depth" class="headerlink" title="Reducing LSM-tree Depth"></a>Reducing LSM-tree Depth</h3><p>LSM-Tree中Level的数量随着数据库中数据量的增加而增加。而将SSTable压缩到更高的Level会带来AF（Amplification Factor）级别的的写放大，因此总体WA会随着LSM-Tree深度的增加而增加。<br>因此TriangleKV的另一个设计原则是减小LSM-Tree的深度来缓解写放大。TriangleKV增加每一Level的大小限制，使相邻的AF保持不变，从而减少了LSM-Tree的深度。<br>因此，对于L1及以上级别的Compaction操作，SSTable到下一Level的压缩WA保持不变，但由于Level的减少，整体的写放大会减少。<br>使传统的LSM-Tree扁平化会带来两个负面影响：</p>
 <ul>
 <li>首先，放大L0后会有更多的SSTable与L0有范围重叠，这增加了参与L0-L1压缩的数据量，这不仅增加了压缩开销，而且延长了「写停滞」的持续时间。</li>
 <li>其次，当遍历一个更大的未排序的L0时，搜索效率会降低；</li>
 </ul>
 <p>TriangleKV不存在第一个问题，因为「直角边压缩」使L0-L1压缩始终处于细粒度。「直角边」所涉及的数据量在很大程度上与水平宽度无关，因为直角边所包含的数据量是有限的。唯一的缺点是，搜索较大的L0的效率比较低，这可能会降低读取效率。</p>
-<h3 id="Cross-row-Hint-Search"><a href="#Cross-row-Hint-Search" class="headerlink" title="Cross-row Hint Search"></a>Cross-row Hint Search</h3><p>为了提高「三角形容器」内的读效率，TriangleKV构建了一个「跨行提示搜索」。</p>
-<p><strong>Constructing cross-row hints：</strong></p>
-<p>当在「三角形容器」中构建一个RowTable时，为有序元数据数组中的每个元素添加一个前向指针（如图10）。具体来说，对于RowTable <code>i</code>中的键<code>x</code>，其前向指针指向前面RowTable <code>i-1</code>中的键<code>y</code>，键<code>y</code> 是第一个不小于<code>x</code>的键，也即<code>y≥x</code> 。</p>
-<p>这些前向指针提供了对于不同行的所有键进行逻辑排序的提示。由于每个前向指针只记录前一个RowTable的数组索引，所以前向指针的大小只有4字节，因此存储开销非常小。</p>
-<p><strong>Search process in the triangle container：</strong></p>
-<p>查询过程从最后到达的RowTable <code>i</code>开始。如果该RowTable的键范围并没有覆盖目标键，则跳到它的前一个RowTable，也即RowTable <code>i-1</code>；如果覆盖了目标键，则在RowTable <code>i</code>中执行二分查找，以找到目标键所在的键范围。</p>
-<p>使用前向指针可以缩小前面RowTable中的搜索区域。因此，不需要完全遍历所有表来获得一个键或扫描一个键范围。跨行提示搜索通过显著减少搜索过程中涉及的表和元素的数量，提高了L0的读取效率。</p>
-<p><img src="https://cdn.jsdelivr.net/gh/Ap0l1o/ImageHostingService@main/img/TriangleKV/F9.png" srcset="/img/loading.gif" lazyload alt="Untitled"></p>
-<p>图12展示了一个跨行提示搜索的例子。其中蓝色箭头表示前向指针所提供的跨行提示。</p>
-<p>假设我们想在三角形容器中查找一个目标键<code>k=12</code> 。</p>
+<h3 id="Cross-row-Hint-Search"><a href="#Cross-row-Hint-Search" class="headerlink" title="Cross-row Hint Search"></a>Cross-row Hint Search</h3><p>为了提高「三角形容器」内的读效率，TriangleKV构建了一个「跨行提示搜索」。<br><strong>Constructing cross-row hints：</strong><br>当在「三角形容器」中构建一个RowTable时，为有序元数据数组中的每个元素添加一个前向指针（如图10）。具体来说，对于RowTable <code>i</code>中的键<code>x</code>，其前向指针指向前面RowTable <code>i-1</code>中的键<code>y</code>，键<code>y</code> 是第一个不小于<code>x</code>的键，也即<code>y≥x</code> 。<br>这些前向指针提供了对于不同行的所有键进行逻辑排序的提示。由于每个前向指针只记录前一个RowTable的数组索引，所以前向指针的大小只有4字节，因此存储开销非常小。</p>
+<p><strong>Search process in the triangle container：</strong><br>查询过程从最后到达的RowTable <code>i</code>开始。如果该RowTable的键范围并没有覆盖目标键，则跳到它的前一个RowTable，也即RowTable <code>i-1</code>；如果覆盖了目标键，则在RowTable <code>i</code>中执行二分查找，以找到目标键所在的键范围。<br>使用前向指针可以缩小前面RowTable中的搜索区域。因此，不需要完全遍历所有表来获得一个键或扫描一个键范围。跨行提示搜索通过显著减少搜索过程中涉及的表和元素的数量，提高了L0的读取效率。<br><img src="https://cdn.jsdelivr.net/gh/Ap0l1o/ImageHostingService@main/img/TriangleKV/F9.png" srcset="/img/loading.gif" lazyload alt="Untitled"></p>
+<p>图12展示了一个跨行提示搜索的例子。其中蓝色箭头表示前向指针所提供的跨行提示。<br>假设我们想在三角形容器中查找一个目标键<code>k=12</code> 。</p>
 <ul>
 <li>首先对RowTable <code>1</code>执行二分查找，得到一个缩小的从<code>key=10</code>到<code>key=23</code>的键范围。</li>
 <li>通过它们的前向指针提示，查找到RowTable <code>3</code>中的键<code>13</code>和键<code>36</code>。当目标键不在两个提示键的键范围内时，将上述键添加到搜索区域。</li>

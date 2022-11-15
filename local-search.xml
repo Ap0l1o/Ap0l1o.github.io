@@ -4,6 +4,33 @@
   
   
   <entry>
+    <title>printf和标准输出</title>
+    <link href="/2022/11/14/C%E5%92%8CC++/printf%E5%92%8C%E6%A0%87%E5%87%86%E8%BE%93%E5%87%BA/"/>
+    <url>/2022/11/14/C%E5%92%8CC++/printf%E5%92%8C%E6%A0%87%E5%87%86%E8%BE%93%E5%87%BA/</url>
+    
+    <content type="html"><![CDATA[<h2 id="四种printf"><a href="#四种printf" class="headerlink" title="四种printf"></a>四种printf</h2><p>以下四个输出类的函数都是从给定位置加载数据，按照指定的format格式转换为字符串等价版本，并将结果写入各种池。</p><figure class="highlight c++"><table><tr><td class="gutter hljs"><div class="hljs code-wrapper"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></div></td><td class="code"><div class="hljs code-wrapper"><pre><code class="hljs C++"><span class="hljs-comment">// 函数原型</span><br><span class="hljs-function"><span class="hljs-keyword">int</span> <span class="hljs-title">printf</span><span class="hljs-params">( <span class="hljs-keyword">const</span> <span class="hljs-keyword">char</span>* format, ... )</span></span>;<br><span class="hljs-function"><span class="hljs-keyword">int</span> <span class="hljs-title">fprintf</span><span class="hljs-params">( std::FILE* stream, <span class="hljs-keyword">const</span> <span class="hljs-keyword">char</span>* format, ... )</span></span>;<br><span class="hljs-function"><span class="hljs-keyword">int</span> <span class="hljs-title">sprintf</span><span class="hljs-params">( <span class="hljs-keyword">char</span>* buffer, <span class="hljs-keyword">const</span> <span class="hljs-keyword">char</span>* format, ... )</span></span>;<br><span class="hljs-function"><span class="hljs-keyword">int</span> <span class="hljs-title">snprintf</span><span class="hljs-params">( <span class="hljs-keyword">char</span>* buffer, std::<span class="hljs-keyword">size_t</span> buf_size, <span class="hljs-keyword">const</span> <span class="hljs-keyword">char</span>* format, ... )</span></span>;<br></code></pre></div></td></tr></table></figure><p>其区别在于：</p><ul><li><code>printf</code>写结果到 <code>stdout</code> </li><li><code>fprintf</code>写结果到文件流 <code>stream</code> </li><li><code>sprintf</code>写结果到字符串 buffer </li><li><code>snprintf</code>写结果到字符串 buffer 。至多写 buf_size - 1 个字符。产生的字符串会以空字符终止，除非 buf_size 为零。若 buf_size 为零，则不写入任何内容，且 buffer 可以是空指针，然而依旧计算返回值（会写入的字符数，不包含空终止符）并返回。<h2 id="stdout和stderr"><a href="#stdout和stderr" class="headerlink" title="stdout和stderr"></a>stdout和stderr</h2></li><li><code>stdout</code>是标准输出设备</li><li><code>stderr</code>是标准错误输出设备<br>两者都向屏幕输出，默认情况下<code>stdout</code>是「行缓冲」的，它的输出会放到一个buffer里面，只有遇到以下情况才会刷出数据到屏幕：</li><li>遇到换行符</li><li>缓冲区满</li><li>使用<code>fflush</code>函数手动刷出数据</li><li>使用<code>fclose</code>函数关闭文件<figure class="highlight c++"><table><tr><td class="gutter hljs"><div class="hljs code-wrapper"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></div></td><td class="code"><div class="hljs code-wrapper"><pre><code class="hljs C++"><span class="hljs-comment">// 函数原型</span><br><span class="hljs-comment">// 对于输出流（和最近操作为输出的更新流），将来自 stream 缓冲区的未写入数据写入关联的输出设备</span><br><span class="hljs-function"><span class="hljs-keyword">int</span> <span class="hljs-title">fflush</span><span class="hljs-params">( std::FILE* stream )</span></span>;<br></code></pre></div></td></tr></table></figure><h2 id="输出重定向"><a href="#输出重定向" class="headerlink" title="输出重定向"></a>输出重定向</h2>基本符号和含义：</li><li>  <code>/dev/null</code> 表示空设备文件</li><li>  0 表示<code>stdin</code>标准输入</li><li>  1 表示<code>stdout</code>标准输出</li><li>  2 表示<code>stderr</code>标准错误<br>输出重定向是指把命令或可执行程序的「标准输出」或「标准错误输出」重新定向到指定文件中。这样，该命令的输出就不显示在屏幕上，而是写入到指定文件中：</li><li>使用 <code>&gt;</code> 符号，将标准输出重定向到文件中</li><li>使用<code>&gt;&gt;</code>符号，将标准输出结果追加到指定文件后面</li><li>使用<code>2&gt;</code>符号，将标准错误输出重定向到文件中</li><li>使用<code>2&gt;&gt;</code>符号，将标准错误输出追加到指定文件后面</li><li>使用<code>2&gt;&amp;1</code>符号或<code>&amp;&gt;</code>符号，将把标准错误输出<code>stderr</code>重定向到标准输出stdout</li><li>使用<code>&gt;/dev/null</code> 符号，将命令执行结果重定向到空设备中，也就是不显示任何信息````</li></ul>]]></content>
+    
+    
+    <categories>
+      
+      <category>技术</category>
+      
+    </categories>
+    
+    
+    <tags>
+      
+      <tag>C/C++</tag>
+      
+      <tag>编程语言</tag>
+      
+    </tags>
+    
+  </entry>
+  
+  
+  
+  <entry>
     <title>C/C++头文件和库</title>
     <link href="/2022/11/12/C%E5%92%8CC++/GCC%E7%BC%96%E8%AF%91%E4%BB%8B%E7%BB%8D/"/>
     <url>/2022/11/12/C%E5%92%8CC++/GCC%E7%BC%96%E8%AF%91%E4%BB%8B%E7%BB%8D/</url>
@@ -349,11 +376,11 @@
   
   
   <entry>
-    <title>C++内联函数</title>
-    <link href="/2022/05/02/C%E5%92%8CC++/%E5%86%85%E8%81%94%E5%87%BD%E6%95%B0/"/>
-    <url>/2022/05/02/C%E5%92%8CC++/%E5%86%85%E8%81%94%E5%87%BD%E6%95%B0/</url>
+    <title>C++类型转换</title>
+    <link href="/2022/05/02/C%E5%92%8CC++/%E7%B1%BB%E5%9E%8B%E8%BD%AC%E6%8D%A2/"/>
+    <url>/2022/05/02/C%E5%92%8CC++/%E7%B1%BB%E5%9E%8B%E8%BD%AC%E6%8D%A2/</url>
     
-    <content type="html"><![CDATA[<h1 id="内联函数"><a href="#内联函数" class="headerlink" title="内联函数"></a>内联函数</h1><p>许多程序员使用带有参数的宏来完成简单函数的调用。宏替换的好处是没有函数调用的开销，能够加快代码的执行。</p><p>但宏替换是一种无类型机制，只能实现比较简单的功能，有时还会产生预期之外的副作用。而函数正好相反。</p><p>为了结合宏替换和函数的优点，C++语言允许定义内联函数。在函数原型前加上<code>inline</code>表示这是一个内联函数。例如：</p><figure class="highlight c++"><table><tr><td class="gutter hljs"><div class="hljs code-wrapper"><pre><span class="line">1</span><br></pre></div></td><td class="code"><div class="hljs code-wrapper"><pre><code class="hljs C++"><span class="hljs-function"><span class="hljs-keyword">inline</span> <span class="hljs-keyword">void</span> <span class="hljs-title">function</span><span class="hljs-params">(<span class="hljs-keyword">int</span> a, <span class="hljs-keyword">int</span> b)</span></span>;<br></code></pre></div></td></tr></table></figure><p>在编译时，会将将调用内联函数的地方用相应的函数体替换，能够加快代码的执行，减少函数调用的开销。</p><p>需要注意的是，不是所有的函数都需要定义为内联函数，在使用内联函数时要注意一下事项：</p><ul><li>内联函数内不允许有循环语句和开关语句。如果内联函数内有这些语句，则按普通函数处理。</li><li>内联函数的函数体不宜过长，以1～5行为宜。</li></ul>]]></content>
+    <content type="html"><![CDATA[<h1 id="类型转换"><a href="#类型转换" class="headerlink" title="类型转换"></a>类型转换</h1><p>类型转换是指将一种类型的值转换为另一种类型的值。C++中有两种形式的类型转换：<strong>显式类型转换</strong>和<strong>隐式类型转换</strong>。</p><h2 id="隐式类型转换"><a href="#隐式类型转换" class="headerlink" title="隐式类型转换"></a>隐式类型转换</h2><p>隐式类型转换发生在以下几种情况：</p><ul><li><strong>混合运算</strong>：级别低的类型向级别高的类型转换。（一般来说，某个类型的一个数据占用的存储空间越多，则该类型的级别越高）</li><li><strong>将表达式的值赋给变量</strong>：表达式的值向变量类型的值转换。</li><li><strong>函数实参向函数形参传值</strong>：实参的值向形参的值转换。</li><li><strong>函数返回结果</strong>：返回的值向函数返回类型的值进行转换。</li></ul><p>需要注意的是，<strong>隐式转换是在编译时进行的</strong>，因此不需要运算符的参与。</p><h2 id="显式类型转换"><a href="#显式类型转换" class="headerlink" title="显式类型转换"></a>显式类型转换</h2><p>显示类型转换有下面几种风格：</p><ol><li>C风格：<code>(类型名)表达式</code>或<code>(类型名)(表达式)</code>;</li><li>C++风格：<code>类型名(表达式)</code>。此时，<strong>类型名</strong>就是一个<strong>类型转换运算符</strong>。</li><li><strong>类型安全的显式类型转换运算符</strong>：<ol><li><code>static_cast&lt;类型名&gt;(表达式)</code>：作用类似于C风格和C++风格的转换功能，同时也能用在不需要显式转换的地方。</li><li><code>const_cast&lt;类型名&gt;(表达式)</code>：将const或volaile数据转换为非<code>const</code>或非<code>volatile</code>的数据。</li><li><code>dynamic_cast&lt;类型名&gt;(表达式)</code>：将父类指针转换为子类指针。</li><li><code>reinterpret_cast&lt;类型名&gt;(表达式)</code>：将一个数据转换成一个完全不同意义的数据，在使用时一般要在这样的转换后再做逆转换。（这是一种具有潜在危险性的转换）</li></ol></li></ol><p>需要注意的是，无论是哪种类型转换，都需要申请一个临时单元，将要转换的值先复制到临时单元，转换发生在临时单元中。</p>]]></content>
     
     
     <categories>
@@ -376,11 +403,11 @@
   
   
   <entry>
-    <title>C++类型转换</title>
-    <link href="/2022/05/02/C%E5%92%8CC++/%E7%B1%BB%E5%9E%8B%E8%BD%AC%E6%8D%A2/"/>
-    <url>/2022/05/02/C%E5%92%8CC++/%E7%B1%BB%E5%9E%8B%E8%BD%AC%E6%8D%A2/</url>
+    <title>C++内联函数</title>
+    <link href="/2022/05/02/C%E5%92%8CC++/%E5%86%85%E8%81%94%E5%87%BD%E6%95%B0/"/>
+    <url>/2022/05/02/C%E5%92%8CC++/%E5%86%85%E8%81%94%E5%87%BD%E6%95%B0/</url>
     
-    <content type="html"><![CDATA[<h1 id="类型转换"><a href="#类型转换" class="headerlink" title="类型转换"></a>类型转换</h1><p>类型转换是指将一种类型的值转换为另一种类型的值。C++中有两种形式的类型转换：<strong>显式类型转换</strong>和<strong>隐式类型转换</strong>。</p><h2 id="隐式类型转换"><a href="#隐式类型转换" class="headerlink" title="隐式类型转换"></a>隐式类型转换</h2><p>隐式类型转换发生在以下几种情况：</p><ul><li><strong>混合运算</strong>：级别低的类型向级别高的类型转换。（一般来说，某个类型的一个数据占用的存储空间越多，则该类型的级别越高）</li><li><strong>将表达式的值赋给变量</strong>：表达式的值向变量类型的值转换。</li><li><strong>函数实参向函数形参传值</strong>：实参的值向形参的值转换。</li><li><strong>函数返回结果</strong>：返回的值向函数返回类型的值进行转换。</li></ul><p>需要注意的是，<strong>隐式转换是在编译时进行的</strong>，因此不需要运算符的参与。</p><h2 id="显式类型转换"><a href="#显式类型转换" class="headerlink" title="显式类型转换"></a>显式类型转换</h2><p>显示类型转换有下面几种风格：</p><ol><li>C风格：<code>(类型名)表达式</code>或<code>(类型名)(表达式)</code>;</li><li>C++风格：<code>类型名(表达式)</code>。此时，<strong>类型名</strong>就是一个<strong>类型转换运算符</strong>。</li><li><strong>类型安全的显式类型转换运算符</strong>：<ol><li><code>static_cast&lt;类型名&gt;(表达式)</code>：作用类似于C风格和C++风格的转换功能，同时也能用在不需要显式转换的地方。</li><li><code>const_cast&lt;类型名&gt;(表达式)</code>：将const或volaile数据转换为非<code>const</code>或非<code>volatile</code>的数据。</li><li><code>dynamic_cast&lt;类型名&gt;(表达式)</code>：将父类指针转换为子类指针。</li><li><code>reinterpret_cast&lt;类型名&gt;(表达式)</code>：将一个数据转换成一个完全不同意义的数据，在使用时一般要在这样的转换后再做逆转换。（这是一种具有潜在危险性的转换）</li></ol></li></ol><p>需要注意的是，无论是哪种类型转换，都需要申请一个临时单元，将要转换的值先复制到临时单元，转换发生在临时单元中。</p>]]></content>
+    <content type="html"><![CDATA[<h1 id="内联函数"><a href="#内联函数" class="headerlink" title="内联函数"></a>内联函数</h1><p>许多程序员使用带有参数的宏来完成简单函数的调用。宏替换的好处是没有函数调用的开销，能够加快代码的执行。</p><p>但宏替换是一种无类型机制，只能实现比较简单的功能，有时还会产生预期之外的副作用。而函数正好相反。</p><p>为了结合宏替换和函数的优点，C++语言允许定义内联函数。在函数原型前加上<code>inline</code>表示这是一个内联函数。例如：</p><figure class="highlight c++"><table><tr><td class="gutter hljs"><div class="hljs code-wrapper"><pre><span class="line">1</span><br></pre></div></td><td class="code"><div class="hljs code-wrapper"><pre><code class="hljs C++"><span class="hljs-function"><span class="hljs-keyword">inline</span> <span class="hljs-keyword">void</span> <span class="hljs-title">function</span><span class="hljs-params">(<span class="hljs-keyword">int</span> a, <span class="hljs-keyword">int</span> b)</span></span>;<br></code></pre></div></td></tr></table></figure><p>在编译时，会将将调用内联函数的地方用相应的函数体替换，能够加快代码的执行，减少函数调用的开销。</p><p>需要注意的是，不是所有的函数都需要定义为内联函数，在使用内联函数时要注意一下事项：</p><ul><li>内联函数内不允许有循环语句和开关语句。如果内联函数内有这些语句，则按普通函数处理。</li><li>内联函数的函数体不宜过长，以1～5行为宜。</li></ul>]]></content>
     
     
     <categories>

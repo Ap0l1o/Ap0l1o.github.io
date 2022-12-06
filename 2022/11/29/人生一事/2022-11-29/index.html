@@ -14,11 +14,11 @@
   <meta http-equiv="x-ua-compatible" content="ie=edge">
   
   <meta name="theme-color" content="#2f4154">
-  <meta name="description" content="LSM-tree KV-store 长尾延迟总结，记读论文「SILK Preventing Latency Spikes in Log-Structured Merge Key-Value Stores」。">
+  <meta name="description" content="Here&#39;s something encrypted, password is required to continue reading.">
   <meta name="author" content="ap0l1o">
   <meta name="keywords" content="">
   
-  <title>SILK论文阅读笔记 - ap0l1o</title>
+  <title>2022-11-29记 - ap0l1o</title>
 
   <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.0/dist/css/bootstrap.min.css" />
 
@@ -223,7 +223,7 @@
       <div class="full-bg-img">
         <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
           <div class="page-header text-center fade-in-up">
-            <span class="h2" id="subtitle" title="SILK论文阅读笔记">
+            <span class="h2" id="subtitle" title="2022-11-29记">
               
             </span>
 
@@ -233,8 +233,8 @@
   
     <span class="post-meta">
       <i class="iconfont icon-date-fill" aria-hidden="true"></i>
-      <time datetime="2022-11-04 21:31" pubdate>
-        2022年11月4日 晚上
+      <time datetime="2022-11-29 11:18" pubdate>
+        2022年11月29日 上午
       </time>
     </span>
   
@@ -245,7 +245,7 @@
     
     <span class="post-meta mr-2">
       <i class="iconfont icon-chart"></i>
-      1.5k 字
+      6 字
     </span>
   
 
@@ -255,7 +255,7 @@
       <i class="iconfont icon-clock-fill"></i>
       
       
-      15
+      1
        分钟
     </span>
   
@@ -285,57 +285,21 @@
         <div class="py-5" id="board">
           <article class="post-content mx-auto">
             <!-- SEO header -->
-            <h1 style="display: none">SILK论文阅读笔记</h1>
+            <h1 style="display: none">2022-11-29记</h1>
             
             <div class="markdown-body">
-              <h2 id="0x10-长尾延迟"><a href="#0x10-长尾延迟" class="headerlink" title="0x10 长尾延迟"></a>0x10 长尾延迟</h2><p><img src="https://cdn.jsdelivr.net/gh/Ap0l1o/ImageHostingService@main/img/long-latency/F-1.png" srcset="/img/loading.gif" lazyload><br>以RocksDB为例，在Nutanix生产环境中的写密集型工作负载下，99%分位的操作尾延迟达到了$10^6$微秒级，也即秒级。</p>
-<h2 id="0x20-长尾延迟的原因"><a href="#0x20-长尾延迟的原因" class="headerlink" title="0x20 长尾延迟的原因"></a>0x20 长尾延迟的原因</h2><p>出现「长尾延迟」的主要原因是内存中的MemTable写满后无法及时刷新到LSM-Tree中的L0，进而阻塞了「写操作」。<br>回顾LSM-Tree的写操作流程：</p>
-<ol>
-<li>首先追加写到WAL中；</li>
-<li>WAL写入成功后再写内存中的MemTable，根据写MemTable的情况返回「写操作」的结果；</li>
-<li>MemTable写满后转为Immutable MemTable；</li>
-<li>后台线程执行Minor Compaction（也即Flush操作）将Immutable MemTable持久化为磁盘上LSM-Tree中L0的SSTable文件；</li>
-<li>当L0中的文件数量达到上限或其他Level中的文件大小超过容量上限时执行Major Compaction操作，将本Level的SSTable文件合并写到下一个Level中；</li>
-</ol>
-<p>上面的写操作流程中隐含了一些限制写操作的细节，主要包含以下两点：</p>
-<ul>
-<li>当Compaction操作过于密集时，底层的Compaction操作会和L0-L1的Compaction抢占IO带宽，导致L0中的SSTable文件数量过多，进而阻塞写操作。</li>
-<li>当Compaction操作过于密集时，底层的Compaction操作还会与Flush操作竞争带宽，导致虽然L0中仍有空间可用，但是Flush操作过慢会导致已满的MemTable无法及时落盘，从而阻塞用户的写操作。</li>
-<li>此外，Compaction操作还会和WAL竞争IO带宽，从而限制用户的写操作；<br><img src="https://cdn.jsdelivr.net/gh/Ap0l1o/ImageHostingService@main/img/long-latency/F-2.png" srcset="/img/loading.gif" lazyload></li>
-</ul>
-<h2 id="0x30-SILK是怎么做的"><a href="#0x30-SILK是怎么做的" class="headerlink" title="0x30 SILK是怎么做的"></a>0x30 SILK是怎么做的</h2><h3 id="0x31-经验教训"><a href="#0x31-经验教训" class="headerlink" title="0x31 经验教训"></a>0x31 经验教训</h3><p>SILK通过一系列实验得到了以下经验：</p>
-<ul>
-<li>高延迟的直接原因是MemTable写满后阻塞了用户写操作。间接原因一是因为磁盘中的L0满了导致写满了的MemTable无法落盘到L0中；二是因为并发的大量Compaction操作之间会竞争带宽，导致Flush操作的可用带宽降低，影响了MemTable的落盘速度。</li>
-<li>通过简单的限制internal operations（Flush和Compaction操作）的带宽并不能解决问题，这种简单粗暴的方法并没有区分Flush、L0-L1 Compaction以及其他Compaction操作的区别，因为这些操作对于用户的操作具有不同的影响，有的起积极作用，而有的起消极作用。</li>
-<li>现有的一些提高吞吐量的方法仅仅在短期内避免了延迟的峰值，但在长期内加剧了问题，因为这往往增加了在后期的某个时间点同时进行更密集的Compaction操作的可能性。</li>
-</ul>
-<h3 id="0x32-SILK设计原则"><a href="#0x32-SILK设计原则" class="headerlink" title="0x32 SILK设计原则"></a>0x32 SILK设计原则</h3><ul>
-<li>根据负载的变化对internal operation动态分配带宽。这是利用了在实际的生产工作负载中，客户端操作负载往往会随着时间的推移而变化。根据此特点，SILK在用户负载的高峰期为用户操作分配更多的IO带宽，而在用户负载的空窗期将IO带宽分配给Internal Operations。这有两个好处：<ul>
-<li>其一，在用户操作负载的高峰期能避免内部操作和用户操作竞争IO带宽；</li>
-<li>其二，在用户操作负载的空窗期集中带宽处理内部操作，能避免积累大量的内部操作负载；</li>
-</ul>
-</li>
-<li>为LSM-Tree中的内部操作划分优先级。SILK根据内部操作对客户端延迟的影响将其分为三个优先级：<ul>
-<li>Flush操作具有最高的优先级，保证内存中有足够的空间能吸收客户端的写操作；</li>
-<li>L0-L1的Compaction操作具有次优先级，保证L0中始终有足够的空间，进而保证MemTable写满后能及时Flush到L0；</li>
-<li>L1以下的Compaction操作具有最低的优先级，因为尽管它们用于维护LSM-Tree的结构，但它们的是否及时执行在短时间内并不会显著影响客户端的操作延迟；</li>
-</ul>
-</li>
-<li>SILK实现了新的Compaction算法，保证低Level的内部操作能够抢占高Level的内部操作的资源而优先执行。</li>
-</ul>
-<h3 id="SILK实现"><a href="#SILK实现" class="headerlink" title="SILK实现"></a>SILK实现</h3><h4 id="动态分配IO带宽"><a href="#动态分配IO带宽" class="headerlink" title="动态分配IO带宽"></a>动态分配IO带宽</h4><p>SILK使用一个单独的线程来持续监控客户端操作占用的带宽，并将剩余可用的IO带宽分配给内部操作（Internal Operations）。<br>若LSM-Tree KV Store的总可用带宽为$T$ B/s，SILK测量得到客户端请求所使用的带宽为$C$ B/s，SILK将实时调整内部操作的可用带宽为 $I = T - C - \varepsilon$B/s，其中$\varepsilon$是一个小的缓冲区。<br>为了调整IO带宽，SILK使用了标准的速率限制器。此外，SILK为Flush和L0-L1的Compaction操作维护了一个最小的可配置的IO带宽阈值，因为这两个操作会直接影响客户端的延迟。</p>
-<h4 id="优先级划分和内部操作抢占"><a href="#优先级划分和内部操作抢占" class="headerlink" title="优先级划分和内部操作抢占"></a>优先级划分和内部操作抢占</h4><p>SILk维护了两个内部工作「线程池」：</p>
-<ul>
-<li>一个高优先级的线程池用于执行Flush操作；</li>
-<li>一个低优先级的线程池用于执行Compaction操作；</li>
-</ul>
-<p>部分细节如下：</p>
-<ul>
-<li>Flush操作在内部操作中具有最高的优先级，Flush操作有专用的线程池，并且始终能访问内部操作可用的IO带宽资源。</li>
-<li>如果有L0-L1的Compaction需要执行，而Compaction线程库中的所有线程都在执行高层的Compaction，则随机选择一个线程暂停原来的Compaction操作转而执行L0-L1的Compaction操作。必要时，为了保证L0-L1 Compaction的执行，需要将其移动到高优先级线程池中执行，也即具有和Flush相同的优先级。</li>
-<li>高Level的Compaction操作可能会被抢占，可能被L0-L1的Compaction抢占，在用户负载增加时整个Compaction线程的IO资源可能也会被抢占，导致高Level的Compaction操作暂时停止执行。</li>
-</ul>
-
+              <div class="hbe hbe-container" id="hexo-blog-encrypt" data-wpm="Oh, this is an invalid password. Check and try again, please." data-whm="OOPS, these decrypted content may changed, but you can still have a look.">
+  <script id="hbeData" type="hbeData" data-hmacdigest="75c81e5737063d02d8d1f2efd2b77f6a26b80d14e44f5cde893626be79b7751a">2db7724a954bda8868d66cd7c16a6f379d55b08b5833aad3e4ba6b9fbc35257b1be420daa1c71bf51b52be733b0c99bb52cfa890a53e927b81f54fc421c15ea709523679d7becc2a8eeeef69241cdc749766a295544c9c1426b1cd6c5c3d65737feaf1960f9b011c4eb0c990ae92b5037a00f740cee8344f78d76df90c511deaf79db71589c5eacf4d8c337616636357ed57baa1b90aaee89c1c6adc2be0616c278087121889a1b63d064468672751e781b908fd6120680c76c20c66c66b23faef6f990d57e17983a4b8a170a74604927b736441448d794e982b9f989b91f39b184a37085ad677966b177149ac3b1ff79f70f165ae848960319a822b4bb9c576a1f7803a12ab22889f5e48c4836f0b73881dd5fececb73a89fdd4ab336d3e77a03f4da7a8a0818fa2267815059edd636fbfef091fcdbdc0fcf630d426c1f930ffbbf3904fcffc84f800a30ee8f6d81883cd7bc0fd77ebed6b9a2e4640f49ac3cfa33ea802107c862bf3aeee25aad668f2189b1cfe7eda12e00e08ed21c8b744ef367c78fc12c2a709150ed1e1c875d79c9d57ecf27c291dea460f87491e4c0c186c01dfda813013886781d7cc915d4ade21e7bf934b1f39535db737193b23e97c4bdd490605204c12dd5a96164db530315a86ccffbd34a2a8c941f1320884c3dcfb6ef396042d9021860f064293b47ae7d367b34029351454e99fe040b0b3712bf6f1756ec4291da1cc94ce3c10462ba9b9fd81395df5243eaab3625bf56c73e988247986734eacec450895d9993b276dad482d0e0c79cf6fd1ba67fcdc04904d5d03f7fa8035d27309d0a5367ac1c190e57c3b32a396183d5873c0d0d5002a37099c0a92b322d4631867a998880a8df0e67a84151cc61a6dfeb584b5fef11483d27a837c7d95e1db28d54c29b69dbfe8ca1157fdfb87a499403e4cda67b8d9d4085914ee696dc05df3e9b76f10a9b7a5858b10390414446411e97d0d4e087877eae355dc13d2ea8248c8123b2db41f842f686bf6b5ef3bccedf598decbdb6bf622e2aff077c2a31ec9464b99a43b3c30c9024db1d13337e1728d476c0d88922cf789ab101d765df5ab38d51ce92dcfe3d5dac1ae205968bbb5fb2d3d90b53d19895a2c060adf823ea9fda566cd466cb3169fef5826ead2947fb19913e28ddd1e4377b54b09df280f776c19c9c574afa7939df4184c71786c82134d9addc51fa1fdecc9fa79630482490ede22cef0d00eb06b90811a54eda0b100b72986942524ef0458260d792d46ead99aad179fb49aee3a928cc387e69d63b703d8c8b2392515f41584c5c32dedd50583831db176524d3a232a8882690ea6f181a6b15ba85db58cb0ab7842eb1078648d8f13abfe944ba772227c47a1eb7964dee2620ffa44f3a6bd9bce92bfe930af9886b5781012a619c048493bb64df63f70519b3c8975b83aec3f5a7f46363e7fd48f5e5a537dffa0396921a540a955cdbe25686245fb47b0295c81bcd0581e4863064046384d7c470caf58d067f5b5618ff42f3aa6588d1323252324703a415fe6c12cbcf4d8143b2cd73cbf17d9ebb600c15ec7d0ae071c18c680866b0529773b27114ef79e18e27539493c9155a2c298493309fa79d799cf485f8c18ad0c72cf009710ae9d170491bdc01c2c6be147a313ed9f173a7a6ed773b781512eadfd8124dcdcccd43707b442c53a453709eefbccf72d6b20dc9bd232afd88d65dc0ed7f70c272793c55748001fed64d6caf58bb4f906c567ba852f55e10841866b95b624e1f801e15f41b5e9caa9a4ce99df91657ec7e3e1a18971c0fce79e90deddcfb8090fe6d21bc37e89db18ed5e88f3c45980984ba8dd50b5ecf13a3d5124358f5022fcf54e68e6852cb67a7bc0fd3d8455b3552b84fa46f671fd5920cc92cf7b76edd1ffbce927071f473c810d667fb92f3bf3d24b369609dbdcb2765b53893c541b1c239311d9bdb1c89a98a89ea75de97b7731b713abfed7a9b6f7516d66b080647d8979c0e2d31331d109146ff64bcd949d7f8ec8ca5e7789ee969eaa61a07f0a19baea1a4fdb7d8c2551175050dbfd767ab7bf62a120811331c0fd759c2a60a4c8df7e98204539e07d5d5c40a5067bd4cbea8983ef75ac2f59109790cc851ed3990a30448cb7d03c14cb38d53cea7897a6f0694a3cf062fd23d2e40c5aefcf1f2a8838ed7a23ac90502d24059a3741e73dfa7c9f4f0287b1f23221954e5fefecb675498eb09174cea5cd5fe433e7fc64c79e04064b838cbceb8c5efa11e831c34e48415fd1aae48050993083798b546582dcdee142850088a7a6ea74f3d1a3e667de36dd4be372ec20f70c89bc074f4b4f84fcef35ed73058543184ae80c1766265020e26f8d09a54fcfd20f399623d20054624adcfda7eb746fefd6821eaf8dc084be78a88e29e8b1f5c2441bcf26bbe3e585162c30eb48a033e5edeb0dd4abfaa2d17ca7b8de12862ad0bf670aab23b1d9d78c4bb2ab250d9b04512524129f8e3ec7747a08a45cb4b6d4ed6532c6dad5cc37f4db1fa23a67c001f19f8ea36460e500b26187b9a434934ad4cc475a32c98767777ce6b444915d0c791e466076b431e41844294351a29670ff4aa9755063cf2b33d274c2ecc35f8efefd482b0c18d6260a877bcff8bbc767a86415e9e1d3ee92e1ce769def6e35873a3ced3fdc27f20968edd8776c9e2f4ab03cc8a5afa46c96b93463dd6ee3ab6686ec5ed9e65a5a126b8178704f6b1acaab779d81e79d828</script>
+  <div class="hbe hbe-content">
+    <div class="hbe hbe-input hbe-input-default">
+      <input class="hbe hbe-input-field hbe-input-field-default" type="password" id="hbePass">
+      <label class="hbe hbe-input-label hbe-input-label-default" for="hbePass">
+        <span class="hbe hbe-input-label-content hbe-input-label-content-default">Hey, password is required here.</span>
+      </label>
+    </div>
+  </div>
+</div>
+<script data-pjax src="/lib/hbe.js"></script><link href="/css/hbe.style.css" rel="stylesheet" type="text/css">
             </div>
             <hr>
             <div>
@@ -344,7 +308,7 @@
                   <div class="post-meta mr-3">
                     <i class="iconfont icon-category"></i>
                     
-                      <a class="hover-with-bg" href="/categories/%E8%AE%BA%E6%96%87/">论文</a>
+                      <a class="hover-with-bg" href="/categories/%E7%94%9F%E6%B4%BB/">生活</a>
                     
                   </div>
                 
@@ -352,9 +316,7 @@
                   <div class="post-meta">
                     <i class="iconfont icon-tags"></i>
                     
-                      <a class="hover-with-bg" href="/tags/Key-Value-Store/">Key-Value Store</a>
-                    
-                      <a class="hover-with-bg" href="/tags/%E8%AE%BA%E6%96%87%E9%98%85%E8%AF%BB/">论文阅读</a>
+                      <a class="hover-with-bg" href="/tags/%E4%BA%BA%E7%94%9F%E4%B8%80%E4%BA%8B/">人生一事</a>
                     
                   </div>
                 
@@ -366,29 +328,6 @@
                   
                 </p>
               
-              
-                <div class="post-prevnext">
-                  <article class="post-prev col-6">
-                    
-                    
-                      <a href="/2022/11/12/C%E5%92%8CC++/GCC%E7%BC%96%E8%AF%91%E4%BB%8B%E7%BB%8D/">
-                        <i class="iconfont icon-arrowleft"></i>
-                        <span class="hidden-mobile">C/C++头文件和库</span>
-                        <span class="visible-mobile">上一篇</span>
-                      </a>
-                    
-                  </article>
-                  <article class="post-next col-6">
-                    
-                    
-                      <a href="/2022/10/23/%E8%AF%BB%E8%AE%BA%E6%96%87/Learned%20Index/">
-                        <span class="hidden-mobile">Learned Index</span>
-                        <span class="visible-mobile">下一篇</span>
-                        <i class="iconfont icon-arrowright"></i>
-                      </a>
-                    
-                  </article>
-                </div>
               
             </div>
 
@@ -407,7 +346,7 @@
         var options = Object.assign(
           {"clientID":"6ea770bf22abf781c224","clientSecret":"af10c8b29047aede4963f4d93f77f6abc18ade91","repo":"blog_gitalk","owner":"ap0l1o","admin":["ap0l1o"],"language":"zh-CN","labels":["Gitalk"],"perPage":10,"pagerDirection":"last","distractionFreeMode":false,"createIssueManually":true,"proxy":"https://cors-anywhere.azm.workers.dev/https://github.com/login/oauth/access_token"},
           {
-            id: '49bd6b3c294c94bd7205b7c6d1511fae'
+            id: '2f301c2b9f9ccd59cb14d6f06b80e1af'
           }
         )
         var gitalk = new Gitalk(options);

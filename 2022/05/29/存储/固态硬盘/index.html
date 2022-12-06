@@ -245,7 +245,7 @@
     
     <span class="post-meta mr-2">
       <i class="iconfont icon-chart"></i>
-      1.6k 字
+      1.7k 字
     </span>
   
 
@@ -291,17 +291,18 @@
               <h2 id="固态硬盘基础"><a href="#固态硬盘基础" class="headerlink" title="固态硬盘基础"></a>固态硬盘基础</h2><p>存储介质的革命为提高存储系统的性能同时带来了机会和挑战。面向传统磁盘设备所设计的存储系统很难发挥新型存储设备的性能优势。面向新型存储介质重构存储软件栈、重构存储系统是最近几年存储领域的热门技术话题。</p>
 <h2 id="SSD概述"><a href="#SSD概述" class="headerlink" title="SSD概述"></a>SSD概述</h2><p>固态硬盘（solid-state drive，简称SSD），是用固态电子存储芯片阵列而制成的硬盘，由控制单元和存储单元（FLASH芯片、DRAM芯片）组成。SSD的结构如下图所示。</p>
 <img src="https://ap0l1o.oss-cn-qingdao.aliyuncs.com/img/SSD/F-component-4.jpg" srcset="/img/loading.gif" lazyload alt="08图.jpg" style="zoom:50%;" />
+其采用的存储介质（存储单元）主要分为两种：
+- 一种是采用闪存（FLASH芯片）作为存储介质
+  闪存是**非易失性随机访问存储器（NVRAM）**的俗称，特点是断电后数据不会丢失，因此可以作为外部存储器使用。闪存也有不同类型，主要分为以下两大类：
+  - NOR型：NOR型闪存更像内存，有独立的地址线和数据线，容量比较小，价格比较贵；
+  - NAND型：NAND型闪存的地址线和数据线是共用的I/O总线，与NOR型闪存相比容量更大，价格也相对较低。
+  内存和NOR型闪存的基本存储单元是bit，用户可以随机访问任何一个bit的信息。而NAND型闪存的基本存储单元是页（Page）
+  **我们通常所说的固态硬盘指的就是使用NAND FLASH作为存储介质的存储设备。**
+- 另一种是采用DRAM作为存储介质
+  采用DRAM作为存储介质，应用范围较窄。它仿效传统硬盘的设计，可被绝大部分操作系统的文件系统工具进行卷设置和管理，并提供工业标准的PCI和FC接口用于连接主机或者服务器。应用方式可分为SSD硬盘和SSD硬盘阵列两种。它是一种高性能的存储器，理论上可以无限写入，美中不足的是需要独立电源来保护数据安全。DRAM固态硬盘属于比较非主流的设备。
+- 最新的还有英特尔的3D XPoint技术
+  原理上接近DRAM，但是属于非易失存储。读取延时极低，可轻松达到现有固态硬盘的百分之一，并且有接近无限的存储寿命。缺点是密度相对NAND较低，成本极高，多用于发烧级台式机和数据中心。
 
-<p>其采用的存储介质（存储单元）主要分为两种：</p>
-<ul>
-<li>一种是采用闪存（FLASH芯片）作为存储介质<br>闪存是<strong>非易失性随机访问存储器（NVRAM）</strong>的俗称，特点是断电后数据不会丢失，因此可以作为外部存储器使用。闪存也有不同类型，主要分为以下两大类：<ul>
-<li>NOR型：NOR型闪存更像内存，有独立的地址线和数据线，容量比较小，价格比较贵；</li>
-<li>NAND型：NAND型闪存的地址线和数据线是共用的I/O总线，与NOR型闪存相比容量更大，价格也相对较低。<br>内存和NOR型闪存的基本存储单元是bit，用户可以随机访问任何一个bit的信息。而NAND型闪存的基本存储单元是页（Page）</li>
-</ul>
-<strong>我们通常所说的固态硬盘指的就是使用NAND FLASH作为存储介质的存储设备。</strong></li>
-<li>另一种是采用DRAM作为存储介质<br>采用DRAM作为存储介质，应用范围较窄。它仿效传统硬盘的设计，可被绝大部分操作系统的文件系统工具进行卷设置和管理，并提供工业标准的PCI和FC接口用于连接主机或者服务器。应用方式可分为SSD硬盘和SSD硬盘阵列两种。它是一种高性能的存储器，理论上可以无限写入，美中不足的是需要独立电源来保护数据安全。DRAM固态硬盘属于比较非主流的设备。</li>
-<li>最新的还有英特尔的3D XPoint技术<br>原理上接近DRAM，但是属于非易失存储。读取延时极低，可轻松达到现有固态硬盘的百分之一，并且有接近无限的存储寿命。缺点是密度相对NAND较低，成本极高，多用于发烧级台式机和数据中心。</li>
-</ul>
 <h2 id="SSD通信层次"><a href="#SSD通信层次" class="headerlink" title="SSD通信层次"></a>SSD通信层次</h2><p>SSD的通信自上而下可以分为三层：</p>
 <ul>
 <li>传输协议：传输规范、传输标准，也就是数据传输的方式。</li>
@@ -312,9 +313,7 @@
 <blockquote>
 <p>类似TCP/IP协议的分层设计</p>
 </blockquote>
-<h3 id="传输接口"><a href="#传输接口" class="headerlink" title="传输接口"></a>传输接口</h3><img src="https://www.ajl-newtech.com/ueditor/php/upload/image/20201223/1608701936385215.jpg" srcset="/img/loading.gif" lazyload alt="04.jpg" style="zoom:50%;" />
-
-<p>固态硬盘在接口的规范和定义、功能及使用方法上与普通硬盘的完全相同，在产品外形和尺寸上也完全与普通硬盘一致。常见的接口类型如下所示：</p>
+<h3 id="传输接口"><a href="#传输接口" class="headerlink" title="传输接口"></a>传输接口</h3><p>固态硬盘在接口的规范和定义、功能及使用方法上与普通硬盘的完全相同，在产品外形和尺寸上也完全与普通硬盘一致。常见的接口类型如下所示：</p>
 <ul>
 <li><p>SATA接口<br>SATA 3.0（SATA 6Gbps）是SATA接口中最为常见的固态硬盘接口。普通2.5英寸SSD以及HDD硬盘都使用这种接口，理论传输带宽6Gbps。SATA3.0接口将持续读写速度限制在550MB/s左右。</p>
 </li>
@@ -329,17 +328,18 @@
 <h3 id="传输总线"><a href="#传输总线" class="headerlink" title="传输总线"></a>传输总线</h3><p>总线是计算机各功能部件之间传输信息的通信干线，也即数据传输要走的路。<br>在SSD存储领域，总线主要有</p>
 <ul>
 <li>SATA总线</li>
-<li>PCIe总线<br>两种总线最大的区别就是带宽，也即速度不同。SATA总线就像乡间小道儿，又窄又泥泞，数据走SATA路，最高传输速度是600MB/s；而PCIE总线就像高速公路，数据走PCIE路，最高传输速度可达2000MB/s。SATA接口只能走SATA总线；M.2接口的SSD绝大数走的是PCIE总线，也有少数是走SATA总线。<blockquote>
+<li>PCIe总线</li>
+</ul>
+<p>两种总线最大的区别就是带宽，也即速度不同。SATA总线就像乡间小道儿，又窄又泥泞，数据走SATA路，最高传输速度是600MB/s；而PCIE总线就像高速公路，数据走PCIE路，最高传输速度可达2000MB/s。SATA接口只能走SATA总线；M.2接口的SSD绝大数走的是PCIE总线，也有少数是走SATA总线。</p>
+<blockquote>
 <p>目前，大多数主板、SSD接口使用的都PCIE3.0版本。<br>根据通道数量不同，PCIE3.0总线又分为x1、x2、x4、x8、x16。通道越多，带宽越高，读写速度越快。SSD固态多用x2、x4，而x8、x16多用在显卡上。</p>
 </blockquote>
-</li>
-</ul>
 <h3 id="传输协议"><a href="#传输协议" class="headerlink" title="传输协议"></a>传输协议</h3><p>传输协议定义了数据传输的方式，主要有以下几种：</p>
 <ul>
 <li>IDE</li>
-<li>AHCI<br>Serial ATA Advanced Host Controller Interface，串行ATA高级主控接口/高级主机控制器接口，IDE速度太低，协议老旧，所以有了AHCI；但AHCI是为了机械硬盘而设计的产物。</li>
-<li>SATA<br>Serial Advanced Technology Attachment即为Serial ATA，串行高级技术附件。支持的接口类型包括：SATA接口、mSATA接口、B-key M.2接口。</li>
-<li>NVMe<br>一种建立在M.2接口上的类似AHCI的一种协议，是专门为闪存类存储设计的协议。NVMe协议本质上建立了多个计算机与存储设备的通路，多个通路其实就是多个队列。而在SATA中，计算机与存储设备只能有一个队列，即使是多CPU情况下，所有请求只能经过这样一个狭窄的道路。而NVMe协议可以最多有64K个队列，每个CPU或者核心都可以有一个队列，这样并发程度大大提升，性能也自然更高了。<h2 id="参考链接"><a href="#参考链接" class="headerlink" title="参考链接"></a>参考链接</h2></li>
+<li>AHCI： Serial ATA Advanced Host Controller Interface，串行ATA高级主控接口/高级主机控制器接口，IDE速度太低，协议老旧，所以有了AHCI；但AHCI是为了机械硬盘而设计的产物。</li>
+<li>SATA：Serial Advanced Technology Attachment即为Serial ATA，串行高级技术附件。支持的接口类型包括：SATA接口、mSATA接口、B-key M.2接口。</li>
+<li>NVMe：一种建立在M.2接口上的类似AHCI的一种协议，是专门为闪存类存储设计的协议。NVMe协议本质上建立了多个计算机与存储设备的通路，多个通路其实就是多个队列。而在SATA中，计算机与存储设备只能有一个队列，即使是多CPU情况下，所有请求只能经过这样一个狭窄的道路。而NVMe协议可以最多有64K个队列，每个CPU或者核心都可以有一个队列，这样并发程度大大提升，性能也自然更高了。<h2 id="参考链接"><a href="#参考链接" class="headerlink" title="参考链接"></a>参考链接</h2></li>
 <li><a target="_blank" rel="noopener" href="https://blog.csdn.net/BtB5e6Nsu1g511Eg5XEg/article/details/83745666">https://blog.csdn.net/BtB5e6Nsu1g511Eg5XEg/article/details/83745666</a></li>
 <li><a target="_blank" rel="noopener" href="https://www.ajl-newtech.com/article-237.html">https://www.ajl-newtech.com/article-237.html</a></li>
 <li><a target="_blank" rel="noopener" href="https://www.ajl-newtech.com/article-234.html">https://www.ajl-newtech.com/article-234.html</a></li>

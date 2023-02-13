@@ -1,0 +1,680 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=&#34;auto&#34;>
+
+
+
+<head>
+  <meta charset="UTF-8">
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/ap0l1o.png">
+  <link rel="icon" href="/img/ap0l1o.png">
+  <meta name="viewport"
+        content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="description" content="SpanDB论文阅读笔记。">
+  <meta name="author" content="ap0l1o">
+  <meta name="keywords" content="">
+  
+  <title>SpanDB论文阅读 - ap0l1o</title>
+
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.0/dist/css/bootstrap.min.css" />
+
+
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/github-markdown-css@4.0.0/github-markdown.min.css" />
+  <link  rel="stylesheet" href="/lib/hint/hint.min.css" />
+
+  
+    
+    
+      
+      <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/highlight.js@10.7.2/styles/github-gist.min.css" />
+    
+  
+
+  
+    <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.5.7/dist/jquery.fancybox.min.css" />
+  
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1749284_ba1fz6golrf.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1736178_kmeydafke9r.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+<!-- 自定义样式保持在最底部 -->
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    var CONFIG = {"hostname":"example.com","root":"/","version":"1.8.11","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"left","visible":"hover","icon":"§"},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"copy_btn":true,"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"baidu":null,"google":null,"gtag":null,"tencent":{"sid":null,"cid":null},"woyaola":null,"cnzz":null,"leancloud":{"app_id":null,"app_key":null,"server_url":null}},"search_path":"/local-search.xml"};
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+<meta name="generator" content="Hexo 5.4.0"></head>
+
+
+<body>
+  <header style="height: 70vh;">
+    <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand"
+       href="/">&nbsp;<strong>Ap0l1o</strong>&nbsp;</a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/">
+                <i class="iconfont icon-home-fill"></i>
+                主页
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/">
+                <i class="iconfont icon-archive-fill"></i>
+                归档
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item dropdown">
+              <a class="nav-link dropdown-toggle" target="_self" role="button"
+                 data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                <i class="iconfont icon-books"></i>
+                大概
+              </a>
+              <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                
+                  
+                  
+                  
+                  <a class="dropdown-item" href="/categories/%E6%8A%80%E6%9C%AF/">
+                    
+                    技术
+                  </a>
+                
+                  
+                  
+                  
+                  <a class="dropdown-item" href="/categories/%E7%94%9F%E6%B4%BB/">
+                    
+                    生活
+                  </a>
+                
+                  
+                  
+                  
+                  <a class="dropdown-item" href="/categories/%E4%B9%A6%E5%BD%B1%E9%9F%B3/">
+                    
+                    书影音
+                  </a>
+                
+                  
+                  
+                  
+                  <a class="dropdown-item" href="/categories/%E8%AE%BA%E6%96%87/">
+                    
+                    论文
+                  </a>
+                
+              </div>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/running/">
+                
+                跑步
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/">
+                <i class="iconfont icon-category-fill"></i>
+                分类
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/">
+                <i class="iconfont icon-tags-fill"></i>
+                标签
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/">
+                <i class="iconfont icon-user-fill"></i>
+                关于
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" data-toggle="modal" data-target="#modalSearch">&nbsp;<i
+                class="iconfont icon-search"></i>&nbsp;</a>
+          </li>
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self">&nbsp;<i
+                class="iconfont icon-dark" id="color-toggle-icon"></i>&nbsp;</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+    <div class="banner" id="banner" parallax=true
+         style="background: url('/img/hello.jpg') no-repeat center center;
+           background-size: cover;">
+      <div class="full-bg-img">
+        <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+          <div class="page-header text-center fade-in-up">
+            <span class="h2" id="subtitle" title="SpanDB论文阅读">
+              
+            </span>
+
+            
+              <div class="mt-3">
+  
+  
+    <span class="post-meta">
+      <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+      <time datetime="2022-05-29 15:30" pubdate>
+        2022年5月29日 下午
+      </time>
+    </span>
+  
+</div>
+
+<div class="mt-1">
+  
+    
+    <span class="post-meta mr-2">
+      <i class="iconfont icon-chart"></i>
+      2.8k 字
+    </span>
+  
+
+  
+    
+    <span class="post-meta mr-2">
+      <i class="iconfont icon-clock-fill"></i>
+      
+      
+      31
+       分钟
+    </span>
+  
+
+  
+  
+</div>
+
+            
+          </div>
+
+          
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="d-none d-lg-block col-lg-2"></div>
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div class="py-5" id="board">
+          <article class="post-content mx-auto">
+            <!-- SEO header -->
+            <h1 style="display: none">SpanDB论文阅读</h1>
+            
+            <div class="markdown-body">
+              <h1 id="SpanDB-A-Fast-Cost-Effective-LSM-tree-Based-KV-Store-on-Hybrid-Storage"><a href="#SpanDB-A-Fast-Cost-Effective-LSM-tree-Based-KV-Store-on-Hybrid-Storage" class="headerlink" title="SpanDB: A Fast, Cost-Effective LSM-tree Based KV Store on Hybrid Storage"></a>SpanDB: A Fast, Cost-Effective LSM-tree Based KV Store on Hybrid Storage</h1><h2 id="Background"><a href="#Background" class="headerlink" title="Background"></a>Background</h2><ul>
+<li>基于LSM-Tree的KV-Store 正变的越来越受欢迎和重要<ul>
+<li>主要用于在企业服务中存储半结构化数据（例如：Google的LevelDB，Facebook的RocksDB）；</li>
+<li>一些分布式数据库的存储引擎也使用了KV-Store（例如：Ceph，MyRocks，TiDB，Cassandra）；</li>
+</ul>
+</li>
+<li>最新出现了一些高速商用NVMe SSD，其超低延迟和高带宽的优势，为推动新的KV-Store的设计提供了机会；</li>
+<li>==但是当前基于LSM-Tree的KV-Store并未能完全发挥NVMe设备的潜力==：<ul>
+<li>在50%写负载的情况下，在Optane PX4800X上部署的RocksDB与SATA SSD相比吞吐仅仅提高了23.58%；</li>
+<li>常见的KV-Store设计的IO路径未能充分利用低延迟的NVMe SSD，尤其是对于一些较小的写操作。这对于写WAL尤为不利，WAL位于写操作的关键路径上，容易成为性能瓶颈。</li>
+</ul>
+</li>
+</ul>
+<h2 id="Challenge"><a href="#Challenge" class="headerlink" title="Challenge"></a>Challenge</h2><h3 id="Challenge-1：Fast-Accesses-to-Fast-Devices"><a href="#Challenge-1：Fast-Accesses-to-Fast-Devices" class="headerlink" title="Challenge 1：Fast Accesses to Fast Devices"></a>Challenge 1：Fast Accesses to Fast Devices</h3><p><img src="https://ap0l1o.oss-cn-qingdao.aliyuncs.com/img/SpanDB-F-1.png" srcset="/img/loading.gif" lazyload alt="image-20220526214313571"></p>
+<p>第一个挑战是如何做到快速访问这些快速存储设备。<br>现在虽然有使用NVMe SSD的KV-Store，但是并没有能充分利用其低延迟和高带宽，其中一个原因就是：操作系统的I/O栈严重拖垮了NVMe SSD的性能。<br>考虑到Linux内核I/O栈开销在总I/O延迟中不再是可以忽略的，Intel 开发了 SPDK，SPDK是一组用于访问高速 NVMe 设备的用户态库。<strong>SPDK 把驱动移动到了用户空间，避免了系统调用并支持了零拷贝访问。它轮询硬件完成，而不是使用中断，并避免I/O路径中的锁</strong>。<br>通过使用SPDK（Storage Performance Development Kit）绕过文件系统和Linux I/O stack来直接访问NVMe SSD设备，则能充分发挥NVMe SSD设备的性能优势。通过使用SPDK来直接访问块设备，可以做到:</p>
+<ul>
+<li>将存储用到的驱动转移到用户态，避免系统调用</li>
+<li>使用轮询硬件，而不是中断（中断模式带来了不稳定的性能和延时的提升）</li>
+</ul>
+<p>这样所带来的代价是：</p>
+<ul>
+<li>需要在没有文件系统支持的情况下管理裸设备的存储空间；</li>
+<li>『忙等待』会浪费GPU周期（新的NVMe接口附带了访问约束，例如要求绑定整个设备以进行SPDK访问，或者建议将线程固定在core上）；<blockquote>
+<p>注 1：考虑到Linux内核I/O栈开销在总I/O延迟中不再是可以忽略的，Intel 开发了 SPDK，一组用户态的库/工具来访问高速的 NVMe 设备。<strong>SPDK 把驱动移动到了用户空间，避免了系统调用并支持了零拷贝访问。它轮询硬件完成，而不是使用中断，并避免I/O路径中的锁</strong>。<br>注 2：『忙等待』是指指在单CPU情况下，一个进程进入临界区之后，其他进程因无法满足竞争条件而循环探测竞争条件。其缺点是，在单CPU情况下，等待进程循环探测竞争条件，浪费了时间片。</p>
+</blockquote>
+</li>
+</ul>
+<h3 id="Challenge-2：Thread-Sync-Overhead-in-Group-Logging"><a href="#Challenge-2：Thread-Sync-Overhead-in-Group-Logging" class="headerlink" title="Challenge 2：Thread Sync Overhead in Group Logging"></a>Challenge 2：Thread Sync Overhead in Group Logging</h3><p><img src="https://ap0l1o.oss-cn-qingdao.aliyuncs.com/img/SpanDB-F-2.png" srcset="/img/loading.gif" lazyload alt="image-20220526214643956"></p>
+<p>第二个挑战是Group Logging的线程同步开销。<br>当前基于LSM-Tree的KV-Store多采用Group Logging来加速写WAL，Group Logging机制采用线程同步顺序写的实现方式。步骤如下：</p>
+<ul>
+<li>当已经有一个正在进行中的写操作时（已经有一个Group在写WAL），处理写请求的 workers 线程通过加入一个共享队列组成一个新的组，第一个进入队列的线程被指定为组的 leader；</li>
+<li>leader 从所在Group的其他写线程中收集日志项，直到前一个组的 leader (刚刚完成写入)通知它可以开始写WAL。此时将关闭当前组的大门，随后到达的线程将启动一个新的组；</li>
+<li>leader将收集到的日志项批量写入到WAL，然后唤醒当前Group中的其他线程，此时Group中的所有线程可以并发写Memtable来执行内存更新（跳表支持无锁并发）；</li>
+<li>最后同步等待Group中所有线程完成内存更新，然后唤醒下一个Group的leader线程；</li>
+</ul>
+<p>这种设计存在两个问题：</p>
+<ul>
+<li>单个leader线程的顺序logging操作不能充分利用SSD的带宽；</li>
+<li>线程的同步开销过大，Optane SSD的WAL写延迟超过80%；</li>
+</ul>
+<h2 id="Related-Work"><a href="#Related-Work" class="headerlink" title="Related Work"></a>Related Work</h2><p>最近也有一些相关的优化工作，但是都存在一些关于兼容性、性能以及成本的问题。</p>
+<ul>
+<li>基于LSM-tree的KV-Store的优化：PebblesDB [SOSP’17], SILK [ATC’19], ElasticBF [ATC’19], SplinterDB [ATC’20]<ul>
+<li>修改了一些数据结构，但还是采用了传统的Linux I/O栈；</li>
+</ul>
+</li>
+<li>基于NVMe SSD的KV-Store：KVSSD [SYSTOR’19], KVell [SOSP’19], FlatStore [ASPLOS’20]<ul>
+<li>硬件成本过高，且在一些情况下没有事务支持；</li>
+</ul>
+</li>
+</ul>
+<p>这篇论文的主要切入点和方法是：</p>
+<ul>
+<li>成本效益：将『小而快』的设备和『大而慢』的设备结合使用；</li>
+<li>充分利用快速设备：主要包括延迟、带宽和容量优势；</li>
+<li>兼容性：没有对数据结构进行修改，能兼容RocksDB的数据文件；</li>
+</ul>
+<h2 id="Design-SpanDB"><a href="#Design-SpanDB" class="headerlink" title="Design: SpanDB"></a>Design: SpanDB</h2><h3 id="SpanDB-Overview"><a href="#SpanDB-Overview" class="headerlink" title="SpanDB Overview"></a>SpanDB Overview</h3><p><img src="https://ap0l1o.oss-cn-qingdao.aliyuncs.com/img/SpanDB-F-3.png" srcset="/img/loading.gif" lazyload alt="image-20220526215032782"></p>
+<ol>
+<li>首先在 DRAM 中保留了 RocksDB Memtable 的相关设计，使用一个可变memtable和多个不可变memtable。SpanDB 几乎不会对 RocksDB 的 KV 数据结构、算法或者操作语义进行修改。这里的主要区别在于它的异步处理模型，以减少同步开销和自适应调度任务。</li>
+<li>将磁盘分为SD和CD。SD意为speed disk，即高速磁盘，这里是指NVMe设备。CD意为capacity disk，是低速大容量盘，例如传统机械硬盘。<ul>
+<li>SD：SD被进一步划分为WAL区域和LSM Top level区域（数据区域）<ul>
+<li>WAL区域：SpanDB 通过 SPDK 将 SD 当作裸设备管理并重新设计了 RocksDB 的 WAL 批量写入，以实现快速、并行的日志记录</li>
+<li>数据区域：为了最小化 RocksDB 的修改，SpanDB 基于SPDK设计实现了一个轻量级的自带缓存的文件系统 TopFS，该区域接收所有的Flush操作，同时接收LSM-Tree相关层的读操作；</li>
+</ul>
+</li>
+<li>CD：将LSM-Tree的剩余层放入CD中，这一部分数据大多是冷数据，且数据量大。将这一部分数据放入CD主要是基于成本考虑</li>
+</ul>
+</li>
+<li>SpanDB对不同类型的流量进行了区分。<ul>
+<li>SD的WAL 区域只进行 log 的操作，SD 的数据区域接受所有 flush 操作。</li>
+<li>此外，SD 数据区和 CD 都可以容纳用户读和Compaction操作，SpanDB 还执行了额外的优化，以支持在两个分区上同时进行压缩，并自动协调前台/后台任务。</li>
+<li>最后，SpanDB 能够基于对两个分区的实时带宽监控实现动态调整 LSM-tree level的布局。</li>
+</ul>
+</li>
+<li>使用SPDK可以绕过文件系统和Linux I/O stack直接访问NVMe SSD设备来写WAL。SPDK通过引入以下技术，实现高性能存储技术:<ul>
+<li>将存储用到的驱动转移到用户态，避免系统调用</li>
+<li>支持零拷贝</li>
+<li>避免在IO链路上使用锁</li>
+<li>使用轮询硬件，而不是中断，中断模式带来了不稳定的性能，并且增加了延时</li>
+</ul>
+</li>
+</ol>
+<h3 id="Async-KV-Request-Processing"><a href="#Async-KV-Request-Processing" class="headerlink" title="Async. KV Request Processing"></a>Async. KV Request Processing</h3><p><img src="https://ap0l1o.oss-cn-qingdao.aliyuncs.com/img/SpanDB-F-4.png" srcset="/img/loading.gif" lazyload alt="image-20220526215837102"></p>
+<p>SpanDB设计了异步的KV请求处理。<br>在慢速设备的时代，我们通常使用多线程技术，采用远多于CPU核心数的线程数量，尽可能避免慢速设备造成的较长时间的等待。<br>进入NVMe SSD时代，在SPDK技术加持下，线程同步(比如睡眠和唤醒)很容易花费比 I/O 请求更长的时间。在这种情况下，线程过度配置不仅增加了延迟，还会降低总体资源利用率，从而降低吞吐量。<br>因此SpanDB采用了异步请求处理。在多核机器上，为每个CPU核分配一个线程，然后将线程分为==客户端线程和SpanDB内部线程，SpanDB内部线程进一步被分为两个角色：loggers线程和workers线程==。</p>
+<ul>
+<li>loggers主要负责写WAL；</li>
+<li>Workers负责后台任务处理（flush/compaction）以及一些非I/O任务，例如Memtables的写入和更新、WAL日志项的准备、事务相关的加锁与同步；</li>
+</ul>
+<p><strong>asynchronous read</strong>（<code>A_get</code>）：</p>
+<ul>
+<li>client线程会首先尝试进行memtable读取，若命中则可直接获取返回结果。</li>
+<li>若未命中，则将读取请求放入到$Q_{read}$中，随后通过获取请求状态接口获取结果。</li>
+<li>worker线程会随后读取并执行$Q_{read}$中的读请求，并设置读取结果。</li>
+</ul>
+<p><strong>asynchronous write</strong>（<code>A_put</code>）：</p>
+<ul>
+<li>client线程直接将写请求压入$Q_{ProLog}$队列，随后通过获取请求状态接口获取结果。</li>
+<li>worker线程读取$Q_{ProLog}$中的写入请求，序列化得到WAL 数据项并压入到$Q_{log}$。$Q_{ProLog}$队列和$Q_{Log}$队列是设计用于实现batched logging。</li>
+<li>logger线程会一次性读取$Q_{log}$队列中所有的请求，执行group logging，并将写入请求压入到$Q_{EpiLog}$队列。</li>
+<li>worker线程会从$Q_{EpiLog}$线程读取请求，执行最终的memtable更新操作。</li>
+</ul>
+<h3 id="Parallel-Logging-via-SPDK"><a href="#Parallel-Logging-via-SPDK" class="headerlink" title="Parallel Logging via SPDK"></a>Parallel Logging via SPDK</h3><p><img src="https://ap0l1o.oss-cn-qingdao.aliyuncs.com/img/SpanDB-F-5.png" srcset="/img/loading.gif" lazyload alt="image-20220526221023619"></p>
+<p>通过SPDK执行并行的Logging操作。<br>SpanDB配置了多个logger线程并发写入，每个logger有单独的WAL data buffer。</p>
+<ul>
+<li>为实现并行写入，每个logger通过原子操作分配得到下一个写入位置。</li>
+<li>每个Logger抓取它在$Q_{log}$队列中看到的所有WAL数据项，并将这些WAL数据项聚合到尽可能少的4KB块中</li>
+<li>然后通过窃取一个请求的 SPDK 忙等待时间来准备或检查其他请求来执行流水线操作</li>
+</ul>
+<p>通过两个专门的Logger就能满足使用Optane作为WAL的写入需要。此外，SpanDB通过分配一个page作为元数据页来在没有文件系统支持的情况下记录/管理元数据信息。</p>
+<blockquote>
+<p>SpanDB在SD的WAL area预先分配若干个逻辑page，每个page有一个唯一的LPN(Log Page Number)。其中一个page作为metadata page。若干个连续的page组成一个log page group，每个group对应一个memtable，容量足够容纳一个memtable的WAL。当memtable flush完成后，log group将会被回收重用。meta data page记录每个log page group的起始LPN。</p>
+</blockquote>
+<h3 id="Dynamic-LSM-Tree-Level-Placement"><a href="#Dynamic-LSM-Tree-Level-Placement" class="headerlink" title="Dynamic LSM-Tree Level Placement"></a>Dynamic LSM-Tree Level Placement</h3><p><img src="https://ap0l1o.oss-cn-qingdao.aliyuncs.com/img/SpanDB-F-6.png" srcset="/img/loading.gif" lazyload alt="image-20220526221358140"><br>SpanDB 采用了动态分区的方法，它维护了一个 head-server 线程来监视 SD的带宽使用情况，并在其带宽利用率低于$BW_L$时触发SSTable文件重定位，直到达到 $BW_H$ 或 SD 满，其中$BW_H$和$BW_L$是两个可配置的阈值。<br>这里对SSTable文件进行重定位而不是将文件在SD与CD之间进行搬迁，随着compaction的进行，新创建的文件会被放置到相应的位置。有一个指针来表明该LSM-Tree的哪一层应该放入NVMe，例如：当该指针指向3时，表明top 3层应该放入NVMe。然而，该指针仅仅只是代表新创建的文件的目的位置，有可能出现新创建的L3层的文件在SD，而老的L2层文件在CD。当然这种情况比较少见，因为高层的文件更小，他们会更频繁的被compaction</p>
+
+            </div>
+            <hr>
+            <div>
+              <div class="post-metas mb-3">
+                
+                  <div class="post-meta mr-3">
+                    <i class="iconfont icon-category"></i>
+                    
+                      <a class="hover-with-bg" href="/categories/%E8%AE%BA%E6%96%87/">论文</a>
+                    
+                  </div>
+                
+                
+                  <div class="post-meta">
+                    <i class="iconfont icon-tags"></i>
+                    
+                      <a class="hover-with-bg" href="/tags/Key-Value-Store/">Key-Value Store</a>
+                    
+                      <a class="hover-with-bg" href="/tags/%E8%AE%BA%E6%96%87%E9%98%85%E8%AF%BB/">论文阅读</a>
+                    
+                  </div>
+                
+              </div>
+              
+                <p class="note note-warning">
+                  
+                    本博客所有文章除特别声明外，均采用 <a target="_blank" href="https://creativecommons.org/licenses/by-sa/4.0/deed.zh" rel="nofollow noopener noopener">CC BY-SA 4.0 协议</a> ，转载请注明出处！
+                  
+                </p>
+              
+              
+                <div class="post-prevnext">
+                  <article class="post-prev col-6">
+                    
+                    
+                      <a href="/2022/07/05/%E6%B5%AE%E7%94%9F%E4%B8%80%E4%BA%8B/2022-07-05/">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">2022-07-05记</span>
+                        <span class="visible-mobile">上一篇</span>
+                      </a>
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2022/05/29/%E5%AD%98%E5%82%A8%E7%9B%B8%E5%85%B3/%E5%9B%BA%E6%80%81%E7%A1%AC%E7%9B%98/">
+                        <span class="hidden-mobile">SSD简单了解</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+              <!-- Comments -->
+              <article class="comments" id="comments" lazyload>
+                
+                  
+                
+                
+  <div id="gitalk-container"></div>
+  <script type="text/javascript">
+    Fluid.utils.loadComments('#gitalk-container', function() {
+      Fluid.utils.createCssLink('/css/gitalk.css')
+      Fluid.utils.createScript('https://cdn.jsdelivr.net/npm/gitalk@1.7.2/dist/gitalk.min.js', function() {
+        var options = Object.assign(
+          {"clientID":"6ea770bf22abf781c224","clientSecret":"af10c8b29047aede4963f4d93f77f6abc18ade91","repo":"blog_gitalk","owner":"ap0l1o","admin":["ap0l1o"],"language":"zh-CN","labels":["Gitalk"],"perPage":10,"pagerDirection":"last","distractionFreeMode":false,"createIssueManually":true,"proxy":"https://cors-anywhere.azm.workers.dev/https://github.com/login/oauth/access_token"},
+          {
+            id: '996cde71e915a2a5e48a465cb993bb1d'
+          }
+        )
+        var gitalk = new Gitalk(options);
+        gitalk.render('gitalk-container');
+      });
+    });
+  </script>
+  <noscript>Please enable JavaScript to view the comments</noscript>
+
+
+              </article>
+            
+          </article>
+        </div>
+      </div>
+    </div>
+    
+      <div class="d-none d-lg-block col-lg-2 toc-container" id="toc-ctn">
+        <div id="toc">
+  <p class="toc-header"><i class="iconfont icon-list"></i>&nbsp;目录</p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+      </div>
+    
+  </div>
+</div>
+
+<!-- Custom -->
+
+
+    
+
+    
+      <a id="scroll-top-button" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v"
+                 for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+    
+
+    
+  </main>
+
+  <footer class="text-center mt-5 py-3">
+  <div class="footer-content">
+     <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
+  </div>
+  
+
+  
+
+  
+</footer>
+
+
+  <!-- SCRIPTS -->
+  
+  <script  src="https://cdn.jsdelivr.net/npm/nprogress@0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/nprogress@0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://cdn.jsdelivr.net/npm/jquery@3.6.0/dist/jquery.min.js" ></script>
+<script  src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.0/dist/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+<!-- Plugins -->
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+  
+
+
+
+  <script  src="https://cdn.jsdelivr.net/npm/tocbot@4.12.3/dist/tocbot.min.js" ></script>
+
+
+
+  <script  src="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.5.7/dist/jquery.fancybox.min.js" ></script>
+
+
+
+  <script  src="https://cdn.jsdelivr.net/npm/anchor-js@4.3.1/anchor.min.js" ></script>
+
+
+
+  <script defer src="https://cdn.jsdelivr.net/npm/clipboard@2.0.8/dist/clipboard.min.js" ></script>
+
+
+
+  <script  src="/js/local-search.js" ></script>
+
+
+
+
+
+
+  <script  src="https://cdn.jsdelivr.net/npm/typed.js@2.0.12/lib/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var title = document.getElementById('subtitle').title;
+      
+      typing(title)
+      
+    })(window, document);
+  </script>
+
+
+
+
+
+  
+
+  
+    <!-- MathJax -->
+    <script>
+      MathJax = {
+        tex: {
+          inlineMath: [['$', '$'], ['\\(', '\\)']]
+        },
+        options: {
+          renderActions: {
+            findScript: [10, doc => {
+              document.querySelectorAll('script[type^="math/tex"]').forEach(node => {
+                const display = !!node.type.match(/; *mode=display/);
+                const math = new doc.options.MathItem(node.textContent, doc.inputJax[0], display);
+                const text = document.createTextNode('');
+                node.parentNode.replaceChild(text, node);
+                math.start = { node: text, delim: '', n: 0 };
+                math.end = { node: text, delim: '', n: 0 };
+                doc.math.push(math);
+              });
+            }, '', false],
+            insertedScript: [200, () => {
+              document.querySelectorAll('mjx-container').forEach(node => {
+                let target = node.parentNode;
+                if (target.nodeName.toLowerCase() === 'li') {
+                  target.parentNode.classList.add('has-jax');
+                }
+              });
+            }, '', false]
+          }
+        }
+      };
+    </script>
+
+    <script async src="https://cdn.jsdelivr.net/npm/mathjax@3.1.4/es5/tex-svg.js" ></script>
+
+  
+
+
+
+
+
+
+
+
+
+
+
+<!-- 主题的启动项 保持在最底部 -->
+<script  src="/js/boot.js" ></script>
+
+
+</body>
+</html>

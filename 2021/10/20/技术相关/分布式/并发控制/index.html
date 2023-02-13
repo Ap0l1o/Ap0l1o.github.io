@@ -1,0 +1,603 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=&#34;auto&#34;>
+
+
+
+<head>
+  <meta charset="UTF-8">
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/ap0l1o.png">
+  <link rel="icon" href="/img/ap0l1o.png">
+  <meta name="viewport"
+        content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="description" content="并发控制算法介绍。">
+  <meta name="author" content="ap0l1o">
+  <meta name="keywords" content="">
+  
+  <title>并发控制 - ap0l1o</title>
+
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.0/dist/css/bootstrap.min.css" />
+
+
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/github-markdown-css@4.0.0/github-markdown.min.css" />
+  <link  rel="stylesheet" href="/lib/hint/hint.min.css" />
+
+  
+    
+    
+      
+      <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/highlight.js@10.7.2/styles/github-gist.min.css" />
+    
+  
+
+  
+    <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.5.7/dist/jquery.fancybox.min.css" />
+  
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1749284_ba1fz6golrf.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1736178_kmeydafke9r.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+<!-- 自定义样式保持在最底部 -->
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    var CONFIG = {"hostname":"example.com","root":"/","version":"1.8.11","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"left","visible":"hover","icon":"§"},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"copy_btn":true,"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"baidu":null,"google":null,"gtag":null,"tencent":{"sid":null,"cid":null},"woyaola":null,"cnzz":null,"leancloud":{"app_id":null,"app_key":null,"server_url":null}},"search_path":"/local-search.xml"};
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+<meta name="generator" content="Hexo 5.4.0"></head>
+
+
+<body>
+  <header style="height: 70vh;">
+    <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand"
+       href="/">&nbsp;<strong>Ap0l1o</strong>&nbsp;</a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/">
+                <i class="iconfont icon-home-fill"></i>
+                主页
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/">
+                <i class="iconfont icon-archive-fill"></i>
+                归档
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item dropdown">
+              <a class="nav-link dropdown-toggle" target="_self" role="button"
+                 data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                <i class="iconfont icon-books"></i>
+                大概
+              </a>
+              <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                
+                  
+                  
+                  
+                  <a class="dropdown-item" href="/categories/%E6%8A%80%E6%9C%AF/">
+                    
+                    技术
+                  </a>
+                
+                  
+                  
+                  
+                  <a class="dropdown-item" href="/categories/%E7%94%9F%E6%B4%BB/">
+                    
+                    生活
+                  </a>
+                
+                  
+                  
+                  
+                  <a class="dropdown-item" href="/categories/%E4%B9%A6%E5%BD%B1%E9%9F%B3/">
+                    
+                    书影音
+                  </a>
+                
+                  
+                  
+                  
+                  <a class="dropdown-item" href="/categories/%E8%AE%BA%E6%96%87/">
+                    
+                    论文
+                  </a>
+                
+              </div>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/running/">
+                
+                跑步
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/">
+                <i class="iconfont icon-category-fill"></i>
+                分类
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/">
+                <i class="iconfont icon-tags-fill"></i>
+                标签
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/">
+                <i class="iconfont icon-user-fill"></i>
+                关于
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" data-toggle="modal" data-target="#modalSearch">&nbsp;<i
+                class="iconfont icon-search"></i>&nbsp;</a>
+          </li>
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self">&nbsp;<i
+                class="iconfont icon-dark" id="color-toggle-icon"></i>&nbsp;</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+    <div class="banner" id="banner" parallax=true
+         style="background: url('/img/hello.jpg') no-repeat center center;
+           background-size: cover;">
+      <div class="full-bg-img">
+        <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+          <div class="page-header text-center fade-in-up">
+            <span class="h2" id="subtitle" title="并发控制">
+              
+            </span>
+
+            
+              <div class="mt-3">
+  
+  
+    <span class="post-meta">
+      <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+      <time datetime="2021-10-20 21:20" pubdate>
+        2021年10月20日 晚上
+      </time>
+    </span>
+  
+</div>
+
+<div class="mt-1">
+  
+    
+    <span class="post-meta mr-2">
+      <i class="iconfont icon-chart"></i>
+      2.1k 字
+    </span>
+  
+
+  
+    
+    <span class="post-meta mr-2">
+      <i class="iconfont icon-clock-fill"></i>
+      
+      
+      21
+       分钟
+    </span>
+  
+
+  
+  
+</div>
+
+            
+          </div>
+
+          
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="d-none d-lg-block col-lg-2"></div>
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div class="py-5" id="board">
+          <article class="post-content mx-auto">
+            <!-- SEO header -->
+            <h1 style="display: none">并发控制</h1>
+            
+            <div class="markdown-body">
+              <h2 id="分类"><a href="#分类" class="headerlink" title="分类"></a>分类</h2><p>并发控制算法通常根据<strong>读写操作同步的方式</strong>来分类。同步可以通过<strong>共享数据上的互斥机制</strong>（例如，锁🔒），或者通过显式地使用<strong>时间戳排序</strong>来实现。</p>
+<p>并发控制算法可以进一步区分为<strong>悲观算法</strong>和<strong>乐观算法</strong>。</p>
+<p>悲观算法（pessimistic approaches）的基本原则是Murphy定律（墨菲定律）：<strong>如果某事物可以出错，那么它就会出错。在悲观算法中，操作时在它们被执行前同步的，这意味着冲突在允许发生之前就解决了</strong>。</p>
+<p>相反，乐观算法（optimistic approachs）是<strong>基于错误一般不会发生的观点</strong>。所以操作被简单地执行，在事务结束的时候再进行同步。如果那是确实发生了冲突，一个或更多的事务将被迫终止。</p>
+<p>下面将讨论两个悲观算法和一个乐观算法。</p>
+<h2 id="两阶段锁定"><a href="#两阶段锁定" class="headerlink" title="两阶段锁定"></a>两阶段锁定</h2><p>最古老最简单也是最广泛使用的并发控制算法是锁定（locking🔒）。</p>
+<p>当一个进程要作为事务的一部分来读或写一个数据项时，它请求调度管理器允许它给该数据项加锁。同样，当它不再需要一个数据项时，就请求调度管理器释放该锁。</p>
+<p><strong>调度管理器的任务</strong>是以一种可以得到正确调度结果的方式来允许加锁和释放锁，即需要使用一种<strong>可以提供串行调度的算法</strong>。这样一个算法是两阶段锁定算法。</p>
+<p>如下图所示的两阶段锁定（two-phase locking，2PL）中，调度管理器先在增长阶段（growing phase）获得它所需要的所有锁，然后在收缩阶段（shrinking phase）释放它们。尤其要遵守下面三个规则：</p>
+<img src="https://ap0l1o.oss-cn-qingdao.aliyuncs.com/img/2PL.png" srcset="/img/loading.gif" lazyload alt="17105307_MZJc" style="zoom: 50%;" />
+
+<ol>
+<li>当调度管理器收到来自事务管理器的<code>open(T,x)</code>操作时，它检测该操作是否跟它已经允许锁定的另一个进程冲突。如果存在冲突，操作<code>open(T,x)</code>被延迟（这样事务$T$也被延迟）。如果没有冲突，调度管理器就允许对数据项$x$加锁，并将这个操作传递给数据管理器。</li>
+<li>直到数据管理器通知它已经完成了对锁定数据项x的操作，调度管理器才会释放数据项x的锁。</li>
+<li>一旦调度管理器为事务$T$释放了锁，那么无论事务T请求为哪个数据项加锁，调度管理器都不会允许T加另外一把锁（即只能一次获取到所需的所有锁）。$T$获取另外一把锁的任何企图都是一个程序错误，都会终止事务$T$。</li>
+</ol>
+<p>在许多系统中，收缩阶段是在事务运行结束之后，要么提交、要么终止时出现，它导致锁的释放（<strong>同时释放</strong>），如下图所示。这种策略被称为严格的两阶段锁定。</p>
+<img src="https://ap0l1o.oss-cn-qingdao.aliyuncs.com/img/strict-2PL.png" srcset="/img/loading.gif" lazyload alt="17105326_2MZl" style="zoom:50%;" />
+
+<p>严格的两阶段锁定有两个主要的优点：</p>
+<ul>
+<li>事务总是读提交事务写入的值，所以我们从来都不会因为事务的计算是基于一个它不应该看到的数据项而终止它。</li>
+<li>所有锁的获得和释放都可以由系统来处理而无需事务关心。要访问一个数据项就要获得锁，当事务完成时就释放锁。这种策略消除了瀑布型终止（cascaded aborts），即不得不撤销一个已经提交的事务，因为它看到了它不该看见的数据项。</li>
+</ul>
+<h2 id="悲观的时间戳排序"><a href="#悲观的时间戳排序" class="headerlink" title="悲观的时间戳排序"></a>悲观的时间戳排序</h2><p>一个完全不同的并发控制方法是在<strong>每个事务$T$开始时给它分配一个时间戳$ts(T)$。</strong></p>
+<p>使用Lamport算法，我们可以保证时间戳是惟一的。<strong>事务$T$的每个操作都被盖上时间戳$ts(T)$，并且系统中的每个数据项$x$都有一个相关的读时间戳$ts_{RD}(x)$和写时间戳$ts_{WR}(x)$。</strong>读时间戳被设置为<strong>最近</strong>读$x$的事务的时间戳，而写时间戳是<strong>最近</strong>修改$x$的事务的时间戳。使用时间戳排序，如果两个操作冲突，则数据管理器先处理时间戳最早的操作。</p>
+<p>现在假设调度管理器从具有时间戳$ts$的事务$T$收到一个操作，<code>read(T,x)</code>。但是$ts&lt;ts_{WR}(x)$。**换句话说，调度管理器发现一个对$x$的写操作在事务开始后已经完成（也即，在事务$T$启动到开始读之间，调度管理器发现一个对x的写操作在此期间完成了）。在这种情况下，事务$T$简单的被终止。**相反，如果$ts&gt;ts_{WR}(x)$，那么让读操作发生（即上一个对$x$的写操作是在事务$T$之前完成的）。此外，$ts_{RD}(x)$被设置为$max{ts, ts_{RD}(x)}$。</p>
+<p>同样，假设调度管理器收到一个具有时间戳$ts$并包含写操作<code>write(T, x)</code>的事务$T$。**如果$ts&lt;ts_{RD}(x)$，那么它只能取消事务$T$，这是因为$x$的当前值已经被更晚的事务读过**（也即，在事务$T$启动到开始写之前完成了一个事物对$x$的读操作，实际上应该事务$T$先来的，但是被别人插队了，为了大局，事务$T$只能取消）。另一方面，如果$ts&gt;ts_{RD}(x)$，那么它改变$x$的值，因为没有更晚的事务读过它。$ts_{WR}$也被设置为$max{ts, ts_{WR}(x)}$。</p>
+<p>时间戳具有与锁定不同的特性。当事务遇到一个更大（或更晚）的时间戳时，它中止，而在同样的情况下，如果使用锁定方法，事务将等待或立即执行（也即，要是被人插了队自己就中止退出）。另一方面，它不会造成死锁，这是一个很大的优点。</p>
+<h2 id="乐观的时间戳排序"><a href="#乐观的时间戳排序" class="headerlink" title="乐观的时间戳排序"></a>乐观的时间戳排序</h2><p>第三种处理多个事务同时执行的方法是乐观的并发控制（optimistic concurrency）。此技术的思想是：不关心别人在干什么，继续做自己要做的事情。如果有问题，等到后面再考虑（许多政客也使用这个算法，注：个人认为西方政客会这样做，咱们中国的政客都是特别怕出事情担责任的）。实际上，相对来讲冲突是很少的，所以系统大部分时间都运行正常。</p>
+<p>尽管冲突可能很少发生，但也不是不会发生，因此仍需要某种方法来处理冲突。乐观的并发控制所做的事情是跟踪哪些数据项被改写了。<strong>在某个事务被提交的时候，它检查其他所有事务，看看是否有某些数据项从这个事务开始后被改变了（即在某个事务提交的时候检查其数据项是否被其他事务改变了）。如果被改变了，该事务被终止；如果没有被改变，则该事务提交。</strong></p>
+<p>乐观的并发控制算法最适合基于<strong>私有工作空间</strong>的实现。在这种方式下，每个事务私下改变自己的数据，不受别的事务的干涉。最终，新数据要么被提交、要么被释放，这是一个相对简单直接的方法。</p>
+<p>乐观的并发控制的最大优点是它不会发生死锁，允许最大的并行性。这是因为没有进程需要等待一个锁。缺点是有时它可能会失败，那时事务将不得不再次执行。在负载较重的情况下，失败的可能性比较大，使得乐观的并发控制成为了一个较差的选择。</p>
+<p>此外，对乐观的并发控制的研究主要集中在非分布式系统中。</p>
+<p>注：本文内容摘自「分布式系统原理与范型」，供本人学习回顾使用。</p>
+
+            </div>
+            <hr>
+            <div>
+              <div class="post-metas mb-3">
+                
+                  <div class="post-meta mr-3">
+                    <i class="iconfont icon-category"></i>
+                    
+                      <a class="hover-with-bg" href="/categories/%E6%8A%80%E6%9C%AF/">技术</a>
+                    
+                  </div>
+                
+                
+                  <div class="post-meta">
+                    <i class="iconfont icon-tags"></i>
+                    
+                      <a class="hover-with-bg" href="/tags/%E5%88%86%E5%B8%83%E5%BC%8F/">分布式</a>
+                    
+                      <a class="hover-with-bg" href="/tags/%E5%88%86%E5%B8%83%E5%BC%8F%E7%B3%BB%E7%BB%9F%E5%8E%9F%E7%90%86%E4%B8%8E%E8%8C%83%E5%9E%8B/">分布式系统原理与范型</a>
+                    
+                      <a class="hover-with-bg" href="/tags/%E5%B9%B6%E5%8F%91%E6%8E%A7%E5%88%B6/">并发控制</a>
+                    
+                  </div>
+                
+              </div>
+              
+                <p class="note note-warning">
+                  
+                    本博客所有文章除特别声明外，均采用 <a target="_blank" href="https://creativecommons.org/licenses/by-sa/4.0/deed.zh" rel="nofollow noopener noopener">CC BY-SA 4.0 协议</a> ，转载请注明出处！
+                  
+                </p>
+              
+              
+                <div class="post-prevnext">
+                  <article class="post-prev col-6">
+                    
+                    
+                      <a href="/2021/10/20/%E6%8A%80%E6%9C%AF%E7%9B%B8%E5%85%B3/%E5%88%86%E5%B8%83%E5%BC%8F/%E4%BA%8B%E5%8A%A1%E7%9A%84%E5%AE%9E%E7%8E%B0/">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">事务实现算法</span>
+                        <span class="visible-mobile">上一篇</span>
+                      </a>
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2021/10/14/%E6%8A%80%E6%9C%AF%E7%9B%B8%E5%85%B3/%E5%88%86%E5%B8%83%E5%BC%8F/%E5%85%A8%E5%B1%80%E7%8A%B6%E6%80%81/">
+                        <span class="hidden-mobile">分布式快照捕获算法</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+              <!-- Comments -->
+              <article class="comments" id="comments" lazyload>
+                
+                  
+                
+                
+  <div id="gitalk-container"></div>
+  <script type="text/javascript">
+    Fluid.utils.loadComments('#gitalk-container', function() {
+      Fluid.utils.createCssLink('/css/gitalk.css')
+      Fluid.utils.createScript('https://cdn.jsdelivr.net/npm/gitalk@1.7.2/dist/gitalk.min.js', function() {
+        var options = Object.assign(
+          {"clientID":"6ea770bf22abf781c224","clientSecret":"af10c8b29047aede4963f4d93f77f6abc18ade91","repo":"blog_gitalk","owner":"ap0l1o","admin":["ap0l1o"],"language":"zh-CN","labels":["Gitalk"],"perPage":10,"pagerDirection":"last","distractionFreeMode":false,"createIssueManually":true,"proxy":"https://cors-anywhere.azm.workers.dev/https://github.com/login/oauth/access_token"},
+          {
+            id: '7e0c18048d944559cb47e0a06a56607c'
+          }
+        )
+        var gitalk = new Gitalk(options);
+        gitalk.render('gitalk-container');
+      });
+    });
+  </script>
+  <noscript>Please enable JavaScript to view the comments</noscript>
+
+
+              </article>
+            
+          </article>
+        </div>
+      </div>
+    </div>
+    
+      <div class="d-none d-lg-block col-lg-2 toc-container" id="toc-ctn">
+        <div id="toc">
+  <p class="toc-header"><i class="iconfont icon-list"></i>&nbsp;目录</p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+      </div>
+    
+  </div>
+</div>
+
+<!-- Custom -->
+
+
+    
+
+    
+      <a id="scroll-top-button" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v"
+                 for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+    
+
+    
+  </main>
+
+  <footer class="text-center mt-5 py-3">
+  <div class="footer-content">
+     <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
+  </div>
+  
+
+  
+
+  
+</footer>
+
+
+  <!-- SCRIPTS -->
+  
+  <script  src="https://cdn.jsdelivr.net/npm/nprogress@0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/nprogress@0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://cdn.jsdelivr.net/npm/jquery@3.6.0/dist/jquery.min.js" ></script>
+<script  src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.0/dist/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+<!-- Plugins -->
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+  
+
+
+
+  <script  src="https://cdn.jsdelivr.net/npm/tocbot@4.12.3/dist/tocbot.min.js" ></script>
+
+
+
+  <script  src="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.5.7/dist/jquery.fancybox.min.js" ></script>
+
+
+
+  <script  src="https://cdn.jsdelivr.net/npm/anchor-js@4.3.1/anchor.min.js" ></script>
+
+
+
+  <script defer src="https://cdn.jsdelivr.net/npm/clipboard@2.0.8/dist/clipboard.min.js" ></script>
+
+
+
+  <script  src="/js/local-search.js" ></script>
+
+
+
+
+
+
+  <script  src="https://cdn.jsdelivr.net/npm/typed.js@2.0.12/lib/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var title = document.getElementById('subtitle').title;
+      
+      typing(title)
+      
+    })(window, document);
+  </script>
+
+
+
+
+
+  
+
+  
+    <!-- MathJax -->
+    <script>
+      MathJax = {
+        tex: {
+          inlineMath: [['$', '$'], ['\\(', '\\)']]
+        },
+        options: {
+          renderActions: {
+            findScript: [10, doc => {
+              document.querySelectorAll('script[type^="math/tex"]').forEach(node => {
+                const display = !!node.type.match(/; *mode=display/);
+                const math = new doc.options.MathItem(node.textContent, doc.inputJax[0], display);
+                const text = document.createTextNode('');
+                node.parentNode.replaceChild(text, node);
+                math.start = { node: text, delim: '', n: 0 };
+                math.end = { node: text, delim: '', n: 0 };
+                doc.math.push(math);
+              });
+            }, '', false],
+            insertedScript: [200, () => {
+              document.querySelectorAll('mjx-container').forEach(node => {
+                let target = node.parentNode;
+                if (target.nodeName.toLowerCase() === 'li') {
+                  target.parentNode.classList.add('has-jax');
+                }
+              });
+            }, '', false]
+          }
+        }
+      };
+    </script>
+
+    <script async src="https://cdn.jsdelivr.net/npm/mathjax@3.1.4/es5/tex-svg.js" ></script>
+
+  
+
+
+
+
+
+
+
+
+
+
+
+<!-- 主题的启动项 保持在最底部 -->
+<script  src="/js/boot.js" ></script>
+
+
+</body>
+</html>

@@ -1,0 +1,309 @@
+<!DOCTYPE html>
+<html lang=zh>
+<head>
+    <!-- so meta -->
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="HandheldFriendly" content="True">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=5" />
+    <meta name="description" content="Here&#39;s something encrypted, password is required to continue reading.">
+<meta property="og:type" content="article">
+<meta property="og:title" content="C&#x2F;C++编译属性">
+<meta property="og:url" content="http://example.com/2023/03/28/%E6%8A%80%E6%9C%AF%E7%9B%B8%E5%85%B3/C%E5%92%8CC++/%E7%BC%96%E8%AF%91%E5%B1%9E%E6%80%A7/index.html">
+<meta property="og:site_name" content="ap0l1o">
+<meta property="og:description" content="Here&#39;s something encrypted, password is required to continue reading.">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2023-03-28T14:15:00.000Z">
+<meta property="article:modified_time" content="2023-04-17T01:22:00.875Z">
+<meta property="article:author" content="ap0l1o">
+<meta property="article:tag" content="C&#x2F;C++">
+<meta name="twitter:card" content="summary">
+    
+    
+      
+        
+          <link rel="shortcut icon" href="/images/favicon.ico">
+        
+      
+      
+        
+          <link rel="icon" type="image/png" href="/images/favicon-192x192.png" sizes="192x192">
+        
+      
+      
+        
+          <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon.png">
+        
+      
+    
+    <!-- title -->
+    <title>C/C++编译属性</title>
+    <!-- async scripts -->
+    <!-- Google Analytics -->
+
+
+    <!-- Umami Analytics -->
+
+
+    <!-- styles -->
+    
+<link rel="stylesheet" href="/css/style.css">
+
+    <!-- persian styles -->
+    
+    <!-- rss -->
+    
+    
+	<!-- mathjax -->
+	
+<meta name="generator" content="Hexo 5.4.0"></head>
+
+<body class="max-width mx-auto px3 ltr">
+    
+      <div id="header-post">
+  <a id="menu-icon" href="#" aria-label="目录"><i class="fa-solid fa-bars fa-lg"></i></a>
+  <a id="menu-icon-tablet" href="#" aria-label="目录"><i class="fa-solid fa-bars fa-lg"></i></a>
+  <a id="top-icon-tablet" href="#" aria-label="顶部" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');" style="display:none;"><i class="fa-solid fa-chevron-up fa-lg"></i></a>
+  <span id="menu">
+    <span id="nav">
+      <ul>
+        <!--
+       --><li><a href="/">首页</a></li><!--
+     --><!--
+       --><li><a href="/about/">关于</a></li><!--
+     --><!--
+       --><li><a href="/archives/">归档</a></li><!--
+     --><!--
+       --><li><a target="_blank" rel="noopener" href="http://github.com/probberechts">项目</a></li><!--
+     -->
+      </ul>
+    </span>
+    <br/>
+    <span id="actions">
+      <ul>
+        
+        <li><a class="icon" aria-label="上一篇" href="/2023/03/29/%E6%8A%80%E6%9C%AF%E7%9B%B8%E5%85%B3/C%E5%92%8CC++/Clang%E7%BA%BF%E7%A8%8B%E5%AE%89%E5%85%A8%E5%88%86%E6%9E%90/"><i class="fa-solid fa-chevron-left" aria-hidden="true" onmouseover="$('#i-prev').toggle();" onmouseout="$('#i-prev').toggle();"></i></a></li>
+        
+        
+        <li><a class="icon" aria-label="下一篇" href="/2023/03/28/%E6%8A%80%E6%9C%AF%E7%9B%B8%E5%85%B3/C%E5%92%8CC++/%E7%BC%96%E8%AF%91%E5%99%A8%E4%BB%8B%E7%BB%8D/"><i class="fa-solid fa-chevron-right" aria-hidden="true" onmouseover="$('#i-next').toggle();" onmouseout="$('#i-next').toggle();"></i></a></li>
+        
+        <li><a class="icon" aria-label="返回顶部" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');"><i class="fa-solid fa-chevron-up" aria-hidden="true" onmouseover="$('#i-top').toggle();" onmouseout="$('#i-top').toggle();"></i></a></li>
+        <li><a class="icon" aria-label="分享文章" href="#"><i class="fa-solid fa-share-alt" aria-hidden="true" onmouseover="$('#i-share').toggle();" onmouseout="$('#i-share').toggle();" onclick="$('#share').toggle();return false;"></i></a></li>
+      </ul>
+      <span id="i-prev" class="info" style="display:none;">上一篇</span>
+      <span id="i-next" class="info" style="display:none;">下一篇</span>
+      <span id="i-top" class="info" style="display:none;">返回顶部</span>
+      <span id="i-share" class="info" style="display:none;">分享文章</span>
+    </span>
+    <br/>
+    <div id="share" style="display: none">
+      <ul>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.facebook.com/sharer.php?u=http://example.com/2023/03/28/%E6%8A%80%E6%9C%AF%E7%9B%B8%E5%85%B3/C%E5%92%8CC++/%E7%BC%96%E8%AF%91%E5%B1%9E%E6%80%A7/"><i class="fab fa-facebook " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://twitter.com/share?url=http://example.com/2023/03/28/%E6%8A%80%E6%9C%AF%E7%9B%B8%E5%85%B3/C%E5%92%8CC++/%E7%BC%96%E8%AF%91%E5%B1%9E%E6%80%A7/&text=C/C++编译属性"><i class="fab fa-twitter " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.linkedin.com/shareArticle?url=http://example.com/2023/03/28/%E6%8A%80%E6%9C%AF%E7%9B%B8%E5%85%B3/C%E5%92%8CC++/%E7%BC%96%E8%AF%91%E5%B1%9E%E6%80%A7/&title=C/C++编译属性"><i class="fab fa-linkedin " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://pinterest.com/pin/create/bookmarklet/?url=http://example.com/2023/03/28/%E6%8A%80%E6%9C%AF%E7%9B%B8%E5%85%B3/C%E5%92%8CC++/%E7%BC%96%E8%AF%91%E5%B1%9E%E6%80%A7/&is_video=false&description=C/C++编译属性"><i class="fab fa-pinterest " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="mailto:?subject=C/C++编译属性&body=Check out this article: http://example.com/2023/03/28/%E6%8A%80%E6%9C%AF%E7%9B%B8%E5%85%B3/C%E5%92%8CC++/%E7%BC%96%E8%AF%91%E5%B1%9E%E6%80%A7/"><i class="fa-solid fa-envelope " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://getpocket.com/save?url=http://example.com/2023/03/28/%E6%8A%80%E6%9C%AF%E7%9B%B8%E5%85%B3/C%E5%92%8CC++/%E7%BC%96%E8%AF%91%E5%B1%9E%E6%80%A7/&title=C/C++编译属性"><i class="fab fa-get-pocket " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://reddit.com/submit?url=http://example.com/2023/03/28/%E6%8A%80%E6%9C%AF%E7%9B%B8%E5%85%B3/C%E5%92%8CC++/%E7%BC%96%E8%AF%91%E5%B1%9E%E6%80%A7/&title=C/C++编译属性"><i class="fab fa-reddit " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.stumbleupon.com/submit?url=http://example.com/2023/03/28/%E6%8A%80%E6%9C%AF%E7%9B%B8%E5%85%B3/C%E5%92%8CC++/%E7%BC%96%E8%AF%91%E5%B1%9E%E6%80%A7/&title=C/C++编译属性"><i class="fab fa-stumbleupon " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://digg.com/submit?url=http://example.com/2023/03/28/%E6%8A%80%E6%9C%AF%E7%9B%B8%E5%85%B3/C%E5%92%8CC++/%E7%BC%96%E8%AF%91%E5%B1%9E%E6%80%A7/&title=C/C++编译属性"><i class="fab fa-digg " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.tumblr.com/share/link?url=http://example.com/2023/03/28/%E6%8A%80%E6%9C%AF%E7%9B%B8%E5%85%B3/C%E5%92%8CC++/%E7%BC%96%E8%AF%91%E5%B1%9E%E6%80%A7/&name=C/C++编译属性&description=Here&#39;s something encrypted, password is required to continue reading."><i class="fab fa-tumblr " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://news.ycombinator.com/submitlink?u=http://example.com/2023/03/28/%E6%8A%80%E6%9C%AF%E7%9B%B8%E5%85%B3/C%E5%92%8CC++/%E7%BC%96%E8%AF%91%E5%B1%9E%E6%80%A7/&t=C/C++编译属性"><i class="fab fa-hacker-news " aria-hidden="true"></i></a></li>
+</ul>
+
+    </div>
+    
+    
+  </span>
+</div>
+
+    
+    <div class="content index py4 ">
+        
+        <article class="post h-entry" itemscope itemtype="http://schema.org/BlogPosting">
+  <header>
+    
+    <h1 class="posttitle p-name" itemprop="name headline">
+        C/C++编译属性
+    </h1>
+
+
+
+    <div class="meta">
+      <span class="author p-author h-card" itemprop="author" itemscope itemtype="http://schema.org/Person">
+        <span class="p-name" itemprop="name">ap0l1o</span>
+      </span>
+      
+    <div class="postdate">
+      
+        <time datetime="2023-03-28T14:15:00.000Z" class="dt-published" itemprop="datePublished">2023-03-28</time>
+        
+      
+    </div>
+
+
+      
+    <div class="article-category">
+        <i class="fa-solid fa-archive"></i>
+        <a class="category-link" href="/categories/%E6%8A%80%E6%9C%AF/">技术</a>
+    </div>
+
+
+      
+    <div class="article-tag">
+        <i class="fa-solid fa-tag"></i>
+        <a class="p-category" href="/tags/C-C/" rel="tag">C/C++</a>
+    </div>
+
+
+    </div>
+  </header>
+  
+
+  <div class="content e-content" itemprop="articleBody">
+    <div class="hbe hbe-container" id="hexo-blog-encrypt" data-wpm="Oh, this is an invalid password. Check and try again, please." data-whm="OOPS, these decrypted content may changed, but you can still have a look.">
+  <script id="hbeData" type="hbeData" data-hmacdigest="beab05ecc0ff12bd6fdbe34a124ab3612b93d5ec0794f002f6051ba5eaa06fd9">2db7724a954bda8868d66cd7c16a6f379d55b08b5833aad3e4ba6b9fbc35257bcb32b994526a44ddfb059c9424dd88899a5402cd2521a950ee7ea6afa3822eb92943540a9663916a16b30e68fb68b691fae8067c2b298cacd4a745ac2d2a50bf41005066e02a288d530d0135931b4b01a7a61bb9d808f430103d0c4029865993c7831acf739697fc45943b0184122719a849d7993ae0452dfa825f100631e2233d9b0ac32996a15b8fee4b3cf155afeea5af2b740abb25a26f28e05ba7e8c0bc56eafc52ca0b87fad22844ab41471665664d6aec79f30dde33e391237d63f4209bb6a0cbf4cea9f3c2da9b34a66e83ae9f2930d87b7eb57cea5f313cd7812f40f8d07471a023ecea3994533372c569ec4175ad08adda3e3d3924480715d59d09f231ef1335c2cd2b2e4e2fdd7905aff58c1e6457bf04497a1487fe760f4745748f0776e3f4d721aefd1cd67c43cbb4e674e90ceef80f4e7432389d7fb1a91afa2b78fba78512eab795e6f6ec38dec6c4d4fec4523d573123ad9b874bbd33b94e0d57cf9074e375e1c7589cf4e80e7220bca65871e6dcf705036bb5dc44f8ccaffb014b5fd08e120f227c50779eef7091a52be1858940b93edeb7996d2244dfacf8a4d2bb7e1025e233aedc8f81bdf8bcd149c69dc1b8179997930c08be96625190a151b47b2097168057705005163c899d60453557bc1fd75fee8f240d56344fd167e33bb478b2d7b9186988324094d65977b373a6bdc60846314bf97953d85130ab036548ac5353213ab334820fdd5adc6e0154b43b2c0bf7206040fb1547408f0922dd44a2956393aa103def2b91f7fb0b08cfc07378626de8ff9972333a3c600863555e8c6e2685bfe4e9539f1095af54618e053b3da6825c006f920ef952036a92e4f8c39f3dd64e1e338127abef741a98d58e66ef6c289f41ede5b5c2f3c3f3a93cae33e462b1b165b043e8f83f8582f12f41367a81a025fbe2faba5e537dbf150e2b4d207b336d310c8714a341b6a115ab80ec72b876ed1ab6c2bbe0e51f4ba4a93209f9b912a1cdcea7b3fe38d545ea91cd1cf9a96aea262384648bdc89c9fca6482abbd0416e43ef822af98a741e124a19ca9c71b68a7a4a3d27755980b9be216679580bbacb4bdc2aab0757c672c42ab33deff4325cbbc1cce389ed22a140a3def2da9972a9b34b6978ba280cd7a4f84a5aa7cee20506a8274fa846e9e5a4a761dde756907f83aa0db1e63b9dfecb9bba7e3dc5c5a2740a458d2837cc6e51a3527d0b16ddd7af72f8e1b12af08f31e8c6644ed9ee1314b7e226cc3e6ad2c760e287abb35510a384cc3c352e36d4dd64c9e2d8f3711bd07c3d0236493da2fa187c63cdf8e655c640c9bce67b347881b05e5377dc24b4ae394813c37496d47cbf9849913723b65414b0fc091322706f137b16c7b019817439473e6239e00e3d5aedafbdc3ea429bce8008b1dd5b892936343d091158822f5ec316ba4838907998a63ddcc8d8dfc77fb919fd9b6c6e742ace26610e3fb62a7aa57bf63bbbdc2724046b4fc244a3447019e1688d5a583e43a15a25e806ed663bef6418b7c0209bdc3da67785d53912a4f3d11d187d02afb81b12582fd5425d486ca5153531bb089de97008a82107b11c7dced0ce69f4653ddecf50df984baca90fa5e6ae565fd564c5a674d0d210b5ae8bed19f43de44149bc5483df96c99c7ceea2731c8b2b05d902381b8a1a35750cc49b3d840b64aa5899d011d8abf7d92fa680fd603f97b5d05f56698c018ab0f270255b7cf390332f85608ade6eecbadc0023595ac52923ed7e2a35f575b94d1f9d52a6ee93babcf797a36ff23eb4c6f10b6da3db6568de2ebaabb10a886d286eb290cbe708cf8e89f1a5cc9fc6fd45cc5e0ba5a2c9fbbf1e3f50f3e1e31ad7a2a661456d942b5a1a6e3015875e65ee11ef9eba892a71ba75f67b9d59a7615d62b26312d2d573d8d9ed9ec942f3b56940688b8ac2e05c04dc358a17c4d32fadc7c1e51fba1293ee70044f5d6d2e61202edb2f733ac43f4f665830fa43e901940c1e3fce9ea5a9ebfef6c63f87beb8871caae75f235cc01cacc9bb465606ab183259c3cd3dd96b66df66fb9180435da648e0b1eb244f97dc382c7e9b940941e936a8ea7756ad72c3f9239d3a530337f1398becca17dc55a0696d5b0362c41d8d70884138a93aba652298b4d66527fcaf5e783851cfa6d5f35ec63f12ba87c80cc36ab5a0844c28608ef6038c435ba493c549baac76604d26b1aef353e825b4845b78c8c5f986895921fd49687a805b29c0a8b41869ba3e42a68d87f789c47a56e4e00fbc4ef7aa71bdb9d457b49ebc72d6783d137a0f70211c03999bfa88505b5c405f7ab7b5bedac85ae31a5a00db262310ff62408fcfbc335bc69fa34f17e8a1c73f5ed52e332918e58443cdef3edb73f03740a2afa585b453479b1eb6d222d191eeb4f379e9c9cd0965adbba7e1859751b8111c1dbaab8eed8ad3af0578b89baccbd1d52acad1fefa7710fadd875be4024d5e0ab7324f6c70ad0f09eab7492f933a9919c949ba098c62ab57ca14e77006274cbb368b678aeb352c27bef86f5efa873d2135feef6c4ab8f8a3a7d0805cb3df68d7ab1fa103d5bbb1ac11bd20dca6a42ac070dc2c51d23332aafa5b129c34614053b075406c7293df004b2229618ab22a266e2e9502e35a8efad46727d12f01feb09108b8f6a5a1482a46e3bf848ee8fbf83ce84648cc8af54a0470c6ad67993dae0c515982a5d2c570c032d667c4ac8cb7439f185715332961f3000fbe6cfa90003cddd456c09e35b2d7b3e501ca24906cb95d77f727765e1ef1d30455feda2b45f6e6458d93dea5d4002f7d1c62d9bccd9b1071ca591495f09f3d060bc796b82149760d8b9b177ba2b0ea71e561667c01396a700d75532ef5259dd1fef8932e4a04cad10b9e7c7c10e15f82421247f2379d4e1fd128b583d7a2d0e01db6362e151dfecfa5603d6945764c034d41a29dae52709b2ec6ab9fedca26a2631fb843d582532cb703c854d09891df93c2768eb9c653d756444860eb1402f7d5b048609d1530f4a27fc3cda6fcbd3b2107441d8f7adeb0c1d3cde341661d71bec2897493d3b08b31d9f1505e4ac8ec22594269c44069585aa4ac55e92e0cd63a110032183d3ca2cc589cdabe7645ba1fcd3ec5a6d2477d428125dc72b10f5a5e9ad77b7e46278705f9bc545fc0bcb7fa5fc11e229dea274d6ce875a3854d7680e71232b33d0ad061bb56594e2d9d706c08830e112f588aef1b9c84b83d7961be9d20507ddc10b66d87d25276b2bc2554c7ebca1df57a81b622db1ccc60c7c6cd9a61e0f94cb376d401edf8b4121cffe167bdebab07fac16a04bdbb13632cd3038e7bebb3683c4559506eaa50ad2fede5ba2ee2ea9d8b7c9077274e4457ede4ee3521284b901d979f57499604d874ed2c06e9f51dcb405906e09262ef46e8e51838554d361d4e0868afa910a49edd3a6597a02b007c4a8759f62cc801daad934be66d7dc0d152a7710ec1684796ad8bfd8322addb1562d82954439f8a28495f767c05cf7cdce8be050cfb4e3c96263979886840a4a230c2d225a8c2929e2274423188227ee7fb5bceb9bf2f62cd16de9a2f79ce8c55d2facab8a789b067dadbcddbde3bdb5035cd90ef32ca69b96f8e7cfaa039fc2d04012f4dab5b3a188eb35beff690cabd5cc5af35a6deea687823d35c26d278663cb5093a5629b60144e83381af82b66602c8659528f319cd09e6462b783cc9bcb453ccdb352362c3e59cbe06aacf1dee33a2baecda633961191abdfe5b2e820faf6d842a5e397c6edcbfd083330f153b1a317a6aa1344ae1bd79311c1c0a18a55ecdbf36672a76e6f6025cf9cd5d448db532c77df86d7100fe2c2197140b23481933328c2917d12c4a930c1021bec0809c9073fa85de4f45ca50ad3b297c2967e3d52a826d381fdc405d4be761db3e1029c9d3548529f5aeb786d09a6b4a0d056194b37828a8565bdd5d0f122643e3978fccc24fbb41bc5c40d8745f07e3c5d0599bae0567ef127ca3b0584c86ba8494035c3661b999c143e9a96e2ff23efc742f407354786ea5b2560c637a1d9953</script>
+  <div class="hbe hbe-content">
+    <div class="hbe hbe-input hbe-input-default">
+      <input class="hbe hbe-input-field hbe-input-field-default" type="password" id="hbePass">
+      <label class="hbe hbe-input-label hbe-input-label-default" for="hbePass">
+        <span class="hbe hbe-input-label-content hbe-input-label-content-default">Hey, password is required here.</span>
+      </label>
+    </div>
+  </div>
+</div>
+<script data-pjax src="/lib/hbe.js"></script><link href="/css/hbe.style.css" rel="stylesheet" type="text/css">
+  </div>
+</article>
+
+
+
+        
+          <div id="footer-post-container">
+  <div id="footer-post">
+
+    <div id="nav-footer" style="display: none">
+      <ul>
+        
+          <li><a href="/">首页</a></li>
+        
+          <li><a href="/about/">关于</a></li>
+        
+          <li><a href="/archives/">归档</a></li>
+        
+          <li><a target="_blank" rel="noopener" href="http://github.com/probberechts">项目</a></li>
+        
+      </ul>
+    </div>
+
+    
+    
+
+    <div id="share-footer" style="display: none">
+      <ul>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.facebook.com/sharer.php?u=http://example.com/2023/03/28/%E6%8A%80%E6%9C%AF%E7%9B%B8%E5%85%B3/C%E5%92%8CC++/%E7%BC%96%E8%AF%91%E5%B1%9E%E6%80%A7/"><i class="fab fa-facebook fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://twitter.com/share?url=http://example.com/2023/03/28/%E6%8A%80%E6%9C%AF%E7%9B%B8%E5%85%B3/C%E5%92%8CC++/%E7%BC%96%E8%AF%91%E5%B1%9E%E6%80%A7/&text=C/C++编译属性"><i class="fab fa-twitter fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.linkedin.com/shareArticle?url=http://example.com/2023/03/28/%E6%8A%80%E6%9C%AF%E7%9B%B8%E5%85%B3/C%E5%92%8CC++/%E7%BC%96%E8%AF%91%E5%B1%9E%E6%80%A7/&title=C/C++编译属性"><i class="fab fa-linkedin fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://pinterest.com/pin/create/bookmarklet/?url=http://example.com/2023/03/28/%E6%8A%80%E6%9C%AF%E7%9B%B8%E5%85%B3/C%E5%92%8CC++/%E7%BC%96%E8%AF%91%E5%B1%9E%E6%80%A7/&is_video=false&description=C/C++编译属性"><i class="fab fa-pinterest fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="mailto:?subject=C/C++编译属性&body=Check out this article: http://example.com/2023/03/28/%E6%8A%80%E6%9C%AF%E7%9B%B8%E5%85%B3/C%E5%92%8CC++/%E7%BC%96%E8%AF%91%E5%B1%9E%E6%80%A7/"><i class="fa-solid fa-envelope fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://getpocket.com/save?url=http://example.com/2023/03/28/%E6%8A%80%E6%9C%AF%E7%9B%B8%E5%85%B3/C%E5%92%8CC++/%E7%BC%96%E8%AF%91%E5%B1%9E%E6%80%A7/&title=C/C++编译属性"><i class="fab fa-get-pocket fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://reddit.com/submit?url=http://example.com/2023/03/28/%E6%8A%80%E6%9C%AF%E7%9B%B8%E5%85%B3/C%E5%92%8CC++/%E7%BC%96%E8%AF%91%E5%B1%9E%E6%80%A7/&title=C/C++编译属性"><i class="fab fa-reddit fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.stumbleupon.com/submit?url=http://example.com/2023/03/28/%E6%8A%80%E6%9C%AF%E7%9B%B8%E5%85%B3/C%E5%92%8CC++/%E7%BC%96%E8%AF%91%E5%B1%9E%E6%80%A7/&title=C/C++编译属性"><i class="fab fa-stumbleupon fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://digg.com/submit?url=http://example.com/2023/03/28/%E6%8A%80%E6%9C%AF%E7%9B%B8%E5%85%B3/C%E5%92%8CC++/%E7%BC%96%E8%AF%91%E5%B1%9E%E6%80%A7/&title=C/C++编译属性"><i class="fab fa-digg fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.tumblr.com/share/link?url=http://example.com/2023/03/28/%E6%8A%80%E6%9C%AF%E7%9B%B8%E5%85%B3/C%E5%92%8CC++/%E7%BC%96%E8%AF%91%E5%B1%9E%E6%80%A7/&name=C/C++编译属性&description=Here&#39;s something encrypted, password is required to continue reading."><i class="fab fa-tumblr fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://news.ycombinator.com/submitlink?u=http://example.com/2023/03/28/%E6%8A%80%E6%9C%AF%E7%9B%B8%E5%85%B3/C%E5%92%8CC++/%E7%BC%96%E8%AF%91%E5%B1%9E%E6%80%A7/&t=C/C++编译属性"><i class="fab fa-hacker-news fa-lg" aria-hidden="true"></i></a></li>
+</ul>
+
+    </div>
+
+    <div id="actions-footer">
+        <a id="menu" class="icon" href="#" onclick="$('#nav-footer').toggle();return false;"><i class="fa-solid fa-bars fa-lg" aria-hidden="true"></i> 菜单</a>
+        
+        <a id="share" class="icon" href="#" onclick="$('#share-footer').toggle();return false;"><i class="fa-solid fa-share-alt fa-lg" aria-hidden="true"></i> 分享</a>
+        <a id="top" style="display:none" class="icon" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');"><i class="fa-solid fa-chevron-up fa-lg" aria-hidden="true"></i> 返回顶部</a>
+    </div>
+
+  </div>
+</div>
+
+        
+        <footer id="footer">
+  <div class="footer-left">
+    Copyright &copy;
+    
+    
+    2016-2023
+    ap0l1o
+  </div>
+  <div class="footer-right">
+    <nav>
+      <ul>
+        <!--
+       --><li><a href="/">首页</a></li><!--
+     --><!--
+       --><li><a href="/about/">关于</a></li><!--
+     --><!--
+       --><li><a href="/archives/">归档</a></li><!--
+     --><!--
+       --><li><a target="_blank" rel="noopener" href="http://github.com/probberechts">项目</a></li><!--
+     -->
+      </ul>
+    </nav>
+  </div>
+</footer>
+
+    </div>
+    <!-- styles -->
+
+
+
+  <link rel="preload" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" crossorigin="anonymous" onload="this.onload=null;this.rel='stylesheet'"/>
+
+
+    <!-- jquery -->
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js" crossorigin="anonymous"></script>
+
+
+
+
+<!-- clipboard -->
+
+  
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.7/clipboard.min.js" crossorigin="anonymous"></script>
+  
+  <script type="text/javascript">
+  $(function() {
+    // copy-btn HTML
+    var btn = "<span class=\"btn-copy tooltipped tooltipped-sw\" aria-label=\"复制到粘贴板！\">";
+    btn += '<i class="fa-regular fa-clone"></i>';
+    btn += '</span>';
+    // mount it!
+    $(".highlight table").before(btn);
+    var clip = new ClipboardJS('.btn-copy', {
+      text: function(trigger) {
+        return Array.from(trigger.nextElementSibling.querySelectorAll('.code')).reduce((str,it)=>str+it.innerText+'\n','')
+      }
+    });
+    clip.on('success', function(e) {
+      e.trigger.setAttribute('aria-label', "复制成功！");
+      e.clearSelection();
+    })
+  })
+  </script>
+
+
+<script src="/js/main.js"></script>
+
+<!-- search -->
+
+<!-- Baidu Analytics -->
+
+<!-- Cloudflare Analytics -->
+
+<!-- Disqus Comments -->
+
+<!-- utterances Comments -->
+
+</body>
+</html>

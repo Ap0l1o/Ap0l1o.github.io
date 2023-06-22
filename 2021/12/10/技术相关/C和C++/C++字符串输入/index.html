@@ -14,7 +14,7 @@
 <meta property="og:description" content="C++读取字符串和整行读取字符串，以及混合读取整行字符串和数字可能带来的问题。">
 <meta property="og:locale" content="zh_CN">
 <meta property="article:published_time" content="2021-12-10T14:01:00.000Z">
-<meta property="article:modified_time" content="2022-08-09T08:54:49.112Z">
+<meta property="article:modified_time" content="2023-06-22T11:11:32.292Z">
 <meta property="article:author" content="ap0l1o">
 <meta property="article:tag" content="C&#x2F;C++">
 <meta property="article:tag" content="编程语言">
@@ -91,7 +91,7 @@
      --><!--
        --><li><a href="/categories/">分类</a></li><!--
      --><!--
-       --><li><a href="/running/">running</a></li><!--
+       --><li><a href="/running/">跑步</a></li><!--
      -->
       </ul>
     </span>
@@ -196,18 +196,18 @@
 <p>例如，在使用该函数将姓名读取到一个包含20个元素的<code>name</code>数组时，可以这样使用: <code>cin.getline(name, 20);</code></p>
 <h3 id="0x12-面向行的输入：get"><a href="#0x12-面向行的输入：get" class="headerlink" title="0x12 面向行的输入：get()"></a>0x12 面向行的输入：<code>get()</code></h3><p>cin类还有一个名为get()的成员函数，该函数有几种变体。</p>
 <p>其中有一种变体的工作方式与getline()类似，它们接受的参数相同，解释参数的方式也一样，并且都读到行尾。但get并不再读取并丢弃换行符，而是将其留在输入队列中。假设我们连续两次使用get()：</p>
-<figure class="highlight c++"><table><tr><td class="gutter hljs"><div class="hljs code-wrapper"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></div></td><td class="code"><div class="hljs code-wrapper"><pre><code class="hljs C++">cin.<span class="hljs-built_in">get</span>(name1, len);<br>cin.<span class="hljs-built_in">get</span>(name2, len); <span class="hljs-comment">// 出现问题，上一个get将换行符留在了输入队列，导致此get看到的第一个字符就是换行符，不能继续读取想要读取的内容</span><br></code></pre></div></td></tr></table></figure>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">cin.<span class="built_in">get</span>(name1, len);</span><br><span class="line">cin.<span class="built_in">get</span>(name2, len); <span class="comment">// 出现问题，上一个get将换行符留在了输入队列，导致此get看到的第一个字符就是换行符，不能继续读取想要读取的内容</span></span><br></pre></td></tr></table></figure>
 
 <p>由于第一次调用后，将换行符留在了输入队列中，因此第二次调用时看到的第一个字符便是换行符，此时，因为<code>get(name2，len)</code>并不能读取换行符，所以它会认为已经到达行尾了，并没有发现任何可以读取的内容。因此，如果不借助其他帮助，第二次调用将无法跨过换行符来读取内容。</p>
 <p>而get()函数的另一种变体，使用不带任何参数的cin.get()调用可以读取下一字符（可以是换行符）。因此可以使用它来处理换行符。例如：</p>
-<figure class="highlight c++"><table><tr><td class="gutter hljs"><div class="hljs code-wrapper"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></div></td><td class="code"><div class="hljs code-wrapper"><pre><code class="hljs C++">cin.<span class="hljs-built_in">get</span>(name1, len);<br>cin.<span class="hljs-built_in">get</span>();  <span class="hljs-comment">// 读取换行符</span><br>cin.<span class="hljs-built_in">get</span>(name2, len); <br></code></pre></div></td></tr></table></figure>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">cin.<span class="built_in">get</span>(name1, len);</span><br><span class="line">cin.<span class="built_in">get</span>();  <span class="comment">// 读取换行符</span></span><br><span class="line">cin.<span class="built_in">get</span>(name2, len); </span><br></pre></td></tr></table></figure>
 
 <p>另一种方式是将两个类成员函数变体拼接起来，如下所示：</p>
-<figure class="highlight c++"><table><tr><td class="gutter hljs"><div class="hljs code-wrapper"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></div></td><td class="code"><div class="hljs code-wrapper"><pre><code class="hljs C++">cin.<span class="hljs-built_in">get</span>(name1, len).cin.<span class="hljs-built_in">get</span>(); <span class="hljs-comment">// 读取字符串后继续读取掉换行符</span><br>cin.<span class="hljs-built_in">get</span>(name2, len); <br></code></pre></div></td></tr></table></figure>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">cin.<span class="built_in">get</span>(name1, len).cin.<span class="built_in">get</span>(); <span class="comment">// 读取字符串后继续读取掉换行符</span></span><br><span class="line">cin.<span class="built_in">get</span>(name2, len); </span><br></pre></td></tr></table></figure>
 
 <p>之所以可以这样使用是因为<code>cin.get(name1, len)</code>返回一个<code>cin</code>对象，该对象可以用来继续调用<code>get()</code>函数。</p>
 <h2 id="0x20-混合输入字符串和数字所带来的问题"><a href="#0x20-混合输入字符串和数字所带来的问题" class="headerlink" title="0x20 混合输入字符串和数字所带来的问题"></a>0x20 混合输入字符串和数字所带来的问题</h2><p>C++中混合输入<strong>面向行的字符串</strong>和<strong>数字</strong>会导致问题。例如：</p>
-<figure class="highlight c++"><table><tr><td class="gutter hljs"><div class="hljs code-wrapper"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></div></td><td class="code"><div class="hljs code-wrapper"><pre><code class="hljs c++"><span class="hljs-keyword">int</span> age;<br><span class="hljs-keyword">char</span> name[<span class="hljs-number">30</span>];<br>cin&gt;&gt;age;<br>cin.<span class="hljs-built_in">getline</span>(name, <span class="hljs-number">30</span>);<br></code></pre></div></td></tr></table></figure>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">int</span> age;</span><br><span class="line"><span class="keyword">char</span> name[<span class="number">30</span>];</span><br><span class="line">cin&gt;&gt;age;</span><br><span class="line">cin.<span class="built_in">getline</span>(name, <span class="number">30</span>);</span><br></pre></td></tr></table></figure>
 
 <p>这样使用会导致<code>cin.getline()</code>读取到一个空字符串，原因在于当<code>cin</code>在读取<code>age</code>时会将回车键生成的换行符留在了输入队列，而后面的<code>cin.getline()</code>在看到换行符后，将认为这是一个空行，并将一个空字符串数组赋给<code>name</code>数组。</p>
 <p>解决方法是：在使用<code>cin.getline(name, 30)</code>读取整行字符串之前，先使用<code>cin.get()</code>读取并丢弃换行符。</p>
@@ -234,7 +234,7 @@
         
           <li><a href="/categories/">分类</a></li>
         
-          <li><a href="/running/">running</a></li>
+          <li><a href="/running/">跑步</a></li>
         
       </ul>
     </div>
@@ -298,7 +298,7 @@
      --><!--
        --><li><a href="/categories/">分类</a></li><!--
      --><!--
-       --><li><a href="/running/">running</a></li><!--
+       --><li><a href="/running/">跑步</a></li><!--
      -->
       </ul>
     </nav>

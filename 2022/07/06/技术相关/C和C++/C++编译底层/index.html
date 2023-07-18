@@ -1,0 +1,472 @@
+<!DOCTYPE html>
+<html lang=zh>
+<head>
+    <!-- so meta -->
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="HandheldFriendly" content="True">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=5" />
+    <meta name="description" content="C++编译底层知识点总结。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="C++编译低层">
+<meta property="og:url" content="http://example.com/2022/07/06/%E6%8A%80%E6%9C%AF%E7%9B%B8%E5%85%B3/C%E5%92%8CC++/C++%E7%BC%96%E8%AF%91%E5%BA%95%E5%B1%82/index.html">
+<meta property="og:site_name" content="ap0l1o">
+<meta property="og:description" content="C++编译底层知识点总结。">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/Ap0l1o/ImageHostingService@main/img/%E5%86%85%E5%AD%98%E5%B8%83%E5%B1%80.png">
+<meta property="article:published_time" content="2022-07-06T05:03:00.000Z">
+<meta property="article:modified_time" content="2023-07-18T12:27:36.869Z">
+<meta property="article:author" content="ap0l1o">
+<meta property="article:tag" content="C&#x2F;C++">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://cdn.jsdelivr.net/gh/Ap0l1o/ImageHostingService@main/img/%E5%86%85%E5%AD%98%E5%B8%83%E5%B1%80.png">
+    
+    
+      
+        
+          <link rel="shortcut icon" href="/images/favicon.ico">
+        
+      
+      
+        
+          <link rel="icon" type="image/png" href="/images/favicon-192x192.png" sizes="192x192">
+        
+      
+      
+        
+          <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon.png">
+        
+      
+    
+    <!-- title -->
+    <title>C++编译低层</title>
+    <!-- async scripts -->
+    <!-- Google Analytics -->
+
+
+    <!-- Umami Analytics -->
+
+
+    <!-- styles -->
+    
+<link rel="stylesheet" href="/css/style.css">
+
+    <!-- persian styles -->
+    
+    <!-- rss -->
+    
+    
+      <link rel="alternate" href="/true" title="ap0l1o" type="application/atom+xml" />
+    
+	<!-- mathjax -->
+	
+		<script type="text/x-mathjax-config">
+		  MathJax.Hub.Config({
+			tex2jax: {
+			  skipTags: ['script', 'noscript', 'style', 'textarea', 'pre'],
+			  inlineMath: [['$','$']]
+			}
+		  });
+		</script>
+		<script src='https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-MML-AM_CHTML' async></script>
+	
+<meta name="generator" content="Hexo 5.4.0"></head>
+
+<body class="max-width mx-auto px3 ltr">
+    
+      <div id="header-post">
+  <a id="menu-icon" href="#" aria-label="目录"><i class="fa-solid fa-bars fa-lg"></i></a>
+  <a id="menu-icon-tablet" href="#" aria-label="目录"><i class="fa-solid fa-bars fa-lg"></i></a>
+  <a id="top-icon-tablet" href="#" aria-label="顶部" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');" style="display:none;"><i class="fa-solid fa-chevron-up fa-lg"></i></a>
+  <span id="menu">
+    <span id="nav">
+      <ul>
+        <!--
+       --><li><a href="/">首页</a></li><!--
+     --><!--
+       --><li><a href="/about/">关于</a></li><!--
+     --><!--
+       --><li><a href="/archives/">归档</a></li><!--
+     --><!--
+       --><li><a href="/tags/">标签</a></li><!--
+     --><!--
+       --><li><a href="/categories/">分类</a></li><!--
+     --><!--
+       --><li><a href="/running/">跑步</a></li><!--
+     -->
+      </ul>
+    </span>
+    <br/>
+    <span id="actions">
+      <ul>
+        
+        <li><a class="icon" aria-label="上一篇" href="/2022/07/10/%E8%AE%BA%E6%96%87%E9%98%85%E8%AF%BB/Dynamo/"><i class="fa-solid fa-chevron-left" aria-hidden="true" onmouseover="$('#i-prev').toggle();" onmouseout="$('#i-prev').toggle();"></i></a></li>
+        
+        
+        <li><a class="icon" aria-label="下一篇" href="/2022/07/06/%E6%8A%80%E6%9C%AF%E7%9B%B8%E5%85%B3/C%E5%92%8CC++/C++%E5%9F%BA%E7%A1%80%E7%9F%A5%E8%AF%86/"><i class="fa-solid fa-chevron-right" aria-hidden="true" onmouseover="$('#i-next').toggle();" onmouseout="$('#i-next').toggle();"></i></a></li>
+        
+        <li><a class="icon" aria-label="返回顶部" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');"><i class="fa-solid fa-chevron-up" aria-hidden="true" onmouseover="$('#i-top').toggle();" onmouseout="$('#i-top').toggle();"></i></a></li>
+        <li><a class="icon" aria-label="分享文章" href="#"><i class="fa-solid fa-share-alt" aria-hidden="true" onmouseover="$('#i-share').toggle();" onmouseout="$('#i-share').toggle();" onclick="$('#share').toggle();return false;"></i></a></li>
+      </ul>
+      <span id="i-prev" class="info" style="display:none;">上一篇</span>
+      <span id="i-next" class="info" style="display:none;">下一篇</span>
+      <span id="i-top" class="info" style="display:none;">返回顶部</span>
+      <span id="i-share" class="info" style="display:none;">分享文章</span>
+    </span>
+    <br/>
+    <div id="share" style="display: none">
+      <ul>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.facebook.com/sharer.php?u=http://example.com/2022/07/06/%E6%8A%80%E6%9C%AF%E7%9B%B8%E5%85%B3/C%E5%92%8CC++/C++%E7%BC%96%E8%AF%91%E5%BA%95%E5%B1%82/"><i class="fab fa-facebook " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://twitter.com/share?url=http://example.com/2022/07/06/%E6%8A%80%E6%9C%AF%E7%9B%B8%E5%85%B3/C%E5%92%8CC++/C++%E7%BC%96%E8%AF%91%E5%BA%95%E5%B1%82/&text=C++编译低层"><i class="fab fa-twitter " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.linkedin.com/shareArticle?url=http://example.com/2022/07/06/%E6%8A%80%E6%9C%AF%E7%9B%B8%E5%85%B3/C%E5%92%8CC++/C++%E7%BC%96%E8%AF%91%E5%BA%95%E5%B1%82/&title=C++编译低层"><i class="fab fa-linkedin " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://pinterest.com/pin/create/bookmarklet/?url=http://example.com/2022/07/06/%E6%8A%80%E6%9C%AF%E7%9B%B8%E5%85%B3/C%E5%92%8CC++/C++%E7%BC%96%E8%AF%91%E5%BA%95%E5%B1%82/&is_video=false&description=C++编译低层"><i class="fab fa-pinterest " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="mailto:?subject=C++编译低层&body=Check out this article: http://example.com/2022/07/06/%E6%8A%80%E6%9C%AF%E7%9B%B8%E5%85%B3/C%E5%92%8CC++/C++%E7%BC%96%E8%AF%91%E5%BA%95%E5%B1%82/"><i class="fa-solid fa-envelope " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://getpocket.com/save?url=http://example.com/2022/07/06/%E6%8A%80%E6%9C%AF%E7%9B%B8%E5%85%B3/C%E5%92%8CC++/C++%E7%BC%96%E8%AF%91%E5%BA%95%E5%B1%82/&title=C++编译低层"><i class="fab fa-get-pocket " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://reddit.com/submit?url=http://example.com/2022/07/06/%E6%8A%80%E6%9C%AF%E7%9B%B8%E5%85%B3/C%E5%92%8CC++/C++%E7%BC%96%E8%AF%91%E5%BA%95%E5%B1%82/&title=C++编译低层"><i class="fab fa-reddit " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.stumbleupon.com/submit?url=http://example.com/2022/07/06/%E6%8A%80%E6%9C%AF%E7%9B%B8%E5%85%B3/C%E5%92%8CC++/C++%E7%BC%96%E8%AF%91%E5%BA%95%E5%B1%82/&title=C++编译低层"><i class="fab fa-stumbleupon " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://digg.com/submit?url=http://example.com/2022/07/06/%E6%8A%80%E6%9C%AF%E7%9B%B8%E5%85%B3/C%E5%92%8CC++/C++%E7%BC%96%E8%AF%91%E5%BA%95%E5%B1%82/&title=C++编译低层"><i class="fab fa-digg " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.tumblr.com/share/link?url=http://example.com/2022/07/06/%E6%8A%80%E6%9C%AF%E7%9B%B8%E5%85%B3/C%E5%92%8CC++/C++%E7%BC%96%E8%AF%91%E5%BA%95%E5%B1%82/&name=C++编译低层&description=C++编译底层知识点总结。"><i class="fab fa-tumblr " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://news.ycombinator.com/submitlink?u=http://example.com/2022/07/06/%E6%8A%80%E6%9C%AF%E7%9B%B8%E5%85%B3/C%E5%92%8CC++/C++%E7%BC%96%E8%AF%91%E5%BA%95%E5%B1%82/&t=C++编译低层"><i class="fab fa-hacker-news " aria-hidden="true"></i></a></li>
+</ul>
+
+    </div>
+    
+    
+      <div id="toc">
+        <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#C-C-%E7%BC%96%E8%AF%91%E5%BA%95%E5%B1%82"><span class="toc-number">1.</span> <span class="toc-text">C&#x2F;C++编译底层</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#C-%E5%86%85%E5%AD%98%E7%AE%A1%E7%90%86"><span class="toc-number">1.1.</span> <span class="toc-text">C++内存管理</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#LINUX%E8%BF%9B%E7%A8%8B%E5%8C%BA%E5%88%86%E6%AE%B5%E5%8F%8A%E5%AD%98%E5%82%A8%E6%95%B0%E6%8D%AE"><span class="toc-number">1.2.</span> <span class="toc-text">LINUX进程区分段及存储数据</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#GCC%E7%BC%96%E8%AF%91%E6%B5%81%E7%A8%8B"><span class="toc-number">1.3.</span> <span class="toc-text">GCC编译流程</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%8A%A8%E6%80%81%E5%BA%93%E9%9D%99%E6%80%81%E5%BA%93%E5%8C%BA%E5%88%AB%E5%8F%8AGCC%E5%8A%A0%E8%BD%BD%E5%BA%93"><span class="toc-number">1.4.</span> <span class="toc-text">动态库静态库区别及GCC加载库</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#extern-C%E7%9A%84%E7%BB%93%E6%9E%9C%E5%92%8CCPP%E7%BC%96%E8%AF%91%E7%9A%84%E5%8C%BA%E5%88%AB"><span class="toc-number">1.5.</span> <span class="toc-text">extern-C的结果和CPP编译的区别</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E9%87%8D%E8%BD%BD%E7%9A%84%E5%BA%95%E5%B1%82%E5%8E%9F%E7%90%86"><span class="toc-number">1.6.</span> <span class="toc-text">重载的底层原理</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%BC%96%E8%AF%91%E6%80%A7%E8%AF%AD%E8%A8%80%E5%92%8C%E8%A7%A3%E9%87%8A%E6%80%A7%E8%AF%AD%E8%A8%80%E7%9A%84%E6%9C%AC%E8%B4%A8%E5%8C%BA%E5%88%AB%E5%92%8C%E4%BC%98%E7%BC%BA%E7%82%B9"><span class="toc-number">1.7.</span> <span class="toc-text">编译性语言和解释性语言的本质区别和优缺点</span></a></li></ol></li></ol>
+      </div>
+    
+  </span>
+</div>
+
+    
+    <div class="content index py4 ">
+        
+        <article class="post h-entry" itemscope itemtype="http://schema.org/BlogPosting">
+  <header>
+    
+    <h1 class="posttitle p-name" itemprop="name headline">
+        C++编译低层
+    </h1>
+
+
+
+    <div class="meta">
+      <span class="author p-author h-card" itemprop="author" itemscope itemtype="http://schema.org/Person">
+        <span class="p-name" itemprop="name">ap0l1o</span>
+      </span>
+      
+    <div class="postdate">
+      
+        <time datetime="2022-07-06T05:03:00.000Z" class="dt-published" itemprop="datePublished">2022-07-06</time>
+        
+      
+    </div>
+
+
+      
+    <div class="article-category">
+        <i class="fa-solid fa-archive"></i>
+        <a class="category-link" href="/categories/CS%E5%9F%BA%E7%A1%80/">CS基础</a> › <a class="category-link" href="/categories/CS%E5%9F%BA%E7%A1%80/%E6%8A%80%E6%9C%AF/">技术</a>
+    </div>
+
+
+      
+    <div class="article-tag">
+        <i class="fa-solid fa-tag"></i>
+        <a class="p-category" href="/tags/C-C/" rel="tag">C/C++</a>
+    </div>
+
+
+    </div>
+  </header>
+  
+
+  <div class="content e-content" itemprop="articleBody">
+    <h1 id="C-C-编译底层"><a href="#C-C-编译底层" class="headerlink" title="C/C++编译底层"></a>C/C++编译底层</h1><ul>
+<li><a href="#C++%E5%86%85%E5%AD%98%E7%AE%A1%E7%90%86">C++内存管理</a></li>
+<li><a href="#LINUX%E8%BF%9B%E7%A8%8B%E5%8C%BA%E5%88%86%E6%AE%B5%E5%8F%8A%E5%AD%98%E5%82%A8%E6%95%B0%E6%8D%AE">LINUX进程区分段及存储数据</a></li>
+<li><a href="#GCC%E7%BC%96%E8%AF%91%E6%B5%81%E7%A8%8B">GCC编译流程</a></li>
+<li><a href="#%E5%8A%A8%E6%80%81%E5%BA%93%E9%9D%99%E6%80%81%E5%BA%93%E5%8C%BA%E5%88%AB%E5%8F%8AGCC%E5%8A%A0%E8%BD%BD%E5%BA%93">动态库静态库区别及LINUX加载库</a></li>
+<li><a href="#extern-C%E7%9A%84%E7%BB%93%E6%9E%9C%E5%92%8CCPP%E7%BC%96%E8%AF%91%E7%9A%84%E5%8C%BA%E5%88%AB">extern C的结果和CPP编译的区别</a></li>
+<li><a href="#%E9%87%8D%E8%BD%BD%E7%9A%84%E5%BA%95%E5%B1%82%E5%8E%9F%E7%90%86">重载的底层原理</a></li>
+<li><a href="#%E7%BC%96%E8%AF%91%E6%80%A7%E8%AF%AD%E8%A8%80%E5%92%8C%E8%A7%A3%E9%87%8A%E6%80%A7%E8%AF%AD%E8%A8%80%E7%9A%84%E6%9C%AC%E8%B4%A8%E5%8C%BA%E5%88%AB%E5%92%8C%E4%BC%98%E7%BC%BA%E7%82%B9">编译性语言和解释性语言的本质区别和优缺点</a></li>
+</ul>
+<h2 id="C-内存管理"><a href="#C-内存管理" class="headerlink" title="C++内存管理"></a>C++内存管理</h2><ul>
+<li><strong>栈</strong> 存储函数的返回地址、参数、局部变量、返回值，从高地址向低地址增长</li>
+<li><strong>堆</strong> <code>malloc</code>/<code>free</code>开辟内存的空间，从低地址向高地址增长</li>
+<li><strong>自由存储区</strong> <code>new</code>/<code>delete</code>开辟内存空间</li>
+<li><strong>数据区</strong> <ul>
+<li>数据区包含全局、静态存储区和常量存储区，存储已初始化的全局变量和静态变量、未初始化的全局变量和静态变量及字符串常量</li>
+</ul>
+</li>
+<li><strong>代码区</strong> 存储程序的机器代码和程序指令</li>
+</ul>
+<h2 id="LINUX进程区分段及存储数据"><a href="#LINUX进程区分段及存储数据" class="headerlink" title="LINUX进程区分段及存储数据"></a>LINUX进程区分段及存储数据</h2><p>Linux的每个进程都有各自独立的4G逻辑地址，其中0-3G是用户态空间，3~4G是内核空间，不同进程相同的逻辑地址会映射到不同的物理地址中。<br>逻辑地址分段如下，自下而上：</p>
+<ul>
+<li>代码段（<code>text</code> 和 <code>rodata</code> 段）。分为只读存储区和代码区，存放字符串常量和程序机器代码和指令</li>
+<li>数据段（<code>data</code> 段）。存储已初始化的全局变量和静态变量。</li>
+<li><code>bss</code> 段。存储未初始化的全局变量和静态变量，及初始化为 0 的全局变量和静态变量</li>
+<li>堆。 当进程未调用<code>malloc</code>时是没有堆段的，<code>malloc/free</code>开辟的内存空间，向上生长</li>
+<li>映射区。存储动态链接库以及调用<code>mmap</code>函数进行的文件映射</li>
+<li>栈。存储函数的返回地址、参数、局部变量、返回值，向下生长。</li>
+</ul>
+<p><img src="https://cdn.jsdelivr.net/gh/Ap0l1o/ImageHostingService@main/img/%E5%86%85%E5%AD%98%E5%B8%83%E5%B1%80.png"></p>
+<h2 id="GCC编译流程"><a href="#GCC编译流程" class="headerlink" title="GCC编译流程"></a>GCC编译流程</h2><ul>
+<li>预处理阶段：<code>hello.c</code> – “<code>gcc -E</code>预处理，头文件展开，宏替换，删除注释、空白” –<code>hello.i</code></li>
+<li>编译阶段：<code>hello.i</code> – “<code>gcc -s</code>检查语法规范、生成汇编文件” –<code>hello.s</code></li>
+<li>汇编阶段：<code>hello.s</code> – “<code>gcc -c</code>生成二进制文件” –<code>hello.o</code></li>
+<li>链接阶段：<code>hello.o</code> – “数据段合并、地址回填，调用<code>ld</code>进行链接” –<code>a.out</code></li>
+</ul>
+<h2 id="动态库静态库区别及GCC加载库"><a href="#动态库静态库区别及GCC加载库" class="headerlink" title="动态库静态库区别及GCC加载库"></a>动态库静态库区别及GCC加载库</h2><p>静态库特点：</p>
+<ul>
+<li>编译时期链接</li>
+<li>浪费空间和资源，如果多个程序链接了同一个库，则每一个生成的可执行文件就都会有一个库的副本，必然会浪费系统空间。</li>
+<li>若静态库需修改，需重新编译所有链接该库的程序</li>
+</ul>
+<p>动态库特点：</p>
+<ul>
+<li>运行时链接</li>
+<li>运行时被链接，故程序的运行速度稍慢</li>
+<li>动态库是在程序运行时被链接的，所以磁盘上只须保留一份副本，因此节约了磁盘空间。如果发现了 bug 或要升级也很简单，只要用新的库把原来的替换掉即可</li>
+</ul>
+<p>GCC 编译加载静态库：</p>
+<ul>
+<li>将所有的.c文件编译成<code>.o</code>目标文件<ul>
+<li><code>gcc -c add.c</code> 生成add.o</li>
+<li><code>gcc -c max.c</code> 生成max.o</li>
+</ul>
+</li>
+<li>对生成的.o目标文件打包生成静态库<ul>
+<li><code>ar crv libfoo.a add.o max.o //libfoo.a是库的名字，其中lib一定要有</code></li>
+<li>命令<code>ar</code>：做库的命令</li>
+<li>参数<code>c</code>：创建库</li>
+<li>参数<code>r</code>：将方法添加到库里</li>
+<li>参数<code>v</code>：显示过程，可以不要</li>
+</ul>
+</li>
+<li>使用静态库<ul>
+<li><code>gcc -o main main.c -static -L. -lfoo //这里写的foo是去掉前后缀后库的名字</code></li>
+<li><code>-L</code> ：指定要链接的库的搜索路径， <code>.</code> 代表当前路径</li>
+<li><code>-l</code> ：指定要链接的库名</li>
+</ul>
+</li>
+</ul>
+<p>GCC 编译和加载动态库：</p>
+<ul>
+<li>对生成的 <code>.o</code> 文件处理生成共享库（动态库），共享库的名字为 libfoo. so<ul>
+<li><code>gcc -shared -fPIC -o libfoo.so add.o max.o</code></li>
+<li><code>-shared</code> 表示输出结果是共享库类型的</li>
+<li><code>-fPIC</code> 表示使用地址无关代码（Position Independent Code）技术来生产输出文件</li>
+</ul>
+</li>
+<li>动态库的使用，也即如何使程序在运行时能动态连接到动态库（此时必须将动态库加载到内存中），有以下方案：<ul>
+<li><code>cp libfoo.so /usr/lib // 将库拷贝到系统库路径下</code>（不推荐）</li>
+<li>使用 <code>export</code> 更改 <code>LD_LIBRARY_PATH</code> <strong>当前终端的环境变量</strong>（例如，如果你的终端用的是 zsh，则可以在 <code>.zshrc</code> 文件中使用 <code>export</code> 修改 <code>LD_LIBRARY_PATH</code> 环境变量）</li>
+<li>修改<code>/etc/ld.so.conf</code>文件，加入库文件所在目录的路径，然后运行<code>ldconfig</code> 目录名字，该命令会重建<code>/etc/ld.so.cache</code>文件即可 </li>
+<li>上面三种选一个即可 <code>gcc -o main main.c -lfoo</code></li>
+</ul>
+</li>
+</ul>
+<h2 id="extern-C的结果和CPP编译的区别"><a href="#extern-C的结果和CPP编译的区别" class="headerlink" title="extern-C的结果和CPP编译的区别"></a><a target="_blank" rel="noopener" href="https://www.cnblogs.com/qingergege/p/7478864.html">extern-C的结果和CPP编译的区别</a></h2><ul>
+<li>一个C语言文件p.c<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;stdio.h&gt;</span></span></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">print</span><span class="params">(<span class="keyword">int</span> a,<span class="keyword">int</span> b)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">       <span class="built_in">printf</span>(<span class="string">&quot;这里调用的是C语言的函数:%d,%d\n&quot;</span>,a,b);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></li>
+<li>一个头文件p.h<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">ifndef</span> _P_H</span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> _P_H</span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">print</span><span class="params">(<span class="keyword">int</span> a,<span class="keyword">int</span> b)</span></span>;</span><br><span class="line"></span><br><span class="line"><span class="meta">#<span class="meta-keyword">endif</span></span></span><br></pre></td></tr></table></figure></li>
+<li>C++文件调用C函数<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;iostream&gt;</span></span></span><br><span class="line"><span class="keyword">using</span> <span class="keyword">namespace</span> std;</span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&quot;p.h&quot;</span></span></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">       cout&lt;&lt;<span class="string">&quot;现在调用C语言函数\n&quot;</span>;</span><br><span class="line">       <span class="built_in">print</span>(<span class="number">3</span>,<span class="number">4</span>);</span><br><span class="line">       <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></li>
+<li>编译后链接出错：<code>main.cpp</code>对<code>print(int, int</code>)未定义的引用。</li>
+<li>原因分析<ul>
+<li><code>p.c</code>我们使用的是C语言的编译器gcc进行编译的，其中的函数print编译之后，在符号表中的名字为 <code>_print</code></li>
+<li>我们链接的时候采用的是g++进行链接，也就是C++链接方式，程序在运行到调用<code>print</code>函数的代码时，会在符号表中寻找 <code>_print_int_int</code>（是按照C++的链接方法来寻找的，所以是找 <code>_print_int_int</code>而不是找<code>_print</code>）的名字，发现找不到，所以会提示“未定义的引用”</li>
+<li>此时如果我们在对<code>print</code>的声明中加入 <code>extern “C”</code> ，这个时候，g++编译器就会按照C语言的链接方式进行寻找，也就是在符号表中寻找<code>_print</code>，这个时候是可以找到的，是不会报错的。</li>
+</ul>
+</li>
+<li>总结<ul>
+<li>编译后底层解析的符号不同，C语言是<code>_print</code>，C++是<code>_print_int_int</code></li>
+</ul>
+</li>
+</ul>
+<h2 id="重载的底层原理"><a href="#重载的底层原理" class="headerlink" title="重载的底层原理"></a><a target="_blank" rel="noopener" href="https://blog.csdn.net/fantian_/article/details/80719144">重载的底层原理</a></h2><p>根据上面的编译分析，可以知道C语言没有重载，只有C++才有函数重载，因为<strong>函数重载通过参数列表的不同来实现</strong>。</p>
+<ul>
+<li>C语言没有重载<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="string">&quot;int __cdecl Add(int,int)&quot;</span> (?Add@@YAHHH@Z)</span><br><span class="line"><span class="string">&quot;double __cdecl Add(double,double)&quot;</span> (?Add@@YANNN@Z）</span><br><span class="line"><span class="string">&quot;long __cdecl Add(long,long)&quot;</span> (?Add@@YAJJJ@Z)</span><br></pre></td></tr></table></figure>
+在 C 语言中被解析为<code>_Add</code>，三个一样，所以不能进行区分，因此 C 语言不支持函数重载</li>
+<li>C++重载：底层的重命名机制将 Add 函数根据参数的个数，参数的类型，返回值的类型都做了重新命名。那么借助函数重载，一个函数就有多种命名机制。 <code>_Add_int_int</code>，_ <code>Add_long_long</code>，<code>_Add_double_double</code></li>
+<li>C++中可以通过在函数声明前加 <code>extern &quot;C&quot;</code> 将一个函数按照 C 语言的风格来进行编译。</li>
+</ul>
+<h2 id="编译性语言和解释性语言的本质区别和优缺点"><a href="#编译性语言和解释性语言的本质区别和优缺点" class="headerlink" title="编译性语言和解释性语言的本质区别和优缺点"></a><a target="_blank" rel="noopener" href="https://blog.csdn.net/u014647208/article/details/78329187">编译性语言和解释性语言的本质区别和优缺点</a></h2><ul>
+<li>根本区别<ul>
+<li>计算机不能直接的理解高级语言，只能直接理解机器语言，所以必须要把高级语言翻译成机器语言，计算机才能执行高级语言的编写的程序。<strong>翻译的方式有两种，一个是编译，一个是解释</strong>。<strong>两种方式只是翻译的时间不同</strong>。</li>
+<li>解释性语言不用编译，在运行时翻译</li>
+<li>编译性语言是编译的时候直接编译成机器可以执行的语言，编译和运行是分开的，但是不能跨平台。比如 exe 文件，以后要运行的话就不用重新编译了，直接使用编译的结果就行了（exe 文件），因为翻译只做了一次，运行的时不要翻译，所以编译型语言的程序执行效率高</li>
+</ul>
+</li>
+<li>编译性语言的优缺点<ul>
+<li>优点<ul>
+<li>运行速度快，代码效率高，编译后程序不可以修改，保密性好</li>
+</ul>
+</li>
+<li>缺点<ul>
+<li>代码需要经过编译方可运行，可移植性差，只能在兼容的操作系统上运行。</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>解释性语言的优缺点<ul>
+<li>优点<ul>
+<li>可移植性好，只要有解释环境，可以在不同的操作系统上运行。</li>
+</ul>
+</li>
+<li>缺点<ul>
+<li>运行需要解释环境，运行起来比编译的要慢，占用的资源也要多一些，代码效率低，代码修改后就可以运行，不需要编译过程</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+  </div>
+</article>
+
+
+
+        
+          <div id="footer-post-container">
+  <div id="footer-post">
+
+    <div id="nav-footer" style="display: none">
+      <ul>
+        
+          <li><a href="/">首页</a></li>
+        
+          <li><a href="/about/">关于</a></li>
+        
+          <li><a href="/archives/">归档</a></li>
+        
+          <li><a href="/tags/">标签</a></li>
+        
+          <li><a href="/categories/">分类</a></li>
+        
+          <li><a href="/running/">跑步</a></li>
+        
+      </ul>
+    </div>
+
+    
+    
+      <div id="toc-footer" style="display: none">
+        <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#C-C-%E7%BC%96%E8%AF%91%E5%BA%95%E5%B1%82"><span class="toc-number">1.</span> <span class="toc-text">C&#x2F;C++编译底层</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#C-%E5%86%85%E5%AD%98%E7%AE%A1%E7%90%86"><span class="toc-number">1.1.</span> <span class="toc-text">C++内存管理</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#LINUX%E8%BF%9B%E7%A8%8B%E5%8C%BA%E5%88%86%E6%AE%B5%E5%8F%8A%E5%AD%98%E5%82%A8%E6%95%B0%E6%8D%AE"><span class="toc-number">1.2.</span> <span class="toc-text">LINUX进程区分段及存储数据</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#GCC%E7%BC%96%E8%AF%91%E6%B5%81%E7%A8%8B"><span class="toc-number">1.3.</span> <span class="toc-text">GCC编译流程</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%8A%A8%E6%80%81%E5%BA%93%E9%9D%99%E6%80%81%E5%BA%93%E5%8C%BA%E5%88%AB%E5%8F%8AGCC%E5%8A%A0%E8%BD%BD%E5%BA%93"><span class="toc-number">1.4.</span> <span class="toc-text">动态库静态库区别及GCC加载库</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#extern-C%E7%9A%84%E7%BB%93%E6%9E%9C%E5%92%8CCPP%E7%BC%96%E8%AF%91%E7%9A%84%E5%8C%BA%E5%88%AB"><span class="toc-number">1.5.</span> <span class="toc-text">extern-C的结果和CPP编译的区别</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E9%87%8D%E8%BD%BD%E7%9A%84%E5%BA%95%E5%B1%82%E5%8E%9F%E7%90%86"><span class="toc-number">1.6.</span> <span class="toc-text">重载的底层原理</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%BC%96%E8%AF%91%E6%80%A7%E8%AF%AD%E8%A8%80%E5%92%8C%E8%A7%A3%E9%87%8A%E6%80%A7%E8%AF%AD%E8%A8%80%E7%9A%84%E6%9C%AC%E8%B4%A8%E5%8C%BA%E5%88%AB%E5%92%8C%E4%BC%98%E7%BC%BA%E7%82%B9"><span class="toc-number">1.7.</span> <span class="toc-text">编译性语言和解释性语言的本质区别和优缺点</span></a></li></ol></li></ol>
+      </div>
+    
+
+    <div id="share-footer" style="display: none">
+      <ul>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.facebook.com/sharer.php?u=http://example.com/2022/07/06/%E6%8A%80%E6%9C%AF%E7%9B%B8%E5%85%B3/C%E5%92%8CC++/C++%E7%BC%96%E8%AF%91%E5%BA%95%E5%B1%82/"><i class="fab fa-facebook fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://twitter.com/share?url=http://example.com/2022/07/06/%E6%8A%80%E6%9C%AF%E7%9B%B8%E5%85%B3/C%E5%92%8CC++/C++%E7%BC%96%E8%AF%91%E5%BA%95%E5%B1%82/&text=C++编译低层"><i class="fab fa-twitter fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.linkedin.com/shareArticle?url=http://example.com/2022/07/06/%E6%8A%80%E6%9C%AF%E7%9B%B8%E5%85%B3/C%E5%92%8CC++/C++%E7%BC%96%E8%AF%91%E5%BA%95%E5%B1%82/&title=C++编译低层"><i class="fab fa-linkedin fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://pinterest.com/pin/create/bookmarklet/?url=http://example.com/2022/07/06/%E6%8A%80%E6%9C%AF%E7%9B%B8%E5%85%B3/C%E5%92%8CC++/C++%E7%BC%96%E8%AF%91%E5%BA%95%E5%B1%82/&is_video=false&description=C++编译低层"><i class="fab fa-pinterest fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="mailto:?subject=C++编译低层&body=Check out this article: http://example.com/2022/07/06/%E6%8A%80%E6%9C%AF%E7%9B%B8%E5%85%B3/C%E5%92%8CC++/C++%E7%BC%96%E8%AF%91%E5%BA%95%E5%B1%82/"><i class="fa-solid fa-envelope fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://getpocket.com/save?url=http://example.com/2022/07/06/%E6%8A%80%E6%9C%AF%E7%9B%B8%E5%85%B3/C%E5%92%8CC++/C++%E7%BC%96%E8%AF%91%E5%BA%95%E5%B1%82/&title=C++编译低层"><i class="fab fa-get-pocket fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://reddit.com/submit?url=http://example.com/2022/07/06/%E6%8A%80%E6%9C%AF%E7%9B%B8%E5%85%B3/C%E5%92%8CC++/C++%E7%BC%96%E8%AF%91%E5%BA%95%E5%B1%82/&title=C++编译低层"><i class="fab fa-reddit fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.stumbleupon.com/submit?url=http://example.com/2022/07/06/%E6%8A%80%E6%9C%AF%E7%9B%B8%E5%85%B3/C%E5%92%8CC++/C++%E7%BC%96%E8%AF%91%E5%BA%95%E5%B1%82/&title=C++编译低层"><i class="fab fa-stumbleupon fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://digg.com/submit?url=http://example.com/2022/07/06/%E6%8A%80%E6%9C%AF%E7%9B%B8%E5%85%B3/C%E5%92%8CC++/C++%E7%BC%96%E8%AF%91%E5%BA%95%E5%B1%82/&title=C++编译低层"><i class="fab fa-digg fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.tumblr.com/share/link?url=http://example.com/2022/07/06/%E6%8A%80%E6%9C%AF%E7%9B%B8%E5%85%B3/C%E5%92%8CC++/C++%E7%BC%96%E8%AF%91%E5%BA%95%E5%B1%82/&name=C++编译低层&description=C++编译底层知识点总结。"><i class="fab fa-tumblr fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://news.ycombinator.com/submitlink?u=http://example.com/2022/07/06/%E6%8A%80%E6%9C%AF%E7%9B%B8%E5%85%B3/C%E5%92%8CC++/C++%E7%BC%96%E8%AF%91%E5%BA%95%E5%B1%82/&t=C++编译低层"><i class="fab fa-hacker-news fa-lg" aria-hidden="true"></i></a></li>
+</ul>
+
+    </div>
+
+    <div id="actions-footer">
+        <a id="menu" class="icon" href="#" onclick="$('#nav-footer').toggle();return false;"><i class="fa-solid fa-bars fa-lg" aria-hidden="true"></i> 菜单</a>
+        
+          <a id="toc" class="icon" href="#" onclick="$('#toc-footer').toggle();return false;"><i class="fa-solid fa-list fa-lg" aria-hidden="true"></i> 目录</a>
+        
+        <a id="share" class="icon" href="#" onclick="$('#share-footer').toggle();return false;"><i class="fa-solid fa-share-alt fa-lg" aria-hidden="true"></i> 分享</a>
+        <a id="top" style="display:none" class="icon" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');"><i class="fa-solid fa-chevron-up fa-lg" aria-hidden="true"></i> 返回顶部</a>
+    </div>
+
+  </div>
+</div>
+
+        
+        <footer id="footer">
+  <div class="footer-left">
+    Copyright &copy;
+    
+    
+    2016-2023
+    ap0l1o
+  </div>
+  <div class="footer-right">
+    <nav>
+      <ul>
+        <!--
+       --><li><a href="/">首页</a></li><!--
+     --><!--
+       --><li><a href="/about/">关于</a></li><!--
+     --><!--
+       --><li><a href="/archives/">归档</a></li><!--
+     --><!--
+       --><li><a href="/tags/">标签</a></li><!--
+     --><!--
+       --><li><a href="/categories/">分类</a></li><!--
+     --><!--
+       --><li><a href="/running/">跑步</a></li><!--
+     -->
+      </ul>
+    </nav>
+  </div>
+</footer>
+
+    </div>
+    <!-- styles -->
+
+
+
+  <link rel="preload" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" crossorigin="anonymous" onload="this.onload=null;this.rel='stylesheet'"/>
+
+
+    <!-- jquery -->
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js" crossorigin="anonymous"></script>
+
+
+
+
+<!-- clipboard -->
+
+  
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.7/clipboard.min.js" crossorigin="anonymous"></script>
+  
+  <script type="text/javascript">
+  $(function() {
+    // copy-btn HTML
+    var btn = "<span class=\"btn-copy tooltipped tooltipped-sw\" aria-label=\"复制到粘贴板！\">";
+    btn += '<i class="fa-regular fa-clone"></i>';
+    btn += '</span>';
+    // mount it!
+    $(".highlight table").before(btn);
+    var clip = new ClipboardJS('.btn-copy', {
+      text: function(trigger) {
+        return Array.from(trigger.nextElementSibling.querySelectorAll('.code')).reduce((str,it)=>str+it.innerText+'\n','')
+      }
+    });
+    clip.on('success', function(e) {
+      e.trigger.setAttribute('aria-label', "复制成功！");
+      e.clearSelection();
+    })
+  })
+  </script>
+
+
+<script src="/js/main.js"></script>
+
+<!-- search -->
+
+<!-- Baidu Analytics -->
+
+<!-- Cloudflare Analytics -->
+
+<!-- Disqus Comments -->
+
+<!-- utterances Comments -->
+
+</body>
+</html>

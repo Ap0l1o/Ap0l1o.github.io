@@ -1,0 +1,568 @@
+<!DOCTYPE html>
+<html lang=zh>
+<head>
+    <!-- so meta -->
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="HandheldFriendly" content="True">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=5" />
+    <meta name="description" content="C++基础知识点总结。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="C++基础知识">
+<meta property="og:url" content="http://example.com/2022/07/06/%E6%8A%80%E6%9C%AF%E7%9B%B8%E5%85%B3/C%E5%92%8CC++/C++%E5%9F%BA%E7%A1%80%E7%9F%A5%E8%AF%86/index.html">
+<meta property="og:site_name" content="ap0l1o">
+<meta property="og:description" content="C++基础知识点总结。">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2022-07-06T05:03:00.000Z">
+<meta property="article:modified_time" content="2023-07-18T12:26:49.801Z">
+<meta property="article:author" content="ap0l1o">
+<meta property="article:tag" content="C&#x2F;C++">
+<meta name="twitter:card" content="summary">
+    
+    
+      
+        
+          <link rel="shortcut icon" href="/images/favicon.ico">
+        
+      
+      
+        
+          <link rel="icon" type="image/png" href="/images/favicon-192x192.png" sizes="192x192">
+        
+      
+      
+        
+          <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon.png">
+        
+      
+    
+    <!-- title -->
+    <title>C++基础知识</title>
+    <!-- async scripts -->
+    <!-- Google Analytics -->
+
+
+    <!-- Umami Analytics -->
+
+
+    <!-- styles -->
+    
+<link rel="stylesheet" href="/css/style.css">
+
+    <!-- persian styles -->
+    
+    <!-- rss -->
+    
+    
+      <link rel="alternate" href="/true" title="ap0l1o" type="application/atom+xml" />
+    
+	<!-- mathjax -->
+	
+		<script type="text/x-mathjax-config">
+		  MathJax.Hub.Config({
+			tex2jax: {
+			  skipTags: ['script', 'noscript', 'style', 'textarea', 'pre'],
+			  inlineMath: [['$','$']]
+			}
+		  });
+		</script>
+		<script src='https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-MML-AM_CHTML' async></script>
+	
+<meta name="generator" content="Hexo 5.4.0"></head>
+
+<body class="max-width mx-auto px3 ltr">
+    
+      <div id="header-post">
+  <a id="menu-icon" href="#" aria-label="目录"><i class="fa-solid fa-bars fa-lg"></i></a>
+  <a id="menu-icon-tablet" href="#" aria-label="目录"><i class="fa-solid fa-bars fa-lg"></i></a>
+  <a id="top-icon-tablet" href="#" aria-label="顶部" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');" style="display:none;"><i class="fa-solid fa-chevron-up fa-lg"></i></a>
+  <span id="menu">
+    <span id="nav">
+      <ul>
+        <!--
+       --><li><a href="/">首页</a></li><!--
+     --><!--
+       --><li><a href="/about/">关于</a></li><!--
+     --><!--
+       --><li><a href="/archives/">归档</a></li><!--
+     --><!--
+       --><li><a href="/tags/">标签</a></li><!--
+     --><!--
+       --><li><a href="/categories/">分类</a></li><!--
+     --><!--
+       --><li><a href="/running/">跑步</a></li><!--
+     -->
+      </ul>
+    </span>
+    <br/>
+    <span id="actions">
+      <ul>
+        
+        <li><a class="icon" aria-label="上一篇" href="/2022/07/06/%E6%8A%80%E6%9C%AF%E7%9B%B8%E5%85%B3/C%E5%92%8CC++/C++%E7%BC%96%E8%AF%91%E5%BA%95%E5%B1%82/"><i class="fa-solid fa-chevron-left" aria-hidden="true" onmouseover="$('#i-prev').toggle();" onmouseout="$('#i-prev').toggle();"></i></a></li>
+        
+        
+        <li><a class="icon" aria-label="下一篇" href="/2022/07/06/%E6%8A%80%E6%9C%AF%E7%9B%B8%E5%85%B3/C%E5%92%8CC++/C++%E6%99%BA%E8%83%BD%E6%8C%87%E9%92%88%E5%92%8C%E5%BC%BA%E5%88%B6%E7%B1%BB%E5%9E%8B%E8%BD%AC%E6%8D%A2/"><i class="fa-solid fa-chevron-right" aria-hidden="true" onmouseover="$('#i-next').toggle();" onmouseout="$('#i-next').toggle();"></i></a></li>
+        
+        <li><a class="icon" aria-label="返回顶部" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');"><i class="fa-solid fa-chevron-up" aria-hidden="true" onmouseover="$('#i-top').toggle();" onmouseout="$('#i-top').toggle();"></i></a></li>
+        <li><a class="icon" aria-label="分享文章" href="#"><i class="fa-solid fa-share-alt" aria-hidden="true" onmouseover="$('#i-share').toggle();" onmouseout="$('#i-share').toggle();" onclick="$('#share').toggle();return false;"></i></a></li>
+      </ul>
+      <span id="i-prev" class="info" style="display:none;">上一篇</span>
+      <span id="i-next" class="info" style="display:none;">下一篇</span>
+      <span id="i-top" class="info" style="display:none;">返回顶部</span>
+      <span id="i-share" class="info" style="display:none;">分享文章</span>
+    </span>
+    <br/>
+    <div id="share" style="display: none">
+      <ul>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.facebook.com/sharer.php?u=http://example.com/2022/07/06/%E6%8A%80%E6%9C%AF%E7%9B%B8%E5%85%B3/C%E5%92%8CC++/C++%E5%9F%BA%E7%A1%80%E7%9F%A5%E8%AF%86/"><i class="fab fa-facebook " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://twitter.com/share?url=http://example.com/2022/07/06/%E6%8A%80%E6%9C%AF%E7%9B%B8%E5%85%B3/C%E5%92%8CC++/C++%E5%9F%BA%E7%A1%80%E7%9F%A5%E8%AF%86/&text=C++基础知识"><i class="fab fa-twitter " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.linkedin.com/shareArticle?url=http://example.com/2022/07/06/%E6%8A%80%E6%9C%AF%E7%9B%B8%E5%85%B3/C%E5%92%8CC++/C++%E5%9F%BA%E7%A1%80%E7%9F%A5%E8%AF%86/&title=C++基础知识"><i class="fab fa-linkedin " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://pinterest.com/pin/create/bookmarklet/?url=http://example.com/2022/07/06/%E6%8A%80%E6%9C%AF%E7%9B%B8%E5%85%B3/C%E5%92%8CC++/C++%E5%9F%BA%E7%A1%80%E7%9F%A5%E8%AF%86/&is_video=false&description=C++基础知识"><i class="fab fa-pinterest " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="mailto:?subject=C++基础知识&body=Check out this article: http://example.com/2022/07/06/%E6%8A%80%E6%9C%AF%E7%9B%B8%E5%85%B3/C%E5%92%8CC++/C++%E5%9F%BA%E7%A1%80%E7%9F%A5%E8%AF%86/"><i class="fa-solid fa-envelope " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://getpocket.com/save?url=http://example.com/2022/07/06/%E6%8A%80%E6%9C%AF%E7%9B%B8%E5%85%B3/C%E5%92%8CC++/C++%E5%9F%BA%E7%A1%80%E7%9F%A5%E8%AF%86/&title=C++基础知识"><i class="fab fa-get-pocket " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://reddit.com/submit?url=http://example.com/2022/07/06/%E6%8A%80%E6%9C%AF%E7%9B%B8%E5%85%B3/C%E5%92%8CC++/C++%E5%9F%BA%E7%A1%80%E7%9F%A5%E8%AF%86/&title=C++基础知识"><i class="fab fa-reddit " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.stumbleupon.com/submit?url=http://example.com/2022/07/06/%E6%8A%80%E6%9C%AF%E7%9B%B8%E5%85%B3/C%E5%92%8CC++/C++%E5%9F%BA%E7%A1%80%E7%9F%A5%E8%AF%86/&title=C++基础知识"><i class="fab fa-stumbleupon " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://digg.com/submit?url=http://example.com/2022/07/06/%E6%8A%80%E6%9C%AF%E7%9B%B8%E5%85%B3/C%E5%92%8CC++/C++%E5%9F%BA%E7%A1%80%E7%9F%A5%E8%AF%86/&title=C++基础知识"><i class="fab fa-digg " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.tumblr.com/share/link?url=http://example.com/2022/07/06/%E6%8A%80%E6%9C%AF%E7%9B%B8%E5%85%B3/C%E5%92%8CC++/C++%E5%9F%BA%E7%A1%80%E7%9F%A5%E8%AF%86/&name=C++基础知识&description=C++基础知识点总结。"><i class="fab fa-tumblr " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://news.ycombinator.com/submitlink?u=http://example.com/2022/07/06/%E6%8A%80%E6%9C%AF%E7%9B%B8%E5%85%B3/C%E5%92%8CC++/C++%E5%9F%BA%E7%A1%80%E7%9F%A5%E8%AF%86/&t=C++基础知识"><i class="fab fa-hacker-news " aria-hidden="true"></i></a></li>
+</ul>
+
+    </div>
+    
+    
+      <div id="toc">
+        <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#C-C-%E5%9F%BA%E7%A1%80%E7%9F%A5%E8%AF%86"><span class="toc-number">1.</span> <span class="toc-text">C&#x2F;C++基础知识</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%95%B0%E7%BB%84%E5%92%8C%E6%8C%87%E9%92%88%E7%9A%84%E5%8C%BA%E5%88%AB"><span class="toc-number">1.1.</span> <span class="toc-text">数组和指针的区别</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%8C%87%E9%92%88%E6%95%B0%E7%BB%84%E5%92%8C%E6%95%B0%E7%BB%84%E6%8C%87%E9%92%88"><span class="toc-number">1.2.</span> <span class="toc-text">指针数组和数组指针</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%AD%97%E7%AC%A6%E6%95%B0%E7%BB%84%E5%92%8C%E5%AD%97%E7%AC%A6%E4%B8%B2%E5%B8%B8%E9%87%8F"><span class="toc-number">1.3.</span> <span class="toc-text">字符数组和字符串常量</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#inline%E5%92%8C%E5%AE%8F%E7%9A%84%E5%8C%BA%E5%88%AB"><span class="toc-number">1.4.</span> <span class="toc-text">inline和宏的区别</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%BC%95%E7%94%A8%E5%92%8C%E6%8C%87%E9%92%88%E7%9A%84%E5%8C%BA%E5%88%AB"><span class="toc-number">1.5.</span> <span class="toc-text">引用和指针的区别</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#C-%E4%B8%ADclass%E5%92%8Cstruct%E7%9A%84%E5%8C%BA%E5%88%AB"><span class="toc-number">1.6.</span> <span class="toc-text">C++中class和struct的区别</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#new-delete-%E5%92%8C-malloc-free-%E5%8C%BA%E5%88%AB"><span class="toc-number">1.7.</span> <span class="toc-text">new&#x2F;delete 和 malloc&#x2F;free 区别</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#new%E8%BF%90%E7%AE%97%E7%AC%A6%E7%9A%84%E5%8E%9F%E7%90%86"><span class="toc-number">1.8.</span> <span class="toc-text">new运算符的原理</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#malloc%E7%9A%84%E5%86%85%E5%AD%98%E5%88%86%E9%85%8D%E6%9C%BA%E5%88%B6"><span class="toc-number">1.9.</span> <span class="toc-text">malloc的内存分配机制</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%A0%88%E5%92%8C%E5%A0%86%E7%9A%84%E5%8C%BA%E5%88%AB"><span class="toc-number">1.10.</span> <span class="toc-text">栈和堆的区别</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E9%9D%A2%E5%90%91%E5%AF%B9%E8%B1%A1%E5%92%8C%E9%9D%A2%E5%90%91%E8%BF%87%E7%A8%8B%E7%9A%84%E5%8C%BA%E5%88%AB"><span class="toc-number">1.11.</span> <span class="toc-text">面向对象和面向过程的区别</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#const%E5%85%B3%E9%94%AE%E5%AD%97-%E4%B8%8D%E5%8F%AF%E4%BF%AE%E6%94%B9"><span class="toc-number">1.12.</span> <span class="toc-text">const关键字(不可修改)</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#static-%E5%85%B3%E9%94%AE%E5%AD%97-%E5%B0%81%E9%97%AD%E4%BD%9C%E7%94%A8%E5%9F%9F%EF%BC%8C%E5%AF%B9%E5%A4%96%E4%B8%8D%E5%8F%AF%E8%A7%81"><span class="toc-number">1.13.</span> <span class="toc-text">static 关键字 (封闭作用域，对外不可见)</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#extern%E5%85%B3%E9%94%AE%E5%AD%97"><span class="toc-number">1.14.</span> <span class="toc-text">extern关键字</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#volatile%E5%85%B3%E9%94%AE%E5%AD%97"><span class="toc-number">1.15.</span> <span class="toc-text">volatile关键字</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#explicit%E5%85%B3%E9%94%AE%E5%AD%97"><span class="toc-number">1.16.</span> <span class="toc-text">explicit关键字</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%B1%BB%E6%88%90%E5%91%98%E5%B1%9E%E6%80%A7"><span class="toc-number">1.17.</span> <span class="toc-text">类成员属性</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%A4%A7%E5%B0%8F%E7%AB%AF%E5%BA%8F%E7%9A%84%E5%AE%9A%E4%B9%89%E5%92%8C%E4%BB%A3%E7%A0%81%E5%88%A4%E6%96%AD"><span class="toc-number">1.18.</span> <span class="toc-text">大小端序的定义和代码判断</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%AE%9A%E4%B9%89"><span class="toc-number">1.18.1.</span> <span class="toc-text">定义</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%BB%A3%E7%A0%81%E5%88%A4%E6%96%AD"><span class="toc-number">1.18.2.</span> <span class="toc-text">代码判断</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%BB%A3%E7%A0%81%E5%88%A4%E6%96%AD32%E4%BD%8D%E5%92%8C64%E4%BD%8D%E7%B3%BB%E7%BB%9F"><span class="toc-number">1.19.</span> <span class="toc-text">代码判断32位和64位系统</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%BA%BF%E7%A8%8B-A-%E5%92%8C%E7%BA%BF%E7%A8%8B-B-%E4%B8%8D%E5%8A%A0%E9%94%81%EF%BC%8C%E5%AF%B9%E5%90%8C%E4%B8%80%E4%B8%AA%E5%8F%98%E9%87%8F%EF%BC%8C%E5%90%84%E8%87%AA%E6%89%A7%E8%A1%8C-i-100-%E6%AC%A1%EF%BC%8C%E7%BB%93%E6%9E%9C%E6%98%AF%E5%95%A5"><span class="toc-number">1.20.</span> <span class="toc-text">线程 A 和线程 B 不加锁，对同一个变量，各自执行 i++ 100 次，结果是啥</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%9C%80%E5%B0%8F%E5%80%BC2"><span class="toc-number">1.20.1.</span> <span class="toc-text">最小值2</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%9C%80%E5%A4%A7%E5%80%BC200"><span class="toc-number">1.20.2.</span> <span class="toc-text">最大值200</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#C-%E6%8C%87%E5%AE%9A%E5%86%85%E5%AD%98%E5%88%86%E9%85%8D%E5%AF%B9%E8%B1%A1"><span class="toc-number">1.21.</span> <span class="toc-text">C++指定内存分配对象</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#placement-new"><span class="toc-number">1.21.1.</span> <span class="toc-text">placement new</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#allocator"><span class="toc-number">1.21.2.</span> <span class="toc-text">allocator</span></a></li></ol></li></ol></li></ol>
+      </div>
+    
+  </span>
+</div>
+
+    
+    <div class="content index py4 ">
+        
+        <article class="post h-entry" itemscope itemtype="http://schema.org/BlogPosting">
+  <header>
+    
+    <h1 class="posttitle p-name" itemprop="name headline">
+        C++基础知识
+    </h1>
+
+
+
+    <div class="meta">
+      <span class="author p-author h-card" itemprop="author" itemscope itemtype="http://schema.org/Person">
+        <span class="p-name" itemprop="name">ap0l1o</span>
+      </span>
+      
+    <div class="postdate">
+      
+        <time datetime="2022-07-06T05:03:00.000Z" class="dt-published" itemprop="datePublished">2022-07-06</time>
+        
+      
+    </div>
+
+
+      
+    <div class="article-category">
+        <i class="fa-solid fa-archive"></i>
+        <a class="category-link" href="/categories/%E6%8A%80%E6%9C%AF/">技术</a> › <a class="category-link" href="/categories/%E6%8A%80%E6%9C%AF/CS%E5%9F%BA%E7%A1%80/">CS基础</a>
+    </div>
+
+
+      
+    <div class="article-tag">
+        <i class="fa-solid fa-tag"></i>
+        <a class="p-category" href="/tags/C-C/" rel="tag">C/C++</a>
+    </div>
+
+
+    </div>
+  </header>
+  
+
+  <div class="content e-content" itemprop="articleBody">
+    <h1 id="C-C-基础知识"><a href="#C-C-基础知识" class="headerlink" title="C/C++基础知识"></a>C/C++基础知识</h1><ul>
+<li><a href="#%E6%95%B0%E7%BB%84%E5%92%8C%E6%8C%87%E9%92%88%E7%9A%84%E5%8C%BA%E5%88%AB">数组和指针的区别</a></li>
+<li><a href="#%E6%8C%87%E9%92%88%E6%95%B0%E7%BB%84%E5%92%8C%E6%95%B0%E7%BB%84%E6%8C%87%E9%92%88">指针数组和数组指针</a></li>
+<li><a href="#%E5%AD%97%E7%AC%A6%E6%95%B0%E7%BB%84%E5%92%8C%E5%AD%97%E7%AC%A6%E4%B8%B2%E5%B8%B8%E9%87%8F">字符数组和字符串常量</a></li>
+<li><a href="#%E5%BC%95%E7%94%A8%E5%92%8C%E6%8C%87%E9%92%88%E7%9A%84%E5%8C%BA%E5%88%AB">引用和指针的区别</a></li>
+<li><a href="#C%E4%B8%ADclass%E5%92%8Cstruct%E7%9A%84%E5%8C%BA%E5%88%AB">C++中class和struct的区别</a></li>
+<li><a href="#new/delete%E5%92%8Cmalloc/free%E5%8C%BA%E5%88%AB">new/delete和malloc/free区别</a></li>
+<li><a href="#new%E8%BF%90%E7%AE%97%E7%AC%A6%E7%9A%84%E5%8E%9F%E7%90%86">new运算符的原理</a></li>
+<li><a href="#malloc%E7%9A%84%E5%86%85%E5%AD%98%E5%88%86%E9%85%8D%E6%9C%BA%E5%88%B6">malloc的内存分配机制</a></li>
+<li><a href="#%E6%A0%88%E5%92%8C%E5%A0%86%E7%9A%84%E5%8C%BA%E5%88%AB">栈和堆的区别</a></li>
+<li><a href="#%E9%9D%A2%E5%90%91%E5%AF%B9%E8%B1%A1%E5%92%8C%E9%9D%A2%E5%90%91%E8%BF%87%E7%A8%8B%E7%9A%84%E5%8C%BA%E5%88%AB">面向对象和面向过程的区别</a></li>
+<li><a href="#const%E5%85%B3%E9%94%AE%E5%AD%97" title="不可修改">const 关键字</a></li>
+<li><a href="#static%E5%85%B3%E9%94%AE%E5%AD%97" title="对外不可见">static 关键字</a></li>
+<li><a href="#extern%E5%85%B3%E9%94%AE%E5%AD%97">extern关键字</a></li>
+<li><a href="#volatile%E5%85%B3%E9%94%AE%E5%AD%97">volatile关键字</a></li>
+<li><a href="#explicit%E5%85%B3%E9%94%AE%E5%AD%97">explicit关键字</a></li>
+<li><a href="#%E7%B1%BB%E6%88%90%E5%91%98%E5%B1%9E%E6%80%A7">类成员属性</a></li>
+<li><a href="#%E5%A4%A7%E5%B0%8F%E7%AB%AF%E5%BA%8F%E7%9A%84%E5%AE%9A%E4%B9%89%E5%92%8C%E4%BB%A3%E7%A0%81%E5%88%A4%E6%96%AD">大小端序的定义和代码判断</a></li>
+<li><a href="#%E4%BB%A3%E7%A0%81%E5%88%A4%E6%96%AD32%E4%BD%8D%E5%92%8C64%E4%BD%8D%E7%B3%BB%E7%BB%9F">代码判断32位和64位系统</a></li>
+</ul>
+<h2 id="数组和指针的区别"><a href="#数组和指针的区别" class="headerlink" title="数组和指针的区别"></a>数组和指针的区别</h2><ul>
+<li><strong>概念不同.</strong> 指针相当于一个变量，它存放的是数据在内存中的地址；数组是用于储存多个相同类型数据的集合</li>
+<li><strong>赋值不同.</strong> 同类型指针变量可以相互赋值，数组不行，只能一个一个元素的赋值或拷贝</li>
+<li><strong>访问数据不同.</strong> 指针是间接访问数据，获取指针，先解引用，再访问指针指向的地址中的内容；数组是直接访问</li>
+<li><strong><code>sizeof</code> 意义不同.</strong> <ul>
+<li>数组所占存储空间的内存（也即整个数组所有数据占用的空间）：<code>sizeof(数组名)</code></li>
+<li>数组的大小 (也即数组类型的大小)：<code>sizeof (数组名) / sizeof (数据类型)</code></li>
+<li>在 32 位平台下，<code>sizeof (指针名)</code> 是 4，在 64 位平台下，<code>sizeof (指针名)</code>是 8</li>
+</ul>
+</li>
+<li><strong>指针和数组名异同.</strong> 指针和数组名都可以表示地址，但指针是变量，可以修改；数组名是常量，不可修改赋值</li>
+<li><strong>传参.</strong> <strong>将数组作为参数进行传递时，数组会退化成指针</strong>：<ol>
+<li>退化的意义：C 语言只会以值拷贝的方式传递参数，参数传递时，如果拷贝整个数组，效率会大大降低，并且参数是位于栈上的，太大的数组拷贝将会导致栈溢出。</li>
+<li>因此，C 语言将数组的传参进行了退化。<strong>将整个数组拷贝一份传入函数时，将数组名看做常量指针，传数组首元素的地址</strong>。</li>
+</ol>
+</li>
+</ul>
+<h2 id="指针数组和数组指针"><a href="#指针数组和数组指针" class="headerlink" title="指针数组和数组指针"></a>指针数组和数组指针</h2><p>指针数组本质是数组，数组指针本质是指针，谁优先级高，本质是谁</p>
+<ul>
+<li>指针数组：它实际上是一个数组，数组的每个元素存放的是一个指针类型的元素。例如 <code>int* arr[8]</code>;<ol>
+<li>优先级问题：<code>[]</code> 的优先级比 <code>*</code> 高</li>
+<li>说明 <code>arr</code> 是一个数组，而 <code>int*</code> 是数组里面的内容</li>
+<li>这句话的意思就是：<code>arr</code>是一个含有  <code>int*</code> 的数组</li>
+</ol>
+</li>
+<li>数组指针：它实际上是一个指针，该指针指向一个数组。例如，<code>int (*arr)[8]</code>;<ol>
+<li>由于<code>[]</code>的优先级比<code>*</code>高，因此在写数组指针的时候必须将<code>*arr</code>用括号括起来</li>
+<li><code>arr</code> 先和<code>*</code>结合，说明 <code>arr</code> 是一个指针变量</li>
+<li>这句话的意思就是：指针<code>arr</code>指向一个大小为8个整型的数组。</li>
+</ol>
+</li>
+</ul>
+<h2 id="字符数组和字符串常量"><a href="#字符数组和字符串常量" class="headerlink" title="字符数组和字符串常量"></a>字符数组和字符串常量</h2><figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">char</span> arr[] = <span class="string">&quot;hello&quot;</span>;  <span class="comment">//字符数组</span></span><br><span class="line"><span class="keyword">char</span> *arr2 = <span class="string">&quot;hello&quot;</span>; <span class="comment">//字符串常量</span></span><br></pre></td></tr></table></figure>
+<ul>
+<li><code>char arr[] = &quot;hello&quot;</code>，此处的赋值是将常量区的字符串 <code>&quot;hello&quot;</code> 拷贝到了堆栈区的数 <code>arr</code> 的空间了。<strong>数组 <code>arr</code> 是在堆栈区开辟了空间，此时是可以修改字符串的值，因为修改的是堆栈区的字符串的值</strong>。另外此时的数组名 <code>arr</code> 是堆栈区中的 <code>&quot;hello&quot;</code> 的首地址。</li>
+<li><code>char *arr2 = &quot;hello&quot;</code>，<strong>指针 <code>arr2</code> 是存储在堆栈区，但字符串是常量，存储在常量区，只是指针 arr 指向了存储在常量区的字符串首地址</strong>，此时不能改变常量区的字符串的值。<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> <span class="keyword">char</span> arr[]=<span class="string">&quot;hello&quot;</span>;  <span class="comment">//这里hello本来是在栈上的，但是编译器可能会做某些优化，将其放到常量区</span></span><br><span class="line"><span class="keyword">const</span> <span class="keyword">char</span> *arr2=<span class="string">&quot;hello&quot;</span>; <span class="comment">//字符串hello保存在常量区，const本来是修饰arr2指向的值不能通过arr2去修改，但是字符串hello在常量区，本来就不能改变，所以加不加const效果都一样 </span></span><br></pre></td></tr></table></figure></li>
+</ul>
+<h2 id="inline和宏的区别"><a href="#inline和宏的区别" class="headerlink" title="inline和宏的区别"></a>inline和宏的区别</h2><ul>
+<li><strong><code>inline</code>是在编译期间展开，宏在预处理时替换</strong></li>
+<li><code>inline</code>函数直接嵌入到目标代码内，宏只是简单的文本替换</li>
+<li><code>inline</code>函数会进行类型安全检查和参数有效性检查，而宏不会</li>
+<li><code>inline</code>函数是函数，宏不是</li>
+<li>宏定义时有可能产生二义性，而<code>inline</code>函数不会</li>
+<li><strong><code>inline</code>可以不展开，只是对编译器的建议，而宏必须展开</strong></li>
+</ul>
+<h2 id="引用和指针的区别"><a href="#引用和指针的区别" class="headerlink" title="引用和指针的区别"></a>引用和指针的区别</h2><ul>
+<li><strong>指针有内存分配，而引用只是一个别名.</strong> 引用声明时必须初始化，从而指向一个已经存在的对象</li>
+<li><strong>引用可以看做指针常量，指针是一个存储地址的变量.</strong> 指针在运行时可以改变其所指向的值，而引用一旦和某个对象绑定后就不再改变。这句话可以理解为：指针可以被重新赋值以指向另一个不同的对象，但是引用则总是指向在初始化时被指定的对象，以后不能改变，但是指定的对象其内容可以改变。</li>
+<li><strong>引用创建时必须初始化，且不为空，指针创建时可以为空.</strong> <strong>不存在指向空值的引用这个事实，意味着使用引用的代码效率比使用指针的要高</strong>。因为在使用引用之前不需要测试它的合法性。相反，指针则应该总是被测试，防止其为空。</li>
+<li><strong>指针和引用的自增运算符意义不同.</strong> 指针是对内存地址的自增，引用是对值的自增</li>
+<li><strong><code>sizeof</code> 的意义不同.</strong> 使用 <code>sizeof</code> 看一个指针的大小是 4，而引用则是被引用对象的大小</li>
+<li><strong>没有引用常量，有指针常量.</strong> 没有 <code>int&amp; const p</code>，有 <code>int* const p</code>.<ul>
+<li>常量指针和常量引用是存在的，<code>const int *p</code> 和 <code>cosnt int &amp;p</code>，都表示<strong>指向的对象为常量</strong>。常量引用形参的好处：<ul>
+<li>（1）使用引用作为形参，不会产生新的变量，减少形参和实参传递的开销</li>
+<li>（2）使用引用可能会导致实参随着形参的改变而改变。声明为 const 之后就会消除这种副作用</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<ul>
+<li><strong>参数传递.</strong> 作为参数传递时，指针需要被解引用才可以对对象进行操作，而直接对引用的修改都会改变引用所指向的对象</li>
+<li><strong>多级指针，一级引用.</strong> 指针可以有多级指针（例如 <code>**p</code>），而引用只有一级</li>
+</ul>
+<h2 id="C-中class和struct的区别"><a href="#C-中class和struct的区别" class="headerlink" title="C++中class和struct的区别"></a>C++中class和struct的区别</h2><p>C 中的 <code>strcut</code> 不能有函数，但 C++中可以。C++中的 <code>struct</code> 对 C 中的 <code>struct</code> 进行了扩充，它已经不再只是一个包含不同数据类型的数据结构了，不仅能包含成员函数，而且支持继承和多态。C++中 <code>struct</code> 和 <code>class</code>  的区别在于：</p>
+<ul>
+<li><strong>默认的继承访问权限.</strong> <code>struct</code> 是 <code>public</code> 的，<code>class</code> 是 <code>private</code> 的</li>
+<li><strong>定义模板参数.</strong> <code>class</code> 这个关键字还用于定义模板参数，就像 <code>typename</code>。但关键字 <code>struct</code> 不用于定义模板参数。</li>
+</ul>
+<h2 id="new-delete-和-malloc-free-区别"><a href="#new-delete-和-malloc-free-区别" class="headerlink" title="new/delete 和 malloc/free 区别"></a>new/delete 和 malloc/free 区别</h2><ol>
+<li><strong>属性不同.</strong> <code>new/delete</code> 是 C++关键字，需要编译器支持。<code>malloc/free</code> 是库函数，需要头文件支持。</li>
+<li><strong>申请的内存所在位置.</strong> <code>new</code> 操作符从自由存储区（free store）上为对象动态分配内存空间，而 <code>malloc</code> 函数从堆上动态分配内存。自由存储区是 C++基于 new 操作符的一个抽象概念，凡是通过 new 操作符进行内存申请，该内存即为自由存储区。而堆是操作系统中的术语，是操作系统所维护的一块特殊内存，用于程序的内存动态分配，C 语言使用 <code>malloc</code> 从堆上分配内存，使用 <code>free</code> 释放已分配的对应内存。那么自由存储区是否可以是堆呢？这取决于 <code>operator new</code> 的实现细节。自由存储区不仅可以是堆，还可以是静态存储区，这都看 <code>operator new</code> 在哪里为对象分配内存。 </li>
+<li><strong>返回类型安全性.</strong> <code>new</code> 操作符内存分配成功时，返回的是对象类型的指针，类型严格与对象匹配，无须进行类型转换，故 <code>new</code> 是符合类型安全性的操作符。而 <code>malloc</code> 内存分配成功则是返回 <code>void*</code> 类型，需要通过强制类型转换将空类型指针转换成我们需要的类型。</li>
+<li><strong>内存分配失败时的返回值.</strong> <code>new</code> 内存分配失败时，会抛出 <code>bac_alloc</code> 异常，它不会返回 <code>NULL</code>；<code>malloc</code> 分配内存失败时返回 <code>NULL</code>。</li>
+<li><strong>是否需要指定内存大小.</strong> <strong>使用 <code>new</code> 操作符申请内存分配时无须指定内存块的大小，编译器会根据类型信息自行计算</strong>。而 <code>malloc</code> 则需要显式地指出所需内存的大小。</li>
+<li><strong>数组分配内存（与前一个特点类似）.</strong> <code>new</code> 中分配内存对于变量和数组不同，<code>malloc</code> 分配内存则相同</li>
+<li><strong>是否调用构造函数/析构函数.</strong>   <code>new</code> 会先调用 <code>operator new</code> 函数，申请足够的内存（通常底层使用 <code>malloc</code> 实现）。然后调用类型的构造函数，初始化成员变量，最后返回自定义类型指针。<code>delete</code> 先调用析构函数，然后调用 <code>operator delete</code> 函数释放内存（通常底层使用 <code>free</code> 实现）。<code>malloc/free</code> 是库函数，只能动态的申请和释放内存，无法强制要求其做自定义类型对象构造和析构工作。 </li>
+<li><strong>能否重载.</strong> <code>opeartor new</code> 和 <code>operator delete </code> 允许重载， <code>malloc/free</code> 不允许重载</li>
+<li><strong>已分配内存的扩充.</strong> <code>malloc/free</code> 可以通过 <code>realloc</code> 函数扩充，<code>new/delete</code> 无法直观地处理</li>
+<li><strong>能否相互调用.</strong> <code>operator new</code> 和 <code>operator delete </code> 的实现可以基于 <code>malloc/free</code>，而 <code>malloc</code> 的实现不可以去调用 <code>new</code>。<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">int</span> *pi=<span class="keyword">new</span> <span class="keyword">int</span>[];  <span class="comment">//指针pi所指向的数组未初始化</span></span><br><span class="line"><span class="keyword">int</span> *pi=<span class="keyword">new</span> <span class="keyword">int</span>[n]; <span class="comment">//指针pi指向长度为n的数组，未初始化</span></span><br><span class="line"><span class="keyword">int</span> *pi=<span class="keyword">new</span> <span class="keyword">int</span>[]();  <span class="comment">//指针pi所指向的地址初始化为0</span></span><br></pre></td></tr></table></figure></li>
+</ol>
+<p><code>malloc</code> 和 <code>calloc</code> 间的主要区别在于后者在返回指向内存的指针之前把它初始化为 0。另一个区别是 <code>calloc</code> 的参数包括所需的元素的数量和每个元素的字节数。</p>
+<h2 id="new运算符的原理"><a href="#new运算符的原理" class="headerlink" title="new运算符的原理"></a><a target="_blank" rel="noopener" href="https://blog.csdn.net/hihozoo/article/details/51441521">new运算符的原理</a></h2><ul>
+<li>内存分配<ul>
+<li>调用相应的  <code>operator new(size_t)</code> 函数，动态分配内存。如果 <code>operator new(size_t)</code> 不能成功获得内存，则调用 <code>new_handler()</code>函数用于处理<code>new</code>失败问题。如果没有设置 <code>new_handler()</code> 函数或者 <code>new_handler()</code> 未能分配足够内存，则抛出 <code>std::bad_alloc</code> 异常</li>
+</ul>
+</li>
+<li>构造函数<ul>
+<li>在分配到的动态内存块上 初始化相应类型的对象（构造函数）并返回其首地址。如果调用构造函数初始化对象时抛出异常，则自动调用 <code>operator delete(void*, void*)</code> 函数释放已经分配到的内存。</li>
+</ul>
+</li>
+</ul>
+<h2 id="malloc的内存分配机制"><a href="#malloc的内存分配机制" class="headerlink" title="malloc的内存分配机制"></a>malloc的内存分配机制</h2><p>malloc内存分配机制是怎么样的,在哪里分配内存，最大可以申请多大的内存？<br>首先会扫描之前由<code>free()</code>所释放的空闲内存块列表，以求找到尺寸大于或等于要求的一块空闲内存。如果这一内存块的尺寸正好与要求相当，就将它返回给调用者，如果是一块较大的内存，那么将对其进行分割，在将一块大小相当的内存返回给调用者的同时，把较小的那块空闲内存块保留在空闲列表中</p>
+<h2 id="栈和堆的区别"><a href="#栈和堆的区别" class="headerlink" title="栈和堆的区别"></a><a target="_blank" rel="noopener" href="https://blog.csdn.net/caogenwangbaoqiang/article/details/79788368">栈和堆的区别</a></h2><ul>
+<li>管理方式不同<ul>
+<li>对于栈来讲，是由编译器自动管理，无需我们手工控制；而对于堆来说，释放工作由程序员控制，容易产生内存泄漏（memory leak）。</li>
+</ul>
+</li>
+<li>空间大小不同<ul>
+<li>一般来讲在 32 位系统下，堆内存可以达到 4G 的空间，从这个角度来看堆内存几乎是没有什么限制的。但是对于栈来讲，一般都是有一定的空间大小的，例如，在 VC6 下面，默认的栈空间大小是 1M</li>
+</ul>
+</li>
+<li>能否产生碎片不同<ul>
+<li>对于堆来讲，频繁的 <code>new/delete</code> 势必会造成内存空间的不连续，从而造成大量的碎片，使程序效率降低。对于栈来讲，则不会存在这个问题，因为栈是先进后出的队列，他们是如此的一一对应，以至于永远都不可能有一个内存块从栈中间弹出</li>
+</ul>
+</li>
+<li>生长方向不同<ul>
+<li>对于堆来讲，生长方向是向上的，也就是向着内存地址增加的方向；对于栈来讲，它的生长方向是向下的，是向着内存地址减小的方向增长</li>
+</ul>
+</li>
+</ul>
+<h2 id="面向对象和面向过程的区别"><a href="#面向对象和面向过程的区别" class="headerlink" title="面向对象和面向过程的区别"></a><a target="_blank" rel="noopener" href="https://blog.csdn.net/jerry11112/article/details/79027834">面向对象和面向过程的区别</a></h2><ul>
+<li>面向对象就是高度实物抽象化、面向过程就是自顶向下的编程</li>
+<li>面向过程就是分析出解决问题所需要的步骤，然后用函数把这些步骤一步一步实现，使用的时候一个一个依次调用</li>
+<li>面向对象是把要解决的问题分解成各个对象，建立对象的目的不是为了完成一个步骤，而是为了描叙某个事物在整个解决问题的步骤中的行为</li>
+<li>面向过程的优缺点<ol>
+<li>优点：性能比面向对象高，因为类调用时需要实例化，开销比较大，比较消耗资源；比如单片机、嵌入式开发、Linux/Unix 等一般采用面向过程开发，性能是最重要的因素。</li>
+<li>缺点：没有面向对象易维护、易复用、易扩展</li>
+</ol>
+</li>
+</ul>
+<ul>
+<li>面向对象的优缺点<ol>
+<li>优点：易维护、易复用、易扩展，由于面向对象有封装、继承、多态性的特性，可以设计出低耦合的系统，使系统更加灵活、更加易于维护 </li>
+<li>缺点：性能比面向过程低</li>
+</ol>
+</li>
+</ul>
+<h2 id="const关键字-不可修改"><a href="#const关键字-不可修改" class="headerlink" title="const关键字(不可修改)"></a>const关键字(不可修改)</h2><ul>
+<li><strong>修饰变量</strong>，说明该变量不可以被改变，**<code>const</code> 全局变量还会使该全局变量作用域仅限于该文件，起到<code>static</code>的作用；<code>const</code> 全局变量存放在只读数据段，<code>const</code> 局部变量存放在栈上**。</li>
+<li><strong>修饰指针</strong>，分为指向常量的指针和指针常量：<code>const int *p</code> 和 <code>int *const p</code>  </li>
+<li><strong>常量引用</strong>，经常用于形参类型，即避免了拷贝，又避免了函数对值的修改；</li>
+<li><strong>修饰成员函数</strong><ul>
+<li>成员函数后面+<code>const</code>：该成员函数内不能修改成员变量（<code>static</code>成员除外）</li>
+<li>成员函数中形参+<code>const</code>：表示修饰的形参在其函数体不能被修改</li>
+<li>成员函数前+<code>const</code>：表示其返回值不能被修改</li>
+</ul>
+</li>
+<li><strong>const修饰成员变量</strong>：<ul>
+<li><strong>静态成员变量：类外对该变量进行初始化</strong></li>
+<li><strong>非静态成员变量：构造函数使用初始化列表进行初始化</strong></li>
+</ul>
+</li>
+</ul>
+<h2 id="static-关键字-封闭作用域，对外不可见"><a href="#static-关键字-封闭作用域，对外不可见" class="headerlink" title="static 关键字 (封闭作用域，对外不可见)"></a>static 关键字 (封闭作用域，对外不可见)</h2><ul>
+<li><strong>修饰普通变量，</strong> 修改变量的存储区域和生命周期，使变量存储在静态区，在 <code>main</code> 函数运行前就分配了空间，在整个程序运行期间一直存在，如果有初始值就用初始值初始化它，如果没有初始值系统用默认值初始化它，自动初始化为0。<ul>
+<li><strong>全局变量作用域</strong>：全局静态变量在声明他的文件之外是不可见的，准确地说是从定义之处开始，到文件结尾。</li>
+<li><strong>局部变量作用域</strong>：仍为局部作用域，当定义它的函数或者语句块结束的时候，作用域结束。但是当局部静态变量离开作用域后，并没有销毁，而是仍然驻留在内存当中，只不过我们不能再对它进行访问，直到该函数再次被调用，并且值不变（作用域不变，延长生命周期）； </li>
+</ul>
+</li>
+<li><strong>修饰普通函数，</strong> 其只能在定义它的源文件中使用，不能在其他源文件中被引用</li>
+<li><strong>修饰类成员变量和成员函数，</strong> 它们是属于类的，而不是某个对象，所有对象共享一个静态成员。静态成员通过<code>&lt;类名&gt;::&lt;静态成员&gt;</code>来使用。在 static 函数内不能访问非静态成员</li>
+</ul>
+<h2 id="extern关键字"><a href="#extern关键字" class="headerlink" title="extern关键字"></a><a target="_blank" rel="noopener" href="https://www.cnblogs.com/qinguoyi/p/10100777.html">extern关键字</a></h2><ul>
+<li><strong>修饰变量或函数</strong>。被 <code>extern</code> 限定的函数或变量是 <code>extern</code> 类型的。**<code>extern</code> 关键字主要修饰变量或函数，表示该函数可以跨文件访问，或者表明该变量在其他文件定义，在此处引用**.</li>
+<li>**<code>extern &quot;C&quot;</code>**。<code>extern &quot;C&quot;</code> 的作用是让 C++ 编译器将 <code>extern &quot;C&quot;</code> 声明的代码当作 C 语言代码处理，可以避免 C++ 因符号修饰导致代码不能和 C 语言库中的符号进行链接的问题。<ol>
+<li>在 c 头文件中通过 <code>#ifdef __cplusplus  extern &quot;C&quot;  &#123; #endif</code> 来定义</li>
+<li>在对应的 <code>.c</code> 文件中实现</li>
+<li>在 cpp 文件中通过“<code>extern &quot;C&quot;</code> 函数名”调用，或者包含 c 头文件<blockquote>
+<p><strong>注意：</strong> extern 的引用方式比包含头文件要简洁得多！extern 的使用方法是直接了当的，想引用哪个函数就用 extern 声明哪个函数。这样做的一个明显的好处是，会加速程序的编译（确切的说是预处理）的过程，节省时间，但若需要调用的函数太多，还是直接包含头文件吧.</p>
+</blockquote>
+</li>
+</ol>
+</li>
+</ul>
+<h2 id="volatile关键字"><a href="#volatile关键字" class="headerlink" title="volatile关键字"></a>volatile关键字</h2><ul>
+<li><strong>不可优化性</strong>。 <code>volatile</code> 关键字是一种类型修饰符，用它声明的类型变量表示不可以被某些编译器未知的因素（操作系统、硬件、其它线程等）更改。所以使用 volatile 告诉编译器不应对这样的对象进行优化。</li>
+<li><strong>易变性</strong>。 <code>volatile</code> 关键字声明的变量，每次访问时都必须从内存中取出值（没有被 <code>volatile</code> 修饰的变量，可能由于编译器的优化，从 CPU 寄存器中取值）</li>
+</ul>
+<h2 id="explicit关键字"><a href="#explicit关键字" class="headerlink" title="explicit关键字"></a><a target="_blank" rel="noopener" href="https://blog.csdn.net/l2563898960/article/details/97769569">explicit关键字</a></h2><p><code>explicit</code> 关键字的作用就是防止对象间实现 <code>=</code> ，也即赋值（赋值构造函数），<strong>防止类构造函数的隐式自动转换</strong>，类构造函数默认情况下即声明为 <code>implicit</code> (隐式)。</p>
+<ul>
+<li><code>explicit</code> 修饰构造函数时，可以<strong>防止隐式转换和复制初始化</strong>。<code>explicit</code> 只用于单参数的构造函数，或者除了第一个参数以外的其他参数都有默认值。</li>
+<li><code>explicit</code> 修饰转换函数时，可以防止隐式转换。</li>
+</ul>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Person</span>&#123;</span></span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">    <span class="built_in">Person</span>()&#123;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">//修饰有参构造函数</span></span><br><span class="line">    <span class="function"><span class="keyword">explicit</span> <span class="title">Person</span><span class="params">(<span class="keyword">const</span> <span class="keyword">char</span>* str_)</span></span>&#123;</span><br><span class="line">        str = (<span class="keyword">char</span> *)<span class="built_in">malloc</span>(<span class="built_in"><span class="keyword">sizeof</span></span>(<span class="keyword">char</span>)*<span class="number">100</span>);</span><br><span class="line">        <span class="built_in">strcpy</span>(str,str_);</span><br><span class="line">    &#125;</span><br><span class="line">    ~<span class="built_in">Person</span>() &#123;</span><br><span class="line">        <span class="keyword">if</span> (str != <span class="literal">NULL</span>)&#123;</span><br><span class="line">            <span class="built_in">free</span>(str);</span><br><span class="line">            str = <span class="literal">NULL</span>;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">char</span> *str;</span><br><span class="line">&#125;;</span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">test0</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    <span class="comment">//Person p = &quot;abc&quot;; 隐式调用</span></span><br><span class="line">    <span class="function">Person <span class="title">p</span> <span class="params">(<span class="string">&quot;abc&quot;</span>)</span></span>; <span class="comment">//显式调用</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 类型转换函数的一般形式</span></span><br><span class="line"><span class="function"><span class="keyword">operator</span> type <span class="title">const</span><span class="params">()</span> </span>&#123;</span><br><span class="line">	<span class="comment">// 函数实现</span></span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">// 1. 转换函数必须是类的成员函数</span></span><br><span class="line"><span class="comment">// 2. 转换函数不能声明返回类型</span></span><br><span class="line"><span class="comment">// 3. 形参列表必须为空</span></span><br><span class="line"><span class="comment">// 4. 类型转换函数通常应该是const的</span></span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Number</span> &#123;</span></span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">	<span class="built_in">Number</span>(<span class="keyword">int</span> number) : <span class="built_in">number_</span>(number) &#123;&#125;</span><br><span class="line">	<span class="comment">// 类型转换函数，转为double类型</span></span><br><span class="line">	<span class="function"><span class="keyword">operator</span> <span class="title">double</span><span class="params">()</span> <span class="keyword">const</span> </span>&#123;</span><br><span class="line">		<span class="keyword">return</span> <span class="built_in"><span class="keyword">double</span></span>(number_);</span><br><span class="line">	&#125;</span><br><span class="line"><span class="keyword">private</span>:</span><br><span class="line">	<span class="keyword">int</span> number_;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">test1</span><span class="params">()</span> </span>&#123;</span><br><span class="line">	<span class="function">Number <span class="title">n</span><span class="params">(<span class="number">5</span>)</span></span>;</span><br><span class="line">	<span class="comment">// n并不是一个double类型，编译器会从Numbe类中寻找operator double()函数来隐式调用将其转为double类型</span></span><br><span class="line">	<span class="keyword">double</span> d = <span class="number">1.2</span> + n; </span><br><span class="line">	std::cout&lt;&lt;d&lt;&lt;std::endl; </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>注意：当类的声明和定义分别在两个文件中时，<code>explicit</code> 只能写在声明中，不能写在定义中。</p>
+<h2 id="类成员属性"><a href="#类成员属性" class="headerlink" title="类成员属性"></a>类成员属性</h2><p>类的成员有三个权限：公有权限（public），私有权限（private），保护权限（protected）。</p>
+<ul>
+<li><strong>私有权限.</strong> 私有成员在类内部可以访问，类外不可访问，一般推荐将成员变量设置为私有成员；</li>
+<li><strong>公有权限.</strong> 类内类外都可以进行访问；</li>
+<li><strong>保护权限.</strong> 类内和当前类的子类可以访问，类外不可访问。</li>
+</ul>
+<h2 id="大小端序的定义和代码判断"><a href="#大小端序的定义和代码判断" class="headerlink" title="大小端序的定义和代码判断"></a>大小端序的定义和代码判断</h2><h3 id="定义"><a href="#定义" class="headerlink" title="定义"></a>定义</h3><p>一个16进制的地址，存放在内存中从低地址开始存储，如16进制的地址为0x1234，对于地址而言，从右往左是从低到高</p>
+<ul>
+<li>大端（高位字节放在低位地址）<ul>
+<li>若 16 进制的低地址存放在内存的高地址，则为大端字节序，34 存储在高位，12 存储在低位</li>
+</ul>
+</li>
+<li>小端（低位字节放在低位地址）<ul>
+<li>若 16 进制的低地址存放在内存的低地址，则为小端字节序，12 存储在高位，34 存储在低位</li>
+</ul>
+</li>
+</ul>
+<h3 id="代码判断"><a href="#代码判断" class="headerlink" title="代码判断"></a>代码判断</h3><p>可以通过联合体来判断，<strong>联合体是同一块内存被联合体中的所有成员公用</strong>，如果后续成员对内存重新赋值，会覆盖内存中原有数据</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">union</span> <span class="title">U</span>&#123;</span></span><br><span class="line">	<span class="keyword">int</span> a;</span><br><span class="line">	<span class="keyword">char</span> b;</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span></span>&#123;</span><br><span class="line">	U u;</span><br><span class="line">	u.a = <span class="number">0x01020304</span>;</span><br><span class="line"></span><br><span class="line">	<span class="keyword">if</span> (u.b == <span class="number">0x04</span>)&#123;</span><br><span class="line">		cout &lt;&lt; u.b &lt;&lt; endl; <span class="comment">//输出char字符</span></span><br><span class="line">		cout &lt;&lt; <span class="string">&quot;little&quot;</span> &lt;&lt; endl;</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	<span class="keyword">else</span> <span class="keyword">if</span> (u.b == <span class="number">0x01</span>)&#123;</span><br><span class="line">		cout &lt;&lt; u.b &lt;&lt; endl;</span><br><span class="line">		cout &lt;&lt; <span class="string">&quot;big&quot;</span> &lt;&lt; endl;</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="built_in">system</span>(<span class="string">&quot;pause&quot;</span>);</span><br><span class="line">	<span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+<h2 id="代码判断32位和64位系统"><a href="#代码判断32位和64位系统" class="headerlink" title="代码判断32位和64位系统"></a>代码判断32位和64位系统</h2><p>写一个指针，输出指针所占的字节大小</p>
+<h2 id="线程-A-和线程-B-不加锁，对同一个变量，各自执行-i-100-次，结果是啥"><a href="#线程-A-和线程-B-不加锁，对同一个变量，各自执行-i-100-次，结果是啥" class="headerlink" title="线程 A 和线程 B 不加锁，对同一个变量，各自执行 i++ 100 次，结果是啥"></a>线程 A 和线程 B 不加锁，对同一个变量，各自执行 i++ 100 次，结果是啥</h2><p>最小值2，最大值200。</p>
+<h3 id="最小值2"><a href="#最小值2" class="headerlink" title="最小值2"></a>最小值2</h3><ul>
+<li>初始条件，内存值为0</li>
+<li>A线程从内存中取出值，进行第一次<code>++</code>操作，还未写回内存就被挂起，此时A寄存器 1 ，内存 0 ；</li>
+<li>B线程从内存中取出值，进行第一次<code>++</code>操作，还未写回内存就被挂起，此时B寄存器 1 ，内存 0 ；</li>
+<li>A连续执行到第99次<code>++</code>操作，每次都写回到内存，此时A寄存器 99 ，内存 99 ；</li>
+<li>B继续执行，将自己寄存器的值写回到内存，覆盖了内存中的99，此时B寄存器 1 ，内存 1 ；</li>
+<li>A执行第100次++操作，取出内存中的值1，然后++，还未写回内存就被挂起，此时A寄存器 2 ，内存 1 ；</li>
+<li>B执行完自己所有剩余操作，此时B寄存器为100， 内存为100；</li>
+<li>A继续执行，将自己的寄存器的值写回内存，内存为2。</li>
+</ul>
+<h3 id="最大值200"><a href="#最大值200" class="headerlink" title="最大值200"></a>最大值200</h3><p>每个线程的每次执行都将值写回内存</p>
+<h2 id="C-指定内存分配对象"><a href="#C-指定内存分配对象" class="headerlink" title="C++指定内存分配对象"></a>C++指定内存分配对象</h2><h3 id="placement-new"><a href="#placement-new" class="headerlink" title="placement new"></a>placement new</h3><p>首先分配足够大的内存；然后用<code>placement new</code>语法生成对象：<code>new(ptr) xxx()</code>，其中<code>ptr</code>是足够容纳所指对象的指针。</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Person</span> &#123;</span></span><br><span class="line"><span class="keyword">private</span>:</span><br><span class="line">    <span class="keyword">int</span> age;</span><br><span class="line">    std::string name;</span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">  <span class="comment">// methods</span></span><br><span class="line">&#125;;</span><br><span class="line"> </span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">(<span class="keyword">int</span> argc, <span class="keyword">char</span>** argv)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">auto</span> mem = <span class="built_in">malloc</span>(<span class="built_in"><span class="keyword">sizeof</span></span>(Person));</span><br><span class="line">    <span class="keyword">auto</span> p = <span class="built_in"><span class="keyword">new</span></span>(mem) <span class="built_in">Person</span>();</span><br><span class="line">    <span class="built_in">free</span>(mem);</span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<h3 id="allocator"><a href="#allocator" class="headerlink" title="allocator"></a>allocator</h3><figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Person</span> &#123;</span></span><br><span class="line"><span class="keyword">private</span>:</span><br><span class="line">  <span class="keyword">int</span> age;</span><br><span class="line">  std::string name;</span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">    <span class="built_in">Person</span>() &#123;</span><br><span class="line">        age = <span class="number">10</span>;</span><br><span class="line">        name = <span class="string">&quot;Lily&quot;</span>;</span><br><span class="line">        cout &lt;&lt; <span class="string">&quot;Person&quot;</span> &lt;&lt; endl;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="function"><span class="keyword">void</span> <span class="title">show</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        cout &lt;&lt; name &lt;&lt; <span class="string">&quot;&#x27;s age is &quot;</span> &lt;&lt; age &lt;&lt; endl;</span><br><span class="line">    &#125;</span><br><span class="line">    ~<span class="built_in">Person</span>() &#123;</span><br><span class="line">        cout &lt;&lt; <span class="string">&quot;~Person&quot;</span> &lt;&lt; endl;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span> </span>&#123;</span><br><span class="line">  std::allocator&lt;Personalloc&gt; alloc;</span><br><span class="line">  <span class="keyword">auto</span> p = alloc.<span class="built_in">allocate</span>(<span class="number">1</span>); <span class="comment">// 分配一个Person对象的内存</span></span><br><span class="line">  alloc.<span class="built_in">construct</span>(p);   <span class="comment">// 调用Person的构造函数，如果构造函数有参数，参数写在p之后</span></span><br><span class="line">  <span class="comment">// p 现在是一个指向Person的指针，且其指向对象被初始化过</span></span><br><span class="line">  <span class="comment">// 对p进行一些操作</span></span><br><span class="line">    p-&gt;<span class="built_in">show</span>();</span><br><span class="line">  <span class="comment">// 销毁对象，但不释放内存，等同于调用p-&gt;~Person()</span></span><br><span class="line">  alloc.<span class="built_in">destroy</span>(p);</span><br><span class="line">  <span class="comment">// 释放内存</span></span><br><span class="line">  alloc.<span class="built_in">deallocate</span>(p, <span class="number">1</span>);</span><br><span class="line">  <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">/*</span></span><br><span class="line"><span class="comment">Person</span></span><br><span class="line"><span class="comment">Lily&#x27;s age is 10</span></span><br><span class="line"><span class="comment">~Person</span></span><br><span class="line"><span class="comment">*/</span></span><br></pre></td></tr></table></figure>
+<p>先分配内存，然后在其上装载对象，可以使用 <code>allocator</code>。<code>allocator</code> 定义在<code>&lt;memory&gt;</code>头文件中，能对指定类型分配合适的内存，并可手动调用对象的构造函数和析构函数。</p>
+
+  </div>
+</article>
+
+
+
+        
+          <div id="footer-post-container">
+  <div id="footer-post">
+
+    <div id="nav-footer" style="display: none">
+      <ul>
+        
+          <li><a href="/">首页</a></li>
+        
+          <li><a href="/about/">关于</a></li>
+        
+          <li><a href="/archives/">归档</a></li>
+        
+          <li><a href="/tags/">标签</a></li>
+        
+          <li><a href="/categories/">分类</a></li>
+        
+          <li><a href="/running/">跑步</a></li>
+        
+      </ul>
+    </div>
+
+    
+    
+      <div id="toc-footer" style="display: none">
+        <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#C-C-%E5%9F%BA%E7%A1%80%E7%9F%A5%E8%AF%86"><span class="toc-number">1.</span> <span class="toc-text">C&#x2F;C++基础知识</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%95%B0%E7%BB%84%E5%92%8C%E6%8C%87%E9%92%88%E7%9A%84%E5%8C%BA%E5%88%AB"><span class="toc-number">1.1.</span> <span class="toc-text">数组和指针的区别</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%8C%87%E9%92%88%E6%95%B0%E7%BB%84%E5%92%8C%E6%95%B0%E7%BB%84%E6%8C%87%E9%92%88"><span class="toc-number">1.2.</span> <span class="toc-text">指针数组和数组指针</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%AD%97%E7%AC%A6%E6%95%B0%E7%BB%84%E5%92%8C%E5%AD%97%E7%AC%A6%E4%B8%B2%E5%B8%B8%E9%87%8F"><span class="toc-number">1.3.</span> <span class="toc-text">字符数组和字符串常量</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#inline%E5%92%8C%E5%AE%8F%E7%9A%84%E5%8C%BA%E5%88%AB"><span class="toc-number">1.4.</span> <span class="toc-text">inline和宏的区别</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%BC%95%E7%94%A8%E5%92%8C%E6%8C%87%E9%92%88%E7%9A%84%E5%8C%BA%E5%88%AB"><span class="toc-number">1.5.</span> <span class="toc-text">引用和指针的区别</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#C-%E4%B8%ADclass%E5%92%8Cstruct%E7%9A%84%E5%8C%BA%E5%88%AB"><span class="toc-number">1.6.</span> <span class="toc-text">C++中class和struct的区别</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#new-delete-%E5%92%8C-malloc-free-%E5%8C%BA%E5%88%AB"><span class="toc-number">1.7.</span> <span class="toc-text">new&#x2F;delete 和 malloc&#x2F;free 区别</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#new%E8%BF%90%E7%AE%97%E7%AC%A6%E7%9A%84%E5%8E%9F%E7%90%86"><span class="toc-number">1.8.</span> <span class="toc-text">new运算符的原理</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#malloc%E7%9A%84%E5%86%85%E5%AD%98%E5%88%86%E9%85%8D%E6%9C%BA%E5%88%B6"><span class="toc-number">1.9.</span> <span class="toc-text">malloc的内存分配机制</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%A0%88%E5%92%8C%E5%A0%86%E7%9A%84%E5%8C%BA%E5%88%AB"><span class="toc-number">1.10.</span> <span class="toc-text">栈和堆的区别</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E9%9D%A2%E5%90%91%E5%AF%B9%E8%B1%A1%E5%92%8C%E9%9D%A2%E5%90%91%E8%BF%87%E7%A8%8B%E7%9A%84%E5%8C%BA%E5%88%AB"><span class="toc-number">1.11.</span> <span class="toc-text">面向对象和面向过程的区别</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#const%E5%85%B3%E9%94%AE%E5%AD%97-%E4%B8%8D%E5%8F%AF%E4%BF%AE%E6%94%B9"><span class="toc-number">1.12.</span> <span class="toc-text">const关键字(不可修改)</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#static-%E5%85%B3%E9%94%AE%E5%AD%97-%E5%B0%81%E9%97%AD%E4%BD%9C%E7%94%A8%E5%9F%9F%EF%BC%8C%E5%AF%B9%E5%A4%96%E4%B8%8D%E5%8F%AF%E8%A7%81"><span class="toc-number">1.13.</span> <span class="toc-text">static 关键字 (封闭作用域，对外不可见)</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#extern%E5%85%B3%E9%94%AE%E5%AD%97"><span class="toc-number">1.14.</span> <span class="toc-text">extern关键字</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#volatile%E5%85%B3%E9%94%AE%E5%AD%97"><span class="toc-number">1.15.</span> <span class="toc-text">volatile关键字</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#explicit%E5%85%B3%E9%94%AE%E5%AD%97"><span class="toc-number">1.16.</span> <span class="toc-text">explicit关键字</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%B1%BB%E6%88%90%E5%91%98%E5%B1%9E%E6%80%A7"><span class="toc-number">1.17.</span> <span class="toc-text">类成员属性</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%A4%A7%E5%B0%8F%E7%AB%AF%E5%BA%8F%E7%9A%84%E5%AE%9A%E4%B9%89%E5%92%8C%E4%BB%A3%E7%A0%81%E5%88%A4%E6%96%AD"><span class="toc-number">1.18.</span> <span class="toc-text">大小端序的定义和代码判断</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%AE%9A%E4%B9%89"><span class="toc-number">1.18.1.</span> <span class="toc-text">定义</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%BB%A3%E7%A0%81%E5%88%A4%E6%96%AD"><span class="toc-number">1.18.2.</span> <span class="toc-text">代码判断</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%BB%A3%E7%A0%81%E5%88%A4%E6%96%AD32%E4%BD%8D%E5%92%8C64%E4%BD%8D%E7%B3%BB%E7%BB%9F"><span class="toc-number">1.19.</span> <span class="toc-text">代码判断32位和64位系统</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%BA%BF%E7%A8%8B-A-%E5%92%8C%E7%BA%BF%E7%A8%8B-B-%E4%B8%8D%E5%8A%A0%E9%94%81%EF%BC%8C%E5%AF%B9%E5%90%8C%E4%B8%80%E4%B8%AA%E5%8F%98%E9%87%8F%EF%BC%8C%E5%90%84%E8%87%AA%E6%89%A7%E8%A1%8C-i-100-%E6%AC%A1%EF%BC%8C%E7%BB%93%E6%9E%9C%E6%98%AF%E5%95%A5"><span class="toc-number">1.20.</span> <span class="toc-text">线程 A 和线程 B 不加锁，对同一个变量，各自执行 i++ 100 次，结果是啥</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%9C%80%E5%B0%8F%E5%80%BC2"><span class="toc-number">1.20.1.</span> <span class="toc-text">最小值2</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%9C%80%E5%A4%A7%E5%80%BC200"><span class="toc-number">1.20.2.</span> <span class="toc-text">最大值200</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#C-%E6%8C%87%E5%AE%9A%E5%86%85%E5%AD%98%E5%88%86%E9%85%8D%E5%AF%B9%E8%B1%A1"><span class="toc-number">1.21.</span> <span class="toc-text">C++指定内存分配对象</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#placement-new"><span class="toc-number">1.21.1.</span> <span class="toc-text">placement new</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#allocator"><span class="toc-number">1.21.2.</span> <span class="toc-text">allocator</span></a></li></ol></li></ol></li></ol>
+      </div>
+    
+
+    <div id="share-footer" style="display: none">
+      <ul>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.facebook.com/sharer.php?u=http://example.com/2022/07/06/%E6%8A%80%E6%9C%AF%E7%9B%B8%E5%85%B3/C%E5%92%8CC++/C++%E5%9F%BA%E7%A1%80%E7%9F%A5%E8%AF%86/"><i class="fab fa-facebook fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://twitter.com/share?url=http://example.com/2022/07/06/%E6%8A%80%E6%9C%AF%E7%9B%B8%E5%85%B3/C%E5%92%8CC++/C++%E5%9F%BA%E7%A1%80%E7%9F%A5%E8%AF%86/&text=C++基础知识"><i class="fab fa-twitter fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.linkedin.com/shareArticle?url=http://example.com/2022/07/06/%E6%8A%80%E6%9C%AF%E7%9B%B8%E5%85%B3/C%E5%92%8CC++/C++%E5%9F%BA%E7%A1%80%E7%9F%A5%E8%AF%86/&title=C++基础知识"><i class="fab fa-linkedin fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://pinterest.com/pin/create/bookmarklet/?url=http://example.com/2022/07/06/%E6%8A%80%E6%9C%AF%E7%9B%B8%E5%85%B3/C%E5%92%8CC++/C++%E5%9F%BA%E7%A1%80%E7%9F%A5%E8%AF%86/&is_video=false&description=C++基础知识"><i class="fab fa-pinterest fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="mailto:?subject=C++基础知识&body=Check out this article: http://example.com/2022/07/06/%E6%8A%80%E6%9C%AF%E7%9B%B8%E5%85%B3/C%E5%92%8CC++/C++%E5%9F%BA%E7%A1%80%E7%9F%A5%E8%AF%86/"><i class="fa-solid fa-envelope fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://getpocket.com/save?url=http://example.com/2022/07/06/%E6%8A%80%E6%9C%AF%E7%9B%B8%E5%85%B3/C%E5%92%8CC++/C++%E5%9F%BA%E7%A1%80%E7%9F%A5%E8%AF%86/&title=C++基础知识"><i class="fab fa-get-pocket fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://reddit.com/submit?url=http://example.com/2022/07/06/%E6%8A%80%E6%9C%AF%E7%9B%B8%E5%85%B3/C%E5%92%8CC++/C++%E5%9F%BA%E7%A1%80%E7%9F%A5%E8%AF%86/&title=C++基础知识"><i class="fab fa-reddit fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.stumbleupon.com/submit?url=http://example.com/2022/07/06/%E6%8A%80%E6%9C%AF%E7%9B%B8%E5%85%B3/C%E5%92%8CC++/C++%E5%9F%BA%E7%A1%80%E7%9F%A5%E8%AF%86/&title=C++基础知识"><i class="fab fa-stumbleupon fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://digg.com/submit?url=http://example.com/2022/07/06/%E6%8A%80%E6%9C%AF%E7%9B%B8%E5%85%B3/C%E5%92%8CC++/C++%E5%9F%BA%E7%A1%80%E7%9F%A5%E8%AF%86/&title=C++基础知识"><i class="fab fa-digg fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.tumblr.com/share/link?url=http://example.com/2022/07/06/%E6%8A%80%E6%9C%AF%E7%9B%B8%E5%85%B3/C%E5%92%8CC++/C++%E5%9F%BA%E7%A1%80%E7%9F%A5%E8%AF%86/&name=C++基础知识&description=C++基础知识点总结。"><i class="fab fa-tumblr fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://news.ycombinator.com/submitlink?u=http://example.com/2022/07/06/%E6%8A%80%E6%9C%AF%E7%9B%B8%E5%85%B3/C%E5%92%8CC++/C++%E5%9F%BA%E7%A1%80%E7%9F%A5%E8%AF%86/&t=C++基础知识"><i class="fab fa-hacker-news fa-lg" aria-hidden="true"></i></a></li>
+</ul>
+
+    </div>
+
+    <div id="actions-footer">
+        <a id="menu" class="icon" href="#" onclick="$('#nav-footer').toggle();return false;"><i class="fa-solid fa-bars fa-lg" aria-hidden="true"></i> 菜单</a>
+        
+          <a id="toc" class="icon" href="#" onclick="$('#toc-footer').toggle();return false;"><i class="fa-solid fa-list fa-lg" aria-hidden="true"></i> 目录</a>
+        
+        <a id="share" class="icon" href="#" onclick="$('#share-footer').toggle();return false;"><i class="fa-solid fa-share-alt fa-lg" aria-hidden="true"></i> 分享</a>
+        <a id="top" style="display:none" class="icon" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');"><i class="fa-solid fa-chevron-up fa-lg" aria-hidden="true"></i> 返回顶部</a>
+    </div>
+
+  </div>
+</div>
+
+        
+        <footer id="footer">
+  <div class="footer-left">
+    Copyright &copy;
+    
+    
+    2016-2023
+    ap0l1o
+  </div>
+  <div class="footer-right">
+    <nav>
+      <ul>
+        <!--
+       --><li><a href="/">首页</a></li><!--
+     --><!--
+       --><li><a href="/about/">关于</a></li><!--
+     --><!--
+       --><li><a href="/archives/">归档</a></li><!--
+     --><!--
+       --><li><a href="/tags/">标签</a></li><!--
+     --><!--
+       --><li><a href="/categories/">分类</a></li><!--
+     --><!--
+       --><li><a href="/running/">跑步</a></li><!--
+     -->
+      </ul>
+    </nav>
+  </div>
+</footer>
+
+    </div>
+    <!-- styles -->
+
+
+
+  <link rel="preload" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" crossorigin="anonymous" onload="this.onload=null;this.rel='stylesheet'"/>
+
+
+    <!-- jquery -->
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js" crossorigin="anonymous"></script>
+
+
+
+
+<!-- clipboard -->
+
+  
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.7/clipboard.min.js" crossorigin="anonymous"></script>
+  
+  <script type="text/javascript">
+  $(function() {
+    // copy-btn HTML
+    var btn = "<span class=\"btn-copy tooltipped tooltipped-sw\" aria-label=\"复制到粘贴板！\">";
+    btn += '<i class="fa-regular fa-clone"></i>';
+    btn += '</span>';
+    // mount it!
+    $(".highlight table").before(btn);
+    var clip = new ClipboardJS('.btn-copy', {
+      text: function(trigger) {
+        return Array.from(trigger.nextElementSibling.querySelectorAll('.code')).reduce((str,it)=>str+it.innerText+'\n','')
+      }
+    });
+    clip.on('success', function(e) {
+      e.trigger.setAttribute('aria-label', "复制成功！");
+      e.clearSelection();
+    })
+  })
+  </script>
+
+
+<script src="/js/main.js"></script>
+
+<!-- search -->
+
+<!-- Baidu Analytics -->
+
+<!-- Cloudflare Analytics -->
+
+<!-- Disqus Comments -->
+
+<!-- utterances Comments -->
+
+</body>
+</html>

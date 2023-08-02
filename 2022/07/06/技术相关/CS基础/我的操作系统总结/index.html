@@ -17,14 +17,12 @@
 <meta property="og:image" content="https://cdn.jsdelivr.net/gh/guaguaupup/cloudimg/data/aHR0cHM6Ly9zdGF0aWMwMS5pbWdrci5jb20vdGVtcC8zYTk5NGVmMGY0M2M0NmE4YjY1OWQ0MjY5NTBmYmRlMy5wbmc">
 <meta property="og:image" content="https://ap0l1o.oss-cn-qingdao.aliyuncs.com/img/os/paging.png">
 <meta property="og:image" content="https://ap0l1o.oss-cn-qingdao.aliyuncs.com/img/os/multiple-paging.png">
-<meta property="og:image" content="https://ap0l1o.oss-cn-qingdao.aliyuncs.com/img/%E5%86%85%E5%AD%98%E5%B8%83%E5%B1%80.png">
-<meta property="og:image" content="https://ap0l1o.oss-cn-qingdao.aliyuncs.com/img/%E5%86%85%E5%AD%98%E5%B8%83%E5%B1%80.png">
 <meta property="og:image" content="https://cdn.jsdelivr.net/gh/Ap0l1o/ImageHostingService@main/img/%E5%86%85%E5%AD%98%E5%B8%83%E5%B1%80.png">
 <meta property="og:image" content="https://ap0l1o.oss-cn-qingdao.aliyuncs.com/img/os/memory-layout.png">
 <meta property="og:image" content="https://cdn.jsdelivr.net/gh/luogou/cloudimg/data/202203181050391.png">
 <meta property="og:image" content="https://ap0l1o.oss-cn-qingdao.aliyuncs.com/img/os/share-object.png">
 <meta property="article:published_time" content="2022-07-06T05:03:00.000Z">
-<meta property="article:modified_time" content="2023-07-18T12:38:17.319Z">
+<meta property="article:modified_time" content="2023-07-28T02:26:23.658Z">
 <meta property="article:author" content="ap0l1o">
 <meta property="article:tag" content="操作系统">
 <meta name="twitter:card" content="summary">
@@ -206,7 +204,7 @@
 </ul>
 </li>
 <li>进程是<strong>操作系统</strong>资源分配 (包括 cpu、内存、磁盘 IO 等) 的基本单位，<strong>一个 CPU 同时刻只能执行一个进程</strong>。<ul>
-<li><strong>单核 CPU 实现多进程——并发。</strong> 通过操作系统的进程调度算法，单核 CPU 进行进程调度的时候，需要读取上下文+执行程序+保存上下文，即进程切换。</li>
+<li><strong>单 CPU 实现多进程——并发。</strong> 通过操作系统的进程调度算法，单 CPU 进行进程调度的时候，需要读取上下文+执行程序+保存上下文，即进程切换。</li>
 <li><strong>多 CPU 实现多进程——并行。</strong> 不同的进程运行在不同的 CPU 上。</li>
 </ul>
 </li>
@@ -225,8 +223,8 @@
 <li><strong>进程的用户空间是不同的，内核空间是不同但独立的</strong>。比如每个进程的不同系统调用，是陷入自己独立的内核空间里面，所以每个进程内核的堆栈肯定是不一样的。<h4 id="PCB"><a href="#PCB" class="headerlink" title="PCB"></a>PCB</h4></li>
 <li><strong>PCB (Process Control Block) 进程控制块</strong>，描述进程的基本信息和运行状态，<strong>进程的创建和销毁都是对 PCB 进行操作</strong>，PCB 的具体内容如下：<ul>
 <li>进程描述信息<ul>
-<li>进程标识符 pid</li>
-<li>用户标识符 uid</li>
+<li>进程标识符 <code>pid</code>；</li>
+<li>用户标识符 <code>uid</code>；</li>
 </ul>
 </li>
 </ul>
@@ -354,10 +352,10 @@
 </li>
 </ul>
 <h2 id="进程间通信方式"><a href="#进程间通信方式" class="headerlink" title="进程间通信方式"></a>进程间通信方式</h2><p>每个进程各自有不同的用户地址空间，任何一个进程的全局变量在另一个进程中都看不到，所以<strong>进程之间要交换数据必须通过内核，内核是可以共享的</strong>。在内核中开辟一块缓冲区，进程 1 把数据从用户空间拷到内核缓冲区，进程 2 再从内核缓冲区把数据读走，内核提供的这种机制称为<strong>进程间通信（IPC，InterProcess Communication）</strong>。<br>进程间通信主要包括管道、系统 <code>IPC</code>（包括消息队列、信号、共享内存等）、本地套接字 <code>socket</code>。</p>
-<h3 id="管道"><a href="#管道" class="headerlink" title="管道"></a>管道</h3><p>管道允许进程以先进先出的方式传送数据，是半双工的，意味着数据只能往一个方向流动。因此当双方通信时，必须建立两个管道。管道的实质就是在内核中创建一个缓冲区，管道一端的进程进入管道写数据，另一端的进程进入管道读取数据。管道分为 PIPE（管道）和 FIFO（命名管道） 两种。</p>
+<h3 id="管道"><a href="#管道" class="headerlink" title="管道"></a>管道</h3><p><strong>管道允许进程以先进先出的方式传送数据，是半双工的，意味着数据只能往一个方向流动</strong>。因此当双方通信时，必须建立两个管道。<strong>管道的实质就是在内核中创建一个缓冲区</strong>，管道一端的进程进入管道写数据，另一端的进程进入管道读取数据。<strong>管道分为 PIPE（管道）和 FIFO（命名管道） 两种</strong>。</p>
 <ul>
 <li>无名管道（PIPE）：<ul>
-<li>一种<strong>半双工</strong>的通信方式，只能在具有亲缘关系的进程间使用（父子进程或兄弟进程）（最简单）。</li>
+<li>一种<strong>半双工</strong>的通信方式，<strong>只能在具有亲缘关系的进程间使用</strong>（父子进程或兄弟进程）（最简单）。</li>
 <li>其本质是一个伪文件（实为内核缓冲区），由两个文件描述符引用，一个表示读端，一个表示写端，规定数据从管道的写端流入管道，从读端流出。管道中数据不可反复读取，一旦读走，管道中不再存在。</li>
 <li>读管道：<ul>
 <li>管道中有数据，<code>read</code> 返回实际读到的数据；</li>
@@ -372,7 +370,7 @@
 <li>管道读端全部被关闭，进程异常终止；</li>
 <li>管道读端没有全部关闭：<ul>
 <li>管道已满，<code>write</code> 阻塞；</li>
-<li> 管道未满，<code>write</code> 将数据写入，并返回实际写入的字节数</li>
+<li> 管道未满，<code>write</code> 将数据写入，并返回实际写入的字节数；</li>
 </ul>
 </li>
 </ul>
@@ -380,17 +378,17 @@
 </ul>
 </li>
 <li>有名管道（FIFO）：<ul>
-<li> 一种半双工的通信方式，可以在非亲缘关系的进程间使用，任何进程可以根据管道的文件名将其打开和读写。</li>
+<li> 一种<strong>半双工</strong>的通信方式，<strong>可以在非亲缘关系的进程间使用</strong>，任何进程可以根据管道的文件名将其打开和读写。</li>
 <li>FIFO 是 Linux 基础文件类型中的一种。但是，FIFO 文件在磁盘上没有数据块，仅仅用来标识内核中的一条通道。各进程可以打开这个文件进行 <code>read/write</code>，实际上是在读写内核通道，这样就实现了进程间通信。</li>
 </ul>
 </li>
-<li>缺点：管道本质上是<strong>通过内核交换数据的，因此通信效率很低，不适合频繁交换数据的情况</strong>。<h3 id="消息队列"><a href="#消息队列" class="headerlink" title="消息队列"></a>消息队列</h3>消息队列是保存在内核中的链表，由一个个独立的数据块组成，消息的接收方和发送方要约定具体的消息类型。当进程从消息队列中读取了相关数据块，则内核会将该数据块删除。跟管道相比，消息队列不一定按照先进先出的方式读取，也可以按照消息类型进行读取。</li>
+<li>缺点：管道本质上是<strong>通过内核交换数据的，因此通信效率很低，不适合频繁交换数据的情况</strong>。<h3 id="消息队列"><a href="#消息队列" class="headerlink" title="消息队列"></a>消息队列</h3>消息队列是保存在内核中的链表，由一个个独立的数据块组成，消息的接收方和发送方要约定具体的消息类型。当进程从消息队列中读取了相关数据块，则内核会将该数据块删除。<strong>跟管道相比，消息队列不一定按照先进先出的方式读取，也可以按照消息类型进行读取</strong>。</li>
 <li>消息队列是消息的链表，存放在内核中，并由消息队列标识符标识；</li>
 <li>消息队列克服了信号传递信息少，管道缓冲区大小受限的缺点。</li>
 <li>一个消息队列由一个标识符（即队列 ID）来标记。</li>
 <li>缺点：不能实现实时通信。数据块是有大小限制的。<strong>消息队列通信过程中，存在用户态与内核态之间的数据拷贝开销</strong>，因为进程写入数据到内核中的消息队列时，会发生从用户态拷贝数据到内核态的过程，同理另一进程读取内核中的消息数据时，会发生从内核态拷贝数据到用户态的过程。<h3 id="共享内存"><a href="#共享内存" class="headerlink" title="共享内存"></a>共享内存</h3></li>
 </ul>
-<p><strong>共享内存技术就是要解决用户态和内核态之间频繁发生拷贝过程的</strong>。现代操作系统对于内存管理普遍采用的是虚拟内存技术，每个进程都有自己独立的虚拟内存空间，不同进程的虚拟内存空间映射到不同的物理内存中。<br>共享内存技术的实质就是拿出一块虚拟地址空间，映射到相同的物理内存中。这样的好处是一个进程写入数据后另一个进程可以立刻看到，不用进行拷贝。<strong>因为数据不需要在不同进程之间进行复制，这是最快的一种 IPC</strong>。<br>共享内存使得多个进程可以访问同一块内存空间，不同进程可以及时看到对方进程中对共享内存中数据的更新。多个进程可以同时操作，所以需要进行同步，一般与信号量配合使用。<br>共享内存有两个，一个 <code>mmap</code>，一个 systemV 的 <code>shmget</code> 。</p>
+<p><strong>共享内存技术就是要解决用户态和内核态之间频繁发生拷贝过程的</strong>。现代操作系统对于内存管理普遍采用的是虚拟内存技术，每个进程都有自己独立的虚拟内存空间，不同进程的虚拟内存空间映射到不同的物理内存中。<br><strong>共享内存技术的实质就是拿出一块虚拟地址空间，映射到相同的物理内存中</strong>。这样的好处是一个进程写入数据后另一个进程可以立刻看到，不用进行拷贝。<strong>因为数据不需要在不同进程之间进行复制，这是最快的一种 IPC</strong>。<br>共享内存使得多个进程可以访问同一块内存空间，不同进程可以及时看到对方进程中对共享内存中数据的更新。多个进程可以同时操作，所以需要进行同步，一般与信号量配合使用。<br>共享内存有两个，一个 <code>mmap</code>，一个 systemV 的 <code>shmget</code> 。</p>
 <ul>
 <li> <strong><code>mmap</code> 的原理</strong>：<code>mmap</code> 用于把文件映射到内存空间中，简单说 <code>mmap</code> 就是把一个文件的内容在内存里面做一个映射。映射成功后，用户对这段内存区域的修改可以直接反映到内核空间，同样，内核空间对这段区域的修改也直接反映用户空间。那么对于内核空间和用户空间两者之间需要大量数据传输等操作的话效率是非常高的。</li>
 <li><strong><code>mmap</code> 的步骤</strong>：<ul>
@@ -402,39 +400,39 @@
 </li>
 <li><strong><code>mmap</code> 的效率</strong>：<ul>
 <li><code>read()</code> 是系统调用，其中进行了数据拷贝，它首先将文件内容从硬盘拷贝到内核空间的一个缓冲区，然后再将这些数据拷贝到用户空间，在这个过程中，实际上<strong>完成了两次数据拷贝</strong> ；</li>
-<li><code>mmap()</code> 也是系统调用，如前所述，<code>mmap()</code> 中没有进行数据拷贝，真正的数据拷贝是在缺页中断处理时进行的，由于 <code>mmap()</code> 将文件直接映射到用户空间，所以中断处理函数根据这个映射关系，<strong>直接将文件从硬盘拷贝到用户空间</strong>，<strong>只进行了一次数据拷贝</strong> 。</li>
+<li><code>mmap()</code> 也是系统调用，如前所述，<code>mmap()</code> 中没有进行数据拷贝，真正的数据拷贝是在缺页中断处理时进行的，由于 <code>mmap()</code> 将文件直接映射到用户空间，所以中断处理函数根据这个映射关系，<strong>直接将文件从硬盘拷贝到用户空间</strong>，<strong>只进行了一次数据拷贝</strong> ；</li>
 </ul>
 </li>
 <li>基于 POSIX <code>mmap</code> 文件映射实现共享内存的注意事项：<ul>
-<li>创建映射区的过程中，隐含着一次对映射文件的<strong>读操作</strong>，所以文件不能只写权限；</li>
+<li>创建映射区的过程中，隐含着一次对映射文件的<strong>读操作</strong>，所以文件不能只有写权限；</li>
 <li>特别注意，当映射文件大小为 0 时，不能创建映射区，用于映射的文件必须要有实际大小；</li>
 <li>文件偏移量必须是 4K 的整数倍；</li>
 <li>映射区的释放与文件关闭无关。<strong>只要映射建立成功，文件可以立即关闭</strong>；<h3 id="信号"><a href="#信号" class="headerlink" title="信号"></a>信号</h3>上面那几种进程间通信，都是常规状态下的。<strong>异常状态下的需要用信号来通知进程</strong>（注意：信号和信号量完全是不一样的东西）。可以在任何时刻给进程发送信号，信号是进程间通信或操作的一种异步通信机制。信号和信号量的区别如下：</li>
 </ul>
 </li>
-<li><strong>信号是一种异步通信机制</strong>，用于向进程或线程发送通知信号，让其进行相应的处理。信号通常由操作系统或其他进程发送，而接收信号的进程或线程则需要事先设置相应的信号处理函数来处理接收到的信号。</li>
-<li><strong>信号量则是一种同步机制</strong>，用于控制并发访问共享资源。信号量通常是一个整数值，可以用于表示某一资源的可用数量。在使用该资源时，进程或线程需要通过对信号量进行P操作（申请资源）来获得该资源，使用完后再通过对信号量进行V操作（释放资源）来释放该资源，以保证不会出现资源的竞争和互斥。</li>
+<li><strong>信号是一种异步通信机制</strong>，<strong>用于向进程或线程发送通知信号，让其进行相应的处理</strong>。信号通常由操作系统或其他进程发送，而接收信号的进程或线程则需要事先设置相应的信号处理函数来处理接收到的信号。</li>
+<li><strong>信号量则是一种同步机制</strong>，<strong>用于控制并发访问共享资源</strong>。信号量通常是一个整数值，可以用于表示某一资源的可用数量。在使用该资源时，进程或线程需要通过对信号量进行 <code>P</code> 操作（申请资源）来获得该资源，使用完后再通过对信号量进行 <code>V</code> 操作（释放资源）来释放该资源，以保证不会出现资源的竞争和互斥。</li>
 </ul>
 <p>收到信号后进程对信号的处理有三种方式：</p>
 <ul>
 <li>如果是系统定义的信号函数，执行默认操作。<ul>
-<li><code>SIGINT</code> ：程序终止信号。程序运行过程中，按 <code>Ctrl+C</code> 键将产生该信号。进程接收到 SIGINT 信号后通常会进行一些清理工作，然后正常终止运行。</li>
+<li><code>SIGINT</code> ：程序终止信号。程序运行过程中，按 <code>Ctrl+C</code> 键将产生该信号。进程接收到 <code>SIGINT</code> 信号后通常会进行一些清理工作，然后正常终止运行。</li>
 <li><code>SIGQUIT</code> ：程序退出信号。程序运行过程中，按 <code>Ctrl+\|</code> 键将产生该信号。默认情况下，进程接收到 <code>SIGQUIT</code> 信号后会立即终止运行，并在控制台输出一些调试信息，这通常用于快速退出当前进程或线程的调试。</li>
 <li><code>SIGALRM</code> ：定时器信号。</li>
 <li><code>SIGTERM</code> ：结束进程信号。shell 下执行 <code>kill pid</code> 发送该信号。<ul>
-<li>使用 <code>kill + pid</code> 命令可以向进程发送 <code>SIGTERM</code> 信号，即请求进程正常终止。但是，如果进程在处理信号时没有响应，那么进程就不会终止。这可能是因为进程正在执行某个耗时操作，或者进程没有正确处理信号导致无法正常终止。</li>
-<li>此时，可以尝试使用<code>kill -9 + pid</code>命令向进程发送强制终止的信号，强制终止进程。但需要注意的是，强制终止进程可能会导致进程中未完成的操作未被正确地处理，从而引发一些问题</li>
+<li>使用 <code>kill + pid</code> 命令可以向进程发送 <code>SIGTERM</code> 信号，即请求进程正常终止。但是，如果进程在处理信号时没有响应，那么进程就不会终止。这可能是因为进程正在执行某个耗时操作，或者进程没有正确处理信号导致无法正常终止；</li>
+<li>此时，可以尝试使用 <code>kill -9 + pid</code> 命令向进程发送强制终止的信号，强制终止进程。但需要注意的是，强制终止进程可能会导致进程中未完成的操作未被正确地处理，从而引发一些问题；</li>
 </ul>
 </li>
 </ul>
 </li>
 <li>捕捉信号。用户可以给信号定义信号处理函数，表示收到信号后该进程该怎么做。</li>
-<li>忽略信号。当我们不希望处理某些信号的时候，就可以忽略该信号，不做任何处理。有两个信号是应用进程无法捕捉和忽略的，即 <code>SIGKILL</code> 和 <code>SEGSTOP</code>，它们用于在任何时候中断或结束某一进程。<h3 id="Unix-域套接字"><a href="#Unix-域套接字" class="headerlink" title="Unix 域套接字"></a>Unix 域套接字</h3>socket API 原本是为网络通讯设计的，但后来在 socket 的框架上发展出一种 IPC 机制，就是 UNIX Domain Socket（UNIX 域间套接字）。虽然网络 socket 也可用于同一台主机的进程间通讯（通过 loopback 地址 127.0.0.1），但是 UNIX Domain Socket 用于 IPC 更有效率：<strong>不需要经过网络协议栈，不需要打包拆包、计算校验和、维护序号和应答等，只是将应用层数据从一个进程拷贝到另一个进程</strong>。</li>
+<li>忽略信号。当我们不希望处理某些信号的时候，就可以忽略该信号，不做任何处理。有两个信号是应用进程无法捕捉和忽略的，即 <code>SIGKILL</code> 和 <code>SEGSTOP</code>，它们用于在任何时候中断或结束某一进程。<h3 id="Unix-域套接字"><a href="#Unix-域套接字" class="headerlink" title="Unix 域套接字"></a>Unix 域套接字</h3>socket API 原本是为网络通讯设计的，但后来在 socket 的框架上发展出一种 IPC 机制，就是 UNIX Domain Socket（UNIX 域间套接字）。虽然网络 socket 也可用于同一台主机的进程间通讯（通过 loopback 地址 127.0.0.1），但是 UNIX Domain Socket 用于 IPC 更有效率：<strong>不需要经过网络协议栈，不需要打包拆包、计算校验和、维护序号和应答等，只是将应用层数据从一个进程拷贝到另一个进程</strong>。  </li>
 </ul>
 <p><strong>UNIX 域套接字与 TCP 套接字相比较，在同一台主机的传输速度前者是后者的两倍</strong>。这是因为，IPC 机制本质上是可靠的通讯，而网络协议是为不可靠的通讯设计的。UNIX Domain Socket 也提供面向流和面向数据包两种 API 接口，类似于 TCP 和 UDP，但是面向消息的 UNIX Domain Socket 也是可靠的，消息既不会丢失也不会顺序错乱。</p>
 <ul>
-<li>UNIX 域套接字是通过文件系统实现的一种进程间通信机制，它不依赖于网络协议栈。在内核中，UNIX 域套接字会被当做一种特殊的文件类型，它使用文件系统的 inode 来实现通信。当一个进程需要使用 UNIX 域套接字进行进程间通信时，它会创建一个 UNIX 域套接字文件，并将其与一个进程关联起来。另外一个进程也可以打开该文件，这样它们就可以进行通信了。</li>
-<li>UNIX域套接字通过本地地址（Local Address）来确定通信的双方，本地地址是一个文件路径，用于标识UNIX域套接字文件的位置。每个UNIX域套接字都有一个独特的文件描述符（File Descriptor），通过这个文件描述符可以进行读写操作。同时，UNIX域套接字也支持类似于网络套接字的事件驱动模型，可以使用select等函数进行事件监听。<h2 id="进程同步"><a href="#进程同步" class="headerlink" title="进程同步"></a>进程同步</h2>在多道程序环境下，当程序并发执行时候，由于资源共享和进程间相互协作的关系，同一个系统中的诸进程之间会存在一下两种相互制约的关系：</li>
+<li><strong>UNIX 域套接字是通过文件系统实现的一种进程间通信机制，它不依赖于网络协议栈</strong>。在内核中，UNIX 域套接字会被当做一种特殊的文件类型，它使用文件系统的 inode 来实现通信。当一个进程需要使用 UNIX 域套接字进行进程间通信时，它会创建一个 UNIX 域套接字文件，并将其与一个进程关联起来。另外一个进程也可以打开该文件，这样它们就可以进行通信了。</li>
+<li><strong>UNIX 域套接字通过本地地址（Local Address）来确定通信的双方，本地地址是一个文件路径，用于标识 UNIX 域套接字文件的位置</strong>。每个 UNIX 域套接字都有一个独特的文件描述符（File Descriptor），通过这个文件描述符可以进行读写操作。同时，UNIX 域套接字也支持类似于网络套接字的事件驱动模型，可以使用 select 等函数进行事件监听。<h2 id="进程同步"><a href="#进程同步" class="headerlink" title="进程同步"></a>进程同步</h2>在多道程序环境下，当程序并发执行时候，由于资源共享和进程间相互协作的关系，同一个系统中的诸进程之间会存在一下两种相互制约的关系：</li>
 <li>间接相互制约。主要是资源共享这种情况。</li>
 <li>直接相互制约。源于进程间的相互合作，例如 A 进程向 B 进程提供数据，当 A 缓存没数据的时候 B 就阻塞，A 缓存满时 A 就阻塞。</li>
 </ul>
@@ -449,8 +447,8 @@
 </ul>
 </li>
 <li>进程同步的实现机制：<ul>
-<li><strong>提高临界区代码执行中断的优先级</strong>： 在传统操作系统中，打断进程对临界区代码的执行只有中断请求、中断一旦被接受，系统就有可能调用其它进程进入临界区，并修改此全局数据库。<strong>所以用提高临界区中断优先级方法就可以屏蔽了其它中断，保证了临界区的执行不被打断，从而实现了互斥</strong>。</li>
-<li><strong>自旋锁</strong>：内核（处理器也如此）被保持在过渡状态“旋转”，直到它获得锁，“自旋锁”由此而得名。自旋锁像它们所保护的数据结构一样，储存在共用内存中。为了速度和使用任何在处理器体系下提供的锁定机构，获取和释放自旋锁的代码是用汇编语言写的。</li>
+<li><strong>提高临界区代码执行中断的优先级</strong>： 在传统操作系统中，打断进程对临界区代码的执行只有中断请求、中断一旦被接受，系统就有可能调用其它进程进入临界区，并修改此全局数据库。<strong>所以用提高临界区中断优先级方法就可以屏蔽其它中断，保证临界区的执行不被打断，从而实现了互斥</strong>。</li>
+<li><strong>自旋锁</strong>：内核（处理器也如此）被保持在过渡状态「旋转」，直到它获得锁，「自旋锁」由此而得名。自旋锁像它们所保护的数据结构一样，储存在共用内存中。为了速度和使用任何在处理器体系下提供的锁定机构，获取和释放自旋锁的代码是用汇编语言写的。</li>
 <li><strong>信号量机制</strong>：信号量其实是一个计数器，表示资源的数量，用于实现进程间的互斥和同步。<ul>
 <li><strong>P 操作</strong> 会把信号量减一，减一之后如果信号量的值小于零，则表示资源已经被占用，进程需要阻塞等待；如果信号量减一后大于等于 0，表明进程可以正常执行。</li>
 <li><strong>V 操作</strong>跟 P 操作正好相反。</li>
@@ -474,7 +472,7 @@
 <ul>
 <li>先来先服务调度算法（first-come first-serverd，FCFS）。<ul>
 <li>非抢占式的调度算法。每次从就绪队列选择最先进入队列的进程，然后一直运行，直到进程退出或被阻塞，才会继续从队列中选择第一个进程接着运行。</li>
-<li> FCFS 对长作业有利，适用于 CPU 繁忙型作业的系统，而不适用于 I/O 繁忙型作业的系统。</li>
+<li> <strong>FCFS 对长作业有利，适用于 CPU 繁忙型作业的系统，而不适用于 I/O 繁忙型作业的系统</strong>。</li>
 </ul>
 </li>
 <li>最短作业优先调度算法（shortest job first，SJC）。<ul>
@@ -514,12 +512,12 @@
 <li>僵尸进程是每个子进程退出时必然经历的过程。</li>
 <li>僵尸进程的危害：<ul>
 <li>在每个进程退出的时候，内核释放该进程所有的资源，包括打开的文件，占用的内存等。但是仍然为其保留一定的信息（包括进程号，退出状态，运行时间等）。直到父进程通过 <code>wait</code> 或 <code>waitpid</code> 来获取时才释放。</li>
-<li>如果进程不调用 <code>wait</code> / <code>waitpid</code> 的话，那么保留的那段信息就不会释放，其进程号就会一直被占用，但是<strong>系统所能使用的进程号是有限的</strong>，如果大量的产生僵死进程，将因为没有可用的进程号而导致系统不能产生新的进程。  </li>
+<li>如果进程不调用 <code>wait</code> / <code>waitpid</code> 的话，那么保留的那段信息就不会释放，其进程号就会一直被占用，但是<strong>系统所能使用的进程号是有限的</strong>，如果大量的产生僵尸进程，将因为没有可用的进程号而导致系统不能产生新的进程。  </li>
 </ul>
 </li>
 <li>如何消除僵尸进程：<ul>
-<li><code>kill</code> 发送 <code>SIGTERM</code> 或者 <code>SIGKILL</code> 信号消灭产生僵尸进程的进程，它产生的僵死进程就变成了孤儿进程，这些孤儿进程会被 init 进程接管。</li>
-<li>子进程退出时向父进程发送 <code>SIGCHILD</code> 信号，父进程处理 <code>SIGCHILD</code> 信号。在信号处理函数中调用 <code>wait</code> 进行处理僵尸进程。 <h2 id="线程间通信方式"><a href="#线程间通信方式" class="headerlink" title="线程间通信方式"></a>线程间通信方式</h2><h3 id="锁机制（互斥量）"><a href="#锁机制（互斥量）" class="headerlink" title="锁机制（互斥量）"></a>锁机制（互斥量）</h3></li>
+<li><code>kill</code> 发送 <code>SIGTERM</code> 或者 <code>SIGKILL</code> 信号消灭产生僵尸进程的进程，它产生的僵尸进程就变成了孤儿进程，这些孤儿进程会被 init 进程接管。</li>
+<li>子进程退出时向父进程发送 <code>SIGCHILD</code> 信号，父进程通过 <code>std::signal()</code> 函数注册处理函数来处理 <code>SIGCHILD</code> 信号。在信号处理函数中调用 <code>wait</code> 进行处理僵尸进程。 <h2 id="线程间通信方式"><a href="#线程间通信方式" class="headerlink" title="线程间通信方式"></a>线程间通信方式</h2><h3 id="锁机制（互斥量）"><a href="#锁机制（互斥量）" class="headerlink" title="锁机制（互斥量）"></a>锁机制（互斥量）</h3></li>
 </ul>
 </li>
 </ul>
@@ -533,29 +531,28 @@
 <li><code>pthread_mutex_unlock</code> ：以一个原子操作的方式给一个互斥锁解锁。</li>
 </ul>
 </li>
-<li>读写锁。当以写模式加锁的时候，任何其他线程不论以何种方式加锁都会处以阻塞状态。当以读模式加锁时，读状态不阻塞，但是写状态阻塞。“读模式共享，写模式互斥”。</li>
+<li>读写锁。当以写模式加锁的时候，任何其他线程不论以何种方式加锁都会处以阻塞状态。当以读模式加锁时，读状态不阻塞，但是写状态阻塞。「读模式共享，写模式互斥」。</li>
 <li>自旋锁。上锁受阻时线程不阻塞而是在循环中轮询查看能否获得该锁，没有线程的切换因而没有切换开销，不过对 CPU 的霸占会导致 CPU 资源的浪费。<h3 id="信号量"><a href="#信号量" class="headerlink" title="信号量"></a>信号量</h3>信号量是一种特殊的变量，可用于<strong>线程同步</strong>。它只取自然数值，并且只支持两种操作：</li>
 </ul>
 <ul>
-<li><code>P(SV)</code> : 如果信号量 <code>SV</code> 大于 0，将它减 1；如果 <code>SV</code> 值为 0，则挂起该线程。</li>
-<li><code>V(SV)</code> ：如果有其他进程因为等待 <code>SV</code> 而挂起，则唤醒，然后将 <code>SV</code> 加 1；否则直接将 <code>SV</code> 加 1。<br>相关系统调用：</li>
+<li><code>P(SV)</code> : 会把信号量<code>SV</code>减一，减一之后如果信号量的值小于零，则表示资源已经被占用，进程需要阻塞等待；如果信号量减一后大于等于 0，表明进程可以正常执行。</li>
+<li><code>V(SV)</code> ：将信号量 <code>SV</code> 加一，加一后如果信号量的值小于等于零，则表明有进程需要唤醒。<br>相关系统调用：</li>
 </ul>
 <ul>
 <li> <code>sem_wait（sem_t *sem）</code> ：以原子操作的方式将信号量减 1，如果信号量值为 0，则 <code>sem_wait</code> 将被阻塞，直到这个信号量具有非 0 值。</li>
 <li><code>sem_post（sem_t *sem)</code> ：以原子操作将信号量值加 1。当信号量大于 0 时，其他正在调用 <code>sem_wait</code> 等待信号量的线程将被唤醒。<br>信号量和互斥量的区别：</li>
 <li><strong>信号量是用于多线程多任务同步</strong>的，一个线程完成某一个动作就通过信号量告诉别的线程，别的线程再进行某些动作。</li>
-<li>而 <strong>互斥量是用于多线程多任务互斥</strong>的，一个线程占用了某一资源，那么别的线程就无法访问，直到这个线程解锁，其他线程才可以利用这个资源。比如对全局变量的访问，有时要加锁，操作完再解锁。</li>
+<li>而<strong>互斥量是用于多线程多任务互斥</strong>的，一个线程占用了某一资源，那么别的线程就无法访问，直到这个线程解锁，其他线程才可以利用这个资源。比如对全局变量的访问，有时要加锁，操作完再解锁。</li>
 <li>不难看出，<code>mutex</code> 是 <code>semaphore</code> 的一种特殊情况（n=1 时）。也就是说，完全可以用后者替代前者。<strong>但是，因为 <code>mutex</code> 较为简单，且效率高，所以在必须保证资源独占的情况下，还是采用这种设计</strong>。</li>
-<li><code>semaphore</code> 的用途，一句话：<strong>调度线程</strong>。有的人用 <code>semaphore</code> 也可以把上面例子中的票“保护”起来以防止共享资源冲突，必须承认这是可行的，但是 <code>semaphore</code> 不是让你用来做这个的；**如果你要做这件事，请用 <code>mutex</code>**。</li>
 <li>简而言之，<strong>锁是服务于共享资源的；而 semaphore 是服务于多个线程间的执行的逻辑顺序的。</strong></li>
 </ul>
 <h3 id="条件变量"><a href="#条件变量" class="headerlink" title="条件变量"></a>条件变量</h3><p>条件变量，用于在<strong>线程之间同步共享数据的值</strong>。条件变量提供一种线程间通信机制：当某个共享数据达到某个值时，唤醒等待这个共享数据的一个/多个线程。即，当某个共享变量等于某个值时，调用 <code>signal/broadcast</code>。此时操作共享变量时需要加锁。</p>
 <ul>
 <li>系统调用<ul>
-<li><code>pthread_cond_init</code> : 初始化条件变量</li>
-<li><code>pthread_cond_destroy</code> ：销毁条件变量</li>
-<li><code>pthread_cond_signal</code> ：唤醒一个等待目标条件变量的线程。哪个线程被唤醒取决于调度策略和优先级。</li>
-<li><code>pthread_cond_wait</code> ：等待目标条件变量。需要一个加锁的互斥锁确保操作的原子性。该函数中在进入 wait 状态前首先进行解锁，然后接收到信号后会再加锁，保证该线程对共享资源正确访问。 <h1 id="死锁"><a href="#死锁" class="headerlink" title="死锁"></a>死锁</h1><h3 id="死锁产生的条件"><a href="#死锁产生的条件" class="headerlink" title="死锁产生的条件"></a>死锁产生的条件</h3>死锁是多个并发进程因争夺系统资源而产生相互等待的现象，其产生条件如下：</li>
+<li><code>pthread_cond_init(pthread_cond_t *cond, const pthread_condattr_t *attr)</code> : 初始化条件变量</li>
+<li><code>pthread_cond_destroy(pthread_cond_t *cond)</code> ：销毁条件变量</li>
+<li><code>pthread_cond_signal(pthread_cond_t *cond)</code> ：唤醒一个等待目标条件变量的线程。哪个线程被唤醒取决于调度策略和优先级。</li>
+<li><code>pthread_cond_wait(pthread_cond_t *cond, pthread_mutex_t *mutex)</code> ：等待目标条件变量。需要一个加锁的互斥锁确保操作的原子性。该函数中在进入 <code>wait</code> 状态前首先进行解锁，然后接收到信号后会再加锁，保证该线程对共享资源正确访问。 <h1 id="死锁"><a href="#死锁" class="headerlink" title="死锁"></a>死锁</h1><h3 id="死锁产生的条件"><a href="#死锁产生的条件" class="headerlink" title="死锁产生的条件"></a>死锁产生的条件</h3>死锁是多个并发进程因争夺系统资源而产生相互等待的现象，其产生条件如下：</li>
 </ul>
 </li>
 </ul>
@@ -566,10 +563,10 @@
 <li><strong>循环等待条件</strong>：进程发生死锁后，必然存在一个进程和资源之间的环形链，环路中每个进程都在等待下一个进程所占有的资源；<h3 id="如何避免死锁"><a href="#如何避免死锁" class="headerlink" title="如何避免死锁"></a>如何避免死锁</h3></li>
 </ul>
 <ul>
-<li><strong>破坏请求和等待条件。</strong> 所有的进程在开始运行之前，必须一次性地申请其在整个运行过程中所需要的全部资源</li>
-<li><strong>破坏不可抢占条件。</strong> 当进程新的资源未得到满足时，释放已占有的资源</li>
-<li><strong>破坏循环等待条件。</strong> 系统给每类资源赋予一个序号，每个进程按编号递增的请求资源，释放则相反<h1 id="内存管理"><a href="#内存管理" class="headerlink" title="内存管理"></a>内存管理</h1><h2 id="虚拟内存"><a href="#虚拟内存" class="headerlink" title="虚拟内存"></a>虚拟内存</h2>虚拟内存就是来解决“<strong>程序大于内存的问题</strong>”，即如何不把程序全部装进内存而运行。</li>
-<li>*虚拟内存的基本思想是每个程序都拥有自己的地址空间，这些空间被分割成多个块儿。每一块儿被称作一页或者页面。每一个页面有连续的地址范围。这些页面被映射到物理内存，但是并不是一个程序的所有的页面都必须在内存中才能运行**。当程序引用到一部分在物理内存中的地址空间时，由硬件立刻执行映射。当程序引用到一部分不在物理内存中的地址空间时，由操作系统负责将缺失部分装入物理内存并重新执行指令。</li>
+<li><strong>破坏请求和等待条件。</strong> 所有的进程在开始运行之前，必须一次性地申请其在整个运行过程中所需要的全部资源；</li>
+<li><strong>破坏不可抢占条件。</strong> 当进程新的资源未得到满足时，释放已占有的资源；</li>
+<li><strong>破坏循环等待条件。</strong> 系统给每类资源赋予一个序号，每个进程按编号递增的请求资源，释放则相反；<h1 id="内存管理"><a href="#内存管理" class="headerlink" title="内存管理"></a>内存管理</h1><h2 id="虚拟内存"><a href="#虚拟内存" class="headerlink" title="虚拟内存"></a>虚拟内存</h2>虚拟内存就是来解决“<strong>程序大于内存的问题</strong>”，即如何不把程序全部装进内存而运行。  </li>
+<li>*虚拟内存的基本思想是每个程序都拥有自己的地址空间，这些空间被分割成多个块儿。每一块儿被称作一页或者页面。每一个页面有连续的地址范围。这些页面被映射到物理内存，但是并不是一个程序的所有的页面都必须在内存中才能运行**。当程序引用到一部分在物理内存中的地址空间时，由硬件立刻执行映射。当程序引用到一部分不在物理内存中的地址空间时，由操作系统负责将缺失部分装入物理内存并重新执行指令。  </li>
 <li>*虚拟内存使得应用程序认为它拥有连续的可用的内存（一个连续完整的地址空间）**，而实际上，它通常是被分隔成多个物理内存碎片，还有部分暂时存储在外部磁盘存储器上，在需要时进行数据交换。与没有使用虚拟内存技术的系统相比，使用这种技术的系统使得大型程序的编写变得更容易，对真正的物理内存（例如 RAM）的使用也更有效率。<h3 id="分段"><a href="#分段" class="headerlink" title="分段"></a>分段</h3>程序是由若⼲个逻辑分段组成的，如可由代码分段、数据分段、栈段、堆段组成。不同的段是有不同的属性的，所以就⽤分段（Segmentation）的形式把这些段分离出来。<br>分段机制下的虚拟地址由两部分组成，<strong>段选择因子和段内偏移量</strong>。<br><img src="https://cdn.jsdelivr.net/gh/guaguaupup/cloudimg/data/aHR0cHM6Ly9zdGF0aWMwMS5pbWdrci5jb20vdGVtcC8zYTk5NGVmMGY0M2M0NmE4YjY1OWQ0MjY5NTBmYmRlMy5wbmc"></li>
 </ul>
 <ul>
@@ -604,7 +601,7 @@
 </ul>
 <ul>
 <li>先进先出 (FIFO) 算法：置换最先调入内存的页面，即置换在内存中驻留时间最久的页面。按照进入内存的先后次序排列成队列，从队尾进入，从队首删除。</li>
-<li>最近最少使用（LRU）算法: 置换最近一段时间以来最长时间未访问过的页面。根据程序局部性原理，刚被访问的页面，可能马上又要被访问；而较长时间内没有被访问的页面，可能最近不会被访问。<h2 id="虚拟内存布局"><a href="#虚拟内存布局" class="headerlink" title="虚拟内存布局"></a>虚拟内存布局</h2><img src="https://ap0l1o.oss-cn-qingdao.aliyuncs.com/img/%E5%86%85%E5%AD%98%E5%B8%83%E5%B1%80.png"><br><img src="https://ap0l1o.oss-cn-qingdao.aliyuncs.com/img/%E5%86%85%E5%AD%98%E5%B8%83%E5%B1%80.png"><br><img src="https://cdn.jsdelivr.net/gh/Ap0l1o/ImageHostingService@main/img/%E5%86%85%E5%AD%98%E5%B8%83%E5%B1%80.png"></li>
+<li>最近最少使用（LRU）算法: 置换最近一段时间以来最长时间未访问过的页面。根据程序局部性原理，刚被访问的页面，可能马上又要被访问；而较长时间内没有被访问的页面，可能最近不会被访问。<h2 id="虚拟内存布局"><a href="#虚拟内存布局" class="headerlink" title="虚拟内存布局"></a>虚拟内存布局</h2><img src="https://cdn.jsdelivr.net/gh/Ap0l1o/ImageHostingService@main/img/%E5%86%85%E5%AD%98%E5%B8%83%E5%B1%80.png"></li>
 </ul>
 <p>32 位系统下，Linux 的每个进程都有各自独立的 <strong>4G 虚拟内存空间（逻辑地址）</strong>，其中 <strong>0-3G 是用户态空间</strong>，<strong>3~4G 是内核空间</strong>，不同进程相同的逻辑地址会映射到不同的物理地址中。如上图所示，该虚拟内存空间的布局自下而上可以分为以下几个区域：</p>
 <ul>

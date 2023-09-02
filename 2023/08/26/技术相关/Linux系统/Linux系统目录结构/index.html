@@ -1,0 +1,345 @@
+<!DOCTYPE html>
+<html lang=zh>
+<head>
+    <!-- so meta -->
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="HandheldFriendly" content="True">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=5" />
+    <meta name="description" content="Linux系统目录结构总结。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Linux系统目录结构">
+<meta property="og:url" content="http://example.com/2023/08/26/%E6%8A%80%E6%9C%AF%E7%9B%B8%E5%85%B3/Linux%E7%B3%BB%E7%BB%9F/Linux%E7%B3%BB%E7%BB%9F%E7%9B%AE%E5%BD%95%E7%BB%93%E6%9E%84/index.html">
+<meta property="og:site_name" content="ap0l1o">
+<meta property="og:description" content="Linux系统目录结构总结。">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2023-08-26T13:06:00.000Z">
+<meta property="article:modified_time" content="2023-09-02T08:09:07.507Z">
+<meta property="article:author" content="ap0l1o">
+<meta property="article:tag" content="Linux系统">
+<meta name="twitter:card" content="summary">
+    
+    
+      
+        
+          <link rel="shortcut icon" href="/images/endless.ico">
+        
+      
+      
+        
+          <link rel="icon" type="image/png" href="/images/endless-192.png" sizes="192x192">
+        
+      
+      
+        
+          <link rel="apple-touch-icon" sizes="180x180" href="/images/endless-180.png">
+        
+      
+    
+    <!-- title -->
+    <title>Linux系统目录结构</title>
+    <!-- async scripts -->
+    <!-- Google Analytics -->
+
+
+    <!-- Umami Analytics -->
+
+
+    <!-- styles -->
+    
+<link rel="stylesheet" href="/css/style.css">
+
+    <!-- persian styles -->
+    
+    <!-- rss -->
+    
+    
+      <link rel="alternate" href="/true" title="ap0l1o" type="application/atom+xml" />
+    
+	<!-- mathjax -->
+	
+		<script type="text/x-mathjax-config">
+		  MathJax.Hub.Config({
+			tex2jax: {
+			  skipTags: ['script', 'noscript', 'style', 'textarea', 'pre'],
+			  inlineMath: [['$','$']]
+			}
+		  });
+		</script>
+		<script src='https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-MML-AM_CHTML' async></script>
+	
+<meta name="generator" content="Hexo 5.4.0"></head>
+
+<body class="max-width mx-auto px3 RTL">
+    
+      <div id="header-post">
+  <a id="menu-icon" href="#" aria-label="目录"><i class="fa-solid fa-bars fa-lg"></i></a>
+  <a id="menu-icon-tablet" href="#" aria-label="目录"><i class="fa-solid fa-bars fa-lg"></i></a>
+  <a id="top-icon-tablet" href="#" aria-label="顶部" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');" style="display:none;"><i class="fa-solid fa-chevron-up fa-lg"></i></a>
+  <span id="menu">
+    <span id="nav">
+      <ul>
+        <!--
+       --><li><a href="/">首页</a></li><!--
+     --><!--
+       --><li><a href="/about/">关于</a></li><!--
+     --><!--
+       --><li><a href="/archives/">归档</a></li><!--
+     --><!--
+       --><li><a href="/tags/">标签</a></li><!--
+     --><!--
+       --><li><a href="/categories/">分类</a></li><!--
+     --><!--
+       --><li><a href="/running/">跑步</a></li><!--
+     -->
+      </ul>
+    </span>
+    <br/>
+    <span id="actions">
+      <ul>
+        
+        
+        <li><a class="icon" aria-label="下一篇" href="/2023/08/26/%E6%B5%AE%E7%94%9F%E4%B8%80%E4%BA%8B/2023-08-26/"><i class="fa-solid fa-chevron-right" aria-hidden="true" onmouseover="$('#i-next').toggle();" onmouseout="$('#i-next').toggle();"></i></a></li>
+        
+        <li><a class="icon" aria-label="返回顶部" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');"><i class="fa-solid fa-chevron-up" aria-hidden="true" onmouseover="$('#i-top').toggle();" onmouseout="$('#i-top').toggle();"></i></a></li>
+        <li><a class="icon" aria-label="分享文章" href="#"><i class="fa-solid fa-share-alt" aria-hidden="true" onmouseover="$('#i-share').toggle();" onmouseout="$('#i-share').toggle();" onclick="$('#share').toggle();return false;"></i></a></li>
+      </ul>
+      <span id="i-prev" class="info" style="display:none;">上一篇</span>
+      <span id="i-next" class="info" style="display:none;">下一篇</span>
+      <span id="i-top" class="info" style="display:none;">返回顶部</span>
+      <span id="i-share" class="info" style="display:none;">分享文章</span>
+    </span>
+    <br/>
+    <div id="share" style="display: none">
+      <ul>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.facebook.com/sharer.php?u=http://example.com/2023/08/26/%E6%8A%80%E6%9C%AF%E7%9B%B8%E5%85%B3/Linux%E7%B3%BB%E7%BB%9F/Linux%E7%B3%BB%E7%BB%9F%E7%9B%AE%E5%BD%95%E7%BB%93%E6%9E%84/"><i class="fab fa-facebook " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://twitter.com/share?url=http://example.com/2023/08/26/%E6%8A%80%E6%9C%AF%E7%9B%B8%E5%85%B3/Linux%E7%B3%BB%E7%BB%9F/Linux%E7%B3%BB%E7%BB%9F%E7%9B%AE%E5%BD%95%E7%BB%93%E6%9E%84/&text=Linux系统目录结构"><i class="fab fa-twitter " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.linkedin.com/shareArticle?url=http://example.com/2023/08/26/%E6%8A%80%E6%9C%AF%E7%9B%B8%E5%85%B3/Linux%E7%B3%BB%E7%BB%9F/Linux%E7%B3%BB%E7%BB%9F%E7%9B%AE%E5%BD%95%E7%BB%93%E6%9E%84/&title=Linux系统目录结构"><i class="fab fa-linkedin " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://pinterest.com/pin/create/bookmarklet/?url=http://example.com/2023/08/26/%E6%8A%80%E6%9C%AF%E7%9B%B8%E5%85%B3/Linux%E7%B3%BB%E7%BB%9F/Linux%E7%B3%BB%E7%BB%9F%E7%9B%AE%E5%BD%95%E7%BB%93%E6%9E%84/&is_video=false&description=Linux系统目录结构"><i class="fab fa-pinterest " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="mailto:?subject=Linux系统目录结构&body=Check out this article: http://example.com/2023/08/26/%E6%8A%80%E6%9C%AF%E7%9B%B8%E5%85%B3/Linux%E7%B3%BB%E7%BB%9F/Linux%E7%B3%BB%E7%BB%9F%E7%9B%AE%E5%BD%95%E7%BB%93%E6%9E%84/"><i class="fa-solid fa-envelope " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://getpocket.com/save?url=http://example.com/2023/08/26/%E6%8A%80%E6%9C%AF%E7%9B%B8%E5%85%B3/Linux%E7%B3%BB%E7%BB%9F/Linux%E7%B3%BB%E7%BB%9F%E7%9B%AE%E5%BD%95%E7%BB%93%E6%9E%84/&title=Linux系统目录结构"><i class="fab fa-get-pocket " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://reddit.com/submit?url=http://example.com/2023/08/26/%E6%8A%80%E6%9C%AF%E7%9B%B8%E5%85%B3/Linux%E7%B3%BB%E7%BB%9F/Linux%E7%B3%BB%E7%BB%9F%E7%9B%AE%E5%BD%95%E7%BB%93%E6%9E%84/&title=Linux系统目录结构"><i class="fab fa-reddit " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.stumbleupon.com/submit?url=http://example.com/2023/08/26/%E6%8A%80%E6%9C%AF%E7%9B%B8%E5%85%B3/Linux%E7%B3%BB%E7%BB%9F/Linux%E7%B3%BB%E7%BB%9F%E7%9B%AE%E5%BD%95%E7%BB%93%E6%9E%84/&title=Linux系统目录结构"><i class="fab fa-stumbleupon " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://digg.com/submit?url=http://example.com/2023/08/26/%E6%8A%80%E6%9C%AF%E7%9B%B8%E5%85%B3/Linux%E7%B3%BB%E7%BB%9F/Linux%E7%B3%BB%E7%BB%9F%E7%9B%AE%E5%BD%95%E7%BB%93%E6%9E%84/&title=Linux系统目录结构"><i class="fab fa-digg " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.tumblr.com/share/link?url=http://example.com/2023/08/26/%E6%8A%80%E6%9C%AF%E7%9B%B8%E5%85%B3/Linux%E7%B3%BB%E7%BB%9F/Linux%E7%B3%BB%E7%BB%9F%E7%9B%AE%E5%BD%95%E7%BB%93%E6%9E%84/&name=Linux系统目录结构&description=Linux系统目录结构总结。"><i class="fab fa-tumblr " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://news.ycombinator.com/submitlink?u=http://example.com/2023/08/26/%E6%8A%80%E6%9C%AF%E7%9B%B8%E5%85%B3/Linux%E7%B3%BB%E7%BB%9F/Linux%E7%B3%BB%E7%BB%9F%E7%9B%AE%E5%BD%95%E7%BB%93%E6%9E%84/&t=Linux系统目录结构"><i class="fab fa-hacker-news " aria-hidden="true"></i></a></li>
+</ul>
+
+    </div>
+    
+    
+  </span>
+</div>
+
+    
+    <div class="content index py4 ">
+        
+        <article class="post h-entry" itemscope itemtype="http://schema.org/BlogPosting">
+  <header>
+    
+    <h1 class="posttitle p-name" itemprop="name headline">
+        Linux系统目录结构
+    </h1>
+
+
+
+    <div class="meta">
+      <span class="author p-author h-card" itemprop="author" itemscope itemtype="http://schema.org/Person">
+        <span class="p-name" itemprop="name">ap0l1o</span>
+      </span>
+      
+    <div class="postdate">
+      
+        <time datetime="2023-08-26T13:06:00.000Z" class="dt-published" itemprop="datePublished">2023-08-26</time>
+        
+      
+    </div>
+
+
+      
+    <div class="article-category">
+        <i class="fa-solid fa-archive"></i>
+        <a class="category-link" href="/categories/Linux%E7%B3%BB%E7%BB%9F/">Linux系统</a>
+    </div>
+
+
+      
+    <div class="article-tag">
+        <i class="fa-solid fa-tag"></i>
+        <a class="p-category" href="/tags/Linux%E7%B3%BB%E7%BB%9F/" rel="tag">Linux系统</a>
+    </div>
+
+
+    </div>
+  </header>
+  
+
+  <div class="content e-content" itemprop="articleBody">
+    <ul>
+<li>**<code>/bin</code>**：<code>bin</code> 是 Binaries (二进制文件) 的缩写，这个目录存放着最经常使用的命令。</li>
+<li>**<code>/boot</code>**：这里存放的是启动 Linux 时使用的一些核心文件，包括一些连接文件以及镜像文件。</li>
+<li>**<code>/dev</code>**：<code>dev</code> 是 Device (设备) 的缩写，该目录下存放的是 Linux 的外部设备，在 Linux 中访问设备的方式和访问文件的方式是相同的。</li>
+<li><strong><code>/etc</code></strong> ：<code>etc</code> 是 Etcetera (等等) 的缩写，这个目录用来存放所有的系统管理所需要的配置文件和子目录。</li>
+<li>**<code>/home</code>**：用户的主目录，在 Linux 中，每个用户都有一个自己的目录，一般该目录名是以用户的账号命名的。</li>
+<li>**<code>/lib</code>**：<code>lib</code> 是 Library(库) 的缩写这个目录里存放着系统最基本的动态连接共享库，其作用类似于 Windows 里的 DLL 文件。几乎所有的应用程序都需要用到这些共享库。</li>
+<li>**<code>/lost+found</code>**：这个目录一般情况下是空的，当系统非法关机后，这里就存放了一些文件。</li>
+<li>**<code>/media</code>**：Linux 系统会自动识别一些设备，例如U盘、光驱等等，当识别后，Linux 会把识别的设备挂载到这个目录下。</li>
+<li>**<code>/mnt</code>**：系统提供该目录是为了让用户临时挂载别的文件系统的，我们可以将光驱挂载在 <code>/mnt/</code> 上，然后进入该目录就可以查看光驱里的内容了。</li>
+<li>**<code>/opt</code>**：<code>opt</code> 是 optional(可选) 的缩写，这是给主机额外安装软件所摆放的目录。比如你安装一个ORACLE数据库则就可以放到这个目录下。默认是空的。</li>
+<li>**<code>/proc</code>**：<code>proc</code> 是 Processes (进程) 的缩写，<code>/proc</code> 是一种伪文件系统（也即虚拟文件系统），存储的是当前内核运行状态的一系列特殊文件，这个目录是一个虚拟的目录，它是系统内存的映射，我们可以通过直接访问这个目录来获取系统信息（这个目录的内容不在硬盘上而是在内存里）。  </li>
+<li>**<code>/root</code>**：该目录为系统管理员，也称作超级权限者的用户主目录。</li>
+<li>**<code>/sbin</code>**：<code>s</code> 就是 Super User 的意思，是 Superuser Binaries (超级用户的二进制文件) 的缩写，这里存放的是系统管理员使用的系统管理程序。</li>
+<li>**<code>/selinux</code>**：这个目录是 Redhat/CentOS 所特有的目录，Selinux 是一个安全机制，类似于 windows 的防火墙，但是这套机制比较复杂，这个目录就是存放selinux相关的文件的。</li>
+<li>**<code>/srv</code>**：该目录存放一些服务启动之后需要提取的数据。</li>
+<li>**<code>/sys</code>**：这是 Linux2.6 内核的一个很大的变化。该目录下安装了 2.6 内核中新出现的一个文件系统 <code>sysfs</code> 。sysfs 文件系统集成了下面3种文件系统的信息：针对进程信息的 <code>proc</code> 文件系统、针对设备的 <code>devfs</code> 文件系统以及针对伪终端的 <code>devpts</code> 文件系统。该文件系统是内核设备树的一个直观反映。当一个内核对象被创建的时候，对应的文件和目录也在内核对象子系统中被创建。</li>
+<li>**<code>/tmp</code>**：<code>tmp</code> 是 temporary(临时) 的缩写这个目录是用来存放一些临时文件的。</li>
+<li>**<code>/usr</code>**：<code>usr</code> 是 unix shared resources(共享资源) 的缩写，这是一个非常重要的目录，用户的很多应用程序和文件都放在这个目录下，类似于 windows 下的 program files 目录。</li>
+<li>**<code>/usr/bin</code>**：系统用户使用的应用程序。</li>
+<li>**<code>/usr/sbin</code>**：超级用户使用的比较高级的管理程序和系统守护程序。</li>
+<li>**<code>/usr/src</code>**：内核源代码默认的放置目录。</li>
+<li>**<code>/var</code>**：<code>var</code> 是 variable(变量) 的缩写，这个目录中存放着在不断扩充着的东西，我们习惯将那些经常被修改的目录放在这个目录下。包括各种日志文件。</li>
+<li>**<code>/run</code>**： 是一个临时文件系统，存储系统启动以来的信息。当系统重启时，这个目录下的文件应该被删掉或清除。如果你的系统上有 <code>/var/run</code> 目录，应该让它指向 <code>run</code>。</li>
+</ul>
+
+  </div>
+</article>
+
+
+
+        
+          <div id="footer-post-container">
+  <div id="footer-post">
+
+    <div id="nav-footer" style="display: none">
+      <ul>
+        
+          <li><a href="/">首页</a></li>
+        
+          <li><a href="/about/">关于</a></li>
+        
+          <li><a href="/archives/">归档</a></li>
+        
+          <li><a href="/tags/">标签</a></li>
+        
+          <li><a href="/categories/">分类</a></li>
+        
+          <li><a href="/running/">跑步</a></li>
+        
+      </ul>
+    </div>
+
+    
+    
+
+    <div id="share-footer" style="display: none">
+      <ul>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.facebook.com/sharer.php?u=http://example.com/2023/08/26/%E6%8A%80%E6%9C%AF%E7%9B%B8%E5%85%B3/Linux%E7%B3%BB%E7%BB%9F/Linux%E7%B3%BB%E7%BB%9F%E7%9B%AE%E5%BD%95%E7%BB%93%E6%9E%84/"><i class="fab fa-facebook fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://twitter.com/share?url=http://example.com/2023/08/26/%E6%8A%80%E6%9C%AF%E7%9B%B8%E5%85%B3/Linux%E7%B3%BB%E7%BB%9F/Linux%E7%B3%BB%E7%BB%9F%E7%9B%AE%E5%BD%95%E7%BB%93%E6%9E%84/&text=Linux系统目录结构"><i class="fab fa-twitter fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.linkedin.com/shareArticle?url=http://example.com/2023/08/26/%E6%8A%80%E6%9C%AF%E7%9B%B8%E5%85%B3/Linux%E7%B3%BB%E7%BB%9F/Linux%E7%B3%BB%E7%BB%9F%E7%9B%AE%E5%BD%95%E7%BB%93%E6%9E%84/&title=Linux系统目录结构"><i class="fab fa-linkedin fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://pinterest.com/pin/create/bookmarklet/?url=http://example.com/2023/08/26/%E6%8A%80%E6%9C%AF%E7%9B%B8%E5%85%B3/Linux%E7%B3%BB%E7%BB%9F/Linux%E7%B3%BB%E7%BB%9F%E7%9B%AE%E5%BD%95%E7%BB%93%E6%9E%84/&is_video=false&description=Linux系统目录结构"><i class="fab fa-pinterest fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="mailto:?subject=Linux系统目录结构&body=Check out this article: http://example.com/2023/08/26/%E6%8A%80%E6%9C%AF%E7%9B%B8%E5%85%B3/Linux%E7%B3%BB%E7%BB%9F/Linux%E7%B3%BB%E7%BB%9F%E7%9B%AE%E5%BD%95%E7%BB%93%E6%9E%84/"><i class="fa-solid fa-envelope fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://getpocket.com/save?url=http://example.com/2023/08/26/%E6%8A%80%E6%9C%AF%E7%9B%B8%E5%85%B3/Linux%E7%B3%BB%E7%BB%9F/Linux%E7%B3%BB%E7%BB%9F%E7%9B%AE%E5%BD%95%E7%BB%93%E6%9E%84/&title=Linux系统目录结构"><i class="fab fa-get-pocket fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://reddit.com/submit?url=http://example.com/2023/08/26/%E6%8A%80%E6%9C%AF%E7%9B%B8%E5%85%B3/Linux%E7%B3%BB%E7%BB%9F/Linux%E7%B3%BB%E7%BB%9F%E7%9B%AE%E5%BD%95%E7%BB%93%E6%9E%84/&title=Linux系统目录结构"><i class="fab fa-reddit fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.stumbleupon.com/submit?url=http://example.com/2023/08/26/%E6%8A%80%E6%9C%AF%E7%9B%B8%E5%85%B3/Linux%E7%B3%BB%E7%BB%9F/Linux%E7%B3%BB%E7%BB%9F%E7%9B%AE%E5%BD%95%E7%BB%93%E6%9E%84/&title=Linux系统目录结构"><i class="fab fa-stumbleupon fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://digg.com/submit?url=http://example.com/2023/08/26/%E6%8A%80%E6%9C%AF%E7%9B%B8%E5%85%B3/Linux%E7%B3%BB%E7%BB%9F/Linux%E7%B3%BB%E7%BB%9F%E7%9B%AE%E5%BD%95%E7%BB%93%E6%9E%84/&title=Linux系统目录结构"><i class="fab fa-digg fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.tumblr.com/share/link?url=http://example.com/2023/08/26/%E6%8A%80%E6%9C%AF%E7%9B%B8%E5%85%B3/Linux%E7%B3%BB%E7%BB%9F/Linux%E7%B3%BB%E7%BB%9F%E7%9B%AE%E5%BD%95%E7%BB%93%E6%9E%84/&name=Linux系统目录结构&description=Linux系统目录结构总结。"><i class="fab fa-tumblr fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://news.ycombinator.com/submitlink?u=http://example.com/2023/08/26/%E6%8A%80%E6%9C%AF%E7%9B%B8%E5%85%B3/Linux%E7%B3%BB%E7%BB%9F/Linux%E7%B3%BB%E7%BB%9F%E7%9B%AE%E5%BD%95%E7%BB%93%E6%9E%84/&t=Linux系统目录结构"><i class="fab fa-hacker-news fa-lg" aria-hidden="true"></i></a></li>
+</ul>
+
+    </div>
+
+    <div id="actions-footer">
+        <a id="menu" class="icon" href="#" onclick="$('#nav-footer').toggle();return false;"><i class="fa-solid fa-bars fa-lg" aria-hidden="true"></i> 菜单</a>
+        
+        <a id="share" class="icon" href="#" onclick="$('#share-footer').toggle();return false;"><i class="fa-solid fa-share-alt fa-lg" aria-hidden="true"></i> 分享</a>
+        <a id="top" style="display:none" class="icon" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');"><i class="fa-solid fa-chevron-up fa-lg" aria-hidden="true"></i> 返回顶部</a>
+    </div>
+
+  </div>
+</div>
+
+        
+        <footer id="footer">
+  <div class="footer-left">
+    Copyright &copy;
+    
+    
+    2016-2023
+    ap0l1o
+  </div>
+  <div class="footer-right">
+    <nav>
+      <ul>
+        <!--
+       --><li><a href="/">首页</a></li><!--
+     --><!--
+       --><li><a href="/about/">关于</a></li><!--
+     --><!--
+       --><li><a href="/archives/">归档</a></li><!--
+     --><!--
+       --><li><a href="/tags/">标签</a></li><!--
+     --><!--
+       --><li><a href="/categories/">分类</a></li><!--
+     --><!--
+       --><li><a href="/running/">跑步</a></li><!--
+     -->
+      </ul>
+    </nav>
+  </div>
+</footer>
+
+    </div>
+    <!-- styles -->
+
+
+
+  <link rel="preload" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" crossorigin="anonymous" onload="this.onload=null;this.rel='stylesheet'"/>
+
+
+    <!-- jquery -->
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js" crossorigin="anonymous"></script>
+
+
+
+
+<!-- clipboard -->
+
+  
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.7/clipboard.min.js" crossorigin="anonymous"></script>
+  
+  <script type="text/javascript">
+  $(function() {
+    // copy-btn HTML
+    var btn = "<span class=\"btn-copy tooltipped tooltipped-sw\" aria-label=\"复制到粘贴板！\">";
+    btn += '<i class="fa-regular fa-clone"></i>';
+    btn += '</span>';
+    // mount it!
+    $(".highlight table").before(btn);
+    var clip = new ClipboardJS('.btn-copy', {
+      text: function(trigger) {
+        return Array.from(trigger.nextElementSibling.querySelectorAll('.code')).reduce((str,it)=>str+it.innerText+'\n','')
+      }
+    });
+    clip.on('success', function(e) {
+      e.trigger.setAttribute('aria-label', "复制成功！");
+      e.clearSelection();
+    })
+  })
+  </script>
+
+
+<script src="/js/main.js"></script>
+
+<!-- search -->
+
+<!-- Baidu Analytics -->
+
+<!-- Cloudflare Analytics -->
+
+<!-- Disqus Comments -->
+
+<!-- utterances Comments -->
+
+</body>
+</html>

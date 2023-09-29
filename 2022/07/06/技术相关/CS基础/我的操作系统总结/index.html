@@ -22,7 +22,7 @@
 <meta property="og:image" content="https://cdn.jsdelivr.net/gh/luogou/cloudimg/data/202203181050391.png">
 <meta property="og:image" content="https://ap0l1o.oss-cn-qingdao.aliyuncs.com/img/os/share-object.png">
 <meta property="article:published_time" content="2022-07-06T05:03:00.000Z">
-<meta property="article:modified_time" content="2023-07-28T02:26:23.658Z">
+<meta property="article:modified_time" content="2023-09-07T14:47:33.233Z">
 <meta property="article:author" content="ap0l1o">
 <meta property="article:tag" content="操作系统">
 <meta name="twitter:card" content="summary">
@@ -203,12 +203,12 @@
 <li>寄存器和程序计数器。CPU执行指令的信息会保存在寄存器中，这个寄存器叫做程序计数器。由于操作系统可以随时终止线程的运行，所以保存和恢复程序计数器的值就知道线程从哪里暂停的以及从哪里开始运行。</li>
 </ul>
 </li>
-<li>进程是<strong>操作系统</strong>资源分配 (包括 cpu、内存、磁盘 IO 等) 的基本单位，<strong>一个 CPU 同时刻只能执行一个进程</strong>。<ul>
+<li>进程是<strong>操作系统</strong>资源分配 (包括 CPU、内存、磁盘 IO 等) 的基本单位，<strong>一个 CPU 同时刻只能执行一个进程</strong>。<ul>
 <li><strong>单 CPU 实现多进程——并发。</strong> 通过操作系统的进程调度算法，单 CPU 进行进程调度的时候，需要读取上下文+执行程序+保存上下文，即进程切换。</li>
 <li><strong>多 CPU 实现多进程——并行。</strong> 不同的进程运行在不同的 CPU 上。</li>
 </ul>
 </li>
-<li>线程是 <strong>CPU</strong> 调度和资源分配的基本单位，<strong>一个 CPU 核心同时刻只能执行一个线程</strong>。<ul>
+<li>线程是 <strong>CPU</strong> 调度的基本单位，<strong>一个 CPU 核心同时刻只能执行一个线程</strong>。<ul>
 <li> <strong>单核 CPU 实现多线程——并发。</strong> 不同线程为了使用 CPU 核心，则会进行线程切换，但是由于共享了程序执行环境，这个线程切换比进程切换开销少了很多。</li>
 <li><strong>多核 CPU 实现多线程——并行。</strong> CPU 可以将不同线程分配到不同的 CPU 核心处理器中。</li>
 </ul>
@@ -282,11 +282,9 @@
 <li>将运行环境信息存入 PCB</li>
 <li>PCB 移入相应队列</li>
 <li>选择另一个进程执行，并更新其 PCB</li>
-<li>根据 PCB 恢复新进程所需的运行环境</li>
+<li>根据 PCB 恢复新进程所需的运行环境<h2 id="并行和并发"><a href="#并行和并发" class="headerlink" title="并行和并发"></a>并行和并发</h2></li>
 </ul>
 </li>
-</ul>
-<h2 id="并行和并发"><a href="#并行和并发" class="headerlink" title="并行和并发"></a>并行和并发</h2><ul>
 <li>并发：在同一时刻只能有一条指令执行，但多个进程指令被快速轮换执行，使得在宏观上具有多个进程同时执行的效果。</li>
 <li>并行：在同一时刻，有多条指令在多个处理器上同时执行<h2 id="CPU-及其核心数量"><a href="#CPU-及其核心数量" class="headerlink" title="CPU 及其核心数量"></a>CPU 及其核心数量</h2></li>
 <li>单核 CPU 和多核 CPU 都是一个 CPU，不同的是每个 CPU 上的核心数，一个核心只能同时执行一个线程<ul>
@@ -301,8 +299,8 @@
 </ul>
 </li>
 <li>I/O 密集型任务：<ul>
-<li>涉及到网络、磁盘 IO 的任务都是 IO 密集型任务，这类任务的特点是 <strong>CPU 消耗很少</strong>，<strong>任务的大部分时间都在等待 IO 操作完成</strong>（因为 IO 的速度远远低于 CPU 和内存的速度）。</li>
-<li><strong>对于 IO 密集型任务，任务越多，CPU 效率越高</strong>，但也有一个限度。常见的大部分任务都是 IO 密集型任务，比如 Web 应用。$最佳线程数目 = ((线程等待时间 + 线程 CPU 时间) / 线程 CPU 时间 ) * CPU 数目$。线程等待时间所占比例越高，需要越多线程。线程 CPU 时间所占比例越高，需要越少线程。</li>
+<li>涉及到网络、磁盘 I/O 的任务都是 I/O 密集型任务，这类任务的特点是 <strong>CPU 消耗很少</strong>，<strong>任务的大部分时间都在等待 I/O 操作完成</strong>（因为 I/O 的速度远远低于 CPU 和内存的速度）。</li>
+<li><strong>对于 I/O 密集型任务，任务越多，CPU 效率越高</strong>，但也有一个限度。常见的大部分任务都是 IO 密集型任务，比如 Web 应用。$最佳线程数目 = ((线程等待时间 + 线程 CPU 时间) / 线程 CPU 时间 ) * CPU 数目$。线程等待时间所占比例越高，需要越多线程。线程 CPU 时间所占比例越高，需要越少线程。</li>
 </ul>
 </li>
 <li>混合型任务：<ul>
@@ -315,8 +313,8 @@
 </ul>
 </li>
 <li>并发不高、任务执行时间长的业务：<ul>
-<li>假如是业务时间长集中在 I/O 操作上，也就是 I/O 密集型的任务，因为 I/O 操作并不占用 CPU，所以不要让所有的 CPU 闲下来，可以适当加大线程池中的线程数目，让 CPU 处理更多的业务</li>
-<li>假如是业务时间长集中在计算操作上，也就是计算密集型任务，这个就没办法了，线程池中的线程数设置得少一些，减少线程上下文的切换</li>
+<li>假如是业务时间集中在 I/O 操作上，也就是 I/O 密集型的任务，因为 I/O 操作并不占用 CPU，所以不要让所有的 CPU 闲下来，可以适当加大线程池中的线程数目，让 CPU 处理更多的业务；</li>
+<li>假如是业务时间长集中在计算操作上，也就是计算密集型任务，这个就没办法了，线程池中的线程数设置得少一些，减少线程上下文的切换；</li>
 </ul>
 </li>
 <li>并发高、业务执行时间长：<ul>
@@ -347,12 +345,11 @@
 </li>
 <li>优先使用进程：<ul>
 <li>弱相关的处理；</li>
-<li>追求稳定性；</li>
+<li>追求稳定性；<h2 id="进程间通信方式"><a href="#进程间通信方式" class="headerlink" title="进程间通信方式"></a>进程间通信方式</h2>每个进程各自有不同的用户地址空间，任何一个进程的全局变量在另一个进程中都看不到，所以<strong>进程之间要交换数据必须通过内核，内核是可以共享的</strong>。在内核中开辟一块缓冲区，进程 1 把数据从用户空间拷到内核缓冲区，进程 2 再从内核缓冲区把数据读走，内核提供的这种机制称为<strong>进程间通信（IPC，InterProcess Communication）</strong>。<br>进程间通信主要包括管道、系统 <code>IPC</code>（包括消息队列、信号、共享内存等）、本地套接字 <code>socket</code>。<h3 id="管道"><a href="#管道" class="headerlink" title="管道"></a>管道</h3></li>
 </ul>
 </li>
 </ul>
-<h2 id="进程间通信方式"><a href="#进程间通信方式" class="headerlink" title="进程间通信方式"></a>进程间通信方式</h2><p>每个进程各自有不同的用户地址空间，任何一个进程的全局变量在另一个进程中都看不到，所以<strong>进程之间要交换数据必须通过内核，内核是可以共享的</strong>。在内核中开辟一块缓冲区，进程 1 把数据从用户空间拷到内核缓冲区，进程 2 再从内核缓冲区把数据读走，内核提供的这种机制称为<strong>进程间通信（IPC，InterProcess Communication）</strong>。<br>进程间通信主要包括管道、系统 <code>IPC</code>（包括消息队列、信号、共享内存等）、本地套接字 <code>socket</code>。</p>
-<h3 id="管道"><a href="#管道" class="headerlink" title="管道"></a>管道</h3><p><strong>管道允许进程以先进先出的方式传送数据，是半双工的，意味着数据只能往一个方向流动</strong>。因此当双方通信时，必须建立两个管道。<strong>管道的实质就是在内核中创建一个缓冲区</strong>，管道一端的进程进入管道写数据，另一端的进程进入管道读取数据。<strong>管道分为 PIPE（管道）和 FIFO（命名管道） 两种</strong>。</p>
+<p><strong>管道允许进程以先进先出的方式传送数据，是半双工的，意味着数据只能往一个方向流动</strong>。因此当双方通信时，必须建立两个管道。<strong>管道的实质就是在内核中创建一个缓冲区</strong>，管道一端的进程进入管道写数据，另一端的进程进入管道读取数据。<strong>管道分为 PIPE（管道）和 FIFO（命名管道） 两种</strong>。</p>
 <ul>
 <li>无名管道（PIPE）：<ul>
 <li>一种<strong>半双工</strong>的通信方式，<strong>只能在具有亲缘关系的进程间使用</strong>（父子进程或兄弟进程）（最简单）。</li>
@@ -416,12 +413,12 @@
 <p>收到信号后进程对信号的处理有三种方式：</p>
 <ul>
 <li>如果是系统定义的信号函数，执行默认操作。<ul>
-<li><code>SIGINT</code> ：程序终止信号。程序运行过程中，按 <code>Ctrl+C</code> 键将产生该信号。进程接收到 <code>SIGINT</code> 信号后通常会进行一些清理工作，然后正常终止运行。</li>
-<li><code>SIGQUIT</code> ：程序退出信号。程序运行过程中，按 <code>Ctrl+\|</code> 键将产生该信号。默认情况下，进程接收到 <code>SIGQUIT</code> 信号后会立即终止运行，并在控制台输出一些调试信息，这通常用于快速退出当前进程或线程的调试。</li>
+<li><code>SIGINT</code> ：程序终止信号。程序运行过程中，按 <code>Ctrl+C</code> 键将产生该信号。<strong>进程接收到 <code>SIGINT</code> 信号后通常会进行一些清理工作，然后正常终止运行</strong>。</li>
+<li><code>SIGQUIT</code> ：程序退出信号。程序运行过程中，按 <code>Ctrl+\|</code> 键将产生该信号。<strong>默认情况下，进程接收到 <code>SIGQUIT</code> 信号后会立即终止运行，并在控制台输出一些调试信息</strong>，这通常用于快速退出当前进程或线程的调试。</li>
 <li><code>SIGALRM</code> ：定时器信号。</li>
 <li><code>SIGTERM</code> ：结束进程信号。shell 下执行 <code>kill pid</code> 发送该信号。<ul>
-<li>使用 <code>kill + pid</code> 命令可以向进程发送 <code>SIGTERM</code> 信号，即请求进程正常终止。但是，如果进程在处理信号时没有响应，那么进程就不会终止。这可能是因为进程正在执行某个耗时操作，或者进程没有正确处理信号导致无法正常终止；</li>
-<li>此时，可以尝试使用 <code>kill -9 + pid</code> 命令向进程发送强制终止的信号，强制终止进程。但需要注意的是，强制终止进程可能会导致进程中未完成的操作未被正确地处理，从而引发一些问题；</li>
+<li><strong>使用 <code>kill + pid</code> 命令可以向进程发送 <code>SIGTERM</code> 信号，即请求进程正常终止。但是，如果进程在处理信号时没有响应，那么进程就不会终止</strong>。这可能是因为进程正在执行某个耗时操作，或者进程没有正确处理信号导致无法正常终止；</li>
+<li>此时，<strong>可以尝试使用 <code>kill -9 + pid</code> 命令向进程发送强制终止的信号，强制终止进程</strong>。但需要注意的是，强制终止进程可能会导致进程中未完成的操作未被正确地处理，从而引发一些问题；</li>
 </ul>
 </li>
 </ul>
@@ -432,7 +429,7 @@
 <p><strong>UNIX 域套接字与 TCP 套接字相比较，在同一台主机的传输速度前者是后者的两倍</strong>。这是因为，IPC 机制本质上是可靠的通讯，而网络协议是为不可靠的通讯设计的。UNIX Domain Socket 也提供面向流和面向数据包两种 API 接口，类似于 TCP 和 UDP，但是面向消息的 UNIX Domain Socket 也是可靠的，消息既不会丢失也不会顺序错乱。</p>
 <ul>
 <li><strong>UNIX 域套接字是通过文件系统实现的一种进程间通信机制，它不依赖于网络协议栈</strong>。在内核中，UNIX 域套接字会被当做一种特殊的文件类型，它使用文件系统的 inode 来实现通信。当一个进程需要使用 UNIX 域套接字进行进程间通信时，它会创建一个 UNIX 域套接字文件，并将其与一个进程关联起来。另外一个进程也可以打开该文件，这样它们就可以进行通信了。</li>
-<li><strong>UNIX 域套接字通过本地地址（Local Address）来确定通信的双方，本地地址是一个文件路径，用于标识 UNIX 域套接字文件的位置</strong>。每个 UNIX 域套接字都有一个独特的文件描述符（File Descriptor），通过这个文件描述符可以进行读写操作。同时，UNIX 域套接字也支持类似于网络套接字的事件驱动模型，可以使用 select 等函数进行事件监听。<h2 id="进程同步"><a href="#进程同步" class="headerlink" title="进程同步"></a>进程同步</h2>在多道程序环境下，当程序并发执行时候，由于资源共享和进程间相互协作的关系，同一个系统中的诸进程之间会存在一下两种相互制约的关系：</li>
+<li><strong>UNIX 域套接字通过本地地址（Local Address）来确定通信的双方，本地地址是一个文件路径，用于标识 UNIX 域套接字文件的位置</strong>。每个 UNIX 域套接字都有一个独特的文件描述符（File Descriptor），通过这个文件描述符可以进行读写操作。同时，UNIX 域套接字也支持类似于网络套接字的事件驱动模型，可以使用 <code>select</code> 等函数进行事件监听。<h2 id="进程同步"><a href="#进程同步" class="headerlink" title="进程同步"></a>进程同步</h2>在多道程序环境下，当程序并发执行时候，由于资源共享和进程间相互协作的关系，同一个系统中的诸进程之间会存在一下两种相互制约的关系：</li>
 <li>间接相互制约。主要是资源共享这种情况。</li>
 <li>直接相互制约。源于进程间的相互合作，例如 A 进程向 B 进程提供数据，当 A 缓存没数据的时候 B 就阻塞，A 缓存满时 A 就阻塞。</li>
 </ul>
@@ -502,11 +499,9 @@
 <li>一个进程需要执行 100 个时间片，如果采用时间片轮转调度算法，那么需要交换 100 次。</li>
 <li>多级队列是为这种需要连续执行多个时间片的进程考虑，它设置了多个队列，每个队列时间片大小都不同，例如 1, 2, 4, 8,..。进程在第一个队列没执行完，就会被移到下一个队列。这种方式下，之前的进程只需要交换 7 次。</li>
 <li>每个队列优先权也不同，最上面的优先权最高。因此只有上一个队列没有进程在排队，才能调度当前队列上的进程。</li>
-<li>可以将这种调度算法看成是时间片轮转调度算法和优先级调度算法的结合。</li>
+<li>可以将这种调度算法看成是时间片轮转调度算法和优先级调度算法的结合。<h2 id="僵尸进程和孤儿进程"><a href="#僵尸进程和孤儿进程" class="headerlink" title="僵尸进程和孤儿进程"></a>僵尸进程和孤儿进程</h2></li>
 </ul>
 </li>
-</ul>
-<h2 id="僵尸进程和孤儿进程"><a href="#僵尸进程和孤儿进程" class="headerlink" title="僵尸进程和孤儿进程"></a>僵尸进程和孤儿进程</h2><ul>
 <li>孤儿进程：当父进程先结束，子进程此时就会变成孤儿进程，孤儿进程会自动向上被 <code>init</code> 进程收养，<code>init</code> 进程完成对状态收集工作。而且这种过继的方式也是守护进程能够实现的因素。</li>
 <li>僵尸进程：如果子进程先结束，父进程并未调用 <code>wait</code> 或者 <code>waitpid</code> 获取进程状态信息，回收进程资源，那么子进程描述符就会一直保存在系统中，这种进程称为僵尸进程。<ul>
 <li>僵尸进程是每个子进程退出时必然经历的过程。</li>
@@ -544,15 +539,14 @@
 <li><strong>信号量是用于多线程多任务同步</strong>的，一个线程完成某一个动作就通过信号量告诉别的线程，别的线程再进行某些动作。</li>
 <li>而<strong>互斥量是用于多线程多任务互斥</strong>的，一个线程占用了某一资源，那么别的线程就无法访问，直到这个线程解锁，其他线程才可以利用这个资源。比如对全局变量的访问，有时要加锁，操作完再解锁。</li>
 <li>不难看出，<code>mutex</code> 是 <code>semaphore</code> 的一种特殊情况（n=1 时）。也就是说，完全可以用后者替代前者。<strong>但是，因为 <code>mutex</code> 较为简单，且效率高，所以在必须保证资源独占的情况下，还是采用这种设计</strong>。</li>
-<li>简而言之，<strong>锁是服务于共享资源的；而 semaphore 是服务于多个线程间的执行的逻辑顺序的。</strong></li>
+<li>简而言之，<strong>锁是服务于共享资源的；而 semaphore 是服务于多个线程间的执行的逻辑顺序的。</strong><h3 id="条件变量"><a href="#条件变量" class="headerlink" title="条件变量"></a>条件变量</h3>条件变量，用于在<strong>线程之间同步共享数据的值</strong>。条件变量提供一种线程间通信机制：当某个共享数据达到某个值时，唤醒等待这个共享数据的一个/多个线程。即，当某个共享变量等于某个值时，调用 <code>signal/broadcast</code>。此时操作共享变量时需要加锁。</li>
 </ul>
-<h3 id="条件变量"><a href="#条件变量" class="headerlink" title="条件变量"></a>条件变量</h3><p>条件变量，用于在<strong>线程之间同步共享数据的值</strong>。条件变量提供一种线程间通信机制：当某个共享数据达到某个值时，唤醒等待这个共享数据的一个/多个线程。即，当某个共享变量等于某个值时，调用 <code>signal/broadcast</code>。此时操作共享变量时需要加锁。</p>
 <ul>
 <li>系统调用<ul>
-<li><code>pthread_cond_init(pthread_cond_t *cond, const pthread_condattr_t *attr)</code> : 初始化条件变量</li>
-<li><code>pthread_cond_destroy(pthread_cond_t *cond)</code> ：销毁条件变量</li>
+<li><code>pthread_cond_init(pthread_cond_t *cond, const pthread_condattr_t *attr)</code> : 初始化条件变量。</li>
+<li><code>pthread_cond_destroy(pthread_cond_t *cond)</code> ：销毁条件变量。</li>
 <li><code>pthread_cond_signal(pthread_cond_t *cond)</code> ：唤醒一个等待目标条件变量的线程。哪个线程被唤醒取决于调度策略和优先级。</li>
-<li><code>pthread_cond_wait(pthread_cond_t *cond, pthread_mutex_t *mutex)</code> ：等待目标条件变量。需要一个加锁的互斥锁确保操作的原子性。该函数中在进入 <code>wait</code> 状态前首先进行解锁，然后接收到信号后会再加锁，保证该线程对共享资源正确访问。 <h1 id="死锁"><a href="#死锁" class="headerlink" title="死锁"></a>死锁</h1><h3 id="死锁产生的条件"><a href="#死锁产生的条件" class="headerlink" title="死锁产生的条件"></a>死锁产生的条件</h3>死锁是多个并发进程因争夺系统资源而产生相互等待的现象，其产生条件如下：</li>
+<li><code>pthread_cond_wait(pthread_cond_t *cond, pthread_mutex_t *mutex)</code> ：等待目标条件变量。需要一个加锁的互斥锁确保操作的原子性。该函数在进入 <code>wait</code> 状态前会首先进行解锁，然后在接收到信号后会再加锁，保证该线程对共享资源正确访问。 <h1 id="死锁"><a href="#死锁" class="headerlink" title="死锁"></a>死锁</h1><h3 id="死锁产生的条件"><a href="#死锁产生的条件" class="headerlink" title="死锁产生的条件"></a>死锁产生的条件</h3>死锁是多个并发进程因争夺系统资源而产生相互等待的现象，其产生条件如下：</li>
 </ul>
 </li>
 </ul>
@@ -565,7 +559,7 @@
 <ul>
 <li><strong>破坏请求和等待条件。</strong> 所有的进程在开始运行之前，必须一次性地申请其在整个运行过程中所需要的全部资源；</li>
 <li><strong>破坏不可抢占条件。</strong> 当进程新的资源未得到满足时，释放已占有的资源；</li>
-<li><strong>破坏循环等待条件。</strong> 系统给每类资源赋予一个序号，每个进程按编号递增的请求资源，释放则相反；<h1 id="内存管理"><a href="#内存管理" class="headerlink" title="内存管理"></a>内存管理</h1><h2 id="虚拟内存"><a href="#虚拟内存" class="headerlink" title="虚拟内存"></a>虚拟内存</h2>虚拟内存就是来解决“<strong>程序大于内存的问题</strong>”，即如何不把程序全部装进内存而运行。  </li>
+<li><strong>破坏循环等待条件。</strong> 系统给每类资源赋予一个序号，每个进程按编号递增的请求资源，释放则相反；<h1 id="内存管理"><a href="#内存管理" class="headerlink" title="内存管理"></a>内存管理</h1><h2 id="虚拟内存"><a href="#虚拟内存" class="headerlink" title="虚拟内存"></a>虚拟内存</h2>虚拟内存就是来解决「<strong>程序大于内存的问题</strong>」，即如何不把程序全部装进内存而运行。  </li>
 <li>*虚拟内存的基本思想是每个程序都拥有自己的地址空间，这些空间被分割成多个块儿。每一块儿被称作一页或者页面。每一个页面有连续的地址范围。这些页面被映射到物理内存，但是并不是一个程序的所有的页面都必须在内存中才能运行**。当程序引用到一部分在物理内存中的地址空间时，由硬件立刻执行映射。当程序引用到一部分不在物理内存中的地址空间时，由操作系统负责将缺失部分装入物理内存并重新执行指令。  </li>
 <li>*虚拟内存使得应用程序认为它拥有连续的可用的内存（一个连续完整的地址空间）**，而实际上，它通常是被分隔成多个物理内存碎片，还有部分暂时存储在外部磁盘存储器上，在需要时进行数据交换。与没有使用虚拟内存技术的系统相比，使用这种技术的系统使得大型程序的编写变得更容易，对真正的物理内存（例如 RAM）的使用也更有效率。<h3 id="分段"><a href="#分段" class="headerlink" title="分段"></a>分段</h3>程序是由若⼲个逻辑分段组成的，如可由代码分段、数据分段、栈段、堆段组成。不同的段是有不同的属性的，所以就⽤分段（Segmentation）的形式把这些段分离出来。<br>分段机制下的虚拟地址由两部分组成，<strong>段选择因子和段内偏移量</strong>。<br><img src="https://cdn.jsdelivr.net/gh/guaguaupup/cloudimg/data/aHR0cHM6Ly9zdGF0aWMwMS5pbWdrci5jb20vdGVtcC8zYTk5NGVmMGY0M2M0NmE4YjY1OWQ0MjY5NTBmYmRlMy5wbmc"></li>
 </ul>
@@ -616,7 +610,7 @@
 <h2 id="堆和栈"><a href="#堆和栈" class="headerlink" title="堆和栈"></a>堆和栈</h2><p>在进程的虚拟内存布局场景下，堆和栈表示两种内存管理方式：</p>
 <ul>
 <li>栈是由操作系统自动分配的，用于存放函数参数值，局部变量。存储在栈中的数据的生命周期随着函数的执行结束而结束。栈的内存生长方向与堆相反，由高到低，按照变量定义的先后顺序入栈。栈的大小是固定的，通常在程序启动时由操作系统分配（栈的大小由操作系统决定，一般取决于硬件平台和操作系统版本等因素）。</li>
-<li>堆是由用户自己分配的。<strong>如果用户不回收，程序结束后由操作系统自动回收</strong>。堆的内存地址生长方向与栈相反，由低到高。堆的大小是动态变化的，它可以在程序运行时向上增长，直到达到操作系统的限制。<h2 id="内存映射"><a href="#内存映射" class="headerlink" title="内存映射"></a>内存映射</h2>Linux 通过将一个<strong>虚拟内存区域</strong>与一个<strong>磁盘上的对象</strong>（object）关联起来，以初始化这个虚拟内存区域的内容，这个过程称为<strong>内存映射</strong>（memory mapping）。<br>实现这样的映射关系后，进程就可以采用指针的方式读写操作这一段内存，而系统会自动回写脏页面到对应的文件磁盘上，即完成了对文件的操作而不必再调用 read, write 等系统调用函数。相反，内核空间对这段区域的修改也直接反映用户空间，从而可以实现不同进程间的文件共享。<br><img src="https://cdn.jsdelivr.net/gh/luogou/cloudimg/data/202203181050391.png"><br>虚拟内存区域可以映射到两种类型的对象中的一种：</li>
+<li>堆是由用户自己分配的。<strong>如果用户不回收，程序结束后由操作系统自动回收</strong>。堆的内存地址生长方向与栈相反，由低到高。堆的大小是动态变化的，它可以在程序运行时向上增长，直到达到操作系统的限制。<h2 id="内存映射"><a href="#内存映射" class="headerlink" title="内存映射"></a>内存映射</h2>Linux 通过将一个<strong>虚拟内存区域</strong>与一个<strong>磁盘上的对象</strong>（object）关联起来，以初始化这个虚拟内存区域的内容，这个过程称为<strong>内存映射</strong>（memory mapping）。<br>实现这样的映射关系后，进程就可以采用指针的方式读写操作这一段内存，而系统会自动回写脏页面到对应的文件磁盘上，即完成了对文件的操作而不必再调用 <code>read</code>， <code>write</code> 等系统调用函数。相反，内核空间对这段区域的修改也直接反映用户空间，从而可以实现不同进程间的文件共享。<br><img src="https://cdn.jsdelivr.net/gh/luogou/cloudimg/data/202203181050391.png"><br>虚拟内存区域可以映射到两种类型的对象中的一种：</li>
 <li><strong>Linux 文件系统中的普通文件</strong>：一个虚拟内存区域可以映射到一个普通磁盘文件的连续部分，例如一个可执行目标文件。文件区（section）被分成页大小的片，每一片包含一个虚拟页面的初始内容。因为按需进行页面调度，所以这些虚拟页面没有实际交换进入物理内存，直到 CPU 第一次引用到页面（即发射一个虚拟地址，落在地址空间这个页面的范围之内）。</li>
 <li><strong>匿名文件</strong>：一个虚拟内存区域也可以映射到一个匿名文件，匿名文件是由内核创建的，包含的全是二进制零。CPU 第一次引用这样一个区域内的虚拟页面时，内核就在物理内存中找到一个合适的牺牲页面，如果该页面被修改过，就将这个页面换出来，用二进制零覆盖牺牲页面并更新页表，将这个页面标记为是驻留在内存中的。注意在磁盘和内存之间并没有实际的数据传送。因为这个原因，映射到匿名文件的区域中的页面有时也叫做请<strong>求二进制零的页</strong>（demand-zero page）。<br>无论在哪种情况中，一旦一个虚拟页面被初始化了，它就在一个由内核维护的专门的<strong>交换文件</strong>（swap file）之间换来换去。交换文件也叫做<strong>交换空间</strong>（swap space）或者<strong>交换区域</strong>（swap area）。<h2 id="共享对象"><a href="#共享对象" class="headerlink" title="共享对象"></a>共享对象</h2>一个对象可以被映射到虚拟内存的一个区域，要么作为共享对象，要么作为私有对象。一个对象可以被映射到虚拟内存的一个区域，要么作为共享对象，要么作为私有对象。</li>
 <li>如果一个进程将一个共享对象映射到它的虚拟地址空间的一个区域内，那么这个进程对这个区域的任何写操作，对于那些也把这个共享对象映射到它们虚拟内存的其他进程而言，也是可见的。而且，这些变化也会反映在磁盘上的原始对象中。如果一个进程将一个共享对象映射到它的虚拟地址空间的一个区域内，那么这个进程对这个区域的任何写操作，对于那些也把这个共享对象映射到它们虚拟内存的其他进程而言，也是可见的。而且，这些变化也会反映在磁盘上的原始对象中。</li>

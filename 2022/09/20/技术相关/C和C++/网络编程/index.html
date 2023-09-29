@@ -14,7 +14,7 @@
 <meta property="og:description" content="C&#x2F;C++网络编程入门示例。">
 <meta property="og:locale" content="zh_CN">
 <meta property="article:published_time" content="2022-09-19T16:00:00.000Z">
-<meta property="article:modified_time" content="2023-06-22T11:11:35.079Z">
+<meta property="article:modified_time" content="2023-09-08T07:22:33.150Z">
 <meta property="article:author" content="ap0l1o">
 <meta property="article:tag" content="C&#x2F;C++">
 <meta property="article:tag" content="网络编程">
@@ -217,29 +217,29 @@
 <li><code>protocol</code> ：计算机间通信所采用的协议；</li>
 </ul>
 <p>下面介绍各个参数的可选择传递对象。</p>
-<h4 id="协议簇（Protocol-Family，PF）"><a href="#协议簇（Protocol-Family，PF）" class="headerlink" title="协议簇（Protocol Family，PF）"></a>协议簇（Protocol Family，PF）</h4><p>常用的互联网协议簇为IPv4互联网协议簇，该协议簇在头文件<code>sys/socket.h</code>中被定义为<code>PF_INET</code></p>
+<h4 id="协议簇（Protocol-Family，PF）"><a href="#协议簇（Protocol-Family，PF）" class="headerlink" title="协议簇（Protocol Family，PF）"></a>协议簇（Protocol Family，PF）</h4><p>常用的互联网协议簇为 IPv4 互联网协议簇，该协议簇在头文件 <code>sys/socket.h</code> 中被定义为 <code>PF_INET</code></p>
 <h4 id="套接字类型"><a href="#套接字类型" class="headerlink" title="套接字类型"></a>套接字类型</h4><p>套接字类型值得是套接字的数据传输方式，在IPv4协议簇中也存在多种数据传输方式，因此需要指定具体采用哪种数据传输方式。具体的传输方式有：</p>
 <ul>
 <li><code>SOCK_STREAM</code> ：创建面向连接的套接字，其特征为<ul>
 <li>传输过程中数据不会丢失；</li>
 <li>按序传输数据；</li>
-<li>传输的数据不存在数据边界，收到数据并不意味着马上调用<code>read()</code>函数，<code>read()</code>函数和<code>write()</code>函数的调用次数并无太大意义；</li>
+<li>传输的数据不存在数据边界，收到数据并不意味着马上调用 <code>read()</code> 函数，<code>read()</code> 函数和 <code>write()</code> 函数的调用次数并无太大意义；</li>
 </ul>
 </li>
 <li><code>SOCK_DGRAM</code>：创建面向消息的套接字，其特征为<ul>
 <li>强调快速传输而非传输顺序；</li>
 <li>传输的数据有可能丢失也有可能损毁；</li>
-<li>传输的数据有数据边界，这意味着接受数据的次数应和传输次数相同，也即<code>read()</code>函数和<code>write()</code>函数的调用次数一致；</li>
+<li>传输的数据有数据边界，这意味着接受数据的次数应和传输次数相同，也即 <code>read()</code> 函数和 <code>write()</code> 函数的调用次数一致；</li>
 <li>限制每次传输的数据大小；</li>
 </ul>
 </li>
 </ul>
-<h4 id="协议的选择"><a href="#协议的选择" class="headerlink" title="协议的选择"></a>协议的选择</h4><p>大多数情况下，通过前两个参数（协议簇和套接字类型）已经决定了所采用的传输协议，所以大部分情况下可以向第三个参数传递0，除非遇到「同一协议簇中存在多个数据传输方式相同的协议」的情况。<br>参数<code>PF_INET</code>指IPv4网络协议簇，<code>SOCK_STREAM</code>是面向连接的数据传输，满足这两个条件的协议只有<code>IPPROTO_TCP</code>，因此可以用如下方式创建TCP套接字：</p>
+<h4 id="协议的选择"><a href="#协议的选择" class="headerlink" title="协议的选择"></a>协议的选择</h4><p>大多数情况下，通过前两个参数（协议簇和套接字类型）已经决定了所采用的传输协议，所以大部分情况下可以向第三个参数传递0，除非遇到「同一协议簇中存在多个数据传输方式相同的协议」的情况。<br>参数 <code>PF_INET</code> 指 IPv4 网络协议簇，<code>SOCK_STREAM</code> 是面向连接的数据传输，满足这两个条件的协议只有 <code>IPPROTO_TCP</code>，因此可以用如下方式创建 TCP 套接字：</p>
 <figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;sys/socket.h&gt;</span></span></span><br><span class="line"><span class="keyword">int</span> tcp_socket = <span class="built_in">socket</span>(PF_INET, SOCK_STREAM, IPPROTO_TCP);</span><br></pre></td></tr></table></figure>
 <p>满足IPv4协议簇和面向消息数据传输方式的协议只有IPPROTO_UDP，因此可以用如下方式创建UDP套接字：</p>
 <figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;sys/socket.h&gt;</span></span></span><br><span class="line"><span class="keyword">int</span> udp_socket = <span class="built_in">socket</span>(PF_INET, SOCK_DGRAM, IPPROTO_UDP);</span><br></pre></td></tr></table></figure>
 
-<h3 id="0x02-bind"><a href="#0x02-bind" class="headerlink" title="0x02 bind()"></a>0x02 <code>bind()</code></h3><p>创建套接字后需要使用bind()函数为其分配IP地址和端口号。IP地址用于区分网络上的计算机，而端口号用于区分计算机程序中所创建的套接字。<br>这里的IP地址主要是指的常用的IPv4地址，标准的IPv4地址用4字节表示。端口号由2个字节表示，可分配的端口号范围为0～65535，但0～1023是知名端口号，一般分配给特定的应用程序，所以应当分配此范围之外的值。<br>另外，虽然端口号不能重复，但TCP套接字和UDP套接字不会共用端口号，所以允许重复。<br><code>bind()</code>函数负责为套接字分配地址信息：</p>
+<h3 id="0x02-bind"><a href="#0x02-bind" class="headerlink" title="0x02 bind()"></a>0x02 <code>bind()</code></h3><p>创建套接字后需要使用 <code>bind() </code>函数为其分配 IP 地址和端口号。IP 地址用于区分网络上的计算机，而端口号用于区分计算机程序中所创建的套接字。<br>这里的 IP 地址主要是指的常用的 IPv4 地址，标准的 IPv4 地址用 4 字节表示。端口号由 2 个字节表示，可分配的端口号范围为 0～65535，但 0～1023 是知名端口号，一般分配给特定的应用程序，所以应当分配此范围之外的值。<br>另外，虽然端口号不能重复，但 TCP 套接字和 UDP 套接字不会共用端口号，所以允许重复。<br><code>bind()</code>函数负责为套接字分配地址信息：</p>
 <figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;sys/socket.h&gt;</span></span></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">bind</span><span class="params">(<span class="keyword">int</span> sockfd, struct sockaddr* myaddr, <span class="keyword">socklen_t</span> addrlen)</span></span>;</span><br></pre></td></tr></table></figure>
 <ul>
 <li>返回值：成功时返回0，失败时返回-1。</li>
@@ -250,18 +250,18 @@
 <p>下面介绍描述地址信息的结构体。</p>
 <h4 id="表示IPv4地址的结构体"><a href="#表示IPv4地址的结构体" class="headerlink" title="表示IPv4地址的结构体"></a>表示IPv4地址的结构体</h4><p>可以看到<code>bind()</code>函数需要的存有地址信息的结构体类型为<code>sockaddr</code>，其定义如下：</p>
 <figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">sockaddr</span> &#123;</span></span><br><span class="line">    <span class="keyword">sa_family_t</span> sin_family; <span class="comment">// 地址族（Address Family）</span></span><br><span class="line">    <span class="keyword">char</span> sa_data[<span class="number">14</span>]; <span class="comment">// 地址信息</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>此结构体类型成员<code>sa_data</code>保存的地址信息中需包含IP地址和端口号，剩余部分应填充0，而这对于构造地址信息来说比较麻烦，因而有了表示IPv4地址的结构体类型<code>sockaddr_in</code>，其定义如下：</p>
+<p>此结构体类型成员 <code>sa_data</code> 保存的地址信息中需包含 IP 地址和端口号，剩余部分应填充 0，而这对于构造地址信息来说比较麻烦，因而有了表示 IPv4 地址的结构体类型 <code>sockaddr_in</code>，其定义如下：</p>
 <figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">sockaddr_in</span> &#123;</span></span><br><span class="line">    <span class="keyword">sa_family_t</span> sin_family; <span class="comment">// 地址族（Address Family）</span></span><br><span class="line">    <span class="keyword">uint16_t</span> sin_port; <span class="comment">// 16位TCP/UDP端口号</span></span><br><span class="line">    <span class="class"><span class="keyword">struct</span> <span class="title">in_addr</span> <span class="title">sin_addr</span>;</span> <span class="comment">// 32位IP地址</span></span><br><span class="line">    <span class="keyword">char</span> sin_zero[<span class="number">8</span>]; <span class="comment">// 不使用，用于与sockaddr进行地址对齐</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>该结构体中提到的另一个结构体<code>in_addr</code>的定义如下，它用来存放32位IP地址：</p>
+<p>该结构体中提到的另一个结构体 <code>in_addr</code> 的定义如下，它用来存放 32 位 IP 地址：</p>
 <figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">in_addr</span> &#123;</span></span><br><span class="line">    <span class="keyword">in_addr_t</span> s_addr; <span class="comment">// 32位IPv4地址</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
-<p>结构体<code>sockaddr_in</code>的成员分析：</p>
+<p>结构体 <code>sockaddr_in</code> 的成员分析：</p>
 <ul>
-<li><code>sin_family</code>：每种协议族适用的地址族不同，<code>AF_INET</code>表示IPv4协议族，该协议族使用4字节地址族。</li>
-<li><code>sin_port</code>：保存16位端口号，以网络字节序保存（大端序，数据的高位字节放到低位地址）。</li>
-<li><code>sin_addr</code>：保存32位IP地址信息，也以网络字节许保存。</li>
-<li><code>sin_zero</code>：无特殊含义，只用为了使结构体<code>sockaddr_in</code>的大小与<code>sockaddr</code>结构体保持一致而插入的填充成员。</li>
+<li><code>sin_family</code> ：每种协议族适用的地址族不同，<code>AF_INET</code> 表示 IPv4 协议族，该协议族使用 4 字节地址族。</li>
+<li><code>sin_port</code> ：保存 16 位端口号，以网络字节序保存（大端序，数据的高位字节放到低位地址）。</li>
+<li><code>sin_addr</code> ：保存 32 位 IP 地址信息，也以网络字节许保存。</li>
+<li><code>sin_zero</code> ：无特殊含义，只用为了使结构体 <code>sockaddr_in</code> 的大小与 <code>sockaddr</code> 结构体保持一致而插入的填充成员。</li>
 </ul>
-<h4 id="字符串IP地址转为网络字节序的整数型IP地址"><a href="#字符串IP地址转为网络字节序的整数型IP地址" class="headerlink" title="字符串IP地址转为网络字节序的整数型IP地址"></a>字符串IP地址转为网络字节序的整数型IP地址</h4><p><code>sockaddr_in</code>中所保存的地址信息成员位32位整数，因此，为了分配IP地址，需要将其表示为32位整数型数据。<br>而对于IP地址的表示，我们熟悉的是「点分十进制表示法」（Dotted Decimal Notation），而非整数型数据表示法。幸运的是有两个函数会帮我们把字符串形式的IP地址换成32位整数型数据，并同时完成网络字节序的转换：</p>
+<h4 id="字符串IP地址转为网络字节序的整数型IP地址"><a href="#字符串IP地址转为网络字节序的整数型IP地址" class="headerlink" title="字符串IP地址转为网络字节序的整数型IP地址"></a>字符串IP地址转为网络字节序的整数型IP地址</h4><p><code>sockaddr_in</code> 中所保存的地址信息成员位 32 位整数，因此，为了分配 IP 地址，需要将其表示为 32 位整数型数据。<br>而对于IP地址的表示，我们熟悉的是「点分十进制表示法」（Dotted Decimal Notation），而非整数型数据表示法。幸运的是有两个函数会帮我们把字符串形式的IP地址换成32位整数型数据，并同时完成网络字节序的转换：</p>
 <figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;arpa/inet.h&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="comment">// 成功时返回32位大端序整数型值，失败时返回INADDR_NONE</span></span><br><span class="line"><span class="function"><span class="keyword">in_addr_t</span> <span class="title">inet_addr</span><span class="params">(<span class="keyword">const</span> <span class="keyword">char</span>* string)</span></span>; </span><br><span class="line"></span><br><span class="line"><span class="comment">// 成功时返回1（true），失败时返回0（false）</span></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">inet_aton</span><span class="params">(<span class="keyword">const</span> <span class="keyword">char</span>* string, struct in_addr* addr)</span></span>;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
 <p><code>inet_addr()</code>函数不仅可以把IP地址转为32位整数型网络字节序，而且可以检测无效的IP地址。<br>而<code>inet_aton()</code>函数与<code>inet_addr()</code>函数在功能上完全相同，也将字符串形式的IP地址转换为32位网络字节序整数型IP地址，只不过该函数使用了<code>in_addr</code>的结构体，且其使用频率更高。</p>
 <h4 id="网络地址初始化并与套接字绑定"><a href="#网络地址初始化并与套接字绑定" class="headerlink" title="网络地址初始化并与套接字绑定"></a>网络地址初始化并与套接字绑定</h4><p>结合前面内容，套接字创建过程中常见的网络地址信息初始化方法，及其与套接字的绑定过程示例如下：</p>

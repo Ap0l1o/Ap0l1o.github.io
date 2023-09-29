@@ -15,7 +15,7 @@
 <meta property="og:locale" content="zh_CN">
 <meta property="og:image" content="https://cdn.jsdelivr.net/gh/Ap0l1o/ImageHostingService@main/img/%E5%86%85%E5%AD%98%E5%B8%83%E5%B1%80.png">
 <meta property="article:published_time" content="2022-07-06T05:03:00.000Z">
-<meta property="article:modified_time" content="2023-08-26T12:51:21.469Z">
+<meta property="article:modified_time" content="2023-09-02T08:23:32.388Z">
 <meta property="article:author" content="ap0l1o">
 <meta property="article:tag" content="C&#x2F;C++">
 <meta name="twitter:card" content="summary">
@@ -183,16 +183,7 @@
   
 
   <div class="content e-content" itemprop="articleBody">
-    <h1 id="C-C-编译底层"><a href="#C-C-编译底层" class="headerlink" title="C/C++编译底层"></a>C/C++编译底层</h1><ul>
-<li><a href="#C++%E5%86%85%E5%AD%98%E7%AE%A1%E7%90%86">C++内存管理</a></li>
-<li><a href="#LINUX%E8%BF%9B%E7%A8%8B%E5%8C%BA%E5%88%86%E6%AE%B5%E5%8F%8A%E5%AD%98%E5%82%A8%E6%95%B0%E6%8D%AE">LINUX进程区分段及存储数据</a></li>
-<li><a href="#GCC%E7%BC%96%E8%AF%91%E6%B5%81%E7%A8%8B">GCC编译流程</a></li>
-<li><a href="#%E5%8A%A8%E6%80%81%E5%BA%93%E9%9D%99%E6%80%81%E5%BA%93%E5%8C%BA%E5%88%AB%E5%8F%8AGCC%E5%8A%A0%E8%BD%BD%E5%BA%93">动态库静态库区别及LINUX加载库</a></li>
-<li><a href="#extern-C%E7%9A%84%E7%BB%93%E6%9E%9C%E5%92%8CCPP%E7%BC%96%E8%AF%91%E7%9A%84%E5%8C%BA%E5%88%AB">extern C的结果和CPP编译的区别</a></li>
-<li><a href="#%E9%87%8D%E8%BD%BD%E7%9A%84%E5%BA%95%E5%B1%82%E5%8E%9F%E7%90%86">重载的底层原理</a></li>
-<li><a href="#%E7%BC%96%E8%AF%91%E6%80%A7%E8%AF%AD%E8%A8%80%E5%92%8C%E8%A7%A3%E9%87%8A%E6%80%A7%E8%AF%AD%E8%A8%80%E7%9A%84%E6%9C%AC%E8%B4%A8%E5%8C%BA%E5%88%AB%E5%92%8C%E4%BC%98%E7%BC%BA%E7%82%B9">编译性语言和解释性语言的本质区别和优缺点</a></li>
-</ul>
-<h2 id="C-内存管理"><a href="#C-内存管理" class="headerlink" title="C++内存管理"></a>C++内存管理</h2><ul>
+    <h1 id="C-C-编译底层"><a href="#C-C-编译底层" class="headerlink" title="C/C++编译底层"></a>C/C++编译底层</h1><h2 id="C-内存管理"><a href="#C-内存管理" class="headerlink" title="C++内存管理"></a>C++内存管理</h2><ul>
 <li><strong>栈</strong>： 存储函数的返回地址、参数、局部变量、返回值，从高地址向低地址增长；</li>
 <li><strong>堆</strong>： <code>malloc</code> / <code>free</code> 开辟内存的空间，从低地址向高地址增长；</li>
 <li><strong>自由存储区</strong>： <code>new</code> / <code>delete</code> 开辟内存的空间；</li>
@@ -229,7 +220,7 @@
 </ul>
 <p>GCC 编译加载静态库：</p>
 <ul>
-<li>将所有的.c文件编译成<code>.o</code>目标文件<ul>
+<li>将所有的<code>.c</code>文件编译成<code>.o</code>目标文件<ul>
 <li><code>gcc -c add.c</code> 生成 <code>add.o</code></li>
 <li><code>gcc -c max.c</code> 生成 <code>max.o</code></li>
 </ul>
@@ -271,13 +262,13 @@
 <li>C++文件调用C函数<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;iostream&gt;</span></span></span><br><span class="line"><span class="keyword">using</span> <span class="keyword">namespace</span> std;</span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&quot;p.h&quot;</span></span></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">       cout&lt;&lt;<span class="string">&quot;现在调用C语言函数\n&quot;</span>;</span><br><span class="line">       <span class="built_in">print</span>(<span class="number">3</span>,<span class="number">4</span>);</span><br><span class="line">       <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></li>
 <li>编译后链接出错：<code>main.cpp</code>对<code>print(int, int</code>)未定义的引用。</li>
 <li>原因分析<ul>
-<li><code>p.c</code>我们使用的是C语言的编译器gcc进行编译的，其中的函数print编译之后，在符号表中的名字为 <code>_print</code></li>
-<li>我们链接的时候采用的是g++进行链接，也就是C++链接方式，程序在运行到调用<code>print</code>函数的代码时，会在符号表中寻找 <code>_print_int_int</code>（是按照C++的链接方法来寻找的，所以是找 <code>_print_int_int</code>而不是找<code>_print</code>）的名字，发现找不到，所以会提示“未定义的引用”</li>
-<li>此时如果我们在对<code>print</code>的声明中加入 <code>extern “C”</code> ，这个时候，g++编译器就会按照C语言的链接方式进行寻找，也就是在符号表中寻找<code>_print</code>，这个时候是可以找到的，是不会报错的。</li>
+<li><code>p.c</code> 我们使用的是 C 语言的编译器 gcc 进行编译的，其中的函数 <code>print</code> 编译之后，在符号表中的名字为 <code>_print</code></li>
+<li>我们链接的时候采用的是 g++进行链接，也就是 C++链接方式，程序在运行到调用 <code>print</code> 函数的代码时，会在符号表中寻找 <code>_print_int_int</code>（是按照 C++的链接方法来寻找的，所以是找 <code>_print_int_int</code> 而不是找 <code>_print</code>）的名字，发现找不到，所以会提示“未定义的引用”</li>
+<li>此时如果我们在对 <code>print</code> 的声明中加入 <code>extern “C”</code> ，这个时候，g++编译器就会按照 C 语言的链接方式进行寻找，也就是在符号表中寻找 <code>_print</code>，这个时候是可以找到的，是不会报错的。</li>
 </ul>
 </li>
 <li>总结<ul>
-<li>编译后底层解析的符号不同，C语言是<code>_print</code>，C++是<code>_print_int_int</code></li>
+<li>编译后底层解析的符号不同，C 语言是 <code>_print</code>，C++是 <code>_print_int_int</code></li>
 </ul>
 </li>
 </ul>
@@ -285,7 +276,7 @@
 <ul>
 <li>C语言没有重载<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="string">&quot;int __cdecl Add(int,int)&quot;</span> (?Add@@YAHHH@Z)</span><br><span class="line"><span class="string">&quot;double __cdecl Add(double,double)&quot;</span> (?Add@@YANNN@Z）</span><br><span class="line"><span class="string">&quot;long __cdecl Add(long,long)&quot;</span> (?Add@@YAJJJ@Z)</span><br></pre></td></tr></table></figure>
 在 C 语言中被解析为<code>_Add</code>，三个一样，所以不能进行区分，因此 C 语言不支持函数重载</li>
-<li>C++重载：底层的重命名机制将 Add 函数根据参数的个数，参数的类型，返回值的类型都做了重新命名。那么借助函数重载，一个函数就有多种命名机制。 <code>_Add_int_int</code>，_ <code>Add_long_long</code>，<code>_Add_double_double</code></li>
+<li>C++重载：底层的重命名机制将 <code>Add</code> 函数根据参数的个数，参数的类型，返回值的类型都做了重新命名。那么借助函数重载，一个函数就有多种命名机制。 <code>_Add_int_int</code>，_ <code>Add_long_long</code>，<code>_Add_double_double</code></li>
 <li>C++中可以通过在函数声明前加 <code>extern &quot;C&quot;</code> 将一个函数按照 C 语言的风格来进行编译。</li>
 </ul>
 <h2 id="编译性语言和解释性语言的本质区别和优缺点"><a href="#编译性语言和解释性语言的本质区别和优缺点" class="headerlink" title="编译性语言和解释性语言的本质区别和优缺点"></a><a target="_blank" rel="noopener" href="https://blog.csdn.net/u014647208/article/details/78329187">编译性语言和解释性语言的本质区别和优缺点</a></h2><ul>

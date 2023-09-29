@@ -14,7 +14,7 @@
 <meta property="og:description" content="Linux系统目录结构总结。">
 <meta property="og:locale" content="zh_CN">
 <meta property="article:published_time" content="2023-08-26T13:06:00.000Z">
-<meta property="article:modified_time" content="2023-09-02T08:09:07.507Z">
+<meta property="article:modified_time" content="2023-09-08T07:10:16.377Z">
 <meta property="article:author" content="ap0l1o">
 <meta property="article:tag" content="Linux系统">
 <meta name="twitter:card" content="summary">
@@ -97,6 +97,8 @@
     <br/>
     <span id="actions">
       <ul>
+        
+        <li><a class="icon" aria-label="上一篇" href="/2023/09/29/%E5%85%B3%E4%BA%8E%E8%B7%91%E6%AD%A5/%E8%B7%91%E8%80%85%E5%8A%9B%E9%87%8F%E8%AE%AD%E7%BB%83/"><i class="fa-solid fa-chevron-left" aria-hidden="true" onmouseover="$('#i-prev').toggle();" onmouseout="$('#i-prev').toggle();"></i></a></li>
         
         
         <li><a class="icon" aria-label="下一篇" href="/2023/08/26/%E6%B5%AE%E7%94%9F%E4%B8%80%E4%BA%8B/2023-08-26/"><i class="fa-solid fa-chevron-right" aria-hidden="true" onmouseover="$('#i-next').toggle();" onmouseout="$('#i-next').toggle();"></i></a></li>
@@ -185,15 +187,15 @@
 <li>**<code>/lost+found</code>**：这个目录一般情况下是空的，当系统非法关机后，这里就存放了一些文件。</li>
 <li>**<code>/media</code>**：Linux 系统会自动识别一些设备，例如U盘、光驱等等，当识别后，Linux 会把识别的设备挂载到这个目录下。</li>
 <li>**<code>/mnt</code>**：系统提供该目录是为了让用户临时挂载别的文件系统的，我们可以将光驱挂载在 <code>/mnt/</code> 上，然后进入该目录就可以查看光驱里的内容了。</li>
-<li>**<code>/opt</code>**：<code>opt</code> 是 optional(可选) 的缩写，这是给主机额外安装软件所摆放的目录。比如你安装一个ORACLE数据库则就可以放到这个目录下。默认是空的。</li>
-<li>**<code>/proc</code>**：<code>proc</code> 是 Processes (进程) 的缩写，<code>/proc</code> 是一种伪文件系统（也即虚拟文件系统），存储的是当前内核运行状态的一系列特殊文件，这个目录是一个虚拟的目录，它是系统内存的映射，我们可以通过直接访问这个目录来获取系统信息（这个目录的内容不在硬盘上而是在内存里）。  </li>
+<li>**<code>/opt</code>**：<code>opt</code> 是 optional (可选) 的缩写，这是给主机额外安装软件所摆放的目录。比如你安装一个 ORACLE 数据库则就可以放到这个目录下。默认是空的。</li>
+<li><strong><code>/proc</code><strong>：<code>proc</code> 是 Processes (进程) 的缩写，<code>/proc</code> 是一种伪文件系统（也即虚拟文件系统），存储的是当前内核运行状态的一系列特殊文件，这个目录是一个虚拟的目录，</strong>它是系统内存的映射</strong>，我们可以通过直接访问这个目录来获取系统信息（这个目录的内容不在硬盘上而是在内存里）。  </li>
 <li>**<code>/root</code>**：该目录为系统管理员，也称作超级权限者的用户主目录。</li>
 <li>**<code>/sbin</code>**：<code>s</code> 就是 Super User 的意思，是 Superuser Binaries (超级用户的二进制文件) 的缩写，这里存放的是系统管理员使用的系统管理程序。</li>
 <li>**<code>/selinux</code>**：这个目录是 Redhat/CentOS 所特有的目录，Selinux 是一个安全机制，类似于 windows 的防火墙，但是这套机制比较复杂，这个目录就是存放selinux相关的文件的。</li>
 <li>**<code>/srv</code>**：该目录存放一些服务启动之后需要提取的数据。</li>
 <li>**<code>/sys</code>**：这是 Linux2.6 内核的一个很大的变化。该目录下安装了 2.6 内核中新出现的一个文件系统 <code>sysfs</code> 。sysfs 文件系统集成了下面3种文件系统的信息：针对进程信息的 <code>proc</code> 文件系统、针对设备的 <code>devfs</code> 文件系统以及针对伪终端的 <code>devpts</code> 文件系统。该文件系统是内核设备树的一个直观反映。当一个内核对象被创建的时候，对应的文件和目录也在内核对象子系统中被创建。</li>
 <li>**<code>/tmp</code>**：<code>tmp</code> 是 temporary(临时) 的缩写这个目录是用来存放一些临时文件的。</li>
-<li>**<code>/usr</code>**：<code>usr</code> 是 unix shared resources(共享资源) 的缩写，这是一个非常重要的目录，用户的很多应用程序和文件都放在这个目录下，类似于 windows 下的 program files 目录。</li>
+<li>**<code>/usr</code>**：<code>usr</code> 是 unix shared resources (共享资源) 的缩写，这是一个非常重要的目录，用户的很多应用程序和文件都放在这个目录下，类似于 windows 下的 program files 目录。</li>
 <li>**<code>/usr/bin</code>**：系统用户使用的应用程序。</li>
 <li>**<code>/usr/sbin</code>**：超级用户使用的比较高级的管理程序和系统守护程序。</li>
 <li>**<code>/usr/src</code>**：内核源代码默认的放置目录。</li>

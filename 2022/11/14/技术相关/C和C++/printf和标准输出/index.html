@@ -14,7 +14,7 @@
 <meta property="og:description" content="C&#x2F;C++中的printf和标准输出。">
 <meta property="og:locale" content="zh_CN">
 <meta property="article:published_time" content="2022-11-14T13:40:00.000Z">
-<meta property="article:modified_time" content="2022-11-16T08:17:41.589Z">
+<meta property="article:modified_time" content="2023-12-11T09:13:31.260Z">
 <meta property="article:author" content="ap0l1o">
 <meta property="article:tag" content="C&#x2F;C++">
 <meta property="article:tag" content="编程语言">
@@ -183,7 +183,7 @@
 
   <div class="content e-content" itemprop="articleBody">
     <h2 id="四种printf"><a href="#四种printf" class="headerlink" title="四种printf"></a>四种printf</h2><p>以下四个输出类的函数都是从给定位置加载数据，按照指定的format格式转换为字符串等价版本，并将结果写入各种池。</p>
-<figure class="highlight c++"><table><tr><td class="gutter hljs"><div class="hljs code-wrapper"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></div></td><td class="code"><div class="hljs code-wrapper"><pre><code class="hljs C++"><span class="hljs-comment">// 函数原型</span><br><span class="hljs-function"><span class="hljs-keyword">int</span> <span class="hljs-title">printf</span><span class="hljs-params">( <span class="hljs-keyword">const</span> <span class="hljs-keyword">char</span>* format, ... )</span></span>;<br><span class="hljs-function"><span class="hljs-keyword">int</span> <span class="hljs-title">fprintf</span><span class="hljs-params">( std::FILE* stream, <span class="hljs-keyword">const</span> <span class="hljs-keyword">char</span>* format, ... )</span></span>;<br><span class="hljs-function"><span class="hljs-keyword">int</span> <span class="hljs-title">sprintf</span><span class="hljs-params">( <span class="hljs-keyword">char</span>* buffer, <span class="hljs-keyword">const</span> <span class="hljs-keyword">char</span>* format, ... )</span></span>;<br><span class="hljs-function"><span class="hljs-keyword">int</span> <span class="hljs-title">snprintf</span><span class="hljs-params">( <span class="hljs-keyword">char</span>* buffer, std::<span class="hljs-keyword">size_t</span> buf_size, <span class="hljs-keyword">const</span> <span class="hljs-keyword">char</span>* format, ... )</span></span>;<br></code></pre></div></td></tr></table></figure>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 函数原型</span></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">printf</span><span class="params">( <span class="keyword">const</span> <span class="keyword">char</span>* format, ... )</span></span>;</span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">fprintf</span><span class="params">( std::FILE* stream, <span class="keyword">const</span> <span class="keyword">char</span>* format, ... )</span></span>;</span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">sprintf</span><span class="params">( <span class="keyword">char</span>* buffer, <span class="keyword">const</span> <span class="keyword">char</span>* format, ... )</span></span>;</span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">snprintf</span><span class="params">( <span class="keyword">char</span>* buffer, std::<span class="keyword">size_t</span> buf_size, <span class="keyword">const</span> <span class="keyword">char</span>* format, ... )</span></span>;</span><br></pre></td></tr></table></figure>
 <p>其区别在于：</p>
 <ul>
 <li><code>printf</code>写结果到 <code>stdout</code> </li>
@@ -193,14 +193,11 @@
 </ul>
 <h2 id="stdout和stderr"><a href="#stdout和stderr" class="headerlink" title="stdout和stderr"></a>stdout和stderr</h2><ul>
 <li><code>stdout</code>是标准输出设备</li>
-<li><code>stderr</code>是标准错误输出设备</li>
-</ul>
-<p>两者都向屏幕输出，默认情况下<code>stdout</code>是「行缓冲」的，它的输出会放到一个buffer里面，只有遇到以下情况才会刷出数据到屏幕：</p>
-<ul>
+<li><code>stderr</code>是标准错误输出设备<br>两者都向屏幕输出，默认情况下<code>stdout</code>是「行缓冲」的，它的输出会放到一个buffer里面，只有遇到以下情况才会刷出数据到屏幕：</li>
 <li>遇到换行符</li>
 <li>缓冲区满</li>
 <li>使用<code>fflush</code>函数手动刷出数据</li>
-<li>使用<code>fclose</code>函数关闭文件<figure class="highlight c++"><table><tr><td class="gutter hljs"><div class="hljs code-wrapper"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></div></td><td class="code"><div class="hljs code-wrapper"><pre><code class="hljs C++"><span class="hljs-comment">// 函数原型</span><br><span class="hljs-comment">// 对于输出流（和最近操作为输出的更新流），将来自 stream 缓冲区的未写入数据写入关联的输出设备</span><br><span class="hljs-function"><span class="hljs-keyword">int</span> <span class="hljs-title">fflush</span><span class="hljs-params">( std::FILE* stream )</span></span>;<br></code></pre></div></td></tr></table></figure></li>
+<li>使用<code>fclose</code>函数关闭文件<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 函数原型</span></span><br><span class="line"><span class="comment">// 对于输出流（和最近操作为输出的更新流），将来自 stream 缓冲区的未写入数据写入关联的输出设备</span></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">fflush</span><span class="params">( std::FILE* stream )</span></span>;</span><br></pre></td></tr></table></figure></li>
 </ul>
 <h2 id="输出重定向"><a href="#输出重定向" class="headerlink" title="输出重定向"></a>输出重定向</h2><p>基本符号和含义：</p>
 <ul>

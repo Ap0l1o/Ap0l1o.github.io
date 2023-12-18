@@ -14,7 +14,7 @@
 <meta property="og:description" content="C++基础知识点总结。">
 <meta property="og:locale" content="zh_CN">
 <meta property="article:published_time" content="2022-07-06T05:03:00.000Z">
-<meta property="article:modified_time" content="2023-11-12T13:26:14.725Z">
+<meta property="article:modified_time" content="2023-12-15T03:23:42.573Z">
 <meta property="article:author" content="ap0l1o">
 <meta property="article:tag" content="C&#x2F;C++">
 <meta name="twitter:card" content="summary">
@@ -254,7 +254,7 @@
 <li><strong>属性不同.</strong> <code>new/delete</code> 是 C++关键字，需要编译器支持。<code>malloc/free</code> 是库函数，需要头文件支持。</li>
 <li><strong>申请的内存所在位置.</strong> <code>new</code> 操作符从自由存储区（free store）上为对象动态分配内存空间，而 <code>malloc</code> 函数从堆上动态分配内存。自由存储区是 C++基于 new 操作符的一个抽象概念，凡是通过 new 操作符进行内存申请，该内存即为自由存储区。而堆是操作系统中的术语，是操作系统所维护的一块特殊内存，用于程序的内存动态分配，C 语言使用 <code>malloc</code> 从堆上分配内存，使用 <code>free</code> 释放已分配的对应内存。那么自由存储区是否可以是堆呢？这取决于 <code>operator new</code> 的实现细节。自由存储区不仅可以是堆，还可以是静态存储区，这都看 <code>operator new</code> 在哪里为对象分配内存。 </li>
 <li><strong>返回类型安全性.</strong> <code>new</code> 操作符内存分配成功时，返回的是对象类型的指针，类型严格与对象匹配，无须进行类型转换，故 <code>new</code> 是符合类型安全性的操作符。而 <code>malloc</code> 内存分配成功则是返回 <code>void*</code> 类型，需要通过强制类型转换将空类型指针转换成我们需要的类型。</li>
-<li><strong>内存分配失败时的返回值.</strong> <code>new</code> 内存分配失败时，会抛出 <code>bac_alloc</code> 异常，它不会返回 <code>NULL</code>；<code>malloc</code> 分配内存失败时返回 <code>NULL</code>。</li>
+<li><strong>内存分配失败时的返回值.</strong> <code>new</code> 内存分配失败时，会抛出 <code>bad_alloc</code> 异常，它不会返回 <code>NULL</code>；<code>malloc</code> 分配内存失败时返回 <code>NULL</code>。</li>
 <li><strong>是否需要指定内存大小.</strong> <strong>使用 <code>new</code> 操作符申请内存分配时无须指定内存块的大小，编译器会根据类型信息自行计算</strong>。而 <code>malloc</code> 则需要显式地指出所需内存的大小。</li>
 <li><strong>数组分配内存（与前一个特点类似）.</strong> <code>new</code> 中分配内存对于变量和数组不同，<code>malloc</code> 分配内存则相同。</li>
 <li><strong>是否调用构造函数/析构函数.</strong>   <code>new</code> 会先调用 <code>operator new</code> 函数，申请足够的内存（通常底层使用 <code>malloc</code> 实现）。然后调用类型的构造函数，初始化成员变量，最后返回自定义类型指针。<code>delete</code> 先调用析构函数，然后调用 <code>operator delete</code> 函数释放内存（通常底层使用 <code>free</code> 实现）。<code>malloc/free</code> 是库函数，只能动态的申请和释放内存，无法强制要求其做自定义类型对象构造和析构工作。 </li>

@@ -1,0 +1,514 @@
+<!DOCTYPE html>
+<html lang=zh>
+<head>
+    <!-- so meta -->
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="HandheldFriendly" content="True">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=5" />
+    <meta name="description" content="专业知识尚待加强操作系统操作系统概述 实时系统、分时系统等各种操作系统的概念和优缺点； 操作系统的特性，以及最基础的特性； 进程管理 各种时间的概念（周转，带权周转，响应，响应比等等）； 高级调度、中级调度、低级调度等的概念； 进程退出时持有资源的处理方法； 处理机调度 死锁的预防、避免、检测和接触（银行家算法是死锁避免算法）； 导致死锁的原因；存储器管理 各种页面置换算法，例如时钟算法（NRU">
+<meta property="og:type" content="article">
+<meta property="og:title" content="ap0l1o">
+<meta property="og:url" content="http://example.com/2023/07/05/%E6%88%91%E7%9A%84%E8%8D%89%E7%A8%BF/%E5%85%AC%E8%80%83%E7%AC%94%E8%AE%B0/%E7%94%B5%E7%BD%91%E5%A4%8D%E4%B9%A0/index.html">
+<meta property="og:site_name" content="ap0l1o">
+<meta property="og:description" content="专业知识尚待加强操作系统操作系统概述 实时系统、分时系统等各种操作系统的概念和优缺点； 操作系统的特性，以及最基础的特性； 进程管理 各种时间的概念（周转，带权周转，响应，响应比等等）； 高级调度、中级调度、低级调度等的概念； 进程退出时持有资源的处理方法； 处理机调度 死锁的预防、避免、检测和接触（银行家算法是死锁避免算法）； 导致死锁的原因；存储器管理 各种页面置换算法，例如时钟算法（NRU">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2023-07-05T00:48:35.502Z">
+<meta property="article:modified_time" content="2023-10-01T14:04:38.313Z">
+<meta property="article:author" content="ap0l1o">
+<meta name="twitter:card" content="summary">
+    
+    
+      
+        
+          <link rel="shortcut icon" href="/images/endless.ico">
+        
+      
+      
+        
+          <link rel="icon" type="image/png" href="/images/endless-192.png" sizes="192x192">
+        
+      
+      
+        
+          <link rel="apple-touch-icon" sizes="180x180" href="/images/endless-180.png">
+        
+      
+    
+    <!-- title -->
+    <title>ap0l1o</title>
+    <!-- async scripts -->
+    <!-- Google Analytics -->
+
+
+    <!-- Umami Analytics -->
+
+
+    <!-- styles -->
+    
+<link rel="stylesheet" href="/css/style.css">
+
+    <!-- persian styles -->
+    
+    <!-- rss -->
+    
+    
+      <link rel="alternate" href="/true" title="ap0l1o" type="application/atom+xml" />
+    
+	<!-- mathjax -->
+	
+		<script type="text/x-mathjax-config">
+		  MathJax.Hub.Config({
+			tex2jax: {
+			  skipTags: ['script', 'noscript', 'style', 'textarea', 'pre'],
+			  inlineMath: [['$','$']]
+			}
+		  });
+		</script>
+		<script src='https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-MML-AM_CHTML' async></script>
+	
+<meta name="generator" content="Hexo 5.4.0"></head>
+
+<body class="max-width mx-auto px3 RTL">
+    
+      <div id="header-post">
+  <a id="menu-icon" href="#" aria-label="目录"><i class="fa-solid fa-bars fa-lg"></i></a>
+  <a id="menu-icon-tablet" href="#" aria-label="目录"><i class="fa-solid fa-bars fa-lg"></i></a>
+  <a id="top-icon-tablet" href="#" aria-label="顶部" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');" style="display:none;"><i class="fa-solid fa-chevron-up fa-lg"></i></a>
+  <span id="menu">
+    <span id="nav">
+      <ul>
+        <!--
+       --><li><a href="/">首页</a></li><!--
+     --><!--
+       --><li><a href="/about/">关于</a></li><!--
+     --><!--
+       --><li><a href="/archives/">归档</a></li><!--
+     --><!--
+       --><li><a href="/tags/">标签</a></li><!--
+     --><!--
+       --><li><a href="/categories/">分类</a></li><!--
+     --><!--
+       --><li><a href="/running/">跑步</a></li><!--
+     -->
+      </ul>
+    </span>
+    <br/>
+    <span id="actions">
+      <ul>
+        
+        <li><a class="icon" aria-label="上一篇" href="/2023/07/07/%E5%85%B3%E4%BA%8E%E8%B7%91%E6%AD%A5/%E8%AF%BE%E8%A1%A8%E5%88%B6%E5%AE%9A/%E5%A4%8F%E8%AE%AD%E8%AF%BE%E8%A1%A8/"><i class="fa-solid fa-chevron-left" aria-hidden="true" onmouseover="$('#i-prev').toggle();" onmouseout="$('#i-prev').toggle();"></i></a></li>
+        
+        
+        <li><a class="icon" aria-label="下一篇" href="/2023/07/02/%E8%AF%BB%E4%B8%87%E5%8D%B7%E4%B9%A6/%E4%B8%8D%E8%83%BD%E6%89%BF%E5%8F%97%E7%9A%84%E7%94%9F%E5%91%BD%E4%B9%8B%E8%BD%BB/"><i class="fa-solid fa-chevron-right" aria-hidden="true" onmouseover="$('#i-next').toggle();" onmouseout="$('#i-next').toggle();"></i></a></li>
+        
+        <li><a class="icon" aria-label="返回顶部" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');"><i class="fa-solid fa-chevron-up" aria-hidden="true" onmouseover="$('#i-top').toggle();" onmouseout="$('#i-top').toggle();"></i></a></li>
+        <li><a class="icon" aria-label="分享文章" href="#"><i class="fa-solid fa-share-alt" aria-hidden="true" onmouseover="$('#i-share').toggle();" onmouseout="$('#i-share').toggle();" onclick="$('#share').toggle();return false;"></i></a></li>
+      </ul>
+      <span id="i-prev" class="info" style="display:none;">上一篇</span>
+      <span id="i-next" class="info" style="display:none;">下一篇</span>
+      <span id="i-top" class="info" style="display:none;">返回顶部</span>
+      <span id="i-share" class="info" style="display:none;">分享文章</span>
+    </span>
+    <br/>
+    <div id="share" style="display: none">
+      <ul>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.facebook.com/sharer.php?u=http://example.com/2023/07/05/%E6%88%91%E7%9A%84%E8%8D%89%E7%A8%BF/%E5%85%AC%E8%80%83%E7%AC%94%E8%AE%B0/%E7%94%B5%E7%BD%91%E5%A4%8D%E4%B9%A0/"><i class="fab fa-facebook " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://twitter.com/share?url=http://example.com/2023/07/05/%E6%88%91%E7%9A%84%E8%8D%89%E7%A8%BF/%E5%85%AC%E8%80%83%E7%AC%94%E8%AE%B0/%E7%94%B5%E7%BD%91%E5%A4%8D%E4%B9%A0/&text="><i class="fab fa-twitter " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.linkedin.com/shareArticle?url=http://example.com/2023/07/05/%E6%88%91%E7%9A%84%E8%8D%89%E7%A8%BF/%E5%85%AC%E8%80%83%E7%AC%94%E8%AE%B0/%E7%94%B5%E7%BD%91%E5%A4%8D%E4%B9%A0/&title="><i class="fab fa-linkedin " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://pinterest.com/pin/create/bookmarklet/?url=http://example.com/2023/07/05/%E6%88%91%E7%9A%84%E8%8D%89%E7%A8%BF/%E5%85%AC%E8%80%83%E7%AC%94%E8%AE%B0/%E7%94%B5%E7%BD%91%E5%A4%8D%E4%B9%A0/&is_video=false&description="><i class="fab fa-pinterest " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="mailto:?subject=&body=Check out this article: http://example.com/2023/07/05/%E6%88%91%E7%9A%84%E8%8D%89%E7%A8%BF/%E5%85%AC%E8%80%83%E7%AC%94%E8%AE%B0/%E7%94%B5%E7%BD%91%E5%A4%8D%E4%B9%A0/"><i class="fa-solid fa-envelope " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://getpocket.com/save?url=http://example.com/2023/07/05/%E6%88%91%E7%9A%84%E8%8D%89%E7%A8%BF/%E5%85%AC%E8%80%83%E7%AC%94%E8%AE%B0/%E7%94%B5%E7%BD%91%E5%A4%8D%E4%B9%A0/&title="><i class="fab fa-get-pocket " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://reddit.com/submit?url=http://example.com/2023/07/05/%E6%88%91%E7%9A%84%E8%8D%89%E7%A8%BF/%E5%85%AC%E8%80%83%E7%AC%94%E8%AE%B0/%E7%94%B5%E7%BD%91%E5%A4%8D%E4%B9%A0/&title="><i class="fab fa-reddit " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.stumbleupon.com/submit?url=http://example.com/2023/07/05/%E6%88%91%E7%9A%84%E8%8D%89%E7%A8%BF/%E5%85%AC%E8%80%83%E7%AC%94%E8%AE%B0/%E7%94%B5%E7%BD%91%E5%A4%8D%E4%B9%A0/&title="><i class="fab fa-stumbleupon " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://digg.com/submit?url=http://example.com/2023/07/05/%E6%88%91%E7%9A%84%E8%8D%89%E7%A8%BF/%E5%85%AC%E8%80%83%E7%AC%94%E8%AE%B0/%E7%94%B5%E7%BD%91%E5%A4%8D%E4%B9%A0/&title="><i class="fab fa-digg " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.tumblr.com/share/link?url=http://example.com/2023/07/05/%E6%88%91%E7%9A%84%E8%8D%89%E7%A8%BF/%E5%85%AC%E8%80%83%E7%AC%94%E8%AE%B0/%E7%94%B5%E7%BD%91%E5%A4%8D%E4%B9%A0/&name=&description="><i class="fab fa-tumblr " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://news.ycombinator.com/submitlink?u=http://example.com/2023/07/05/%E6%88%91%E7%9A%84%E8%8D%89%E7%A8%BF/%E5%85%AC%E8%80%83%E7%AC%94%E8%AE%B0/%E7%94%B5%E7%BD%91%E5%A4%8D%E4%B9%A0/&t="><i class="fab fa-hacker-news " aria-hidden="true"></i></a></li>
+</ul>
+
+    </div>
+    
+    
+      <div id="toc">
+        <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#%E4%B8%93%E4%B8%9A%E7%9F%A5%E8%AF%86"><span class="toc-number">1.</span> <span class="toc-text">专业知识</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%B0%9A%E5%BE%85%E5%8A%A0%E5%BC%BA"><span class="toc-number">1.1.</span> <span class="toc-text">尚待加强</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F"><span class="toc-number">1.1.1.</span> <span class="toc-text">操作系统</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F%E6%A6%82%E8%BF%B0"><span class="toc-number">1.1.1.1.</span> <span class="toc-text">操作系统概述</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E8%BF%9B%E7%A8%8B%E7%AE%A1%E7%90%86"><span class="toc-number">1.1.1.2.</span> <span class="toc-text">进程管理</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%A4%84%E7%90%86%E6%9C%BA%E8%B0%83%E5%BA%A6"><span class="toc-number">1.1.1.3.</span> <span class="toc-text">处理机调度</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%AD%98%E5%82%A8%E5%99%A8%E7%AE%A1%E7%90%86"><span class="toc-number">1.1.1.4.</span> <span class="toc-text">存储器管理</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E8%AE%BE%E5%A4%87%E7%AE%A1%E7%90%86"><span class="toc-number">1.1.1.5.</span> <span class="toc-text">设备管理</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E6%96%87%E4%BB%B6%E7%AE%A1%E7%90%86"><span class="toc-number">1.1.1.6.</span> <span class="toc-text">文件管理</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C"><span class="toc-number">1.1.2.</span> <span class="toc-text">计算机网络</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E7%BD%91%E7%BB%9C%E4%BD%93%E7%B3%BB%E7%BB%93%E6%9E%84"><span class="toc-number">1.1.2.1.</span> <span class="toc-text">网络体系结构</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E7%89%A9%E7%90%86%E5%B1%82"><span class="toc-number">1.1.2.2.</span> <span class="toc-text">物理层</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E6%95%B0%E6%8D%AE%E9%93%BE%E8%B7%AF%E5%B1%82"><span class="toc-number">1.1.2.3.</span> <span class="toc-text">数据链路层</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E7%BD%91%E7%BB%9C%E5%B1%82"><span class="toc-number">1.1.2.4.</span> <span class="toc-text">网络层</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E4%BC%A0%E8%BE%93%E5%B1%82"><span class="toc-number">1.1.2.5.</span> <span class="toc-text">传输层</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%BA%94%E7%94%A8%E5%B1%82"><span class="toc-number">1.1.2.6.</span> <span class="toc-text">应用层</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E6%97%A0%E7%BA%BF%E7%BD%91%E7%BB%9C"><span class="toc-number">1.1.2.7.</span> <span class="toc-text">无线网络</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E4%BF%A1%E6%81%AF%E5%AE%89%E5%85%A8"><span class="toc-number">1.1.2.8.</span> <span class="toc-text">信息安全</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BB%84%E6%88%90%E4%B8%8E%E4%BD%93%E7%B3%BB%E7%BB%93%E6%9E%84"><span class="toc-number">1.1.3.</span> <span class="toc-text">计算机组成与体系结构</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%B3%BB%E7%BB%9F%E6%A6%82%E8%BF%B0"><span class="toc-number">1.1.3.1.</span> <span class="toc-text">计算机系统概述</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E6%95%B0%E6%8D%AE%E7%9A%84%E8%A1%A8%E7%A4%BA%E5%92%8C%E8%BF%90%E7%AE%97"><span class="toc-number">1.1.3.2.</span> <span class="toc-text">数据的表示和运算</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E6%80%BB%E7%BA%BF%E7%B3%BB%E7%BB%9F"><span class="toc-number">1.1.3.3.</span> <span class="toc-text">总线系统</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E6%8C%87%E4%BB%A4%E7%B3%BB%E7%BB%9F"><span class="toc-number">1.1.3.4.</span> <span class="toc-text">指令系统</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%AD%98%E5%82%A8%E7%B3%BB%E7%BB%9F"><span class="toc-number">1.1.3.5.</span> <span class="toc-text">存储系统</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E4%B8%AD%E5%A4%AE%E5%A4%84%E7%90%86%E5%99%A8"><span class="toc-number">1.1.3.6.</span> <span class="toc-text">中央处理器</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#I-O-%E8%AE%BE%E5%A4%87%E5%92%8C%E7%B3%BB%E7%BB%9F"><span class="toc-number">1.1.3.7.</span> <span class="toc-text">I&#x2F;O 设备和系统</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84"><span class="toc-number">1.1.4.</span> <span class="toc-text">数据结构</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E6%A0%91%E5%92%8C%E4%BA%8C%E5%8F%89%E6%A0%91"><span class="toc-number">1.1.4.1.</span> <span class="toc-text">树和二叉树</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%9B%BE"><span class="toc-number">1.1.4.2.</span> <span class="toc-text">图</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E6%9F%A5%E6%89%BE%E5%92%8C%E6%8E%92%E5%BA%8F"><span class="toc-number">1.1.4.3.</span> <span class="toc-text">查找和排序</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%95%B0%E6%8D%AE%E5%BA%93%E7%B3%BB%E7%BB%9F"><span class="toc-number">1.1.5.</span> <span class="toc-text">数据库系统</span></a></li></ol></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E5%85%AC%E5%85%B1%E4%B8%8E%E8%A1%8C%E4%B8%9A%E7%9F%A5%E8%AF%86"><span class="toc-number">2.</span> <span class="toc-text">公共与行业知识</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E8%A1%8C%E6%B5%8B"><span class="toc-number">2.1.</span> <span class="toc-text">行测</span></a></li></ol></li></ol>
+      </div>
+    
+  </span>
+</div>
+
+    
+    <div class="content index py4 ">
+        
+        <article class="post h-entry" itemscope itemtype="http://schema.org/BlogPosting">
+  <header>
+    
+    <h1 class="posttitle p-name" itemprop="name headline">
+        
+    </h1>
+
+
+
+    <div class="meta">
+      <span class="author p-author h-card" itemprop="author" itemscope itemtype="http://schema.org/Person">
+        <span class="p-name" itemprop="name">ap0l1o</span>
+      </span>
+      
+    <div class="postdate">
+      
+        <time datetime="2023-07-05T00:48:35.502Z" class="dt-published" itemprop="datePublished">2023-07-05</time>
+        
+      
+    </div>
+
+
+      
+
+      
+
+    </div>
+  </header>
+  
+
+  <div class="content e-content" itemprop="articleBody">
+    <h1 id="专业知识"><a href="#专业知识" class="headerlink" title="专业知识"></a>专业知识</h1><h2 id="尚待加强"><a href="#尚待加强" class="headerlink" title="尚待加强"></a>尚待加强</h2><h3 id="操作系统"><a href="#操作系统" class="headerlink" title="操作系统"></a>操作系统</h3><h4 id="操作系统概述"><a href="#操作系统概述" class="headerlink" title="操作系统概述"></a>操作系统概述</h4><ul>
+<li>实时系统、分时系统等各种操作系统的概念和优缺点；</li>
+<li>操作系统的特性，以及最基础的特性；</li>
+<li><h4 id="进程管理"><a href="#进程管理" class="headerlink" title="进程管理"></a>进程管理</h4></li>
+<li>各种时间的概念（周转，带权周转，响应，响应比等等）；</li>
+<li>高级调度、中级调度、低级调度等的概念；</li>
+<li>进程退出时持有资源的处理方法；</li>
+<li><h4 id="处理机调度"><a href="#处理机调度" class="headerlink" title="处理机调度"></a>处理机调度</h4></li>
+<li>死锁的预防、避免、检测和接触（银行家算法是<strong>死锁避免算法</strong>）；</li>
+<li>导致死锁的原因；<h4 id="存储器管理"><a href="#存储器管理" class="headerlink" title="存储器管理"></a>存储器管理</h4></li>
+<li>各种页面置换算法，例如时钟算法（NRU 算法）；</li>
+<li>页面的分配和置换策略；</li>
+<li>虚存的最大容量；</li>
+<li>覆盖和交换技术；</li>
+<li>虚存最基本的特征：多次性；</li>
+</ul>
+<h4 id="设备管理"><a href="#设备管理" class="headerlink" title="设备管理"></a>设备管理</h4><ul>
+<li>设备独立性的概念；</li>
+<li>设备分配使用的各种数据结构；</li>
+<li>磁盘的存取访问时间；</li>
+<li>磁盘的各种调度算法（尤其是 SCAN 算法和 CSCAN 算法中的移动方向）；</li>
+<li>设备的分配策略；</li>
+<li>SPOOLing 技术的概念和目的（虚拟设备）；</li>
+<li>磁盘空间的分配和回收方法，以及常见的操作系统选用的何种方法；</li>
+<li>各种 RAID 的概念和作用；</li>
+<li>连接 I/O 设备的通道；<h4 id="文件管理"><a href="#文件管理" class="headerlink" title="文件管理"></a>文件管理</h4></li>
+<li>文件逻辑结构的概念和分类；</li>
+<li>文件保护方式（转储、副本等）</li>
+<li>最基本的文件操作；</li>
+</ul>
+<h3 id="计算机网络"><a href="#计算机网络" class="headerlink" title="计算机网络"></a>计算机网络</h3><h4 id="网络体系结构"><a href="#网络体系结构" class="headerlink" title="网络体系结构"></a>网络体系结构</h4><ul>
+<li>各种网络交换技术的概念和应用场景和优缺点；</li>
+<li>各种网络拓扑；</li>
+<li>各种网络标准的概念；</li>
+<li>各种网络性能的评价指标；</li>
+<li>OSI 模型每层的功能；</li>
+</ul>
+<h4 id="物理层"><a href="#物理层" class="headerlink" title="物理层"></a>物理层</h4><ul>
+<li>各种网络互连设备的作用和功能（集线器、网桥、交换机、网关、路由器）；</li>
+<li>CSMA/CD 和 CSMA/CA 协议；</li>
+<li>MAC 地址格式和表达；</li>
+<li>波特率的概念；</li>
+<li>双绞线的标准线序；</li>
+<li>差分曼彻斯特编码；<h4 id="数据链路层"><a href="#数据链路层" class="headerlink" title="数据链路层"></a>数据链路层</h4></li>
+<li>数据链路层帧的格式</li>
+<li><h4 id="网络层"><a href="#网络层" class="headerlink" title="网络层"></a>网络层</h4></li>
+<li>各种 ICMP 报文的作用；</li>
+<li>标准 IPv4 类别划分；</li>
+<li>网络地址的划分；</li>
+<li>IPv6 地址的格式；<h4 id="传输层"><a href="#传输层" class="headerlink" title="传输层"></a>传输层</h4></li>
+<li>流量控制和拥塞控制的区别；</li>
+<li>端口类型的分类，以及各类的端口范围；<h4 id="应用层"><a href="#应用层" class="headerlink" title="应用层"></a>应用层</h4></li>
+<li>邮件传输使用的两个协议 SMTP 和 POP3</li>
+<li>FTP 协议的特点；</li>
+<li>DNS 协议的递归查询和迭代查询；</li>
+<li>域名的分类；<h4 id="无线网络"><a href="#无线网络" class="headerlink" title="无线网络"></a>无线网络</h4></li>
+<li>香农公式；<h4 id="信息安全"><a href="#信息安全" class="headerlink" title="信息安全"></a>信息安全</h4></li>
+</ul>
+<h3 id="计算机组成与体系结构"><a href="#计算机组成与体系结构" class="headerlink" title="计算机组成与体系结构"></a>计算机组成与体系结构</h3><h4 id="计算机系统概述"><a href="#计算机系统概述" class="headerlink" title="计算机系统概述"></a>计算机系统概述</h4><h4 id="数据的表示和运算"><a href="#数据的表示和运算" class="headerlink" title="数据的表示和运算"></a>数据的表示和运算</h4><ul>
+<li>汉字如何存储的，不同编码下占多少字节</li>
+<li>各种二进制编码方式</li>
+<li>浮点数的表示和运算，IEEE745 浮点数表示格式</li>
+<li>二进制乘法和除法的运算</li>
+<li>海明码，CRC 码<h4 id="总线系统"><a href="#总线系统" class="headerlink" title="总线系统"></a>总线系统</h4></li>
+<li>系统总线的概念和功能</li>
+<li>同步通信和异步通信的概念和优缺点</li>
+<li><h4 id="指令系统"><a href="#指令系统" class="headerlink" title="指令系统"></a>指令系统</h4></li>
+<li>RISC 和 CISC 的区别</li>
+<li>从机器指令到微指令的概念、联系和目的</li>
+<li>微指令的分类，水平型和垂直型</li>
+<li>中断隐指令的概念</li>
+<li>微程序控制的概念</li>
+<li>扩展码技术</li>
+</ul>
+<h4 id="存储系统"><a href="#存储系统" class="headerlink" title="存储系统"></a>存储系统</h4><ul>
+<li>SRAM 和 DRAM 的区别</li>
+<li>DRAM 是如何刷新的</li>
+<li>地址译码器的分类和作用</li>
+<li>各种寻址方式<ul>
+<li>基址寻址：用作多道程序和程序浮动；</li>
+<li>变址寻址：处理数组和字符串问题；</li>
+</ul>
+</li>
+</ul>
+<h4 id="中央处理器"><a href="#中央处理器" class="headerlink" title="中央处理器"></a>中央处理器</h4><h4 id="I-O-设备和系统"><a href="#I-O-设备和系统" class="headerlink" title="I/O 设备和系统"></a>I/O 设备和系统</h4><ul>
+<li>I/O 设备是通过什么接口连接的，如何编址的</li>
+</ul>
+<h3 id="数据结构"><a href="#数据结构" class="headerlink" title="数据结构"></a>数据结构</h3><h4 id="树和二叉树"><a href="#树和二叉树" class="headerlink" title="树和二叉树"></a>树和二叉树</h4><ul>
+<li>二叉树和树的互相转换；<ul>
+<li>树转二叉树：<ul>
+<li>兄弟之间连线；</li>
+<li>每个节点只保留和其第一个孩子的连线；</li>
+</ul>
+</li>
+<li>二叉树还原树：<ul>
+<li>每个节点的双亲节点和其右链上的每个节点连线；</li>
+<li>删除每个节点右链上原有的连线；</li>
+</ul>
+</li>
+<li>遍历关系对应：<ul>
+<li>树的先序遍历对应二叉树的先序遍历；</li>
+<li>树的后序遍历对应二叉树的中序遍历；</li>
+<li>树没有中序遍历；</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>二叉树和森林的互相转换；<ul>
+<li>森林转二叉树：<ul>
+<li>将森林中的每棵树转为二叉树；</li>
+<li>将每棵二叉树的根节点依次连接；</li>
+</ul>
+</li>
+<li>二叉树还原森林：<ul>
+<li>抹掉根节点右链上的每个连线；</li>
+<li>将每棵二叉树还原为树；</li>
+</ul>
+</li>
+<li>遍历关系对应：<ul>
+<li>森林的先序遍历对应二叉树的先序遍历；</li>
+<li>森林的后序遍历对应二叉树的中序遍历；</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>树中节点、边和度数的关系；<ul>
+<li>总节点数量为 n，则有边的数量为 n-1，度数关系为 $1 + n_2 + 2n_3 + … + (m-1) n_m = n_0$ </li>
+</ul>
+</li>
+<li>树的各种存储结构；</li>
+<li>线索二叉树；</li>
+<li>哈夫曼树，带权路径长度；<h4 id="图"><a href="#图" class="headerlink" title="图"></a>图</h4></li>
+<li>AOV 网的拓扑排序；<ul>
+<li>拓扑排序：对 AOV 网中的所有顶点进行排序，使得每个活动的前驱活动都排在该活动之前<ul>
+<li>算法：不断删除入度为 0 的节点，然后删除相应的边</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>AOE 网的关键路径和关键活动；<ul>
+<li>关键路径：从原点到终点具有最大长度的路径称为关键路径；</li>
+<li>关键活动：关键路径上的活动称为关键活动；</li>
+<li>算法：<ul>
+<li><ol>
+<li> 先求各顶点的最早开始时间；</li>
+</ol>
+</li>
+<li><ol start="2">
+<li>然后求各顶点的最晚开始时间；</li>
+</ol>
+</li>
+<li><ol start="3">
+<li>边活动的最早开始时间为出发顶点的最早开始时间；</li>
+</ol>
+</li>
+<li><ol start="4">
+<li>边活动的最晚开始时间为到达顶点的最晚开始时间剪去边权值；</li>
+</ol>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>最小生成树⭐️；<ul>
+<li>PRIM 算法：每次添加到原点所在顶点集最近的顶点；</li>
+<li>克鲁斯卡尔算法：每次选择权值最小且不会构成回路的边；</li>
+</ul>
+</li>
+<li><h4 id="查找和排序"><a href="#查找和排序" class="headerlink" title="查找和排序"></a>查找和排序</h4></li>
+<li>各种排序算法的平均复杂度和最坏复杂度；</li>
+<li>基数排序和堆排序的算法步骤⭐️；</li>
+<li>B 树和 B+ 树；</li>
+<li>哈希表的冲突解决算法；</li>
+<li>平衡二叉树的插入和调整⭐️；</li>
+</ul>
+<h3 id="数据库系统"><a href="#数据库系统" class="headerlink" title="数据库系统"></a>数据库系统</h3><h1 id="公共与行业知识"><a href="#公共与行业知识" class="headerlink" title="公共与行业知识"></a>公共与行业知识</h1><ul>
+<li><strong>一般能力</strong><ul>
+<li>言语理解：对语言文字的综合分析能力</li>
+<li>数理思维：快速理解和解决算数问题的能力</li>
+<li>判断推理：根据一定的先知条件，通过拥有的知识、思维进行判定、推断，对事物得出结论的能力</li>
+<li>资料分析：主要包括文字类资料、表格类资料、图形类资料和综合类资料四种基本形式，综合考查应试者阅读、理解、分析、计算等方面的能力</li>
+</ul>
+</li>
+<li>企业文化、电力与能源战略：参见《国家电网公司企业文化、电力与能源战略》题库</li>
+<li>形势与政策<h2 id="行测"><a href="#行测" class="headerlink" title="行测"></a>行测</h2>建议的复习顺序：</li>
+</ul>
+<ol>
+<li><strong>资料分析</strong></li>
+<li><strong>言语理解与表达</strong></li>
+<li><strong>判断推理</strong></li>
+<li><strong>数量关系</strong></li>
+<li>常识判断</li>
+</ol>
+
+  </div>
+</article>
+
+
+
+        
+          <div id="footer-post-container">
+  <div id="footer-post">
+
+    <div id="nav-footer" style="display: none">
+      <ul>
+        
+          <li><a href="/">首页</a></li>
+        
+          <li><a href="/about/">关于</a></li>
+        
+          <li><a href="/archives/">归档</a></li>
+        
+          <li><a href="/tags/">标签</a></li>
+        
+          <li><a href="/categories/">分类</a></li>
+        
+          <li><a href="/running/">跑步</a></li>
+        
+      </ul>
+    </div>
+
+    
+    
+      <div id="toc-footer" style="display: none">
+        <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#%E4%B8%93%E4%B8%9A%E7%9F%A5%E8%AF%86"><span class="toc-number">1.</span> <span class="toc-text">专业知识</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%B0%9A%E5%BE%85%E5%8A%A0%E5%BC%BA"><span class="toc-number">1.1.</span> <span class="toc-text">尚待加强</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F"><span class="toc-number">1.1.1.</span> <span class="toc-text">操作系统</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F%E6%A6%82%E8%BF%B0"><span class="toc-number">1.1.1.1.</span> <span class="toc-text">操作系统概述</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E8%BF%9B%E7%A8%8B%E7%AE%A1%E7%90%86"><span class="toc-number">1.1.1.2.</span> <span class="toc-text">进程管理</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%A4%84%E7%90%86%E6%9C%BA%E8%B0%83%E5%BA%A6"><span class="toc-number">1.1.1.3.</span> <span class="toc-text">处理机调度</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%AD%98%E5%82%A8%E5%99%A8%E7%AE%A1%E7%90%86"><span class="toc-number">1.1.1.4.</span> <span class="toc-text">存储器管理</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E8%AE%BE%E5%A4%87%E7%AE%A1%E7%90%86"><span class="toc-number">1.1.1.5.</span> <span class="toc-text">设备管理</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E6%96%87%E4%BB%B6%E7%AE%A1%E7%90%86"><span class="toc-number">1.1.1.6.</span> <span class="toc-text">文件管理</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C"><span class="toc-number">1.1.2.</span> <span class="toc-text">计算机网络</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E7%BD%91%E7%BB%9C%E4%BD%93%E7%B3%BB%E7%BB%93%E6%9E%84"><span class="toc-number">1.1.2.1.</span> <span class="toc-text">网络体系结构</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E7%89%A9%E7%90%86%E5%B1%82"><span class="toc-number">1.1.2.2.</span> <span class="toc-text">物理层</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E6%95%B0%E6%8D%AE%E9%93%BE%E8%B7%AF%E5%B1%82"><span class="toc-number">1.1.2.3.</span> <span class="toc-text">数据链路层</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E7%BD%91%E7%BB%9C%E5%B1%82"><span class="toc-number">1.1.2.4.</span> <span class="toc-text">网络层</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E4%BC%A0%E8%BE%93%E5%B1%82"><span class="toc-number">1.1.2.5.</span> <span class="toc-text">传输层</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%BA%94%E7%94%A8%E5%B1%82"><span class="toc-number">1.1.2.6.</span> <span class="toc-text">应用层</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E6%97%A0%E7%BA%BF%E7%BD%91%E7%BB%9C"><span class="toc-number">1.1.2.7.</span> <span class="toc-text">无线网络</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E4%BF%A1%E6%81%AF%E5%AE%89%E5%85%A8"><span class="toc-number">1.1.2.8.</span> <span class="toc-text">信息安全</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BB%84%E6%88%90%E4%B8%8E%E4%BD%93%E7%B3%BB%E7%BB%93%E6%9E%84"><span class="toc-number">1.1.3.</span> <span class="toc-text">计算机组成与体系结构</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%B3%BB%E7%BB%9F%E6%A6%82%E8%BF%B0"><span class="toc-number">1.1.3.1.</span> <span class="toc-text">计算机系统概述</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E6%95%B0%E6%8D%AE%E7%9A%84%E8%A1%A8%E7%A4%BA%E5%92%8C%E8%BF%90%E7%AE%97"><span class="toc-number">1.1.3.2.</span> <span class="toc-text">数据的表示和运算</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E6%80%BB%E7%BA%BF%E7%B3%BB%E7%BB%9F"><span class="toc-number">1.1.3.3.</span> <span class="toc-text">总线系统</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E6%8C%87%E4%BB%A4%E7%B3%BB%E7%BB%9F"><span class="toc-number">1.1.3.4.</span> <span class="toc-text">指令系统</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%AD%98%E5%82%A8%E7%B3%BB%E7%BB%9F"><span class="toc-number">1.1.3.5.</span> <span class="toc-text">存储系统</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E4%B8%AD%E5%A4%AE%E5%A4%84%E7%90%86%E5%99%A8"><span class="toc-number">1.1.3.6.</span> <span class="toc-text">中央处理器</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#I-O-%E8%AE%BE%E5%A4%87%E5%92%8C%E7%B3%BB%E7%BB%9F"><span class="toc-number">1.1.3.7.</span> <span class="toc-text">I&#x2F;O 设备和系统</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84"><span class="toc-number">1.1.4.</span> <span class="toc-text">数据结构</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E6%A0%91%E5%92%8C%E4%BA%8C%E5%8F%89%E6%A0%91"><span class="toc-number">1.1.4.1.</span> <span class="toc-text">树和二叉树</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%9B%BE"><span class="toc-number">1.1.4.2.</span> <span class="toc-text">图</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E6%9F%A5%E6%89%BE%E5%92%8C%E6%8E%92%E5%BA%8F"><span class="toc-number">1.1.4.3.</span> <span class="toc-text">查找和排序</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%95%B0%E6%8D%AE%E5%BA%93%E7%B3%BB%E7%BB%9F"><span class="toc-number">1.1.5.</span> <span class="toc-text">数据库系统</span></a></li></ol></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E5%85%AC%E5%85%B1%E4%B8%8E%E8%A1%8C%E4%B8%9A%E7%9F%A5%E8%AF%86"><span class="toc-number">2.</span> <span class="toc-text">公共与行业知识</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E8%A1%8C%E6%B5%8B"><span class="toc-number">2.1.</span> <span class="toc-text">行测</span></a></li></ol></li></ol>
+      </div>
+    
+
+    <div id="share-footer" style="display: none">
+      <ul>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.facebook.com/sharer.php?u=http://example.com/2023/07/05/%E6%88%91%E7%9A%84%E8%8D%89%E7%A8%BF/%E5%85%AC%E8%80%83%E7%AC%94%E8%AE%B0/%E7%94%B5%E7%BD%91%E5%A4%8D%E4%B9%A0/"><i class="fab fa-facebook fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://twitter.com/share?url=http://example.com/2023/07/05/%E6%88%91%E7%9A%84%E8%8D%89%E7%A8%BF/%E5%85%AC%E8%80%83%E7%AC%94%E8%AE%B0/%E7%94%B5%E7%BD%91%E5%A4%8D%E4%B9%A0/&text="><i class="fab fa-twitter fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.linkedin.com/shareArticle?url=http://example.com/2023/07/05/%E6%88%91%E7%9A%84%E8%8D%89%E7%A8%BF/%E5%85%AC%E8%80%83%E7%AC%94%E8%AE%B0/%E7%94%B5%E7%BD%91%E5%A4%8D%E4%B9%A0/&title="><i class="fab fa-linkedin fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://pinterest.com/pin/create/bookmarklet/?url=http://example.com/2023/07/05/%E6%88%91%E7%9A%84%E8%8D%89%E7%A8%BF/%E5%85%AC%E8%80%83%E7%AC%94%E8%AE%B0/%E7%94%B5%E7%BD%91%E5%A4%8D%E4%B9%A0/&is_video=false&description="><i class="fab fa-pinterest fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="mailto:?subject=&body=Check out this article: http://example.com/2023/07/05/%E6%88%91%E7%9A%84%E8%8D%89%E7%A8%BF/%E5%85%AC%E8%80%83%E7%AC%94%E8%AE%B0/%E7%94%B5%E7%BD%91%E5%A4%8D%E4%B9%A0/"><i class="fa-solid fa-envelope fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://getpocket.com/save?url=http://example.com/2023/07/05/%E6%88%91%E7%9A%84%E8%8D%89%E7%A8%BF/%E5%85%AC%E8%80%83%E7%AC%94%E8%AE%B0/%E7%94%B5%E7%BD%91%E5%A4%8D%E4%B9%A0/&title="><i class="fab fa-get-pocket fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://reddit.com/submit?url=http://example.com/2023/07/05/%E6%88%91%E7%9A%84%E8%8D%89%E7%A8%BF/%E5%85%AC%E8%80%83%E7%AC%94%E8%AE%B0/%E7%94%B5%E7%BD%91%E5%A4%8D%E4%B9%A0/&title="><i class="fab fa-reddit fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.stumbleupon.com/submit?url=http://example.com/2023/07/05/%E6%88%91%E7%9A%84%E8%8D%89%E7%A8%BF/%E5%85%AC%E8%80%83%E7%AC%94%E8%AE%B0/%E7%94%B5%E7%BD%91%E5%A4%8D%E4%B9%A0/&title="><i class="fab fa-stumbleupon fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://digg.com/submit?url=http://example.com/2023/07/05/%E6%88%91%E7%9A%84%E8%8D%89%E7%A8%BF/%E5%85%AC%E8%80%83%E7%AC%94%E8%AE%B0/%E7%94%B5%E7%BD%91%E5%A4%8D%E4%B9%A0/&title="><i class="fab fa-digg fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.tumblr.com/share/link?url=http://example.com/2023/07/05/%E6%88%91%E7%9A%84%E8%8D%89%E7%A8%BF/%E5%85%AC%E8%80%83%E7%AC%94%E8%AE%B0/%E7%94%B5%E7%BD%91%E5%A4%8D%E4%B9%A0/&name=&description="><i class="fab fa-tumblr fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://news.ycombinator.com/submitlink?u=http://example.com/2023/07/05/%E6%88%91%E7%9A%84%E8%8D%89%E7%A8%BF/%E5%85%AC%E8%80%83%E7%AC%94%E8%AE%B0/%E7%94%B5%E7%BD%91%E5%A4%8D%E4%B9%A0/&t="><i class="fab fa-hacker-news fa-lg" aria-hidden="true"></i></a></li>
+</ul>
+
+    </div>
+
+    <div id="actions-footer">
+        <a id="menu" class="icon" href="#" onclick="$('#nav-footer').toggle();return false;"><i class="fa-solid fa-bars fa-lg" aria-hidden="true"></i> 菜单</a>
+        
+          <a id="toc" class="icon" href="#" onclick="$('#toc-footer').toggle();return false;"><i class="fa-solid fa-list fa-lg" aria-hidden="true"></i> 目录</a>
+        
+        <a id="share" class="icon" href="#" onclick="$('#share-footer').toggle();return false;"><i class="fa-solid fa-share-alt fa-lg" aria-hidden="true"></i> 分享</a>
+        <a id="top" style="display:none" class="icon" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');"><i class="fa-solid fa-chevron-up fa-lg" aria-hidden="true"></i> 返回顶部</a>
+    </div>
+
+  </div>
+</div>
+
+        
+        <footer id="footer">
+  <div class="footer-left">
+    Copyright &copy;
+    
+    
+    2016-2023
+    ap0l1o
+  </div>
+  <div class="footer-right">
+    <nav>
+      <ul>
+        <!--
+       --><li><a href="/">首页</a></li><!--
+     --><!--
+       --><li><a href="/about/">关于</a></li><!--
+     --><!--
+       --><li><a href="/archives/">归档</a></li><!--
+     --><!--
+       --><li><a href="/tags/">标签</a></li><!--
+     --><!--
+       --><li><a href="/categories/">分类</a></li><!--
+     --><!--
+       --><li><a href="/running/">跑步</a></li><!--
+     -->
+      </ul>
+    </nav>
+  </div>
+</footer>
+
+    </div>
+    <!-- styles -->
+
+
+
+  <link rel="preload" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" crossorigin="anonymous" onload="this.onload=null;this.rel='stylesheet'"/>
+
+
+    <!-- jquery -->
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js" crossorigin="anonymous"></script>
+
+
+
+
+<!-- clipboard -->
+
+  
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.7/clipboard.min.js" crossorigin="anonymous"></script>
+  
+  <script type="text/javascript">
+  $(function() {
+    // copy-btn HTML
+    var btn = "<span class=\"btn-copy tooltipped tooltipped-sw\" aria-label=\"复制到粘贴板！\">";
+    btn += '<i class="fa-regular fa-clone"></i>';
+    btn += '</span>';
+    // mount it!
+    $(".highlight table").before(btn);
+    var clip = new ClipboardJS('.btn-copy', {
+      text: function(trigger) {
+        return Array.from(trigger.nextElementSibling.querySelectorAll('.code')).reduce((str,it)=>str+it.innerText+'\n','')
+      }
+    });
+    clip.on('success', function(e) {
+      e.trigger.setAttribute('aria-label', "复制成功！");
+      e.clearSelection();
+    })
+  })
+  </script>
+
+
+<script src="/js/main.js"></script>
+
+<!-- search -->
+
+<!-- Baidu Analytics -->
+
+<!-- Cloudflare Analytics -->
+
+<!-- Disqus Comments -->
+
+<!-- utterances Comments -->
+
+</body>
+</html>

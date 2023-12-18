@@ -22,7 +22,7 @@
 <meta property="og:image" content="https://ap0l1o.oss-cn-qingdao.aliyuncs.com/img/AC-Key_E_2.png">
 <meta property="og:image" content="https://ap0l1o.oss-cn-qingdao.aliyuncs.com/img/AC-Key_F_5.png">
 <meta property="article:published_time" content="2021-12-10T03:39:00.000Z">
-<meta property="article:modified_time" content="2022-12-06T07:59:30.801Z">
+<meta property="article:modified_time" content="2023-12-11T10:23:21.479Z">
 <meta property="article:author" content="ap0l1o">
 <meta property="article:tag" content="Key-Value Store">
 <meta property="article:tag" content="论文阅读">
@@ -196,8 +196,7 @@
 <li>首先，LSM分层的设计使得缓存不同Level的KV数据所带来的收益不同，也即能够节省的磁盘I/O次数不同；</li>
 <li>其次，两种读操作「point lookup」和「range query」对缓存的需求不一致。「Point lookup」更偏向于缓存一个「key-value pair」，这种方式相对节省空间；当value过大时，一种折中的方案是选择缓存「key- pointer pair」，也即缓存「key」和「value的磁盘指针」，指针相对value所占用的空间更小。而缓存单个零星的「key-value pair」无法为「range query」服务，因此只能通过缓存「block」来支持「range query」；</li>
 </ul>
-<p>因此，很难在缓存KV、KP和Block之间进行权衡，它们都有其各自适合的工作负载。此外，设计一种可以根据工作负载进行自适应的缓存方案是困难的。<br>现有的缓存方案通常只选择缓存KV、KP和Block中的一种或两种，而且为每种缓存类型都分配了固定大小的缓存空间。因此，这些缓存方案无法适应多样的工作负载，也不能根据工作负载的变化来调整缓存空间的大小。此外，目前还没有针对LSM中特有的异构缓存成本的解决方案。</p>
-<p>本文全面分析研究了对缓存KV、KP和Block之间的权衡，并提出了「 AC-Key, Adaptive Caching for LSM-based Key-Value Stores」来结合它们在面临各种工作负载时的优势。AC-Key为每种类型的条目（KV、KP和Block）都使用专门设计的单独缓存组件。每个缓存组件的大小可以根据文章提出的「 <em>hierarchical adaptive caching</em> algorithm，分层自适应缓存算法」进行调整（使用「ghost cache」来指导其大小调整）。<br>此外，AC- Key利用一种新颖的缓存效率因子来评估不同的<strong>缓存成本</strong>和<strong>收益</strong>，以指导<strong>不同缓存组件之间的边界调整</strong>以及<strong>缓存组件内部的替换策略</strong>。</p>
+<p>因此，很难在缓存KV、KP和Block之间进行权衡，它们都有其各自适合的工作负载。此外，设计一种可以根据工作负载进行自适应的缓存方案是困难的。<br>现有的缓存方案通常只选择缓存KV、KP和Block中的一种或两种，而且为每种缓存类型都分配了固定大小的缓存空间。因此，这些缓存方案无法适应多样的工作负载，也不能根据工作负载的变化来调整缓存空间的大小。此外，目前还没有针对LSM中特有的异构缓存成本的解决方案。<br>本文全面分析研究了对缓存KV、KP和Block之间的权衡，并提出了「 AC-Key, Adaptive Caching for LSM-based Key-Value Stores」来结合它们在面临各种工作负载时的优势。AC-Key为每种类型的条目（KV、KP和Block）都使用专门设计的单独缓存组件。每个缓存组件的大小可以根据文章提出的「 <em>hierarchical adaptive caching</em> algorithm，分层自适应缓存算法」进行调整（使用「ghost cache」来指导其大小调整）。<br>此外，AC- Key利用一种新颖的缓存效率因子来评估不同的<strong>缓存成本</strong>和<strong>收益</strong>，以指导<strong>不同缓存组件之间的边界调整</strong>以及<strong>缓存组件内部的替换策略</strong>。</p>
 <h2 id="0x10-Background-amp-Related-work"><a href="#0x10-Background-amp-Related-work" class="headerlink" title="0x10 Background &amp; Related work"></a>0x10 Background &amp; Related work</h2><h3 id="0x11-LSM-Tree-Based-Key-Value-Store"><a href="#0x11-LSM-Tree-Based-Key-Value-Store" class="headerlink" title="0x11 LSM-Tree-Based Key-Value Store"></a>0x11 LSM-Tree-Based Key-Value Store</h3><p>基于LSM tree的Key-Value store（LSM- KVS）的流行实现，例如LevelDB和RocksDB，都由两部分组成：</p>
 <ul>
 <li>Memory Component，或者说MemTable，通常使用原地排序（in-place sorted）的数据结构来实现，例如「skip-list」或「$B^+$ tree」；</li>

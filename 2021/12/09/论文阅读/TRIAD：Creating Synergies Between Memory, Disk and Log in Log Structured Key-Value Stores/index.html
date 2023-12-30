@@ -1,197 +1,191 @@
 <!DOCTYPE html>
-<html lang=zh>
-<head>
-    <!-- so meta -->
-    <meta charset="utf-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="HandheldFriendly" content="True">
-    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=5" />
-    <meta name="description" content="论文「TRIAD:Creating Synergies Between Memory, Disk and Log in Log Structured Key-Value Stores」阅读笔记。">
-<meta property="og:type" content="article">
-<meta property="og:title" content="TRIAD:Creating Synergies Between Memory, Disk and Log in Log Structured Key-Value Stores">
-<meta property="og:url" content="http://example.com/2021/12/09/%E8%AE%BA%E6%96%87%E9%98%85%E8%AF%BB/TRIAD%EF%BC%9ACreating%20Synergies%20Between%20Memory,%20Disk%20and%20Log%20in%20Log%20Structured%20Key-Value%20Stores/index.html">
-<meta property="og:site_name" content="ap0l1o">
-<meta property="og:description" content="论文「TRIAD:Creating Synergies Between Memory, Disk and Log in Log Structured Key-Value Stores」阅读笔记。">
-<meta property="og:locale" content="zh_CN">
-<meta property="og:image" content="https://ap0l1o.oss-cn-qingdao.aliyuncs.com/img/TRIAD_1.png">
-<meta property="og:image" content="https://ap0l1o.oss-cn-qingdao.aliyuncs.com/img/TRIAD_2.png">
-<meta property="og:image" content="https://ap0l1o.oss-cn-qingdao.aliyuncs.com/img/TRIAD_3_4.png">
-<meta property="og:image" content="https://ap0l1o.oss-cn-qingdao.aliyuncs.com/img/TRIAD_A_2.png">
-<meta property="og:image" content="https://ap0l1o.oss-cn-qingdao.aliyuncs.com/img/TRIAD_A_1.png">
-<meta property="og:image" content="https://ap0l1o.oss-cn-qingdao.aliyuncs.com/img/TRIAD_F_5.png">
-<meta property="og:image" content="https://ap0l1o.oss-cn-qingdao.aliyuncs.com/img/TRIAD_F_6.png">
-<meta property="article:published_time" content="2021-12-09T02:01:00.000Z">
-<meta property="article:modified_time" content="2023-12-18T14:00:01.810Z">
-<meta property="article:author" content="ap0l1o">
-<meta property="article:tag" content="Key-Value">
-<meta property="article:tag" content="Store">
-<meta property="article:tag" content="论文阅读">
-<meta name="twitter:card" content="summary">
-<meta name="twitter:image" content="https://ap0l1o.oss-cn-qingdao.aliyuncs.com/img/TRIAD_1.png">
+<html lang="zh-CN" color-mode="light">
+
+  <head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="author" content="ap0l1o" />
+  <!-- Open Graph Description 简短摘要-->
+  
+  <!-- 用于搜索引擎的文章摘要 -->
+  
+  
+  
+  <title>
     
-    
-      
-        
-          <link rel="shortcut icon" href="/images/endless.ico">
-        
+      TRIAD:Creating Synergies Between Memory, Disk and Log in Log Structured Key-Value Stores 
       
       
-        
-          <link rel="icon" type="image/png" href="/images/endless-192.png" sizes="192x192">
-        
-      
-      
-        
-          <link rel="apple-touch-icon" sizes="180x180" href="/images/endless-180.png">
-        
-      
+      |
     
-    <!-- title -->
-    <title>TRIAD:Creating Synergies Between Memory, Disk and Log in Log Structured Key-Value Stores</title>
-    <!-- async scripts -->
-    <!-- Google Analytics -->
+     ap0l1o
+  </title>
 
-
-    <!-- Umami Analytics -->
-
-
-    <!-- styles -->
-    
-<link rel="stylesheet" href="/css/style.css">
-
-    <!-- persian styles -->
-    
-    <!-- rss -->
-    
-    
-      <link rel="alternate" href="/true" title="ap0l1o" type="application/atom+xml" />
-    
-	<!-- mathjax -->
-	
-		<script type="text/x-mathjax-config">
-		  MathJax.Hub.Config({
-			tex2jax: {
-			  skipTags: ['script', 'noscript', 'style', 'textarea', 'pre'],
-			  inlineMath: [['$','$']]
-			}
-		  });
-		</script>
-		<script src='https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-MML-AM_CHTML' async></script>
-	
-<meta name="generator" content="Hexo 5.4.0"></head>
-
-<body class="max-width mx-auto px3 RTL">
-    
-      <div id="header-post">
-  <a id="menu-icon" href="#" aria-label="目录"><i class="fa-solid fa-bars fa-lg"></i></a>
-  <a id="menu-icon-tablet" href="#" aria-label="目录"><i class="fa-solid fa-bars fa-lg"></i></a>
-  <a id="top-icon-tablet" href="#" aria-label="顶部" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');" style="display:none;"><i class="fa-solid fa-chevron-up fa-lg"></i></a>
-  <span id="menu">
-    <span id="nav">
-      <ul>
-        <!--
-       --><li><a href="/">首页</a></li><!--
-     --><!--
-       --><li><a href="/about/">关于</a></li><!--
-     --><!--
-       --><li><a href="/archives/">归档</a></li><!--
-     --><!--
-       --><li><a href="/tags/">标签</a></li><!--
-     --><!--
-       --><li><a href="/categories/">分类</a></li><!--
-     --><!--
-       --><li><a href="/running/">跑步</a></li><!--
-     -->
-      </ul>
-    </span>
-    <br/>
-    <span id="actions">
-      <ul>
-        
-        <li><a class="icon" aria-label="上一篇" href="/2021/12/10/%E8%AE%BA%E6%96%87%E9%98%85%E8%AF%BB/AC-Key/"><i class="fa-solid fa-chevron-left" aria-hidden="true" onmouseover="$('#i-prev').toggle();" onmouseout="$('#i-prev').toggle();"></i></a></li>
-        
-        
-        <li><a class="icon" aria-label="下一篇" href="/2021/10/20/%E6%8A%80%E6%9C%AF%E7%9B%B8%E5%85%B3/%E5%88%86%E5%B8%83%E5%BC%8F/%E4%BA%8B%E5%8A%A1%E7%9A%84%E5%AE%9E%E7%8E%B0/"><i class="fa-solid fa-chevron-right" aria-hidden="true" onmouseover="$('#i-next').toggle();" onmouseout="$('#i-next').toggle();"></i></a></li>
-        
-        <li><a class="icon" aria-label="返回顶部" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');"><i class="fa-solid fa-chevron-up" aria-hidden="true" onmouseover="$('#i-top').toggle();" onmouseout="$('#i-top').toggle();"></i></a></li>
-        <li><a class="icon" aria-label="分享文章" href="#"><i class="fa-solid fa-share-alt" aria-hidden="true" onmouseover="$('#i-share').toggle();" onmouseout="$('#i-share').toggle();" onclick="$('#share').toggle();return false;"></i></a></li>
-      </ul>
-      <span id="i-prev" class="info" style="display:none;">上一篇</span>
-      <span id="i-next" class="info" style="display:none;">下一篇</span>
-      <span id="i-top" class="info" style="display:none;">返回顶部</span>
-      <span id="i-share" class="info" style="display:none;">分享文章</span>
-    </span>
-    <br/>
-    <div id="share" style="display: none">
-      <ul>
-  <li><a class="icon" target="_blank" rel="noopener" href="http://www.facebook.com/sharer.php?u=http://example.com/2021/12/09/%E8%AE%BA%E6%96%87%E9%98%85%E8%AF%BB/TRIAD%EF%BC%9ACreating%20Synergies%20Between%20Memory,%20Disk%20and%20Log%20in%20Log%20Structured%20Key-Value%20Stores/"><i class="fab fa-facebook " aria-hidden="true"></i></a></li>
-  <li><a class="icon" target="_blank" rel="noopener" href="https://twitter.com/share?url=http://example.com/2021/12/09/%E8%AE%BA%E6%96%87%E9%98%85%E8%AF%BB/TRIAD%EF%BC%9ACreating%20Synergies%20Between%20Memory,%20Disk%20and%20Log%20in%20Log%20Structured%20Key-Value%20Stores/&text=TRIAD:Creating Synergies Between Memory, Disk and Log in Log Structured Key-Value Stores"><i class="fab fa-twitter " aria-hidden="true"></i></a></li>
-  <li><a class="icon" target="_blank" rel="noopener" href="http://www.linkedin.com/shareArticle?url=http://example.com/2021/12/09/%E8%AE%BA%E6%96%87%E9%98%85%E8%AF%BB/TRIAD%EF%BC%9ACreating%20Synergies%20Between%20Memory,%20Disk%20and%20Log%20in%20Log%20Structured%20Key-Value%20Stores/&title=TRIAD:Creating Synergies Between Memory, Disk and Log in Log Structured Key-Value Stores"><i class="fab fa-linkedin " aria-hidden="true"></i></a></li>
-  <li><a class="icon" target="_blank" rel="noopener" href="https://pinterest.com/pin/create/bookmarklet/?url=http://example.com/2021/12/09/%E8%AE%BA%E6%96%87%E9%98%85%E8%AF%BB/TRIAD%EF%BC%9ACreating%20Synergies%20Between%20Memory,%20Disk%20and%20Log%20in%20Log%20Structured%20Key-Value%20Stores/&is_video=false&description=TRIAD:Creating Synergies Between Memory, Disk and Log in Log Structured Key-Value Stores"><i class="fab fa-pinterest " aria-hidden="true"></i></a></li>
-  <li><a class="icon" href="mailto:?subject=TRIAD:Creating Synergies Between Memory, Disk and Log in Log Structured Key-Value Stores&body=Check out this article: http://example.com/2021/12/09/%E8%AE%BA%E6%96%87%E9%98%85%E8%AF%BB/TRIAD%EF%BC%9ACreating%20Synergies%20Between%20Memory,%20Disk%20and%20Log%20in%20Log%20Structured%20Key-Value%20Stores/"><i class="fa-solid fa-envelope " aria-hidden="true"></i></a></li>
-  <li><a class="icon" target="_blank" rel="noopener" href="https://getpocket.com/save?url=http://example.com/2021/12/09/%E8%AE%BA%E6%96%87%E9%98%85%E8%AF%BB/TRIAD%EF%BC%9ACreating%20Synergies%20Between%20Memory,%20Disk%20and%20Log%20in%20Log%20Structured%20Key-Value%20Stores/&title=TRIAD:Creating Synergies Between Memory, Disk and Log in Log Structured Key-Value Stores"><i class="fab fa-get-pocket " aria-hidden="true"></i></a></li>
-  <li><a class="icon" target="_blank" rel="noopener" href="http://reddit.com/submit?url=http://example.com/2021/12/09/%E8%AE%BA%E6%96%87%E9%98%85%E8%AF%BB/TRIAD%EF%BC%9ACreating%20Synergies%20Between%20Memory,%20Disk%20and%20Log%20in%20Log%20Structured%20Key-Value%20Stores/&title=TRIAD:Creating Synergies Between Memory, Disk and Log in Log Structured Key-Value Stores"><i class="fab fa-reddit " aria-hidden="true"></i></a></li>
-  <li><a class="icon" target="_blank" rel="noopener" href="http://www.stumbleupon.com/submit?url=http://example.com/2021/12/09/%E8%AE%BA%E6%96%87%E9%98%85%E8%AF%BB/TRIAD%EF%BC%9ACreating%20Synergies%20Between%20Memory,%20Disk%20and%20Log%20in%20Log%20Structured%20Key-Value%20Stores/&title=TRIAD:Creating Synergies Between Memory, Disk and Log in Log Structured Key-Value Stores"><i class="fab fa-stumbleupon " aria-hidden="true"></i></a></li>
-  <li><a class="icon" target="_blank" rel="noopener" href="http://digg.com/submit?url=http://example.com/2021/12/09/%E8%AE%BA%E6%96%87%E9%98%85%E8%AF%BB/TRIAD%EF%BC%9ACreating%20Synergies%20Between%20Memory,%20Disk%20and%20Log%20in%20Log%20Structured%20Key-Value%20Stores/&title=TRIAD:Creating Synergies Between Memory, Disk and Log in Log Structured Key-Value Stores"><i class="fab fa-digg " aria-hidden="true"></i></a></li>
-  <li><a class="icon" target="_blank" rel="noopener" href="http://www.tumblr.com/share/link?url=http://example.com/2021/12/09/%E8%AE%BA%E6%96%87%E9%98%85%E8%AF%BB/TRIAD%EF%BC%9ACreating%20Synergies%20Between%20Memory,%20Disk%20and%20Log%20in%20Log%20Structured%20Key-Value%20Stores/&name=TRIAD:Creating Synergies Between Memory, Disk and Log in Log Structured Key-Value Stores&description=论文「TRIAD:Creating Synergies Between Memory, Disk and Log in Log Structured Key-Value Stores」阅读笔记。"><i class="fab fa-tumblr " aria-hidden="true"></i></a></li>
-  <li><a class="icon" target="_blank" rel="noopener" href="https://news.ycombinator.com/submitlink?u=http://example.com/2021/12/09/%E8%AE%BA%E6%96%87%E9%98%85%E8%AF%BB/TRIAD%EF%BC%9ACreating%20Synergies%20Between%20Memory,%20Disk%20and%20Log%20in%20Log%20Structured%20Key-Value%20Stores/&t=TRIAD:Creating Synergies Between Memory, Disk and Log in Log Structured Key-Value Stores"><i class="fab fa-hacker-news " aria-hidden="true"></i></a></li>
-</ul>
-
-    </div>
-    
-    
-      <div id="toc">
-        <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#0x00-Introduction-amp-Background"><span class="toc-number">1.</span> <span class="toc-text">0x00 Introduction &amp; Background</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#0x10-Motivation"><span class="toc-number">2.</span> <span class="toc-text">0x10 Motivation</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#0x11-Data-skew-unawareness-%EF%BC%88%E6%95%B0%E6%8D%AE%E5%80%BE%E6%96%9C%EF%BC%89"><span class="toc-number">2.1.</span> <span class="toc-text">0x11 Data skew unawareness （数据倾斜）</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#0x12-Premature-and-iterative-compaction-%EF%BC%88%E8%BF%87%E6%97%A9Compaction%EF%BC%89"><span class="toc-number">2.2.</span> <span class="toc-text">0x12 Premature and iterative compaction （过早Compaction）</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#0x13-Duplicate-writes%EF%BC%88%E5%8F%8C%E5%86%99%EF%BC%89"><span class="toc-number">2.3.</span> <span class="toc-text">0x13 Duplicate writes（双写）</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#0x20-Technique%E2%80%94%E2%80%94TRIAD"><span class="toc-number">3.</span> <span class="toc-text">0x20 Technique——TRIAD</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#0x21-TRIAD-MEM"><span class="toc-number">3.1.</span> <span class="toc-text">0x21 TRIAD-MEM</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#0x22-TRIAD-DISK"><span class="toc-number">3.2.</span> <span class="toc-text">0x22 TRIAD-DISK</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#0x23-TRIAD-LOG"><span class="toc-number">3.3.</span> <span class="toc-text">0x23 TRIAD-LOG</span></a></li></ol></li></ol>
-      </div>
-    
-  </span>
-</div>
-
-    
-    <div class="content index py4 ">
-        
-        <article class="post h-entry" itemscope itemtype="http://schema.org/BlogPosting">
-  <header>
-    
-    <h1 class="posttitle p-name" itemprop="name headline">
-        TRIAD:Creating Synergies Between Memory, Disk and Log in Log Structured Key-Value Stores
-    </h1>
-
-
-
-    <div class="meta">
-      <span class="author p-author h-card" itemprop="author" itemscope itemtype="http://schema.org/Person">
-        <span class="p-name" itemprop="name">ap0l1o</span>
-      </span>
-      
-    <div class="postdate">
-      
-        <time datetime="2021-12-09T02:01:00.000Z" class="dt-published" itemprop="datePublished">2021-12-09</time>
-        
-      
-    </div>
-
-
-      
-    <div class="article-category">
-        <i class="fa-solid fa-archive"></i>
-        <a class="category-link" href="/categories/%E8%AE%BA%E6%96%87/">论文</a>
-    </div>
-
-
-      
-    <div class="article-tag">
-        <i class="fa-solid fa-tag"></i>
-        <a class="p-category" href="/tags/Key-Value/" rel="tag">Key-Value</a>, <a class="p-category" href="/tags/Store/" rel="tag">Store</a>, <a class="p-category" href="/tags/%E8%AE%BA%E6%96%87%E9%98%85%E8%AF%BB/" rel="tag">论文阅读</a>
-    </div>
-
-
-    </div>
-  </header>
+  
+    <link rel="apple-touch-icon" href="/images/favicon.png">
+    <link rel="icon" href="/images/favicon.png">
   
 
-  <div class="content e-content" itemprop="articleBody">
-    <h2 id="0x00-Introduction-amp-Background"><a href="#0x00-Introduction-amp-Background" class="headerlink" title="0x00 Introduction &amp; Background"></a>0x00 Introduction &amp; Background</h2><p>LSM通常由两部分组件组成：</p>
+  <!-- Raleway-Font -->
+  <link href="https://fonts.googleapis.com/css?family=Raleway&display=swap" rel="stylesheet">
+
+  <!-- hexo site css -->
+  <link rel="stylesheet" href="/css/main.css" />
+  <link rel="stylesheet" href="//at.alicdn.com/t/font_1886449_67xjft27j1l.css" />
+  <!-- 代码块风格 -->
+  
+
+  <!-- jquery3.3.1 -->
+  
+    <script defer type="text/javascript" src="/plugins/jquery.min.js"></script>
+  
+
+  <!-- fancybox -->
+  
+    <link href="/plugins/jquery.fancybox.min.css" rel="stylesheet">
+    <script defer type="text/javascript" src="/plugins/jquery.fancybox.min.js"></script>
+  
+  
+<script src="/js/fancybox.js"></script>
+
+
+  
+
+  
+
+  <script>
+    var html = document.documentElement
+    const colorMode = localStorage.getItem('color-mode')
+    if (colorMode) {
+      document.documentElement.setAttribute('color-mode', colorMode)
+    }
+  </script>
+<meta name="generator" content="Hexo 5.4.0"></head>
+
+
+  <body>
+    <div id="app">
+      <div class="header">
+  <div class="avatar">
+    <a href="/">
+      <!-- 头像取消懒加载，添加no-lazy -->
+      
+        <img src="/images/avatar.png" alt="">
+      
+    </a>
+    <div class="nickname"><a href="/">Oranges</a></div>
+  </div>
+  <div class="navbar">
+    <ul>
+      
+        <li class="nav-item" data-path="/">
+          <a href="/">Home</a>
+        </li>
+      
+        <li class="nav-item" data-path="/archives/">
+          <a href="/archives/">Archives</a>
+        </li>
+      
+        <li class="nav-item" data-path="/tags/">
+          <a href="/tags/">Tags</a>
+        </li>
+      
+        <li class="nav-item" data-path="/friends/">
+          <a href="/friends/">Friends</a>
+        </li>
+      
+        <li class="nav-item" data-path="/about/">
+          <a href="/about/">About</a>
+        </li>
+      
+    </ul>
+  </div>
+</div>
+
+
+<script src="/js/activeNav.js"></script>
+
+
+
+      <div class="flex-container">
+        <!-- 文章详情页，展示文章具体内容，url形式：https://yoursite/文章标题/ -->
+<!-- 同时为「标签tag」，「朋友friend」，「分类categories」，「关于about」页面的承载页面，具体展示取决于page.type -->
+
+
+  <!-- LaTex Display -->
+
+  
+    <script async type="text/javascript" src="/plugins/mathjax/tex-chtml.js"></script>
+  
+  <script>
+    MathJax = {
+      tex: {
+        inlineMath: [['$', '$'], ['\\(', '\\)']]
+      }
+    }
+  </script>
+
+
+
+
+
+  <!-- clipboard -->
+
+  
+    <script async type="text/javascript" src="/plugins/clipboard.min.js"></script>
+  
+  
+<script src="/js/codeCopy.js"></script>
+
+
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  <!-- 文章内容页 url形式：https://yoursite/文章标题/ -->
+  <div class="container post-details" id="post-details">
+    <div class="post-content">
+      <div class="post-title">TRIAD:Creating Synergies Between Memory, Disk and Log in Log Structured Key-Value Stores</div>
+      <div class="post-attach">
+        <span class="post-pubtime">
+          <i class="iconfont icon-updatetime mr-10" title="更新时间"></i>
+          2023-12-18 22:00:01
+        </span>
+        
+              <span class="post-tags">
+                <i class="iconfont icon-tags mr-10" title="标签"></i>
+                
+                <span class="span--tag mr-8">
+                  <a href="/tags/Key-Value/" title="Key-Value">
+                    #Key-Value
+                  </a>
+                </span>
+                
+                <span class="span--tag mr-8">
+                  <a href="/tags/Store/" title="Store">
+                    #Store
+                  </a>
+                </span>
+                
+                <span class="span--tag mr-8">
+                  <a href="/tags/%E8%AE%BA%E6%96%87%E9%98%85%E8%AF%BB/" title="论文阅读">
+                    #论文阅读
+                  </a>
+                </span>
+                
+              </span>
+          
+      </div>
+      <div class="markdown-body">
+        <h2 id="0x00-Introduction-amp-Background"><a href="#0x00-Introduction-amp-Background" class="headerlink" title="0x00 Introduction &amp; Background"></a>0x00 Introduction &amp; Background</h2><p>LSM通常由两部分组件组成：</p>
 <ul>
 <li>内存组件（Memory Component）：主要用来absorb update（在内存组件中absorb update的同时会将数据写入到磁盘日志中，以用于数据恢复）；</li>
 <li>磁盘组件（Disk Component）：用于持久化数据，内存组件中的数据超过上限后会flush到磁盘，磁盘组件按照Level的形式进行组织，接近内存组件的Level保存着更新的数据，当某个$L_i$超过上限时会与$L_{i+1}$进行归并压缩，也即在后台执行$Compaction$操作；</li>
@@ -237,151 +231,372 @@
 <p>在$L_0$中执行每次Compaction之前，我们会先计算出$L_0$中所有文件的overlap ratio，如果overlap ratio小于阈值，则推迟Compaction（除非$L_0$中文件的数量超过允许的最大值，如果超过，那么不再考虑overlap ratio，强制允许Compaction）。</p>
 <h3 id="0x23-TRIAD-LOG"><a href="#0x23-TRIAD-LOG" class="headerlink" title="0x23 TRIAD-LOG"></a>0x23 TRIAD-LOG</h3><p>TRIAD-LOG的主要思路是，内存中需要Flush到磁盘中的数据已经在Commit Log（CL）中了，可以对Commit Log进行利用而不必通过Flush操作再重写一次。主要思想就是将CL转为$L_0$中一种特殊的SSTable，也即CL-SSTable，这种方式可以避免完整的Flush操作。<br>TRIAD-LOG增强了Commit Log角色的能力。当向$C_m$写入数据时，commit log就扮演其普通WAL的角色。当触发Flush操作时，将commit log转为CL-SSTable而不是将$C_m$重写到$L_0$。<br>将commit log作为$L_0$中的SSTable可以避免Flush操作所带来的I/O开销，但SSTable是有序的，而commit log是追加生成的、是无序的。SSTable有序的特性可以加速Compaction操作和检索操作。<br>为了避免在$L_0$中查找某个条目时需要扫描整个CL-SSTable，TRIAD-LOG在$C_m$中保存每个KV对应的最近更新的commit log文件的偏移量，以帮助构建有序的CL-SSTable。一旦Flush操作被触发，只需要将与最新的commit log偏移量相关联的索引写到磁盘上（索引也即index的大小与整个KV相比是很小的，所以仅刷新index的开销很小，文章并没有对index有明确说明，我觉的这里的index可以是<code>(key, CL name, offset)</code>的组合，通过这个index再加上CL就可以组成有序的CL-SSTable了）。<br>TRIAD-LOG并没有改变写操作的流程，不同之处仅在于，在$C_m$中执行更新时会把对应的commit log的偏移量和文件名也写入到$C_m$中（例如，<code>(key, value, offset, CL name)</code>）。其流程如下图所示：<br><img src="https://ap0l1o.oss-cn-qingdao.aliyuncs.com/img/TRIAD_F_6.png" alt="image-20211209093221560"></p>
 
-  </div>
-</article>
-
-
-
-        
-          <div id="footer-post-container">
-  <div id="footer-post">
-
-    <div id="nav-footer" style="display: none">
-      <ul>
-        
-          <li><a href="/">首页</a></li>
-        
-          <li><a href="/about/">关于</a></li>
-        
-          <li><a href="/archives/">归档</a></li>
-        
-          <li><a href="/tags/">标签</a></li>
-        
-          <li><a href="/categories/">分类</a></li>
-        
-          <li><a href="/running/">跑步</a></li>
-        
-      </ul>
+      </div>
+      
+        <div class="prev-or-next">
+          <div class="post-foot-next">
+            
+              <a href="/2021/10/20/%E6%8A%80%E6%9C%AF%E7%9B%B8%E5%85%B3/%E5%88%86%E5%B8%83%E5%BC%8F/%E4%BA%8B%E5%8A%A1%E7%9A%84%E5%AE%9E%E7%8E%B0/" target="_self">
+                <i class="iconfont icon-chevronleft"></i>
+                <span>上一页</span>
+              </a>
+            
+          </div>
+          <div class="post-attach">
+            <span class="post-pubtime">
+              <i class="iconfont icon-updatetime mr-10" title="更新时间"></i>
+              2023-12-18 22:00:01
+            </span>
+            
+                  <span class="post-tags">
+                    <i class="iconfont icon-tags mr-10" title="标签"></i>
+                    
+                    <span class="span--tag mr-8">
+                      <a href="/tags/Key-Value/" title="Key-Value">
+                        #Key-Value
+                      </a>
+                    </span>
+                    
+                    <span class="span--tag mr-8">
+                      <a href="/tags/Store/" title="Store">
+                        #Store
+                      </a>
+                    </span>
+                    
+                    <span class="span--tag mr-8">
+                      <a href="/tags/%E8%AE%BA%E6%96%87%E9%98%85%E8%AF%BB/" title="论文阅读">
+                        #论文阅读
+                      </a>
+                    </span>
+                    
+                  </span>
+              
+          </div>
+          <div class="post-foot-prev">
+            
+              <a href="/2021/12/10/%E8%AE%BA%E6%96%87%E9%98%85%E8%AF%BB/AC-Key/" target="_self">
+                <span>下一页</span>
+                <i class="iconfont icon-chevronright"></i>
+              </a>
+            
+          </div>
+        </div>
+      
     </div>
+    
+  <div id="btn-catalog" class="btn-catalog">
+    <i class="iconfont icon-catalog"></i>
+  </div>
+  <div class="post-catalog hidden" id="catalog">
+    <div class="title">目录</div>
+    <div class="catalog-content">
+      
+        <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#0x00-Introduction-amp-Background"><span class="toc-text">0x00 Introduction &amp; Background</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#0x10-Motivation"><span class="toc-text">0x10 Motivation</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#0x11-Data-skew-unawareness-%EF%BC%88%E6%95%B0%E6%8D%AE%E5%80%BE%E6%96%9C%EF%BC%89"><span class="toc-text">0x11 Data skew unawareness （数据倾斜）</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#0x12-Premature-and-iterative-compaction-%EF%BC%88%E8%BF%87%E6%97%A9Compaction%EF%BC%89"><span class="toc-text">0x12 Premature and iterative compaction （过早Compaction）</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#0x13-Duplicate-writes%EF%BC%88%E5%8F%8C%E5%86%99%EF%BC%89"><span class="toc-text">0x13 Duplicate writes（双写）</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#0x20-Technique%E2%80%94%E2%80%94TRIAD"><span class="toc-text">0x20 Technique——TRIAD</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#0x21-TRIAD-MEM"><span class="toc-text">0x21 TRIAD-MEM</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#0x22-TRIAD-DISK"><span class="toc-text">0x22 TRIAD-DISK</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#0x23-TRIAD-LOG"><span class="toc-text">0x23 TRIAD-LOG</span></a></li></ol></li></ol>
+      
+    </div>
+  </div>
+
+  
+<script src="/js/catalog.js"></script>
+
+
+
 
     
-    
-      <div id="toc-footer" style="display: none">
-        <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#0x00-Introduction-amp-Background"><span class="toc-number">1.</span> <span class="toc-text">0x00 Introduction &amp; Background</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#0x10-Motivation"><span class="toc-number">2.</span> <span class="toc-text">0x10 Motivation</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#0x11-Data-skew-unawareness-%EF%BC%88%E6%95%B0%E6%8D%AE%E5%80%BE%E6%96%9C%EF%BC%89"><span class="toc-number">2.1.</span> <span class="toc-text">0x11 Data skew unawareness （数据倾斜）</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#0x12-Premature-and-iterative-compaction-%EF%BC%88%E8%BF%87%E6%97%A9Compaction%EF%BC%89"><span class="toc-number">2.2.</span> <span class="toc-text">0x12 Premature and iterative compaction （过早Compaction）</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#0x13-Duplicate-writes%EF%BC%88%E5%8F%8C%E5%86%99%EF%BC%89"><span class="toc-number">2.3.</span> <span class="toc-text">0x13 Duplicate writes（双写）</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#0x20-Technique%E2%80%94%E2%80%94TRIAD"><span class="toc-number">3.</span> <span class="toc-text">0x20 Technique——TRIAD</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#0x21-TRIAD-MEM"><span class="toc-number">3.1.</span> <span class="toc-text">0x21 TRIAD-MEM</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#0x22-TRIAD-DISK"><span class="toc-number">3.2.</span> <span class="toc-text">0x22 TRIAD-DISK</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#0x23-TRIAD-LOG"><span class="toc-number">3.3.</span> <span class="toc-text">0x23 TRIAD-LOG</span></a></li></ol></li></ol>
+      <div class="comments-container">
+        
+
+
+
+
+
+
+
       </div>
     
-
-    <div id="share-footer" style="display: none">
-      <ul>
-  <li><a class="icon" target="_blank" rel="noopener" href="http://www.facebook.com/sharer.php?u=http://example.com/2021/12/09/%E8%AE%BA%E6%96%87%E9%98%85%E8%AF%BB/TRIAD%EF%BC%9ACreating%20Synergies%20Between%20Memory,%20Disk%20and%20Log%20in%20Log%20Structured%20Key-Value%20Stores/"><i class="fab fa-facebook fa-lg" aria-hidden="true"></i></a></li>
-  <li><a class="icon" target="_blank" rel="noopener" href="https://twitter.com/share?url=http://example.com/2021/12/09/%E8%AE%BA%E6%96%87%E9%98%85%E8%AF%BB/TRIAD%EF%BC%9ACreating%20Synergies%20Between%20Memory,%20Disk%20and%20Log%20in%20Log%20Structured%20Key-Value%20Stores/&text=TRIAD:Creating Synergies Between Memory, Disk and Log in Log Structured Key-Value Stores"><i class="fab fa-twitter fa-lg" aria-hidden="true"></i></a></li>
-  <li><a class="icon" target="_blank" rel="noopener" href="http://www.linkedin.com/shareArticle?url=http://example.com/2021/12/09/%E8%AE%BA%E6%96%87%E9%98%85%E8%AF%BB/TRIAD%EF%BC%9ACreating%20Synergies%20Between%20Memory,%20Disk%20and%20Log%20in%20Log%20Structured%20Key-Value%20Stores/&title=TRIAD:Creating Synergies Between Memory, Disk and Log in Log Structured Key-Value Stores"><i class="fab fa-linkedin fa-lg" aria-hidden="true"></i></a></li>
-  <li><a class="icon" target="_blank" rel="noopener" href="https://pinterest.com/pin/create/bookmarklet/?url=http://example.com/2021/12/09/%E8%AE%BA%E6%96%87%E9%98%85%E8%AF%BB/TRIAD%EF%BC%9ACreating%20Synergies%20Between%20Memory,%20Disk%20and%20Log%20in%20Log%20Structured%20Key-Value%20Stores/&is_video=false&description=TRIAD:Creating Synergies Between Memory, Disk and Log in Log Structured Key-Value Stores"><i class="fab fa-pinterest fa-lg" aria-hidden="true"></i></a></li>
-  <li><a class="icon" href="mailto:?subject=TRIAD:Creating Synergies Between Memory, Disk and Log in Log Structured Key-Value Stores&body=Check out this article: http://example.com/2021/12/09/%E8%AE%BA%E6%96%87%E9%98%85%E8%AF%BB/TRIAD%EF%BC%9ACreating%20Synergies%20Between%20Memory,%20Disk%20and%20Log%20in%20Log%20Structured%20Key-Value%20Stores/"><i class="fa-solid fa-envelope fa-lg" aria-hidden="true"></i></a></li>
-  <li><a class="icon" target="_blank" rel="noopener" href="https://getpocket.com/save?url=http://example.com/2021/12/09/%E8%AE%BA%E6%96%87%E9%98%85%E8%AF%BB/TRIAD%EF%BC%9ACreating%20Synergies%20Between%20Memory,%20Disk%20and%20Log%20in%20Log%20Structured%20Key-Value%20Stores/&title=TRIAD:Creating Synergies Between Memory, Disk and Log in Log Structured Key-Value Stores"><i class="fab fa-get-pocket fa-lg" aria-hidden="true"></i></a></li>
-  <li><a class="icon" target="_blank" rel="noopener" href="http://reddit.com/submit?url=http://example.com/2021/12/09/%E8%AE%BA%E6%96%87%E9%98%85%E8%AF%BB/TRIAD%EF%BC%9ACreating%20Synergies%20Between%20Memory,%20Disk%20and%20Log%20in%20Log%20Structured%20Key-Value%20Stores/&title=TRIAD:Creating Synergies Between Memory, Disk and Log in Log Structured Key-Value Stores"><i class="fab fa-reddit fa-lg" aria-hidden="true"></i></a></li>
-  <li><a class="icon" target="_blank" rel="noopener" href="http://www.stumbleupon.com/submit?url=http://example.com/2021/12/09/%E8%AE%BA%E6%96%87%E9%98%85%E8%AF%BB/TRIAD%EF%BC%9ACreating%20Synergies%20Between%20Memory,%20Disk%20and%20Log%20in%20Log%20Structured%20Key-Value%20Stores/&title=TRIAD:Creating Synergies Between Memory, Disk and Log in Log Structured Key-Value Stores"><i class="fab fa-stumbleupon fa-lg" aria-hidden="true"></i></a></li>
-  <li><a class="icon" target="_blank" rel="noopener" href="http://digg.com/submit?url=http://example.com/2021/12/09/%E8%AE%BA%E6%96%87%E9%98%85%E8%AF%BB/TRIAD%EF%BC%9ACreating%20Synergies%20Between%20Memory,%20Disk%20and%20Log%20in%20Log%20Structured%20Key-Value%20Stores/&title=TRIAD:Creating Synergies Between Memory, Disk and Log in Log Structured Key-Value Stores"><i class="fab fa-digg fa-lg" aria-hidden="true"></i></a></li>
-  <li><a class="icon" target="_blank" rel="noopener" href="http://www.tumblr.com/share/link?url=http://example.com/2021/12/09/%E8%AE%BA%E6%96%87%E9%98%85%E8%AF%BB/TRIAD%EF%BC%9ACreating%20Synergies%20Between%20Memory,%20Disk%20and%20Log%20in%20Log%20Structured%20Key-Value%20Stores/&name=TRIAD:Creating Synergies Between Memory, Disk and Log in Log Structured Key-Value Stores&description=论文「TRIAD:Creating Synergies Between Memory, Disk and Log in Log Structured Key-Value Stores」阅读笔记。"><i class="fab fa-tumblr fa-lg" aria-hidden="true"></i></a></li>
-  <li><a class="icon" target="_blank" rel="noopener" href="https://news.ycombinator.com/submitlink?u=http://example.com/2021/12/09/%E8%AE%BA%E6%96%87%E9%98%85%E8%AF%BB/TRIAD%EF%BC%9ACreating%20Synergies%20Between%20Memory,%20Disk%20and%20Log%20in%20Log%20Structured%20Key-Value%20Stores/&t=TRIAD:Creating Synergies Between Memory, Disk and Log in Log Structured Key-Value Stores"><i class="fab fa-hacker-news fa-lg" aria-hidden="true"></i></a></li>
-</ul>
-
-    </div>
-
-    <div id="actions-footer">
-        <a id="menu" class="icon" href="#" onclick="$('#nav-footer').toggle();return false;"><i class="fa-solid fa-bars fa-lg" aria-hidden="true"></i> 菜单</a>
-        
-          <a id="toc" class="icon" href="#" onclick="$('#toc-footer').toggle();return false;"><i class="fa-solid fa-list fa-lg" aria-hidden="true"></i> 目录</a>
-        
-        <a id="share" class="icon" href="#" onclick="$('#share-footer').toggle();return false;"><i class="fa-solid fa-share-alt fa-lg" aria-hidden="true"></i> 分享</a>
-        <a id="top" style="display:none" class="icon" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');"><i class="fa-solid fa-chevron-up fa-lg" aria-hidden="true"></i> 返回顶部</a>
-    </div>
-
   </div>
+
+
+        
+<div class="footer">
+  <div class="social">
+    <ul>
+      
+        <li>
+          
+              <a title="github" target="_blank" rel="noopener" href="https://github.com/zchengsite/hexo-theme-oranges">
+                <i class="iconfont icon-github"></i>
+              </a>
+              
+        </li>
+        
+    </ul>
+  </div>
+  
+    
+    <div class="footer-more">
+      
+        <a target="_blank" rel="noopener" href="https://github.com/zchengsite/hexo-theme-oranges">Copyright © 2023 Oranges</a>
+        
+    </div>
+  
+    
+    <div class="footer-more">
+      
+        <a target="_blank" rel="noopener" href="https://github.com/zchengsite/hexo-theme-oranges">Theme by Oranges | Powered by Hexo</a>
+        
+    </div>
+  
+  
 </div>
 
+      </div>
+
+      <div class="tools-bar">
+        <div class="back-to-top tools-bar-item hidden">
+  <a href="javascript: void(0)">
+    <i class="iconfont icon-chevronup"></i>
+  </a>
+</div>
+
+
+<script src="/js/backtotop.js"></script>
+
+
+
         
-        <footer id="footer">
-  <div class="footer-left">
-    Copyright &copy;
-    
-    
-    2016-2023
-    ap0l1o
+  <div class="search-icon tools-bar-item" id="search-icon">
+    <a href="javascript: void(0)">
+      <i class="iconfont icon-search"></i>
+    </a>
   </div>
-  <div class="footer-right">
-    <nav>
-      <ul>
-        <!--
-       --><li><a href="/">首页</a></li><!--
-     --><!--
-       --><li><a href="/about/">关于</a></li><!--
-     --><!--
-       --><li><a href="/archives/">归档</a></li><!--
-     --><!--
-       --><li><a href="/tags/">标签</a></li><!--
-     --><!--
-       --><li><a href="/categories/">分类</a></li><!--
-     --><!--
-       --><li><a href="/running/">跑步</a></li><!--
-     -->
-      </ul>
-    </nav>
-  </div>
-</footer>
 
+  <div class="search-overlay hidden">
+    <div class="search-content" tabindex="0">
+      <div class="search-title">
+        <span class="search-icon-input">
+          <a href="javascript: void(0)">
+            <i class="iconfont icon-search"></i>
+          </a>
+        </span>
+        
+          <input type="text" class="search-input" id="search-input" placeholder="搜索...">
+        
+        <span class="search-close-icon" id="search-close-icon">
+          <a href="javascript: void(0)">
+            <i class="iconfont icon-close"></i>
+          </a>
+        </span>
+      </div>
+      <div class="search-result" id="search-result"></div>
     </div>
-    <!-- styles -->
+  </div>
 
-
-
-  <link rel="preload" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" crossorigin="anonymous" onload="this.onload=null;this.rel='stylesheet'"/>
-
-
-    <!-- jquery -->
-
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js" crossorigin="anonymous"></script>
-
-
-
-
-<!-- clipboard -->
-
-  
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.7/clipboard.min.js" crossorigin="anonymous"></script>
-  
   <script type="text/javascript">
-  $(function() {
-    // copy-btn HTML
-    var btn = "<span class=\"btn-copy tooltipped tooltipped-sw\" aria-label=\"复制到粘贴板！\">";
-    btn += '<i class="fa-regular fa-clone"></i>';
-    btn += '</span>';
-    // mount it!
-    $(".highlight table").before(btn);
-    var clip = new ClipboardJS('.btn-copy', {
-      text: function(trigger) {
-        return Array.from(trigger.nextElementSibling.querySelectorAll('.code')).reduce((str,it)=>str+it.innerText+'\n','')
+    var inputArea = document.querySelector("#search-input")
+    var searchOverlayArea = document.querySelector(".search-overlay")
+
+    inputArea.onclick = function() {
+      getSearchFile()
+      this.onclick = null
+    }
+
+    inputArea.onkeydown = function() {
+      if(event.keyCode == 13)
+        return false
+    }
+
+    function openOrHideSearchContent() {
+      let isHidden = searchOverlayArea.classList.contains('hidden')
+      if (isHidden) {
+        searchOverlayArea.classList.remove('hidden')
+        document.body.classList.add('hidden')
+        // inputArea.focus()
+      } else {
+        searchOverlayArea.classList.add('hidden')
+        document.body.classList.remove('hidden')
       }
-    });
-    clip.on('success', function(e) {
-      e.trigger.setAttribute('aria-label', "复制成功！");
-      e.clearSelection();
-    })
-  })
+    }
+
+    function blurSearchContent(e) {
+      if (e.target === searchOverlayArea) {
+        openOrHideSearchContent()
+      }
+    }
+
+    document.querySelector("#search-icon").addEventListener("click", openOrHideSearchContent, false)
+    document.querySelector("#search-close-icon").addEventListener("click", openOrHideSearchContent, false)
+    searchOverlayArea.addEventListener("click", blurSearchContent, false)
+
+    var searchFunc = function (path, search_id, content_id) {
+      'use strict';
+      var $input = document.getElementById(search_id);
+      var $resultContent = document.getElementById(content_id);
+      $resultContent.innerHTML = "<ul><span class='local-search-empty'>首次搜索，正在载入索引文件，请稍后……<span></ul>";
+      $.ajax({
+        // 0x01. load xml file
+        url: path,
+        dataType: "xml",
+        success: function (xmlResponse) {
+          // 0x02. parse xml file
+          var datas = $("entry", xmlResponse).map(function () {
+            return {
+              title: $("title", this).text(),
+              content: $("content", this).text(),
+              url: $("url", this).text()
+            };
+          }).get();
+          $resultContent.innerHTML = "";
+
+          $input.addEventListener('input', function () {
+            // 0x03. parse query to keywords list
+            var str = '<ul class=\"search-result-list\">';
+            var keywords = this.value.trim().toLowerCase().split(/[\s\-]+/);
+            $resultContent.innerHTML = "";
+            if (this.value.trim().length <= 0) {
+              return;
+            }
+            // 0x04. perform local searching
+            datas.forEach(function (data) {
+              var isMatch = true;
+              var content_index = [];
+              if (!data.title || data.title.trim() === '') {
+                data.title = "Untitled";
+              }
+              var orig_data_title = data.title.trim();
+              var data_title = orig_data_title.toLowerCase();
+              var orig_data_content = data.content.trim().replace(/<[^>]+>/g, "");
+              var data_content = orig_data_content.toLowerCase();
+              var data_url = data.url;
+              var index_title = -1;
+              var index_content = -1;
+              var first_occur = -1;
+              // only match artiles with not empty contents
+              if (data_content !== '') {
+                keywords.forEach(function (keyword, i) {
+                  index_title = data_title.indexOf(keyword);
+                  index_content = data_content.indexOf(keyword);
+
+                  if (index_title < 0 && index_content < 0) {
+                    isMatch = false;
+                  } else {
+                    if (index_content < 0) {
+                      index_content = 0;
+                    }
+                    if (i == 0) {
+                      first_occur = index_content;
+                    }
+                    // content_index.push({index_content:index_content, keyword_len:keyword_len});
+                  }
+                });
+              } else {
+                isMatch = false;
+              }
+              // 0x05. show search results
+              if (isMatch) {
+                str += "<li><a href='" + data_url + "' class='search-result-title'>" + orig_data_title + "</a>";
+                var content = orig_data_content;
+                if (first_occur >= 0) {
+                  // cut out 100 characters
+                  var start = first_occur - 20;
+                  var end = first_occur + 80;
+
+                  if (start < 0) {
+                    start = 0;
+                  }
+
+                  if (start == 0) {
+                    end = 100;
+                  }
+
+                  if (end > content.length) {
+                    end = content.length;
+                  }
+
+                  var match_content = content.substr(start, end);
+
+                  // highlight all keywords
+                  keywords.forEach(function (keyword) {
+                    var regS = new RegExp(keyword, "gi");
+                    match_content = match_content.replace(regS, "<span class=\"search-keyword\">" + keyword + "</span>");
+                  });
+
+                  str += "<p class=\"search-result-abstract\">" + match_content + "...</p>"
+                }
+                str += "</li>";
+              }
+            });
+            str += "</ul>";
+            if (str.indexOf('<li>') === -1) {
+              return $resultContent.innerHTML = "<ul><span class='local-search-empty'>没有找到内容，请尝试更换检索词。<span></ul>";
+            }
+            $resultContent.innerHTML = str;
+          });
+        },
+        error: function(xhr, status, error) {
+          $resultContent.innerHTML = ""
+          if (xhr.status === 404) {
+            $resultContent.innerHTML = "<ul><span class='local-search-empty'>未找到search.xml文件，具体请参考：<a href='https://github.com/zchengsite/hexo-theme-oranges#configuration' target='_black'>configuration</a><span></ul>";
+          } else {
+            $resultContent.innerHTML = "<ul><span class='local-search-empty'>请求失败，尝试重新刷新页面或稍后重试。<span></ul>";
+          }
+        }
+      });
+      $(document).on('click', '#search-close-icon', function() {
+        $('#search-input').val('');
+        $('#search-result').html('');
+      });
+    }
+
+    var getSearchFile = function() {
+        var path = "/search.xml";
+        searchFunc(path, 'search-input', 'search-result');
+    }
   </script>
 
 
-<script src="/js/main.js"></script>
 
-<!-- search -->
 
-<!-- Baidu Analytics -->
+        
+  <div class="tools-bar-item theme-icon" id="switch-color-scheme">
+    <a href="javascript: void(0)">
+      <i id="theme-icon" class="iconfont icon-moon"></i>
+    </a>
+  </div>
 
-<!-- Cloudflare Analytics -->
+  
+<script src="/js/colorscheme.js"></script>
 
-<!-- Disqus Comments -->
 
-<!-- utterances Comments -->
 
-</body>
+
+
+        
+  
+    <div class="share-icon tools-bar-item">
+      <a href="javascript: void(0)" id="share-icon">
+        <i class="iconfont iconshare"></i>
+      </a>
+      <div class="share-content hidden">
+        
+          <a class="share-item" href="https://twitter.com/intent/tweet?text=' + TRIAD%3ACreating%20Synergies%20Between%20Memory%2C%20Disk%20and%20Log%20in%20Log%20Structured%20Key-Value%20Stores + '&url=' + http%3A%2F%2Fexample.com%2F2021%2F12%2F09%2F%25E8%25AE%25BA%25E6%2596%2587%25E9%2598%2585%25E8%25AF%25BB%2FTRIAD%25EF%25BC%259ACreating%2520Synergies%2520Between%2520Memory%2C%2520Disk%2520and%2520Log%2520in%2520Log%2520Structured%2520Key-Value%2520Stores%2F + '" target="_blank" title="Twitter">
+            <i class="iconfont icon-twitter"></i>
+          </a>
+        
+        
+          <a class="share-item" href="https://www.facebook.com/sharer.php?u=http://example.com/2021/12/09/%E8%AE%BA%E6%96%87%E9%98%85%E8%AF%BB/TRIAD%EF%BC%9ACreating%20Synergies%20Between%20Memory,%20Disk%20and%20Log%20in%20Log%20Structured%20Key-Value%20Stores/" target="_blank" title="Facebook">
+            <i class="iconfont icon-facebooksquare"></i>
+          </a>
+        
+      </div>
+    </div>
+  
+  
+<script src="/js/shares.js"></script>
+
+
+
+      </div>
+    </div>
+  </body>
 </html>

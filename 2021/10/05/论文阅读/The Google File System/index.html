@@ -1,191 +1,185 @@
 <!DOCTYPE html>
-<html lang=zh>
-<head>
-    <!-- so meta -->
-    <meta charset="utf-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="HandheldFriendly" content="True">
-    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=5" />
-    <meta name="description" content="The Google File System（GFS）论文阅读与翻译。">
-<meta property="og:type" content="article">
-<meta property="og:title" content="The Google File System">
-<meta property="og:url" content="http://example.com/2021/10/05/%E8%AE%BA%E6%96%87%E9%98%85%E8%AF%BB/The%20Google%20File%20System/index.html">
-<meta property="og:site_name" content="ap0l1o">
-<meta property="og:description" content="The Google File System（GFS）论文阅读与翻译。">
-<meta property="og:locale" content="zh_CN">
-<meta property="og:image" content="https://ap0l1o.oss-cn-qingdao.aliyuncs.com/img/GFS_Figure1.png">
-<meta property="og:image" content="https://ap0l1o.oss-cn-qingdao.aliyuncs.com/img/GFS_Table1.png">
-<meta property="article:published_time" content="2021-10-05T11:26:00.000Z">
-<meta property="article:modified_time" content="2023-12-18T13:59:58.400Z">
-<meta property="article:author" content="ap0l1o">
-<meta property="article:tag" content="论文阅读">
-<meta property="article:tag" content="分布式文件系统">
-<meta name="twitter:card" content="summary">
-<meta name="twitter:image" content="https://ap0l1o.oss-cn-qingdao.aliyuncs.com/img/GFS_Figure1.png">
+<html lang="zh-CN" color-mode="light">
+
+  <head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="author" content="ap0l1o" />
+  <!-- Open Graph Description 简短摘要-->
+  
+  <!-- 用于搜索引擎的文章摘要 -->
+  
+  
+  
+  <title>
     
-    
-      
-        
-          <link rel="shortcut icon" href="/images/endless.ico">
-        
+      The Google File System 
       
       
-        
-          <link rel="icon" type="image/png" href="/images/endless-192.png" sizes="192x192">
-        
-      
-      
-        
-          <link rel="apple-touch-icon" sizes="180x180" href="/images/endless-180.png">
-        
-      
+      |
     
-    <!-- title -->
-    <title>The Google File System</title>
-    <!-- async scripts -->
-    <!-- Google Analytics -->
+     ap0l1o
+  </title>
 
-
-    <!-- Umami Analytics -->
-
-
-    <!-- styles -->
-    
-<link rel="stylesheet" href="/css/style.css">
-
-    <!-- persian styles -->
-    
-    <!-- rss -->
-    
-    
-      <link rel="alternate" href="/true" title="ap0l1o" type="application/atom+xml" />
-    
-	<!-- mathjax -->
-	
-		<script type="text/x-mathjax-config">
-		  MathJax.Hub.Config({
-			tex2jax: {
-			  skipTags: ['script', 'noscript', 'style', 'textarea', 'pre'],
-			  inlineMath: [['$','$']]
-			}
-		  });
-		</script>
-		<script src='https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-MML-AM_CHTML' async></script>
-	
-<meta name="generator" content="Hexo 5.4.0"></head>
-
-<body class="max-width mx-auto px3 RTL">
-    
-      <div id="header-post">
-  <a id="menu-icon" href="#" aria-label="目录"><i class="fa-solid fa-bars fa-lg"></i></a>
-  <a id="menu-icon-tablet" href="#" aria-label="目录"><i class="fa-solid fa-bars fa-lg"></i></a>
-  <a id="top-icon-tablet" href="#" aria-label="顶部" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');" style="display:none;"><i class="fa-solid fa-chevron-up fa-lg"></i></a>
-  <span id="menu">
-    <span id="nav">
-      <ul>
-        <!--
-       --><li><a href="/">首页</a></li><!--
-     --><!--
-       --><li><a href="/about/">关于</a></li><!--
-     --><!--
-       --><li><a href="/archives/">归档</a></li><!--
-     --><!--
-       --><li><a href="/tags/">标签</a></li><!--
-     --><!--
-       --><li><a href="/categories/">分类</a></li><!--
-     --><!--
-       --><li><a href="/running/">跑步</a></li><!--
-     -->
-      </ul>
-    </span>
-    <br/>
-    <span id="actions">
-      <ul>
-        
-        <li><a class="icon" aria-label="上一篇" href="/2021/10/13/%E6%8A%80%E6%9C%AF%E7%9B%B8%E5%85%B3/%E5%88%86%E5%B8%83%E5%BC%8F/%E9%80%BB%E8%BE%91%E6%97%B6%E9%92%9F/"><i class="fa-solid fa-chevron-left" aria-hidden="true" onmouseover="$('#i-prev').toggle();" onmouseout="$('#i-prev').toggle();"></i></a></li>
-        
-        
-        <li><a class="icon" aria-label="下一篇" href="/2021/09/24/%E6%8A%80%E6%9C%AF%E7%9B%B8%E5%85%B3/C%E5%92%8CC++/%E5%8A%A8%E6%80%81%E5%86%85%E5%AD%98%E5%88%86%E9%85%8D/"><i class="fa-solid fa-chevron-right" aria-hidden="true" onmouseover="$('#i-next').toggle();" onmouseout="$('#i-next').toggle();"></i></a></li>
-        
-        <li><a class="icon" aria-label="返回顶部" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');"><i class="fa-solid fa-chevron-up" aria-hidden="true" onmouseover="$('#i-top').toggle();" onmouseout="$('#i-top').toggle();"></i></a></li>
-        <li><a class="icon" aria-label="分享文章" href="#"><i class="fa-solid fa-share-alt" aria-hidden="true" onmouseover="$('#i-share').toggle();" onmouseout="$('#i-share').toggle();" onclick="$('#share').toggle();return false;"></i></a></li>
-      </ul>
-      <span id="i-prev" class="info" style="display:none;">上一篇</span>
-      <span id="i-next" class="info" style="display:none;">下一篇</span>
-      <span id="i-top" class="info" style="display:none;">返回顶部</span>
-      <span id="i-share" class="info" style="display:none;">分享文章</span>
-    </span>
-    <br/>
-    <div id="share" style="display: none">
-      <ul>
-  <li><a class="icon" target="_blank" rel="noopener" href="http://www.facebook.com/sharer.php?u=http://example.com/2021/10/05/%E8%AE%BA%E6%96%87%E9%98%85%E8%AF%BB/The%20Google%20File%20System/"><i class="fab fa-facebook " aria-hidden="true"></i></a></li>
-  <li><a class="icon" target="_blank" rel="noopener" href="https://twitter.com/share?url=http://example.com/2021/10/05/%E8%AE%BA%E6%96%87%E9%98%85%E8%AF%BB/The%20Google%20File%20System/&text=The Google File System"><i class="fab fa-twitter " aria-hidden="true"></i></a></li>
-  <li><a class="icon" target="_blank" rel="noopener" href="http://www.linkedin.com/shareArticle?url=http://example.com/2021/10/05/%E8%AE%BA%E6%96%87%E9%98%85%E8%AF%BB/The%20Google%20File%20System/&title=The Google File System"><i class="fab fa-linkedin " aria-hidden="true"></i></a></li>
-  <li><a class="icon" target="_blank" rel="noopener" href="https://pinterest.com/pin/create/bookmarklet/?url=http://example.com/2021/10/05/%E8%AE%BA%E6%96%87%E9%98%85%E8%AF%BB/The%20Google%20File%20System/&is_video=false&description=The Google File System"><i class="fab fa-pinterest " aria-hidden="true"></i></a></li>
-  <li><a class="icon" href="mailto:?subject=The Google File System&body=Check out this article: http://example.com/2021/10/05/%E8%AE%BA%E6%96%87%E9%98%85%E8%AF%BB/The%20Google%20File%20System/"><i class="fa-solid fa-envelope " aria-hidden="true"></i></a></li>
-  <li><a class="icon" target="_blank" rel="noopener" href="https://getpocket.com/save?url=http://example.com/2021/10/05/%E8%AE%BA%E6%96%87%E9%98%85%E8%AF%BB/The%20Google%20File%20System/&title=The Google File System"><i class="fab fa-get-pocket " aria-hidden="true"></i></a></li>
-  <li><a class="icon" target="_blank" rel="noopener" href="http://reddit.com/submit?url=http://example.com/2021/10/05/%E8%AE%BA%E6%96%87%E9%98%85%E8%AF%BB/The%20Google%20File%20System/&title=The Google File System"><i class="fab fa-reddit " aria-hidden="true"></i></a></li>
-  <li><a class="icon" target="_blank" rel="noopener" href="http://www.stumbleupon.com/submit?url=http://example.com/2021/10/05/%E8%AE%BA%E6%96%87%E9%98%85%E8%AF%BB/The%20Google%20File%20System/&title=The Google File System"><i class="fab fa-stumbleupon " aria-hidden="true"></i></a></li>
-  <li><a class="icon" target="_blank" rel="noopener" href="http://digg.com/submit?url=http://example.com/2021/10/05/%E8%AE%BA%E6%96%87%E9%98%85%E8%AF%BB/The%20Google%20File%20System/&title=The Google File System"><i class="fab fa-digg " aria-hidden="true"></i></a></li>
-  <li><a class="icon" target="_blank" rel="noopener" href="http://www.tumblr.com/share/link?url=http://example.com/2021/10/05/%E8%AE%BA%E6%96%87%E9%98%85%E8%AF%BB/The%20Google%20File%20System/&name=The Google File System&description=The Google File System（GFS）论文阅读与翻译。"><i class="fab fa-tumblr " aria-hidden="true"></i></a></li>
-  <li><a class="icon" target="_blank" rel="noopener" href="https://news.ycombinator.com/submitlink?u=http://example.com/2021/10/05/%E8%AE%BA%E6%96%87%E9%98%85%E8%AF%BB/The%20Google%20File%20System/&t=The Google File System"><i class="fab fa-hacker-news " aria-hidden="true"></i></a></li>
-</ul>
-
-    </div>
-    
-    
-      <div id="toc">
-        <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#%E8%AE%BA%E6%96%87%E4%BB%8B%E7%BB%8D"><span class="toc-number">1.</span> <span class="toc-text">论文介绍</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E8%AE%BA%E6%96%87%E4%BF%A1%E6%81%AF"><span class="toc-number">1.1.</span> <span class="toc-text">论文信息</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E8%AE%BA%E6%96%87%E5%90%8D"><span class="toc-number">1.1.1.</span> <span class="toc-text">论文名</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%BD%9C%E8%80%85"><span class="toc-number">1.1.2.</span> <span class="toc-text">作者</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%9C%9F%E5%88%8A-%E4%BC%9A%E8%AE%AE"><span class="toc-number">1.1.3.</span> <span class="toc-text">期刊&#x2F;会议</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E8%AE%BA%E6%96%87%E6%91%98%E8%A6%81"><span class="toc-number">1.2.</span> <span class="toc-text">论文摘要</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E8%AE%BA%E6%96%87%E5%9C%B0%E5%9D%80"><span class="toc-number">1.3.</span> <span class="toc-text">论文地址</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%8E%9F%E6%96%87%E5%9C%B0%E5%9D%80"><span class="toc-number">1.3.1.</span> <span class="toc-text">原文地址</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E9%98%85%E8%AF%BB%E5%8F%82%E8%80%83"><span class="toc-number">1.3.2.</span> <span class="toc-text">阅读参考</span></a></li></ol></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E9%98%85%E8%AF%BB%E6%91%98%E8%A6%81-amp-%E7%AC%94%E8%AE%B0"><span class="toc-number">2.</span> <span class="toc-text">阅读摘要&amp;笔记</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#Abstract"><span class="toc-number">3.</span> <span class="toc-text">Abstract</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#1-Introduction"><span class="toc-number">4.</span> <span class="toc-text">1 Introduction</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#2-Design-Overview"><span class="toc-number">5.</span> <span class="toc-text">2 Design Overview</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#2-1-Assumptions"><span class="toc-number">5.1.</span> <span class="toc-text">2.1 Assumptions</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#2-2-Interface"><span class="toc-number">5.2.</span> <span class="toc-text">2.2 Interface</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#2-3-Architecture"><span class="toc-number">5.3.</span> <span class="toc-text">2.3 Architecture</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#2-4-Single-Master"><span class="toc-number">5.4.</span> <span class="toc-text">2.4 Single Master</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#2-5-Chunk-Size"><span class="toc-number">5.5.</span> <span class="toc-text">2.5 Chunk Size</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#2-6-Metadata"><span class="toc-number">5.6.</span> <span class="toc-text">2.6 Metadata</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#2-6-1-In-Memory-Data-Structures"><span class="toc-number">5.6.1.</span> <span class="toc-text">2.6.1 In-Memory Data Structures</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-6-2-Chunk-Locations"><span class="toc-number">5.6.2.</span> <span class="toc-text">2.6.2 Chunk Locations</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-6-3-Operation-log"><span class="toc-number">5.6.3.</span> <span class="toc-text">2.6.3 Operation log</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#2-7-Consistency-Model"><span class="toc-number">5.7.</span> <span class="toc-text">2.7 Consistency Model</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#2-7-1-Guarantees-by-GFS"><span class="toc-number">5.7.1.</span> <span class="toc-text">2.7.1 Guarantees by GFS</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-7-2-Implications-for-Applications"><span class="toc-number">5.7.2.</span> <span class="toc-text">2.7.2 Implications for Applications</span></a></li></ol></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#3-System-Interactions"><span class="toc-number">6.</span> <span class="toc-text">3 System Interactions</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#3-1-Leases-and-Mutation-Order"><span class="toc-number">6.1.</span> <span class="toc-text">3.1 Leases and Mutation Order</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#3-2-Data-Flow"><span class="toc-number">6.2.</span> <span class="toc-text">3.2 Data Flow</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#3-3-Atomic-Record-Appends"><span class="toc-number">6.3.</span> <span class="toc-text">3.3 Atomic Record Appends</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#3-4-Snapshot"><span class="toc-number">6.4.</span> <span class="toc-text">3.4 Snapshot</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#4-Master-Operation"><span class="toc-number">7.</span> <span class="toc-text">4 Master Operation</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#4-1-Namespace-Management-and-Locking"><span class="toc-number">7.1.</span> <span class="toc-text">4.1 Namespace Management and Locking</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#4-2-Replica-Placement"><span class="toc-number">7.2.</span> <span class="toc-text">4.2 Replica Placement</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#4-3-Creation-Replication-Rebalancing"><span class="toc-number">7.3.</span> <span class="toc-text">4.3 Creation, Replication, Rebalancing</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#4-4-Garbage-Collection"><span class="toc-number">7.4.</span> <span class="toc-text">4.4 Garbage Collection</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#4-4-1-Mechanism"><span class="toc-number">7.4.1.</span> <span class="toc-text">4.4.1 Mechanism</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#4-4-2-Discussion"><span class="toc-number">7.4.2.</span> <span class="toc-text">4.4.2 Discussion</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#4-5-Stale-Replica-Detection"><span class="toc-number">7.5.</span> <span class="toc-text">4.5 Stale Replica Detection</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#5-Fault-Tolerance-And-Diagnosis"><span class="toc-number">8.</span> <span class="toc-text">5 Fault Tolerance And Diagnosis</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#5-1-High-Availability"><span class="toc-number">8.1.</span> <span class="toc-text">5.1 High Availability</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#5-1-1-Fast-Recovery"><span class="toc-number">8.1.1.</span> <span class="toc-text">5.1.1 Fast Recovery</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#5-1-2-Chunk-Replication"><span class="toc-number">8.1.2.</span> <span class="toc-text">5.1.2 Chunk Replication</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#5-1-3-Master-Replication"><span class="toc-number">8.1.3.</span> <span class="toc-text">5.1.3 Master Replication</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#5-2-Data-Integrity"><span class="toc-number">8.2.</span> <span class="toc-text">5.2 Data Integrity</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#5-3-Diagnostic-Tools"><span class="toc-number">8.3.</span> <span class="toc-text">5.3 Diagnostic Tools</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#6-Measurements"><span class="toc-number">9.</span> <span class="toc-text">6 Measurements</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#6-1-Micro-benchmarks"><span class="toc-number">9.1.</span> <span class="toc-text">6.1 Micro-benchmarks</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#6-1-1-Reads"><span class="toc-number">9.1.1.</span> <span class="toc-text">6.1.1 Reads</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#6-1-2-Writes"><span class="toc-number">9.1.2.</span> <span class="toc-text">6.1.2 Writes</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#6-1-3-Record-Appends"><span class="toc-number">9.1.3.</span> <span class="toc-text">6.1.3 Record Appends</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#6-2-Real-World-Cluster"><span class="toc-number">9.2.</span> <span class="toc-text">6.2 Real World Cluster</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#6-2-1-Storage"><span class="toc-number">9.2.1.</span> <span class="toc-text">6.2.1 Storage</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#6-2-2-Metadata"><span class="toc-number">9.2.2.</span> <span class="toc-text">6.2.2 Metadata</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#6-2-3-Read-and-Write-Rates"><span class="toc-number">9.2.3.</span> <span class="toc-text">6.2.3 Read and Write Rates</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#6-2-4-Master-Load"><span class="toc-number">9.2.4.</span> <span class="toc-text">6.2.4 Master Load</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#6-2-5-Recovery-Time"><span class="toc-number">9.2.5.</span> <span class="toc-text">6.2.5 Recovery Time</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#6-3-Workload-Breakdown"><span class="toc-number">9.3.</span> <span class="toc-text">6.3 Workload Breakdown</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#6-3-1-Methodology-and-Caveats"><span class="toc-number">9.3.1.</span> <span class="toc-text">6.3.1 Methodology and Caveats</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#6-3-2-Chunk-server-Workload"><span class="toc-number">9.3.2.</span> <span class="toc-text">6.3.2 Chunk-server Workload</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#6-3-3-Appends-versus-Writes"><span class="toc-number">9.3.3.</span> <span class="toc-text">6.3.3 Appends versus Writes</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#6-3-4-Master-Workload"><span class="toc-number">9.3.4.</span> <span class="toc-text">6.3.4 Master Workload</span></a></li></ol></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#7-Experiences"><span class="toc-number">10.</span> <span class="toc-text">7 Experiences</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#8-Related-Work"><span class="toc-number">11.</span> <span class="toc-text">8 Related Work</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#9-Conclusions"><span class="toc-number">12.</span> <span class="toc-text">9 Conclusions</span></a></li></ol>
-      </div>
-    
-  </span>
-</div>
-
-    
-    <div class="content index py4 ">
-        
-        <article class="post h-entry" itemscope itemtype="http://schema.org/BlogPosting">
-  <header>
-    
-    <h1 class="posttitle p-name" itemprop="name headline">
-        The Google File System
-    </h1>
-
-
-
-    <div class="meta">
-      <span class="author p-author h-card" itemprop="author" itemscope itemtype="http://schema.org/Person">
-        <span class="p-name" itemprop="name">ap0l1o</span>
-      </span>
-      
-    <div class="postdate">
-      
-        <time datetime="2021-10-05T11:26:00.000Z" class="dt-published" itemprop="datePublished">2021-10-05</time>
-        
-      
-    </div>
-
-
-      
-    <div class="article-category">
-        <i class="fa-solid fa-archive"></i>
-        <a class="category-link" href="/categories/%E8%AE%BA%E6%96%87/">论文</a>
-    </div>
-
-
-      
-    <div class="article-tag">
-        <i class="fa-solid fa-tag"></i>
-        <a class="p-category" href="/tags/%E5%88%86%E5%B8%83%E5%BC%8F%E6%96%87%E4%BB%B6%E7%B3%BB%E7%BB%9F/" rel="tag">分布式文件系统</a>, <a class="p-category" href="/tags/%E8%AE%BA%E6%96%87%E9%98%85%E8%AF%BB/" rel="tag">论文阅读</a>
-    </div>
-
-
-    </div>
-  </header>
+  
+    <link rel="apple-touch-icon" href="/images/favicon.png">
+    <link rel="icon" href="/images/favicon.png">
   
 
-  <div class="content e-content" itemprop="articleBody">
-    <h1 id="论文介绍"><a href="#论文介绍" class="headerlink" title="论文介绍"></a>论文介绍</h1><h2 id="论文信息"><a href="#论文信息" class="headerlink" title="论文信息"></a>论文信息</h2><h3 id="论文名"><a href="#论文名" class="headerlink" title="论文名"></a>论文名</h3><p>The Google File System</p>
+  <!-- Raleway-Font -->
+  <link href="https://fonts.googleapis.com/css?family=Raleway&display=swap" rel="stylesheet">
+
+  <!-- hexo site css -->
+  <link rel="stylesheet" href="/css/main.css" />
+  <link rel="stylesheet" href="//at.alicdn.com/t/font_1886449_67xjft27j1l.css" />
+  <!-- 代码块风格 -->
+  
+
+  <!-- jquery3.3.1 -->
+  
+    <script defer type="text/javascript" src="/plugins/jquery.min.js"></script>
+  
+
+  <!-- fancybox -->
+  
+    <link href="/plugins/jquery.fancybox.min.css" rel="stylesheet">
+    <script defer type="text/javascript" src="/plugins/jquery.fancybox.min.js"></script>
+  
+  
+<script src="/js/fancybox.js"></script>
+
+
+  
+
+  
+
+  <script>
+    var html = document.documentElement
+    const colorMode = localStorage.getItem('color-mode')
+    if (colorMode) {
+      document.documentElement.setAttribute('color-mode', colorMode)
+    }
+  </script>
+<meta name="generator" content="Hexo 5.4.0"></head>
+
+
+  <body>
+    <div id="app">
+      <div class="header">
+  <div class="avatar">
+    <a href="/">
+      <!-- 头像取消懒加载，添加no-lazy -->
+      
+        <img src="/images/avatar.png" alt="">
+      
+    </a>
+    <div class="nickname"><a href="/">Oranges</a></div>
+  </div>
+  <div class="navbar">
+    <ul>
+      
+        <li class="nav-item" data-path="/">
+          <a href="/">Home</a>
+        </li>
+      
+        <li class="nav-item" data-path="/archives/">
+          <a href="/archives/">Archives</a>
+        </li>
+      
+        <li class="nav-item" data-path="/tags/">
+          <a href="/tags/">Tags</a>
+        </li>
+      
+        <li class="nav-item" data-path="/friends/">
+          <a href="/friends/">Friends</a>
+        </li>
+      
+        <li class="nav-item" data-path="/about/">
+          <a href="/about/">About</a>
+        </li>
+      
+    </ul>
+  </div>
+</div>
+
+
+<script src="/js/activeNav.js"></script>
+
+
+
+      <div class="flex-container">
+        <!-- 文章详情页，展示文章具体内容，url形式：https://yoursite/文章标题/ -->
+<!-- 同时为「标签tag」，「朋友friend」，「分类categories」，「关于about」页面的承载页面，具体展示取决于page.type -->
+
+
+  <!-- LaTex Display -->
+
+  
+    <script async type="text/javascript" src="/plugins/mathjax/tex-chtml.js"></script>
+  
+  <script>
+    MathJax = {
+      tex: {
+        inlineMath: [['$', '$'], ['\\(', '\\)']]
+      }
+    }
+  </script>
+
+
+
+
+
+  <!-- clipboard -->
+
+  
+    <script async type="text/javascript" src="/plugins/clipboard.min.js"></script>
+  
+  
+<script src="/js/codeCopy.js"></script>
+
+
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  <!-- 文章内容页 url形式：https://yoursite/文章标题/ -->
+  <div class="container post-details" id="post-details">
+    <div class="post-content">
+      <div class="post-title">The Google File System</div>
+      <div class="post-attach">
+        <span class="post-pubtime">
+          <i class="iconfont icon-updatetime mr-10" title="更新时间"></i>
+          2023-12-18 21:59:58
+        </span>
+        
+              <span class="post-tags">
+                <i class="iconfont icon-tags mr-10" title="标签"></i>
+                
+                <span class="span--tag mr-8">
+                  <a href="/tags/%E8%AE%BA%E6%96%87%E9%98%85%E8%AF%BB/" title="论文阅读">
+                    #论文阅读
+                  </a>
+                </span>
+                
+                <span class="span--tag mr-8">
+                  <a href="/tags/%E5%88%86%E5%B8%83%E5%BC%8F%E6%96%87%E4%BB%B6%E7%B3%BB%E7%BB%9F/" title="分布式文件系统">
+                    #分布式文件系统
+                  </a>
+                </span>
+                
+              </span>
+          
+      </div>
+      <div class="markdown-body">
+        <h1 id="论文介绍"><a href="#论文介绍" class="headerlink" title="论文介绍"></a>论文介绍</h1><h2 id="论文信息"><a href="#论文信息" class="headerlink" title="论文信息"></a>论文信息</h2><h3 id="论文名"><a href="#论文名" class="headerlink" title="论文名"></a>论文名</h3><p>The Google File System</p>
 <h3 id="作者"><a href="#作者" class="headerlink" title="作者"></a>作者</h3><p>Sanjay Ghemawat, Howard Gobioff, and Shun-Tak Leung</p>
 <h3 id="期刊-会议"><a href="#期刊-会议" class="headerlink" title="期刊/会议"></a>期刊/会议</h3><p> SOSP’03, October 19–22, 2003, Bolton Landing, New York, USA. </p>
 <h2 id="论文摘要"><a href="#论文摘要" class="headerlink" title="论文摘要"></a>论文摘要</h2><h2 id="论文地址"><a href="#论文地址" class="headerlink" title="论文地址"></a>论文地址</h2><h3 id="原文地址"><a href="#原文地址" class="headerlink" title="原文地址"></a>原文地址</h3><p><a target="_blank" rel="noopener" href="https://static.googleusercontent.com/media/research.google.com/zh-CN//archive/gfs-sosp2003.pdf">「The Google File System」</a></p>
@@ -487,151 +481,366 @@
 <p>日志记录对性能的影响很小（并且远远超过好处），因为这些日志是按顺序和异步写入的。 最近的事件也保存在内存中，可用于持续在线监控。</p>
 <h1 id="6-Measurements"><a href="#6-Measurements" class="headerlink" title="6 Measurements"></a>6 Measurements</h1><p>以下内容略。</p>
 <h2 id="6-1-Micro-benchmarks"><a href="#6-1-Micro-benchmarks" class="headerlink" title="6.1 Micro-benchmarks"></a>6.1 Micro-benchmarks</h2><h3 id="6-1-1-Reads"><a href="#6-1-1-Reads" class="headerlink" title="6.1.1 Reads"></a>6.1.1 Reads</h3><h3 id="6-1-2-Writes"><a href="#6-1-2-Writes" class="headerlink" title="6.1.2 Writes"></a>6.1.2 Writes</h3><h3 id="6-1-3-Record-Appends"><a href="#6-1-3-Record-Appends" class="headerlink" title="6.1.3 Record Appends"></a>6.1.3 Record Appends</h3><h2 id="6-2-Real-World-Cluster"><a href="#6-2-Real-World-Cluster" class="headerlink" title="6.2 Real World Cluster"></a>6.2 Real World Cluster</h2><h3 id="6-2-1-Storage"><a href="#6-2-1-Storage" class="headerlink" title="6.2.1 Storage"></a>6.2.1 Storage</h3><h3 id="6-2-2-Metadata"><a href="#6-2-2-Metadata" class="headerlink" title="6.2.2 Metadata"></a>6.2.2 Metadata</h3><h3 id="6-2-3-Read-and-Write-Rates"><a href="#6-2-3-Read-and-Write-Rates" class="headerlink" title="6.2.3 Read and Write Rates"></a>6.2.3 Read and Write Rates</h3><h3 id="6-2-4-Master-Load"><a href="#6-2-4-Master-Load" class="headerlink" title="6.2.4 Master Load"></a>6.2.4 Master Load</h3><h3 id="6-2-5-Recovery-Time"><a href="#6-2-5-Recovery-Time" class="headerlink" title="6.2.5 Recovery Time"></a>6.2.5 Recovery Time</h3><h2 id="6-3-Workload-Breakdown"><a href="#6-3-Workload-Breakdown" class="headerlink" title="6.3 Workload Breakdown"></a>6.3 Workload Breakdown</h2><h3 id="6-3-1-Methodology-and-Caveats"><a href="#6-3-1-Methodology-and-Caveats" class="headerlink" title="6.3.1 Methodology and Caveats"></a>6.3.1 Methodology and Caveats</h3><h3 id="6-3-2-Chunk-server-Workload"><a href="#6-3-2-Chunk-server-Workload" class="headerlink" title="6.3.2 Chunk-server Workload"></a>6.3.2 Chunk-server Workload</h3><h3 id="6-3-3-Appends-versus-Writes"><a href="#6-3-3-Appends-versus-Writes" class="headerlink" title="6.3.3 Appends versus Writes"></a>6.3.3 Appends versus Writes</h3><h3 id="6-3-4-Master-Workload"><a href="#6-3-4-Master-Workload" class="headerlink" title="6.3.4 Master Workload"></a>6.3.4 Master Workload</h3><h1 id="7-Experiences"><a href="#7-Experiences" class="headerlink" title="7 Experiences"></a>7 Experiences</h1><h1 id="8-Related-Work"><a href="#8-Related-Work" class="headerlink" title="8 Related Work"></a>8 Related Work</h1><h1 id="9-Conclusions"><a href="#9-Conclusions" class="headerlink" title="9 Conclusions"></a>9 Conclusions</h1>
-  </div>
-</article>
-
-
-
-        
-          <div id="footer-post-container">
-  <div id="footer-post">
-
-    <div id="nav-footer" style="display: none">
-      <ul>
-        
-          <li><a href="/">首页</a></li>
-        
-          <li><a href="/about/">关于</a></li>
-        
-          <li><a href="/archives/">归档</a></li>
-        
-          <li><a href="/tags/">标签</a></li>
-        
-          <li><a href="/categories/">分类</a></li>
-        
-          <li><a href="/running/">跑步</a></li>
-        
-      </ul>
+      </div>
+      
+        <div class="prev-or-next">
+          <div class="post-foot-next">
+            
+              <a href="/2021/09/24/%E6%8A%80%E6%9C%AF%E7%9B%B8%E5%85%B3/C%E5%92%8CC++/%E5%8A%A8%E6%80%81%E5%86%85%E5%AD%98%E5%88%86%E9%85%8D/" target="_self">
+                <i class="iconfont icon-chevronleft"></i>
+                <span>上一页</span>
+              </a>
+            
+          </div>
+          <div class="post-attach">
+            <span class="post-pubtime">
+              <i class="iconfont icon-updatetime mr-10" title="更新时间"></i>
+              2023-12-18 21:59:58
+            </span>
+            
+                  <span class="post-tags">
+                    <i class="iconfont icon-tags mr-10" title="标签"></i>
+                    
+                    <span class="span--tag mr-8">
+                      <a href="/tags/%E8%AE%BA%E6%96%87%E9%98%85%E8%AF%BB/" title="论文阅读">
+                        #论文阅读
+                      </a>
+                    </span>
+                    
+                    <span class="span--tag mr-8">
+                      <a href="/tags/%E5%88%86%E5%B8%83%E5%BC%8F%E6%96%87%E4%BB%B6%E7%B3%BB%E7%BB%9F/" title="分布式文件系统">
+                        #分布式文件系统
+                      </a>
+                    </span>
+                    
+                  </span>
+              
+          </div>
+          <div class="post-foot-prev">
+            
+              <a href="/2021/10/13/%E6%8A%80%E6%9C%AF%E7%9B%B8%E5%85%B3/%E5%88%86%E5%B8%83%E5%BC%8F/%E9%80%BB%E8%BE%91%E6%97%B6%E9%92%9F/" target="_self">
+                <span>下一页</span>
+                <i class="iconfont icon-chevronright"></i>
+              </a>
+            
+          </div>
+        </div>
+      
     </div>
+    
+  <div id="btn-catalog" class="btn-catalog">
+    <i class="iconfont icon-catalog"></i>
+  </div>
+  <div class="post-catalog hidden" id="catalog">
+    <div class="title">目录</div>
+    <div class="catalog-content">
+      
+        <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#%E8%AE%BA%E6%96%87%E4%BB%8B%E7%BB%8D"><span class="toc-text">论文介绍</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E8%AE%BA%E6%96%87%E4%BF%A1%E6%81%AF"><span class="toc-text">论文信息</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E8%AE%BA%E6%96%87%E5%90%8D"><span class="toc-text">论文名</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%BD%9C%E8%80%85"><span class="toc-text">作者</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%9C%9F%E5%88%8A-%E4%BC%9A%E8%AE%AE"><span class="toc-text">期刊&#x2F;会议</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E8%AE%BA%E6%96%87%E6%91%98%E8%A6%81"><span class="toc-text">论文摘要</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E8%AE%BA%E6%96%87%E5%9C%B0%E5%9D%80"><span class="toc-text">论文地址</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%8E%9F%E6%96%87%E5%9C%B0%E5%9D%80"><span class="toc-text">原文地址</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E9%98%85%E8%AF%BB%E5%8F%82%E8%80%83"><span class="toc-text">阅读参考</span></a></li></ol></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E9%98%85%E8%AF%BB%E6%91%98%E8%A6%81-amp-%E7%AC%94%E8%AE%B0"><span class="toc-text">阅读摘要&amp;笔记</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#Abstract"><span class="toc-text">Abstract</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#1-Introduction"><span class="toc-text">1 Introduction</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#2-Design-Overview"><span class="toc-text">2 Design Overview</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#2-1-Assumptions"><span class="toc-text">2.1 Assumptions</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#2-2-Interface"><span class="toc-text">2.2 Interface</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#2-3-Architecture"><span class="toc-text">2.3 Architecture</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#2-4-Single-Master"><span class="toc-text">2.4 Single Master</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#2-5-Chunk-Size"><span class="toc-text">2.5 Chunk Size</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#2-6-Metadata"><span class="toc-text">2.6 Metadata</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#2-6-1-In-Memory-Data-Structures"><span class="toc-text">2.6.1 In-Memory Data Structures</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-6-2-Chunk-Locations"><span class="toc-text">2.6.2 Chunk Locations</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-6-3-Operation-log"><span class="toc-text">2.6.3 Operation log</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#2-7-Consistency-Model"><span class="toc-text">2.7 Consistency Model</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#2-7-1-Guarantees-by-GFS"><span class="toc-text">2.7.1 Guarantees by GFS</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-7-2-Implications-for-Applications"><span class="toc-text">2.7.2 Implications for Applications</span></a></li></ol></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#3-System-Interactions"><span class="toc-text">3 System Interactions</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#3-1-Leases-and-Mutation-Order"><span class="toc-text">3.1 Leases and Mutation Order</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#3-2-Data-Flow"><span class="toc-text">3.2 Data Flow</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#3-3-Atomic-Record-Appends"><span class="toc-text">3.3 Atomic Record Appends</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#3-4-Snapshot"><span class="toc-text">3.4 Snapshot</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#4-Master-Operation"><span class="toc-text">4 Master Operation</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#4-1-Namespace-Management-and-Locking"><span class="toc-text">4.1 Namespace Management and Locking</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#4-2-Replica-Placement"><span class="toc-text">4.2 Replica Placement</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#4-3-Creation-Replication-Rebalancing"><span class="toc-text">4.3 Creation, Replication, Rebalancing</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#4-4-Garbage-Collection"><span class="toc-text">4.4 Garbage Collection</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#4-4-1-Mechanism"><span class="toc-text">4.4.1 Mechanism</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#4-4-2-Discussion"><span class="toc-text">4.4.2 Discussion</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#4-5-Stale-Replica-Detection"><span class="toc-text">4.5 Stale Replica Detection</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#5-Fault-Tolerance-And-Diagnosis"><span class="toc-text">5 Fault Tolerance And Diagnosis</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#5-1-High-Availability"><span class="toc-text">5.1 High Availability</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#5-1-1-Fast-Recovery"><span class="toc-text">5.1.1 Fast Recovery</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#5-1-2-Chunk-Replication"><span class="toc-text">5.1.2 Chunk Replication</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#5-1-3-Master-Replication"><span class="toc-text">5.1.3 Master Replication</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#5-2-Data-Integrity"><span class="toc-text">5.2 Data Integrity</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#5-3-Diagnostic-Tools"><span class="toc-text">5.3 Diagnostic Tools</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#6-Measurements"><span class="toc-text">6 Measurements</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#6-1-Micro-benchmarks"><span class="toc-text">6.1 Micro-benchmarks</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#6-1-1-Reads"><span class="toc-text">6.1.1 Reads</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#6-1-2-Writes"><span class="toc-text">6.1.2 Writes</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#6-1-3-Record-Appends"><span class="toc-text">6.1.3 Record Appends</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#6-2-Real-World-Cluster"><span class="toc-text">6.2 Real World Cluster</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#6-2-1-Storage"><span class="toc-text">6.2.1 Storage</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#6-2-2-Metadata"><span class="toc-text">6.2.2 Metadata</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#6-2-3-Read-and-Write-Rates"><span class="toc-text">6.2.3 Read and Write Rates</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#6-2-4-Master-Load"><span class="toc-text">6.2.4 Master Load</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#6-2-5-Recovery-Time"><span class="toc-text">6.2.5 Recovery Time</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#6-3-Workload-Breakdown"><span class="toc-text">6.3 Workload Breakdown</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#6-3-1-Methodology-and-Caveats"><span class="toc-text">6.3.1 Methodology and Caveats</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#6-3-2-Chunk-server-Workload"><span class="toc-text">6.3.2 Chunk-server Workload</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#6-3-3-Appends-versus-Writes"><span class="toc-text">6.3.3 Appends versus Writes</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#6-3-4-Master-Workload"><span class="toc-text">6.3.4 Master Workload</span></a></li></ol></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#7-Experiences"><span class="toc-text">7 Experiences</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#8-Related-Work"><span class="toc-text">8 Related Work</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#9-Conclusions"><span class="toc-text">9 Conclusions</span></a></li></ol>
+      
+    </div>
+  </div>
+
+  
+<script src="/js/catalog.js"></script>
+
+
+
 
     
-    
-      <div id="toc-footer" style="display: none">
-        <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#%E8%AE%BA%E6%96%87%E4%BB%8B%E7%BB%8D"><span class="toc-number">1.</span> <span class="toc-text">论文介绍</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E8%AE%BA%E6%96%87%E4%BF%A1%E6%81%AF"><span class="toc-number">1.1.</span> <span class="toc-text">论文信息</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E8%AE%BA%E6%96%87%E5%90%8D"><span class="toc-number">1.1.1.</span> <span class="toc-text">论文名</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%BD%9C%E8%80%85"><span class="toc-number">1.1.2.</span> <span class="toc-text">作者</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%9C%9F%E5%88%8A-%E4%BC%9A%E8%AE%AE"><span class="toc-number">1.1.3.</span> <span class="toc-text">期刊&#x2F;会议</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E8%AE%BA%E6%96%87%E6%91%98%E8%A6%81"><span class="toc-number">1.2.</span> <span class="toc-text">论文摘要</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E8%AE%BA%E6%96%87%E5%9C%B0%E5%9D%80"><span class="toc-number">1.3.</span> <span class="toc-text">论文地址</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%8E%9F%E6%96%87%E5%9C%B0%E5%9D%80"><span class="toc-number">1.3.1.</span> <span class="toc-text">原文地址</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E9%98%85%E8%AF%BB%E5%8F%82%E8%80%83"><span class="toc-number">1.3.2.</span> <span class="toc-text">阅读参考</span></a></li></ol></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E9%98%85%E8%AF%BB%E6%91%98%E8%A6%81-amp-%E7%AC%94%E8%AE%B0"><span class="toc-number">2.</span> <span class="toc-text">阅读摘要&amp;笔记</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#Abstract"><span class="toc-number">3.</span> <span class="toc-text">Abstract</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#1-Introduction"><span class="toc-number">4.</span> <span class="toc-text">1 Introduction</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#2-Design-Overview"><span class="toc-number">5.</span> <span class="toc-text">2 Design Overview</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#2-1-Assumptions"><span class="toc-number">5.1.</span> <span class="toc-text">2.1 Assumptions</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#2-2-Interface"><span class="toc-number">5.2.</span> <span class="toc-text">2.2 Interface</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#2-3-Architecture"><span class="toc-number">5.3.</span> <span class="toc-text">2.3 Architecture</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#2-4-Single-Master"><span class="toc-number">5.4.</span> <span class="toc-text">2.4 Single Master</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#2-5-Chunk-Size"><span class="toc-number">5.5.</span> <span class="toc-text">2.5 Chunk Size</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#2-6-Metadata"><span class="toc-number">5.6.</span> <span class="toc-text">2.6 Metadata</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#2-6-1-In-Memory-Data-Structures"><span class="toc-number">5.6.1.</span> <span class="toc-text">2.6.1 In-Memory Data Structures</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-6-2-Chunk-Locations"><span class="toc-number">5.6.2.</span> <span class="toc-text">2.6.2 Chunk Locations</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-6-3-Operation-log"><span class="toc-number">5.6.3.</span> <span class="toc-text">2.6.3 Operation log</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#2-7-Consistency-Model"><span class="toc-number">5.7.</span> <span class="toc-text">2.7 Consistency Model</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#2-7-1-Guarantees-by-GFS"><span class="toc-number">5.7.1.</span> <span class="toc-text">2.7.1 Guarantees by GFS</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-7-2-Implications-for-Applications"><span class="toc-number">5.7.2.</span> <span class="toc-text">2.7.2 Implications for Applications</span></a></li></ol></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#3-System-Interactions"><span class="toc-number">6.</span> <span class="toc-text">3 System Interactions</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#3-1-Leases-and-Mutation-Order"><span class="toc-number">6.1.</span> <span class="toc-text">3.1 Leases and Mutation Order</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#3-2-Data-Flow"><span class="toc-number">6.2.</span> <span class="toc-text">3.2 Data Flow</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#3-3-Atomic-Record-Appends"><span class="toc-number">6.3.</span> <span class="toc-text">3.3 Atomic Record Appends</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#3-4-Snapshot"><span class="toc-number">6.4.</span> <span class="toc-text">3.4 Snapshot</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#4-Master-Operation"><span class="toc-number">7.</span> <span class="toc-text">4 Master Operation</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#4-1-Namespace-Management-and-Locking"><span class="toc-number">7.1.</span> <span class="toc-text">4.1 Namespace Management and Locking</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#4-2-Replica-Placement"><span class="toc-number">7.2.</span> <span class="toc-text">4.2 Replica Placement</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#4-3-Creation-Replication-Rebalancing"><span class="toc-number">7.3.</span> <span class="toc-text">4.3 Creation, Replication, Rebalancing</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#4-4-Garbage-Collection"><span class="toc-number">7.4.</span> <span class="toc-text">4.4 Garbage Collection</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#4-4-1-Mechanism"><span class="toc-number">7.4.1.</span> <span class="toc-text">4.4.1 Mechanism</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#4-4-2-Discussion"><span class="toc-number">7.4.2.</span> <span class="toc-text">4.4.2 Discussion</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#4-5-Stale-Replica-Detection"><span class="toc-number">7.5.</span> <span class="toc-text">4.5 Stale Replica Detection</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#5-Fault-Tolerance-And-Diagnosis"><span class="toc-number">8.</span> <span class="toc-text">5 Fault Tolerance And Diagnosis</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#5-1-High-Availability"><span class="toc-number">8.1.</span> <span class="toc-text">5.1 High Availability</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#5-1-1-Fast-Recovery"><span class="toc-number">8.1.1.</span> <span class="toc-text">5.1.1 Fast Recovery</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#5-1-2-Chunk-Replication"><span class="toc-number">8.1.2.</span> <span class="toc-text">5.1.2 Chunk Replication</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#5-1-3-Master-Replication"><span class="toc-number">8.1.3.</span> <span class="toc-text">5.1.3 Master Replication</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#5-2-Data-Integrity"><span class="toc-number">8.2.</span> <span class="toc-text">5.2 Data Integrity</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#5-3-Diagnostic-Tools"><span class="toc-number">8.3.</span> <span class="toc-text">5.3 Diagnostic Tools</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#6-Measurements"><span class="toc-number">9.</span> <span class="toc-text">6 Measurements</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#6-1-Micro-benchmarks"><span class="toc-number">9.1.</span> <span class="toc-text">6.1 Micro-benchmarks</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#6-1-1-Reads"><span class="toc-number">9.1.1.</span> <span class="toc-text">6.1.1 Reads</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#6-1-2-Writes"><span class="toc-number">9.1.2.</span> <span class="toc-text">6.1.2 Writes</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#6-1-3-Record-Appends"><span class="toc-number">9.1.3.</span> <span class="toc-text">6.1.3 Record Appends</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#6-2-Real-World-Cluster"><span class="toc-number">9.2.</span> <span class="toc-text">6.2 Real World Cluster</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#6-2-1-Storage"><span class="toc-number">9.2.1.</span> <span class="toc-text">6.2.1 Storage</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#6-2-2-Metadata"><span class="toc-number">9.2.2.</span> <span class="toc-text">6.2.2 Metadata</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#6-2-3-Read-and-Write-Rates"><span class="toc-number">9.2.3.</span> <span class="toc-text">6.2.3 Read and Write Rates</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#6-2-4-Master-Load"><span class="toc-number">9.2.4.</span> <span class="toc-text">6.2.4 Master Load</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#6-2-5-Recovery-Time"><span class="toc-number">9.2.5.</span> <span class="toc-text">6.2.5 Recovery Time</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#6-3-Workload-Breakdown"><span class="toc-number">9.3.</span> <span class="toc-text">6.3 Workload Breakdown</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#6-3-1-Methodology-and-Caveats"><span class="toc-number">9.3.1.</span> <span class="toc-text">6.3.1 Methodology and Caveats</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#6-3-2-Chunk-server-Workload"><span class="toc-number">9.3.2.</span> <span class="toc-text">6.3.2 Chunk-server Workload</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#6-3-3-Appends-versus-Writes"><span class="toc-number">9.3.3.</span> <span class="toc-text">6.3.3 Appends versus Writes</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#6-3-4-Master-Workload"><span class="toc-number">9.3.4.</span> <span class="toc-text">6.3.4 Master Workload</span></a></li></ol></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#7-Experiences"><span class="toc-number">10.</span> <span class="toc-text">7 Experiences</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#8-Related-Work"><span class="toc-number">11.</span> <span class="toc-text">8 Related Work</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#9-Conclusions"><span class="toc-number">12.</span> <span class="toc-text">9 Conclusions</span></a></li></ol>
+      <div class="comments-container">
+        
+
+
+
+
+
+
+
       </div>
     
-
-    <div id="share-footer" style="display: none">
-      <ul>
-  <li><a class="icon" target="_blank" rel="noopener" href="http://www.facebook.com/sharer.php?u=http://example.com/2021/10/05/%E8%AE%BA%E6%96%87%E9%98%85%E8%AF%BB/The%20Google%20File%20System/"><i class="fab fa-facebook fa-lg" aria-hidden="true"></i></a></li>
-  <li><a class="icon" target="_blank" rel="noopener" href="https://twitter.com/share?url=http://example.com/2021/10/05/%E8%AE%BA%E6%96%87%E9%98%85%E8%AF%BB/The%20Google%20File%20System/&text=The Google File System"><i class="fab fa-twitter fa-lg" aria-hidden="true"></i></a></li>
-  <li><a class="icon" target="_blank" rel="noopener" href="http://www.linkedin.com/shareArticle?url=http://example.com/2021/10/05/%E8%AE%BA%E6%96%87%E9%98%85%E8%AF%BB/The%20Google%20File%20System/&title=The Google File System"><i class="fab fa-linkedin fa-lg" aria-hidden="true"></i></a></li>
-  <li><a class="icon" target="_blank" rel="noopener" href="https://pinterest.com/pin/create/bookmarklet/?url=http://example.com/2021/10/05/%E8%AE%BA%E6%96%87%E9%98%85%E8%AF%BB/The%20Google%20File%20System/&is_video=false&description=The Google File System"><i class="fab fa-pinterest fa-lg" aria-hidden="true"></i></a></li>
-  <li><a class="icon" href="mailto:?subject=The Google File System&body=Check out this article: http://example.com/2021/10/05/%E8%AE%BA%E6%96%87%E9%98%85%E8%AF%BB/The%20Google%20File%20System/"><i class="fa-solid fa-envelope fa-lg" aria-hidden="true"></i></a></li>
-  <li><a class="icon" target="_blank" rel="noopener" href="https://getpocket.com/save?url=http://example.com/2021/10/05/%E8%AE%BA%E6%96%87%E9%98%85%E8%AF%BB/The%20Google%20File%20System/&title=The Google File System"><i class="fab fa-get-pocket fa-lg" aria-hidden="true"></i></a></li>
-  <li><a class="icon" target="_blank" rel="noopener" href="http://reddit.com/submit?url=http://example.com/2021/10/05/%E8%AE%BA%E6%96%87%E9%98%85%E8%AF%BB/The%20Google%20File%20System/&title=The Google File System"><i class="fab fa-reddit fa-lg" aria-hidden="true"></i></a></li>
-  <li><a class="icon" target="_blank" rel="noopener" href="http://www.stumbleupon.com/submit?url=http://example.com/2021/10/05/%E8%AE%BA%E6%96%87%E9%98%85%E8%AF%BB/The%20Google%20File%20System/&title=The Google File System"><i class="fab fa-stumbleupon fa-lg" aria-hidden="true"></i></a></li>
-  <li><a class="icon" target="_blank" rel="noopener" href="http://digg.com/submit?url=http://example.com/2021/10/05/%E8%AE%BA%E6%96%87%E9%98%85%E8%AF%BB/The%20Google%20File%20System/&title=The Google File System"><i class="fab fa-digg fa-lg" aria-hidden="true"></i></a></li>
-  <li><a class="icon" target="_blank" rel="noopener" href="http://www.tumblr.com/share/link?url=http://example.com/2021/10/05/%E8%AE%BA%E6%96%87%E9%98%85%E8%AF%BB/The%20Google%20File%20System/&name=The Google File System&description=The Google File System（GFS）论文阅读与翻译。"><i class="fab fa-tumblr fa-lg" aria-hidden="true"></i></a></li>
-  <li><a class="icon" target="_blank" rel="noopener" href="https://news.ycombinator.com/submitlink?u=http://example.com/2021/10/05/%E8%AE%BA%E6%96%87%E9%98%85%E8%AF%BB/The%20Google%20File%20System/&t=The Google File System"><i class="fab fa-hacker-news fa-lg" aria-hidden="true"></i></a></li>
-</ul>
-
-    </div>
-
-    <div id="actions-footer">
-        <a id="menu" class="icon" href="#" onclick="$('#nav-footer').toggle();return false;"><i class="fa-solid fa-bars fa-lg" aria-hidden="true"></i> 菜单</a>
-        
-          <a id="toc" class="icon" href="#" onclick="$('#toc-footer').toggle();return false;"><i class="fa-solid fa-list fa-lg" aria-hidden="true"></i> 目录</a>
-        
-        <a id="share" class="icon" href="#" onclick="$('#share-footer').toggle();return false;"><i class="fa-solid fa-share-alt fa-lg" aria-hidden="true"></i> 分享</a>
-        <a id="top" style="display:none" class="icon" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');"><i class="fa-solid fa-chevron-up fa-lg" aria-hidden="true"></i> 返回顶部</a>
-    </div>
-
   </div>
+
+
+        
+<div class="footer">
+  <div class="social">
+    <ul>
+      
+        <li>
+          
+              <a title="github" target="_blank" rel="noopener" href="https://github.com/zchengsite/hexo-theme-oranges">
+                <i class="iconfont icon-github"></i>
+              </a>
+              
+        </li>
+        
+    </ul>
+  </div>
+  
+    
+    <div class="footer-more">
+      
+        <a target="_blank" rel="noopener" href="https://github.com/zchengsite/hexo-theme-oranges">Copyright © 2023 Oranges</a>
+        
+    </div>
+  
+    
+    <div class="footer-more">
+      
+        <a target="_blank" rel="noopener" href="https://github.com/zchengsite/hexo-theme-oranges">Theme by Oranges | Powered by Hexo</a>
+        
+    </div>
+  
+  
 </div>
 
+      </div>
+
+      <div class="tools-bar">
+        <div class="back-to-top tools-bar-item hidden">
+  <a href="javascript: void(0)">
+    <i class="iconfont icon-chevronup"></i>
+  </a>
+</div>
+
+
+<script src="/js/backtotop.js"></script>
+
+
+
         
-        <footer id="footer">
-  <div class="footer-left">
-    Copyright &copy;
-    
-    
-    2016-2023
-    ap0l1o
+  <div class="search-icon tools-bar-item" id="search-icon">
+    <a href="javascript: void(0)">
+      <i class="iconfont icon-search"></i>
+    </a>
   </div>
-  <div class="footer-right">
-    <nav>
-      <ul>
-        <!--
-       --><li><a href="/">首页</a></li><!--
-     --><!--
-       --><li><a href="/about/">关于</a></li><!--
-     --><!--
-       --><li><a href="/archives/">归档</a></li><!--
-     --><!--
-       --><li><a href="/tags/">标签</a></li><!--
-     --><!--
-       --><li><a href="/categories/">分类</a></li><!--
-     --><!--
-       --><li><a href="/running/">跑步</a></li><!--
-     -->
-      </ul>
-    </nav>
-  </div>
-</footer>
 
+  <div class="search-overlay hidden">
+    <div class="search-content" tabindex="0">
+      <div class="search-title">
+        <span class="search-icon-input">
+          <a href="javascript: void(0)">
+            <i class="iconfont icon-search"></i>
+          </a>
+        </span>
+        
+          <input type="text" class="search-input" id="search-input" placeholder="搜索...">
+        
+        <span class="search-close-icon" id="search-close-icon">
+          <a href="javascript: void(0)">
+            <i class="iconfont icon-close"></i>
+          </a>
+        </span>
+      </div>
+      <div class="search-result" id="search-result"></div>
     </div>
-    <!-- styles -->
+  </div>
 
-
-
-  <link rel="preload" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" crossorigin="anonymous" onload="this.onload=null;this.rel='stylesheet'"/>
-
-
-    <!-- jquery -->
-
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js" crossorigin="anonymous"></script>
-
-
-
-
-<!-- clipboard -->
-
-  
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.7/clipboard.min.js" crossorigin="anonymous"></script>
-  
   <script type="text/javascript">
-  $(function() {
-    // copy-btn HTML
-    var btn = "<span class=\"btn-copy tooltipped tooltipped-sw\" aria-label=\"复制到粘贴板！\">";
-    btn += '<i class="fa-regular fa-clone"></i>';
-    btn += '</span>';
-    // mount it!
-    $(".highlight table").before(btn);
-    var clip = new ClipboardJS('.btn-copy', {
-      text: function(trigger) {
-        return Array.from(trigger.nextElementSibling.querySelectorAll('.code')).reduce((str,it)=>str+it.innerText+'\n','')
+    var inputArea = document.querySelector("#search-input")
+    var searchOverlayArea = document.querySelector(".search-overlay")
+
+    inputArea.onclick = function() {
+      getSearchFile()
+      this.onclick = null
+    }
+
+    inputArea.onkeydown = function() {
+      if(event.keyCode == 13)
+        return false
+    }
+
+    function openOrHideSearchContent() {
+      let isHidden = searchOverlayArea.classList.contains('hidden')
+      if (isHidden) {
+        searchOverlayArea.classList.remove('hidden')
+        document.body.classList.add('hidden')
+        // inputArea.focus()
+      } else {
+        searchOverlayArea.classList.add('hidden')
+        document.body.classList.remove('hidden')
       }
-    });
-    clip.on('success', function(e) {
-      e.trigger.setAttribute('aria-label', "复制成功！");
-      e.clearSelection();
-    })
-  })
+    }
+
+    function blurSearchContent(e) {
+      if (e.target === searchOverlayArea) {
+        openOrHideSearchContent()
+      }
+    }
+
+    document.querySelector("#search-icon").addEventListener("click", openOrHideSearchContent, false)
+    document.querySelector("#search-close-icon").addEventListener("click", openOrHideSearchContent, false)
+    searchOverlayArea.addEventListener("click", blurSearchContent, false)
+
+    var searchFunc = function (path, search_id, content_id) {
+      'use strict';
+      var $input = document.getElementById(search_id);
+      var $resultContent = document.getElementById(content_id);
+      $resultContent.innerHTML = "<ul><span class='local-search-empty'>首次搜索，正在载入索引文件，请稍后……<span></ul>";
+      $.ajax({
+        // 0x01. load xml file
+        url: path,
+        dataType: "xml",
+        success: function (xmlResponse) {
+          // 0x02. parse xml file
+          var datas = $("entry", xmlResponse).map(function () {
+            return {
+              title: $("title", this).text(),
+              content: $("content", this).text(),
+              url: $("url", this).text()
+            };
+          }).get();
+          $resultContent.innerHTML = "";
+
+          $input.addEventListener('input', function () {
+            // 0x03. parse query to keywords list
+            var str = '<ul class=\"search-result-list\">';
+            var keywords = this.value.trim().toLowerCase().split(/[\s\-]+/);
+            $resultContent.innerHTML = "";
+            if (this.value.trim().length <= 0) {
+              return;
+            }
+            // 0x04. perform local searching
+            datas.forEach(function (data) {
+              var isMatch = true;
+              var content_index = [];
+              if (!data.title || data.title.trim() === '') {
+                data.title = "Untitled";
+              }
+              var orig_data_title = data.title.trim();
+              var data_title = orig_data_title.toLowerCase();
+              var orig_data_content = data.content.trim().replace(/<[^>]+>/g, "");
+              var data_content = orig_data_content.toLowerCase();
+              var data_url = data.url;
+              var index_title = -1;
+              var index_content = -1;
+              var first_occur = -1;
+              // only match artiles with not empty contents
+              if (data_content !== '') {
+                keywords.forEach(function (keyword, i) {
+                  index_title = data_title.indexOf(keyword);
+                  index_content = data_content.indexOf(keyword);
+
+                  if (index_title < 0 && index_content < 0) {
+                    isMatch = false;
+                  } else {
+                    if (index_content < 0) {
+                      index_content = 0;
+                    }
+                    if (i == 0) {
+                      first_occur = index_content;
+                    }
+                    // content_index.push({index_content:index_content, keyword_len:keyword_len});
+                  }
+                });
+              } else {
+                isMatch = false;
+              }
+              // 0x05. show search results
+              if (isMatch) {
+                str += "<li><a href='" + data_url + "' class='search-result-title'>" + orig_data_title + "</a>";
+                var content = orig_data_content;
+                if (first_occur >= 0) {
+                  // cut out 100 characters
+                  var start = first_occur - 20;
+                  var end = first_occur + 80;
+
+                  if (start < 0) {
+                    start = 0;
+                  }
+
+                  if (start == 0) {
+                    end = 100;
+                  }
+
+                  if (end > content.length) {
+                    end = content.length;
+                  }
+
+                  var match_content = content.substr(start, end);
+
+                  // highlight all keywords
+                  keywords.forEach(function (keyword) {
+                    var regS = new RegExp(keyword, "gi");
+                    match_content = match_content.replace(regS, "<span class=\"search-keyword\">" + keyword + "</span>");
+                  });
+
+                  str += "<p class=\"search-result-abstract\">" + match_content + "...</p>"
+                }
+                str += "</li>";
+              }
+            });
+            str += "</ul>";
+            if (str.indexOf('<li>') === -1) {
+              return $resultContent.innerHTML = "<ul><span class='local-search-empty'>没有找到内容，请尝试更换检索词。<span></ul>";
+            }
+            $resultContent.innerHTML = str;
+          });
+        },
+        error: function(xhr, status, error) {
+          $resultContent.innerHTML = ""
+          if (xhr.status === 404) {
+            $resultContent.innerHTML = "<ul><span class='local-search-empty'>未找到search.xml文件，具体请参考：<a href='https://github.com/zchengsite/hexo-theme-oranges#configuration' target='_black'>configuration</a><span></ul>";
+          } else {
+            $resultContent.innerHTML = "<ul><span class='local-search-empty'>请求失败，尝试重新刷新页面或稍后重试。<span></ul>";
+          }
+        }
+      });
+      $(document).on('click', '#search-close-icon', function() {
+        $('#search-input').val('');
+        $('#search-result').html('');
+      });
+    }
+
+    var getSearchFile = function() {
+        var path = "/search.xml";
+        searchFunc(path, 'search-input', 'search-result');
+    }
   </script>
 
 
-<script src="/js/main.js"></script>
 
-<!-- search -->
 
-<!-- Baidu Analytics -->
+        
+  <div class="tools-bar-item theme-icon" id="switch-color-scheme">
+    <a href="javascript: void(0)">
+      <i id="theme-icon" class="iconfont icon-moon"></i>
+    </a>
+  </div>
 
-<!-- Cloudflare Analytics -->
+  
+<script src="/js/colorscheme.js"></script>
 
-<!-- Disqus Comments -->
 
-<!-- utterances Comments -->
 
-</body>
+
+
+        
+  
+    <div class="share-icon tools-bar-item">
+      <a href="javascript: void(0)" id="share-icon">
+        <i class="iconfont iconshare"></i>
+      </a>
+      <div class="share-content hidden">
+        
+          <a class="share-item" href="https://twitter.com/intent/tweet?text=' + The%20Google%20File%20System + '&url=' + http%3A%2F%2Fexample.com%2F2021%2F10%2F05%2F%25E8%25AE%25BA%25E6%2596%2587%25E9%2598%2585%25E8%25AF%25BB%2FThe%2520Google%2520File%2520System%2F + '" target="_blank" title="Twitter">
+            <i class="iconfont icon-twitter"></i>
+          </a>
+        
+        
+          <a class="share-item" href="https://www.facebook.com/sharer.php?u=http://example.com/2021/10/05/%E8%AE%BA%E6%96%87%E9%98%85%E8%AF%BB/The%20Google%20File%20System/" target="_blank" title="Facebook">
+            <i class="iconfont icon-facebooksquare"></i>
+          </a>
+        
+      </div>
+    </div>
+  
+  
+<script src="/js/shares.js"></script>
+
+
+
+      </div>
+    </div>
+  </body>
 </html>

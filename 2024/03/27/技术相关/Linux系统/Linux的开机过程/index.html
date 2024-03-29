@@ -1,0 +1,676 @@
+<!DOCTYPE html>
+<html lang="zh-CN" color-mode="light">
+
+  <head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="author" content="ap0l1o" />
+  <!-- Open Graph Description 简短摘要-->
+  
+  <!-- 用于搜索引擎的文章摘要 -->
+  
+  
+  
+  <title>
+    
+      Linux的开机过程 
+      
+      
+      |
+    
+     ap0l1o
+  </title>
+
+  
+    <link rel="apple-touch-icon" href="/images/me.jpeg">
+    <link rel="icon" href="/images/me.jpeg">
+  
+
+  <!-- Raleway-Font -->
+  <link href="https://fonts.googleapis.com/css?family=Raleway&display=swap" rel="stylesheet">
+
+  <!-- hexo site css -->
+  <link rel="stylesheet" href="/css/main.css" />
+  <link rel="stylesheet" href="//at.alicdn.com/t/font_1886449_67xjft27j1l.css" />
+  <!-- 代码块风格 -->
+  
+
+  <!-- jquery3.3.1 -->
+  
+    <script defer type="text/javascript" src="/plugins/jquery.min.js"></script>
+  
+
+  <!-- fancybox -->
+  
+    <link href="/plugins/jquery.fancybox.min.css" rel="stylesheet">
+    <script defer type="text/javascript" src="/plugins/jquery.fancybox.min.js"></script>
+  
+  
+<script src="/js/fancybox.js"></script>
+
+
+  
+
+  
+
+  <script>
+    var html = document.documentElement
+    const colorMode = localStorage.getItem('color-mode')
+    if (colorMode) {
+      document.documentElement.setAttribute('color-mode', colorMode)
+    }
+  </script>
+<meta name="generator" content="Hexo 5.4.0"></head>
+
+
+  <body>
+    <div id="app">
+      <div class="header">
+  <div class="avatar">
+    <a href="/">
+      <!-- 头像取消懒加载，添加no-lazy -->
+      
+        <img src="/images/me.jpeg" alt="">
+      
+    </a>
+    <div class="nickname"><a href="/">ap0l1o</a></div>
+  </div>
+  <div class="navbar">
+    <ul>
+      
+        <li class="nav-item" data-path="/">
+          <a href="/">Home</a>
+        </li>
+      
+        <li class="nav-item" data-path="/archives/">
+          <a href="/archives/">Archives</a>
+        </li>
+      
+        <li class="nav-item" data-path="/categories/">
+          <a href="/categories/">Categories</a>
+        </li>
+      
+        <li class="nav-item" data-path="/tags/">
+          <a href="/tags/">Tags</a>
+        </li>
+      
+        <li class="nav-item" data-path="/running/">
+          <a href="/running/">Running</a>
+        </li>
+      
+        <li class="nav-item" data-path="/about/">
+          <a href="/about/">About</a>
+        </li>
+      
+    </ul>
+  </div>
+</div>
+
+
+<script src="/js/activeNav.js"></script>
+
+
+
+      <div class="flex-container">
+        <!-- 文章详情页，展示文章具体内容，url形式：https://yoursite/文章标题/ -->
+<!-- 同时为「标签tag」，「朋友friend」，「分类categories」，「关于about」页面的承载页面，具体展示取决于page.type -->
+
+
+  <!-- LaTex Display -->
+
+  
+    <script async type="text/javascript" src="/plugins/mathjax/tex-chtml.js"></script>
+  
+  <script>
+    MathJax = {
+      tex: {
+        inlineMath: [['$', '$'], ['\\(', '\\)']]
+      }
+    }
+  </script>
+
+
+
+
+
+  <!-- clipboard -->
+
+  
+    <script async type="text/javascript" src="/plugins/clipboard.min.js"></script>
+  
+  
+<script src="/js/codeCopy.js"></script>
+
+
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  <!-- 文章内容页 url形式：https://yoursite/文章标题/ -->
+  <div class="container post-details" id="post-details">
+    <div class="post-content">
+      <div class="post-title">Linux的开机过程</div>
+      <div class="post-attach">
+        <span class="post-pubtime">
+          <i class="iconfont icon-updatetime mr-10" title="更新时间"></i>
+          2024-03-28 11:05:57
+        </span>
+        
+              <span class="post-categories">
+                <i class="iconfont icon-bookmark" title="分类"></i>
+                
+                <span class="span--category">
+                  <a href="/categories/%E6%8A%80%E6%9C%AF/" title="技术">
+                    <b>#</b> 技术
+                  </a>
+                </span>
+                
+              </span>
+          
+              <span class="post-tags">
+                <i class="iconfont icon-tags mr-10" title="标签"></i>
+                
+                <span class="span--tag mr-8">
+                  <a href="/tags/%E6%8A%80%E6%9C%AF/" title="技术">
+                    #技术
+                  </a>
+                </span>
+                
+                <span class="span--tag mr-8">
+                  <a href="/tags/%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F/" title="操作系统">
+                    #操作系统
+                  </a>
+                </span>
+                
+              </span>
+          
+      </div>
+      <div class="markdown-body">
+        <h2 id="Linux-的开机过程"><a href="#Linux-的开机过程" class="headerlink" title="Linux 的开机过程"></a>Linux 的开机过程</h2><p>Linux 操作系统的开机过程可以分为以下几个主要阶段：</p>
+<h3 id="上电自检（Power-on-Self-Test，POST）"><a href="#上电自检（Power-on-Self-Test，POST）" class="headerlink" title="上电自检（Power on Self Test，POST）"></a>上电自检（Power on Self Test，POST）</h3><p>Linux 的 POST 自检并不是 Linux 本身的功能，而是计算机硬件启动流程的一个早期步骤，与具体的操作系统无关。POST 自检是由计算机主板上的固件负责执行的，这个固件可能是基本上输入输出系统（Basic Input Output System，BIOS）。<br>当计算机接通电源后，POST 自检是开机启动的第一个环节，它会立即自动运行，对计算机的硬件设备进行一系列基本的测试和初始化，确保它们能够正常工作。POST 自检的内容包括但不限于以下几个方面：  </p>
+<ul>
+<li>检测 CPU 和其他核心硬件组件的存在和功能完整性；</li>
+<li>测试内存（RAM）的基本可用性；</li>
+<li>初始化并检测系统总线和 I/O 设备；</li>
+<li> CMOS 中系统配置的校验；</li>
+<li>检测和初始化显卡以便显示基本的视频输出；</li>
+<li>检查和初始化其他关键硬件，如键盘、磁盘驱动器等；</li>
+</ul>
+<p>只有当 POST 自检成功完成，表明硬件层面没有致命错误时，计算机才会继续启动流程，寻找并加载操作系统引导程序，进而启动 Linux 内核或其他操作系统。如果 POST 过程中发现任何错误，系统通常会通过声音提示（蜂鸣声）、屏幕显示错误代码或信息来告知用户存在问题。  </p>
+<h3 id="BIOS-UEFI-引导阶段"><a href="#BIOS-UEFI-引导阶段" class="headerlink" title="BIOS/UEFI 引导阶段"></a>BIOS/UEFI 引导阶段</h3><p>BIOS（Basic Input/Output System，基本输入输出系统）和 UEFI（Unified Extensible Firmware Interface，统一的可扩展固件接口）都是计算机启动过程中用于初始化硬件并加载操作系统的固件接口，负责查找并加载启动设备上的引导加载程序。<br>两者之间存在的差异如下所示：</p>
+<ul>
+<li>架构和编程模型：<ul>
+<li>BIOS：基于16位实模式下的代码，受限于1MB地址空间，功能有限。</li>
+<li>UEFI：基于 32 位或 64 位的保护模式，拥有更大的寻址能力，支持复杂的现代编程模型，可以使用高级编程语言开发应用程序。</li>
+</ul>
+</li>
+<li>启动过程与分区表：<ul>
+<li>BIOS：使用传统的Master Boot Record (MBR) 分区方案，启动过程较为单一和线性。</li>
+<li>UEFI：支持 GUID Partition Table (GPT)，可直接识别和加载包含 EFI 引导程序的分区，启动过程更为灵活高效。</li>
+</ul>
+</li>
+<li>安全特性：<ul>
+<li>BIOS：安全性相对较低，不支持安全启动机制。</li>
+<li>UEFI：包含安全启动 (Secure Boot) 特性，能够验证操作系统的完整性，防止恶意软件篡改启动过程。</li>
+</ul>
+</li>
+<li>硬件兼容性和性能：<ul>
+<li>BIOS：对新硬件的支持有限，启动速度相对较慢。</li>
+<li>UEFI：支持更多现代硬件特性，如快速启动、大容量硬盘、ACPI 高级配置与电源接口规范等，从而提高启动速度和整体性能。</li>
+</ul>
+</li>
+<li>图形用户界面与扩展性：<ul>
+<li>BIOS：通常提供简单的文本界面，配置选项有限，扩展性差。</li>
+<li>UEFI：具备丰富的图形用户界面（GUI），提供更多可配置选项，且允许通过安装 UEFI 驱动程序来支持更多硬件，具有良好的扩展性。</li>
+</ul>
+</li>
+<li>启动加载程序：<ul>
+<li>BIOS：使用传统的引导扇区加载操作系统。</li>
+<li>UEFI：使用预启动执行环境（Pre-boot Execution Environment, PE）加载 UEFI 引导应用，它可以访问更广泛的资源，并直接从磁盘加载操作系统镜像。</li>
+</ul>
+</li>
+<li>分区限制：<ul>
+<li>BIOS：受限于MBR分区表的设计，只支持最大2TB的硬盘分区。</li>
+<li>UEFI：由于使用 GPT 分区表，理论上支持高达 9.4ZB 的分区大小。</li>
+</ul>
+</li>
+</ul>
+<h3 id="Boot-Loader-阶段（引导加载程序阶段）"><a href="#Boot-Loader-阶段（引导加载程序阶段）" class="headerlink" title="Boot Loader 阶段（引导加载程序阶段）"></a>Boot Loader 阶段（引导加载程序阶段）</h3><p>引导加载程序，通常称为 Boot loader，是 Linux 操作系统启动的关键组成部分。它的主要作用是在计算机启动时加载操作系统内核，并将控制权移交给内核，从而启动操作系统。Boot loader 还负责检测和初始化硬件设备，为操作系统提供必要的信息和参数。<br>在 Linux 中，有几种常见的引导加载程序，其中最流行的是 GRUB（GRand Unified Bootloader）和 LILO（LInux LOader）。GRUB 具有广泛的支持和灵活性，它能够引导多个操作系统，并提供了一个命令行界面用于配置引导选项。LILO 是一种较早的引导加载程序，它的配置相对简单，但不如 GRUB 灵活。<br>当 BIOS/UEFI 确定了引导设备后，它会将控制权交给 Boot Loader，Boot Loader 开始启动。<br><strong>第一阶段引导加载</strong>：对于 GRUB（GRand Unified Bootloader）这样的多阶段引导加载程序，在 BIOS 环境中，第一阶段引导加载程序位于 MBR 或某个活动分区的引导扇区，其体积受到限制，主要任务是定位和加载第二阶段引导程序。在 UEFI 环境下，第一阶段即引导程序本身，通常无需额外的小型装载程序。<br><strong>第二阶段引导加载</strong>：第二阶段引导加载程序提供了更多的功能和灵活性，如加载额外模块、支持文件系统、显示菜单等。在 GRUB 中，这一阶段可能加载“stage1.5”（在 MBR 后的自由扇区，仅限特定情况），或者直接加载完整的第二阶段代码到内存中。第二阶段引导加载程序会显示一个启动菜单，允许用户选择不同的内核版本、调整内核启动参数。  </p>
+<h3 id="内核加载阶段"><a href="#内核加载阶段" class="headerlink" title="内核加载阶段"></a>内核加载阶段</h3><p>引导加载程序根据用户选择或预设配置，从硬盘加载 Linux 内核映像（通常为 <code>/boot/vmlinuz-&lt;version&gt;</code>）到内存，并传递内核启动参数。此外，还会加载一个 initramfs 或 initrd（初始化 RAM 磁盘），这是一个压缩的临时根文件系统，包含启动系统所需的基本驱动和工具。<br>内核加载成功后，引导加载程序将控制权交给内核。</p>
+<h3 id="内核初始化阶段"><a href="#内核初始化阶段" class="headerlink" title="内核初始化阶段"></a>内核初始化阶段</h3><p>初始化阶段负责初始化硬件设备、建立内存管理、设置终端处理程序等，该阶段确保系统硬件设备得到正确初始化，建立一个稳定的环境，以便用户空间程序能够正常运行。该阶段的详细工作如下所示：</p>
+<ol>
+<li><strong>硬件检测与初始化</strong>：<ul>
+<li>内核初始化阶段首先进行硬件检测与初始化。这包括识别和初始化 CPU、内存、硬盘、显卡、网卡等硬件设备。</li>
+<li>内核通过与硬件交互的方式，获取硬件信息并配置硬件设备，以确保它们可以正确地被系统使用。</li>
+</ul>
+</li>
+<li><strong>内存管理初始化</strong>：<ul>
+<li>在内核初始化阶段，内核会建立起系统的内存管理机制。</li>
+<li>这包括建立页面表、设置内核堆栈、初始化内存分配器等操作。</li>
+<li>内核需要确保内存的正确管理，以便用户空间程序能够正常运行，并且避免内存泄漏等问题。</li>
+</ul>
+</li>
+<li><strong>文件系统初始化</strong>：<ul>
+<li>内核初始化阶段还涉及到文件系统的初始化。</li>
+<li>内核会初始化虚拟文件系统（VFS），为不同的文件系统提供抽象接口。</li>
+<li>内核还会加载根文件系统，这是系统启动时所需的最基本的文件系统，通常是一个轻量级的根文件系统，用于引导系统。</li>
+</ul>
+</li>
+<li><strong>设备驱动程序加载</strong>：<ul>
+<li>内核初始化阶段会加载并初始化系统中的设备驱动程序。</li>
+<li>设备驱动程序负责与硬件设备进行通信，并为用户空间提供访问硬件设备的接口。</li>
+<li>内核会加载与系统硬件匹配的设备驱动程序，并将其注册到内核中。</li>
+</ul>
+</li>
+<li><strong>中断处理程序设置</strong>：<ul>
+<li>内核初始化阶段还涉及到中断处理程序的设置。</li>
+<li>中断是硬件设备与 CPU 之间的一种异步通信机制，用于处理硬件事件。</li>
+<li>内核会设置中断处理程序，以便在发生硬件中断时能够正确地处理中断并采取相应的措施。</li>
+</ul>
+</li>
+<li><strong>启动完成</strong>：<ul>
+<li>当内核初始化阶段完成后，系统已经处于一个可以运行用户空间程序的状态。</li>
+<li>内核将控制权交给用户空间的第一个进程，通常是 init 或 systemd 进程，然后系统进入用户空间初始化阶段。<h3 id="用户空间初始化阶段"><a href="#用户空间初始化阶段" class="headerlink" title="用户空间初始化阶段"></a>用户空间初始化阶段</h3>内核初始化阶段完成后，系统已经处于一个可以运行用户空间程序的状态，此时会启动初始化进程，业绩用户空间的第一个进程。初始化进程作为 Linux 系统的第一个进程，它需要完成 Linux 系统中的相关初始化工作，为用户提供合适的工作环境。<br>初始化进程在 Linux 系统中经历了从传统的 System V init 到现代的 systemd 的演变。  </li>
+</ul>
+</li>
+</ol>
+<p><strong>对于传统 System V init：</strong></p>
+<ul>
+<li><strong>init 进程生成</strong>：当 Linux 内核完成初始化后，它会启动第一个用户空间进程，PID 为 1 的 init 进程。init 进程通常由内核直接执行预先放置在根文件系统中的 init 程序。</li>
+<li><strong>运行级别设定</strong>：在 System V init 时代，Linux 系统有多个运行级别（run levels），例如运行级别 1 代表单用户模式，3 代表多用户模式无网络服务，5 代表多用户模式带图形界面等。init 进程根据配置文件 <code>/etc/inittab</code> 确定运行级别，并依据此级别启动对应的服务和脚本。</li>
+<li><strong>启动脚本执行</strong>：init 会读取 <code>/etc/rc?.d</code> 目录下的启动脚本来启动对应运行级别的服务。每个服务都有对应的启动（S 开头的脚本）和停止（K 开头的脚本）脚本，<strong>按照字母顺序依次执行</strong>。</li>
+<li><strong>服务管理工具</strong>：System V init 使用 <code>service</code> 命令来管理服务，它使用 <code>/etc/init.d/</code> 目录下的脚本来启动、停止、重启或查询服务状态。<code>service</code> 命令提供了一个简单的接口来操作服务，如 <code>service serviceName start</code>、<code>service serviceName stop</code> 等。</li>
+</ul>
+<p><strong>对于 systemd：</strong></p>
+<ul>
+<li><strong>systemd 启动</strong>：在现代 Linux 发行版中，大部分已经替换为 systemd 作为初始化系统。内核仍然启动 PID 为 1 的进程，但现在这个进程是 systemd。systemd 的设计更加模块化和灵活，采用了目标（targets）的概念来替代运行级别。</li>
+<li><strong>units 和 targets</strong>：systemd 的核心概念是 units，包括 service units（服务）、socket units（套接字）、mount units（挂载点）等。初始化过程中，systemd 根据预设的默认 target（如 multi-user. target 或 graphical. target）启动一组关联的 units。</li>
+<li><strong>启动过程</strong>：systemd 在启动时，首先激活默认 target，这涉及到一系列 unit 的依赖解析和启动。依赖关系被定义在各个 unit 文件中，systemd 按照依赖图谱有序地启动服务和执行一次性任务（如执行 systemd 执行单元类型 <code>oneshot</code> 的脚本）。</li>
+<li><strong>并行启动</strong>：systemd 的一大优势在于能并行启动多个服务，通过分析依赖关系，它可以在不影响服务启动顺序的前提下加快系统启动速度。</li>
+<li><strong>日志和状态报告</strong>：systemd 集成了 journalctl 日志服务，可以实时查看和管理启动过程中的日志信息，便于调试和监控。</li>
+<li><strong>服务管理工具</strong>：现代 Linux 系统使用 <code>systemctl</code> 服务管理工具，<code>systemctl</code> 命令提供了更强大和灵活的服务管理功能，它可以控制单个服务、管理启动目标、查看系统日志等，与 <code>service</code> 不同，<code>systemctl</code> 不仅仅是一个命令，而是一个系统和服务管理的集合，它可以管理更多方面的系统功能。</li>
+</ul>
+<p>总结起来，无论是传统的System V init还是现代的systemd，Linux系统的初始化进程均负责系统启动后的基础设施搭建，包括但不限于启动核心服务、配置网络、设置权限、加载驱动等，为用户提供一个可用的操作系统环境。同时，systemd以其高度集成化和优化的启动逻辑显著改善了系统启动时间和管理效率。</p>
+
+      </div>
+      
+        <div class="prev-or-next">
+          <div class="post-foot-next">
+            
+              <a href="/2024/03/15/%E8%AF%BB%E4%B8%87%E5%8D%B7%E4%B9%A6/%E4%BB%8E%E6%96%87%E8%87%AA%E4%BC%A0/" target="_self">
+                <i class="iconfont icon-chevronleft"></i>
+                <span>上一页</span>
+              </a>
+            
+          </div>
+          <div class="post-attach">
+            <span class="post-pubtime">
+              <i class="iconfont icon-updatetime mr-10" title="更新时间"></i>
+              2024-03-28 11:05:57
+            </span>
+            
+                  <span class="post-categories">
+                    <i class="iconfont icon-bookmark" title="分类"></i>
+                    
+                    <span class="span--category">
+                      <a href="/categories/%E6%8A%80%E6%9C%AF/" title="技术">
+                        <b>#</b> 技术
+                      </a>
+                    </span>
+                    
+                  </span>
+              
+                  <span class="post-tags">
+                    <i class="iconfont icon-tags mr-10" title="标签"></i>
+                    
+                    <span class="span--tag mr-8">
+                      <a href="/tags/%E6%8A%80%E6%9C%AF/" title="技术">
+                        #技术
+                      </a>
+                    </span>
+                    
+                    <span class="span--tag mr-8">
+                      <a href="/tags/%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F/" title="操作系统">
+                        #操作系统
+                      </a>
+                    </span>
+                    
+                  </span>
+              
+          </div>
+          <div class="post-foot-prev">
+            
+              <a href="/2024/03/28/%E5%85%B3%E4%BA%8E%E8%B7%91%E6%AD%A5/%E8%AE%AD%E7%BB%83%E6%97%A5%E8%AE%B0/2024-03-28/" target="_self">
+                <span>下一页</span>
+                <i class="iconfont icon-chevronright"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+    </div>
+    
+  <div id="btn-catalog" class="btn-catalog">
+    <i class="iconfont icon-catalog"></i>
+  </div>
+  <div class="post-catalog hidden" id="catalog">
+    <div class="title">目录</div>
+    <div class="catalog-content">
+      
+        <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#Linux-%E7%9A%84%E5%BC%80%E6%9C%BA%E8%BF%87%E7%A8%8B"><span class="toc-text">Linux 的开机过程</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%B8%8A%E7%94%B5%E8%87%AA%E6%A3%80%EF%BC%88Power-on-Self-Test%EF%BC%8CPOST%EF%BC%89"><span class="toc-text">上电自检（Power on Self Test，POST）</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#BIOS-UEFI-%E5%BC%95%E5%AF%BC%E9%98%B6%E6%AE%B5"><span class="toc-text">BIOS&#x2F;UEFI 引导阶段</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Boot-Loader-%E9%98%B6%E6%AE%B5%EF%BC%88%E5%BC%95%E5%AF%BC%E5%8A%A0%E8%BD%BD%E7%A8%8B%E5%BA%8F%E9%98%B6%E6%AE%B5%EF%BC%89"><span class="toc-text">Boot Loader 阶段（引导加载程序阶段）</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%86%85%E6%A0%B8%E5%8A%A0%E8%BD%BD%E9%98%B6%E6%AE%B5"><span class="toc-text">内核加载阶段</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%86%85%E6%A0%B8%E5%88%9D%E5%A7%8B%E5%8C%96%E9%98%B6%E6%AE%B5"><span class="toc-text">内核初始化阶段</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%94%A8%E6%88%B7%E7%A9%BA%E9%97%B4%E5%88%9D%E5%A7%8B%E5%8C%96%E9%98%B6%E6%AE%B5"><span class="toc-text">用户空间初始化阶段</span></a></li></ol></li></ol>
+      
+    </div>
+  </div>
+
+  
+<script src="/js/catalog.js"></script>
+
+
+
+
+    
+      <div class="comments-container">
+        
+
+
+
+
+
+
+
+      </div>
+    
+  </div>
+
+
+        
+<div class="footer">
+  <div class="social">
+    <ul>
+      
+        <li>
+          
+              <a title="github" target="_blank" rel="noopener" href="https://github.com/zchengsite/hexo-theme-oranges">
+                <i class="iconfont icon-github"></i>
+              </a>
+              
+        </li>
+        
+    </ul>
+  </div>
+  
+    
+    <div class="footer-more">
+      
+        <a target="_blank" rel="noopener" href="https://github.com/zchengsite/hexo-theme-oranges">Copyright © 2024 Oranges</a>
+        
+    </div>
+  
+    
+    <div class="footer-more">
+      
+        <a target="_blank" rel="noopener" href="https://github.com/zchengsite/hexo-theme-oranges">Theme by Oranges | Powered by Hexo</a>
+        
+    </div>
+  
+  
+</div>
+
+      </div>
+
+      <div class="tools-bar">
+        <div class="back-to-top tools-bar-item hidden">
+  <a href="javascript: void(0)">
+    <i class="iconfont icon-chevronup"></i>
+  </a>
+</div>
+
+
+<script src="/js/backtotop.js"></script>
+
+
+
+        
+  <div class="search-icon tools-bar-item" id="search-icon">
+    <a href="javascript: void(0)">
+      <i class="iconfont icon-search"></i>
+    </a>
+  </div>
+
+  <div class="search-overlay hidden">
+    <div class="search-content" tabindex="0">
+      <div class="search-title">
+        <span class="search-icon-input">
+          <a href="javascript: void(0)">
+            <i class="iconfont icon-search"></i>
+          </a>
+        </span>
+        
+          <input type="text" class="search-input" id="search-input" placeholder="搜索...">
+        
+        <span class="search-close-icon" id="search-close-icon">
+          <a href="javascript: void(0)">
+            <i class="iconfont icon-close"></i>
+          </a>
+        </span>
+      </div>
+      <div class="search-result" id="search-result"></div>
+    </div>
+  </div>
+
+  <script type="text/javascript">
+    var inputArea = document.querySelector("#search-input")
+    var searchOverlayArea = document.querySelector(".search-overlay")
+
+    inputArea.onclick = function() {
+      getSearchFile()
+      this.onclick = null
+    }
+
+    inputArea.onkeydown = function() {
+      if(event.keyCode == 13)
+        return false
+    }
+
+    function openOrHideSearchContent() {
+      let isHidden = searchOverlayArea.classList.contains('hidden')
+      if (isHidden) {
+        searchOverlayArea.classList.remove('hidden')
+        document.body.classList.add('hidden')
+        // inputArea.focus()
+      } else {
+        searchOverlayArea.classList.add('hidden')
+        document.body.classList.remove('hidden')
+      }
+    }
+
+    function blurSearchContent(e) {
+      if (e.target === searchOverlayArea) {
+        openOrHideSearchContent()
+      }
+    }
+
+    document.querySelector("#search-icon").addEventListener("click", openOrHideSearchContent, false)
+    document.querySelector("#search-close-icon").addEventListener("click", openOrHideSearchContent, false)
+    searchOverlayArea.addEventListener("click", blurSearchContent, false)
+
+    var searchFunc = function (path, search_id, content_id) {
+      'use strict';
+      var $input = document.getElementById(search_id);
+      var $resultContent = document.getElementById(content_id);
+      $resultContent.innerHTML = "<ul><span class='local-search-empty'>首次搜索，正在载入索引文件，请稍后……<span></ul>";
+      $.ajax({
+        // 0x01. load xml file
+        url: path,
+        dataType: "xml",
+        success: function (xmlResponse) {
+          // 0x02. parse xml file
+          var datas = $("entry", xmlResponse).map(function () {
+            return {
+              title: $("title", this).text(),
+              content: $("content", this).text(),
+              url: $("url", this).text()
+            };
+          }).get();
+          $resultContent.innerHTML = "";
+
+          $input.addEventListener('input', function () {
+            // 0x03. parse query to keywords list
+            var str = '<ul class=\"search-result-list\">';
+            var keywords = this.value.trim().toLowerCase().split(/[\s\-]+/);
+            $resultContent.innerHTML = "";
+            if (this.value.trim().length <= 0) {
+              return;
+            }
+            // 0x04. perform local searching
+            datas.forEach(function (data) {
+              var isMatch = true;
+              var content_index = [];
+              if (!data.title || data.title.trim() === '') {
+                data.title = "Untitled";
+              }
+              var orig_data_title = data.title.trim();
+              var data_title = orig_data_title.toLowerCase();
+              var orig_data_content = data.content.trim().replace(/<[^>]+>/g, "");
+              var data_content = orig_data_content.toLowerCase();
+              var data_url = data.url;
+              var index_title = -1;
+              var index_content = -1;
+              var first_occur = -1;
+              // only match artiles with not empty contents
+              if (data_content !== '') {
+                keywords.forEach(function (keyword, i) {
+                  index_title = data_title.indexOf(keyword);
+                  index_content = data_content.indexOf(keyword);
+
+                  if (index_title < 0 && index_content < 0) {
+                    isMatch = false;
+                  } else {
+                    if (index_content < 0) {
+                      index_content = 0;
+                    }
+                    if (i == 0) {
+                      first_occur = index_content;
+                    }
+                    // content_index.push({index_content:index_content, keyword_len:keyword_len});
+                  }
+                });
+              } else {
+                isMatch = false;
+              }
+              // 0x05. show search results
+              if (isMatch) {
+                str += "<li><a href='" + data_url + "' class='search-result-title'>" + orig_data_title + "</a>";
+                var content = orig_data_content;
+                if (first_occur >= 0) {
+                  // cut out 100 characters
+                  var start = first_occur - 20;
+                  var end = first_occur + 80;
+
+                  if (start < 0) {
+                    start = 0;
+                  }
+
+                  if (start == 0) {
+                    end = 100;
+                  }
+
+                  if (end > content.length) {
+                    end = content.length;
+                  }
+
+                  var match_content = content.substr(start, end);
+
+                  // highlight all keywords
+                  keywords.forEach(function (keyword) {
+                    var regS = new RegExp(keyword, "gi");
+                    match_content = match_content.replace(regS, "<span class=\"search-keyword\">" + keyword + "</span>");
+                  });
+
+                  str += "<p class=\"search-result-abstract\">" + match_content + "...</p>"
+                }
+                str += "</li>";
+              }
+            });
+            str += "</ul>";
+            if (str.indexOf('<li>') === -1) {
+              return $resultContent.innerHTML = "<ul><span class='local-search-empty'>没有找到内容，请尝试更换检索词。<span></ul>";
+            }
+            $resultContent.innerHTML = str;
+          });
+        },
+        error: function(xhr, status, error) {
+          $resultContent.innerHTML = ""
+          if (xhr.status === 404) {
+            $resultContent.innerHTML = "<ul><span class='local-search-empty'>未找到search.xml文件，具体请参考：<a href='https://github.com/zchengsite/hexo-theme-oranges#configuration' target='_black'>configuration</a><span></ul>";
+          } else {
+            $resultContent.innerHTML = "<ul><span class='local-search-empty'>请求失败，尝试重新刷新页面或稍后重试。<span></ul>";
+          }
+        }
+      });
+      $(document).on('click', '#search-close-icon', function() {
+        $('#search-input').val('');
+        $('#search-result').html('');
+      });
+    }
+
+    var getSearchFile = function() {
+        var path = "/search.xml";
+        searchFunc(path, 'search-input', 'search-result');
+    }
+  </script>
+
+
+
+
+        
+  <div class="tools-bar-item theme-icon" id="switch-color-scheme">
+    <a href="javascript: void(0)">
+      <i id="theme-icon" class="iconfont icon-moon"></i>
+    </a>
+  </div>
+
+  
+<script src="/js/colorscheme.js"></script>
+
+
+
+
+
+        
+  
+    <div class="share-icon tools-bar-item">
+      <a href="javascript: void(0)" id="share-icon">
+        <i class="iconfont iconshare"></i>
+      </a>
+      <div class="share-content hidden">
+        
+          <a class="share-item" href="https://twitter.com/intent/tweet?text=' + Linux%E7%9A%84%E5%BC%80%E6%9C%BA%E8%BF%87%E7%A8%8B + '&url=' + http%3A%2F%2Fexample.com%2F2024%2F03%2F27%2F%25E6%258A%2580%25E6%259C%25AF%25E7%259B%25B8%25E5%2585%25B3%2FLinux%25E7%25B3%25BB%25E7%25BB%259F%2FLinux%25E7%259A%2584%25E5%25BC%2580%25E6%259C%25BA%25E8%25BF%2587%25E7%25A8%258B%2F + '" target="_blank" title="Twitter">
+            <i class="iconfont icon-twitter"></i>
+          </a>
+        
+        
+          <a class="share-item" href="https://www.facebook.com/sharer.php?u=http://example.com/2024/03/27/%E6%8A%80%E6%9C%AF%E7%9B%B8%E5%85%B3/Linux%E7%B3%BB%E7%BB%9F/Linux%E7%9A%84%E5%BC%80%E6%9C%BA%E8%BF%87%E7%A8%8B/" target="_blank" title="Facebook">
+            <i class="iconfont icon-facebooksquare"></i>
+          </a>
+        
+      </div>
+    </div>
+  
+  
+<script src="/js/shares.js"></script>
+
+
+
+      </div>
+    </div>
+  </body>
+</html>

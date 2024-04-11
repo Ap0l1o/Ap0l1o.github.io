@@ -1,0 +1,645 @@
+<!DOCTYPE html>
+<html lang="zh-CN" color-mode="light">
+
+  <head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="author" content="ap0l1o" />
+  <!-- Open Graph Description 简短摘要-->
+  
+  <!-- 用于搜索引擎的文章摘要 -->
+  
+  
+  
+  <title>
+    
+      Linux Shell总结 
+      
+      
+      |
+    
+     ap0l1o
+  </title>
+
+  
+    <link rel="apple-touch-icon" href="/images/me.jpeg">
+    <link rel="icon" href="/images/me.jpeg">
+  
+
+  <!-- Raleway-Font -->
+  <link href="https://fonts.googleapis.com/css?family=Raleway&display=swap" rel="stylesheet">
+
+  <!-- hexo site css -->
+  <link rel="stylesheet" href="/css/main.css" />
+  <link rel="stylesheet" href="//at.alicdn.com/t/font_1886449_67xjft27j1l.css" />
+  <!-- 代码块风格 -->
+  
+
+  <!-- jquery3.3.1 -->
+  
+    <script defer type="text/javascript" src="/plugins/jquery.min.js"></script>
+  
+
+  <!-- fancybox -->
+  
+    <link href="/plugins/jquery.fancybox.min.css" rel="stylesheet">
+    <script defer type="text/javascript" src="/plugins/jquery.fancybox.min.js"></script>
+  
+  
+<script src="/js/fancybox.js"></script>
+
+
+  
+
+  
+
+  <script>
+    var html = document.documentElement
+    const colorMode = localStorage.getItem('color-mode')
+    if (colorMode) {
+      document.documentElement.setAttribute('color-mode', colorMode)
+    }
+  </script>
+<meta name="generator" content="Hexo 5.4.0"></head>
+
+
+  <body>
+    <div id="app">
+      <div class="header">
+  <div class="avatar">
+    <a href="/">
+      <!-- 头像取消懒加载，添加no-lazy -->
+      
+        <img src="/images/me.jpeg" alt="">
+      
+    </a>
+    <div class="nickname"><a href="/">ap0l1o</a></div>
+  </div>
+  <div class="navbar">
+    <ul>
+      
+        <li class="nav-item" data-path="/">
+          <a href="/">Home</a>
+        </li>
+      
+        <li class="nav-item" data-path="/archives/">
+          <a href="/archives/">Archives</a>
+        </li>
+      
+        <li class="nav-item" data-path="/categories/">
+          <a href="/categories/">Categories</a>
+        </li>
+      
+        <li class="nav-item" data-path="/tags/">
+          <a href="/tags/">Tags</a>
+        </li>
+      
+        <li class="nav-item" data-path="/running/">
+          <a href="/running/">Running</a>
+        </li>
+      
+        <li class="nav-item" data-path="/about/">
+          <a href="/about/">About</a>
+        </li>
+      
+    </ul>
+  </div>
+</div>
+
+
+<script src="/js/activeNav.js"></script>
+
+
+
+      <div class="flex-container">
+        <!-- 文章详情页，展示文章具体内容，url形式：https://yoursite/文章标题/ -->
+<!-- 同时为「标签tag」，「朋友friend」，「分类categories」，「关于about」页面的承载页面，具体展示取决于page.type -->
+
+
+  <!-- LaTex Display -->
+
+  
+    <script async type="text/javascript" src="/plugins/mathjax/tex-chtml.js"></script>
+  
+  <script>
+    MathJax = {
+      tex: {
+        inlineMath: [['$', '$'], ['\\(', '\\)']]
+      }
+    }
+  </script>
+
+
+
+
+
+  <!-- clipboard -->
+
+  
+    <script async type="text/javascript" src="/plugins/clipboard.min.js"></script>
+  
+  
+<script src="/js/codeCopy.js"></script>
+
+
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  <!-- 文章内容页 url形式：https://yoursite/文章标题/ -->
+  <div class="container post-details" id="post-details">
+    <div class="post-content">
+      <div class="post-title">Linux Shell总结</div>
+      <div class="post-attach">
+        <span class="post-pubtime">
+          <i class="iconfont icon-updatetime mr-10" title="更新时间"></i>
+          2024-04-03 11:04:55
+        </span>
+        
+              <span class="post-categories">
+                <i class="iconfont icon-bookmark" title="分类"></i>
+                
+                <span class="span--category">
+                  <a href="/categories/%E6%8A%80%E6%9C%AF/" title="技术">
+                    <b>#</b> 技术
+                  </a>
+                </span>
+                
+              </span>
+          
+              <span class="post-tags">
+                <i class="iconfont icon-tags mr-10" title="标签"></i>
+                
+                <span class="span--tag mr-8">
+                  <a href="/tags/Linux%E7%B3%BB%E7%BB%9F/" title="Linux系统">
+                    #Linux系统
+                  </a>
+                </span>
+                
+              </span>
+          
+      </div>
+      <div class="markdown-body">
+        <h2 id="Linux-Shell-介绍"><a href="#Linux-Shell-介绍" class="headerlink" title="Linux Shell 介绍"></a>Linux Shell 介绍</h2><p>Shell（壳或外壳）是操作系统提供给用户与操作系统内核进行交互的界面。用户可以通过 Shell 输入命令、运行程序以及进行文件操作等。在 Unix/Linux 系统中，Shell 是一个命令解释器，它解释用户输入的命令并将其转换成操作系统能够理解的指令，然后传递给内核执行。<br>Shell 的重要特点和功能如下：</p>
+<ol>
+<li><strong>命令解释器</strong>：<ul>
+<li>Shell 是一个命令解释器，它解释用户输入的命令并将其转换成系统调用或者其他操作系统能够理解的指令。</li>
+</ul>
+</li>
+<li><strong>交互式界面</strong>：<ul>
+<li>Shell 提供了一个交互式界面，用户可以直接在 Shell 中输入命令并获取执行结果。</li>
+<li>这使得用户可以直接与系统进行交互，执行各种任务和操作。</li>
+</ul>
+</li>
+<li><strong>脚本编程</strong>：<ul>
+<li>Shell 还可以编写脚本文件，其中包含一系列的 Shell 命令，用于自动化任务和程序执行。</li>
+<li>这些脚本文件通常以 <code>.sh</code> 扩展名结尾，用户可以通过执行脚本文件来批量执行一系列命令。</li>
+</ul>
+</li>
+<li><strong>环境变量和别名</strong>：<ul>
+<li>Shell 提供了环境变量和别名的功能，用于配置用户的工作环境和简化命令输入。</li>
+<li>环境变量包括系统级别的变量和用户级别的变量，可以控制程序的行为和系统的配置。</li>
+<li>别名允许用户将长命令或者常用命令重命名为简短的别名，方便快速输入和执行。</li>
+</ul>
+</li>
+<li><strong>管道和重定向</strong>：<ul>
+<li>Shell 提供了管道和重定向的功能，用于将命令的输出发送到其他命令或者文件中。</li>
+<li>管道（<code>|</code>）可以将一个命令的输出作为另一个命令的输入，实现命令之间的串联。</li>
+<li>重定向（<code>&gt;</code>、<code>&gt;&gt;</code>、<code>&lt;</code> 等）可以将命令的输出重定向到文件中，或者从文件中读取输入。</li>
+</ul>
+</li>
+<li><strong>多种 Shell 实现</strong>：<ul>
+<li>在 Unix/Linux 系统中，有多种 Shell 实现可供选择，如 Bash、Zsh、Ksh 等。</li>
+<li>Bash（Bourne Again Shell）是最常用的 Shell，几乎所有的 Linux 发行版都默认使用它作为默认的 Shell。</li>
+<li>sh (Bourne Shell): 更古老的 Shell，许多 Unix 系统的基础。</li>
+<li>csh (C Shell) 和 tcsh (增强型 C Shell)：提供了 C 语言风格的语法和命令历史管理。</li>
+<li>zsh (Z Shell)：具有丰富的扩展特性和高用户定制性，近年来也越来越受欢迎。</li>
+<li>ksh (Korn Shell)：结合了 Bourne Shell 和 C Shell 的特点，广泛应用于商业 Unix 系统。</li>
+</ul>
+</li>
+</ol>
+<h2 id="启动和配置"><a href="#启动和配置" class="headerlink" title="启动和配置"></a>启动和配置</h2><h3 id="Shell-的启动"><a href="#Shell-的启动" class="headerlink" title="Shell 的启动"></a>Shell 的启动</h3><p> <strong>系统启动时的 Shell 启动：</strong> 当 Linux 系统启动后，init 系统（早期的 System V init 或现代的 systemd）会启动一个或多个用户登录 Shell。在用户登录时，init 系统会根据<code>/etc/passwd</code> 文件中为该用户指定的默认 Shell 来启动一个进程。例如，大多数情况下，用户默认的 Shell 是 Bash，对应的条目可能类似于 <code>username:x:UID:GID:User Info:/home/username:/bin/bash</code>，最后的字段指定了 Shell 的路径。<br> <strong>终端模拟器启动 Shell：</strong> 用户通过终端模拟器（如 GNOME Terminal、Konsole、xfce4-terminal 等）打开一个新的终端窗口时，系统也会启动一个新的 Shell 进程。这个 Shell 进程继承了父 Shell（通常是 init 系统的 Shell）的环境，并根据用户个人配置文件进行初始化。<br> <strong>SSH 登录启动 Shell：</strong> 当用户通过 SSH 远程登录 Linux 系统时，SSH 服务器会为用户启动一个指定的 Shell 进程，同样参照 <code>/etc/passwd</code> 文件中用户的默认 Shell。</p>
+<h3 id="Shell-的配置"><a href="#Shell-的配置" class="headerlink" title="Shell 的配置"></a>Shell 的配置</h3><ol>
+<li><strong>全局配置文件：</strong> 全局 Shell 配置文件通常位于 <code>/etc</code> 目录下，如 <code>/etc/profile</code>（对于大多数 Shell），用于设置所有用户登录时的全局环境变量、别名和启动脚本。另外，还有针对不同 Shell 的全局配置，如 Bash 的 <code>/etc/bash.bashrc</code>，Zsh 的 <code>/etc/zsh/zprofile</code> 和 <code>/etc/zsh/zshrc</code> 等。</li>
+<li><strong>用户级配置文件：</strong> 用户级 Shell 配置文件存储在用户的家目录（<code>~</code>）中，用于个性化每个用户的 Shell 环境（环境变量、别名、函数）：<ul>
+<li><strong>Bash Shell：</strong><ul>
+<li><code>~/.bash_profile</code> 或 <code>~/.bash_login</code> 或 <code>~/.profile</code>（这三个文件按照顺序查找并执行第一个存在的文件，主要用于交互式非登录 Shell 的环境配置）</li>
+<li><code>~/.bashrc</code>（每当打开一个新的交互式Bash Shell时都会读取，用于设置别名、环境变量等）</li>
+</ul>
+</li>
+<li><strong>Zsh Shell：</strong><ul>
+<li><code>~/.zshenv</code>（总是会被执行，适合设置不受登录状态影响的环境变量）</li>
+<li><code>~/.zprofile</code>（对于登录 Shell，类似 Bash 的 <code>.profile</code>）</li>
+<li><code>~/.zshrc</code>（对于所有的交互式 Shell，不论是否登录）</li>
+<li><code>~/.zlogin</code>（在 <code>.zprofile</code> 之后执行，用于登录 Shell 的附加配置）</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><strong>配置文件加载顺序：</strong> <strong>Shell 启动时，会按照特定的顺序加载这些配置文件</strong>。例如，在 Bash 中，登录 Shell 会先加载 <code>/etc/profile</code>，接着加载用户家目录下的个人配置文件（<code>.bash_profile</code> 或 <code>.bash_login</code> 或 <code>.profile</code>），最后加载 <code>.bashrc</code>（如果执行了 Bash 内部命令 <code>bash</code> 或 <code>source .bashrc</code>）。非登录交互式 Shell 只会加载 <code>.bashrc</code>。</li>
+<li><strong>修改默认 Shell：</strong> 要更改用户的默认 Shell，可以使用 <code>chsh</code> 命令，如 <code>chsh -s /bin/zsh</code>（将默认 Shell 更改为 Zsh）。更改后，用户下次登录时会启动新的默认 Shell。</li>
+</ol>
+<h2 id="source-命令"><a href="#source-命令" class="headerlink" title="source 命令"></a><code>source</code> 命令</h2><p>在 Linux 和类 Unix 操作系统中，<code>source</code> 命令（ <code>.</code>，也被称为点命令）是一个用于在当前 Shell 环境中执行脚本或命令文件的工具。<strong>当你运行一个 Shell 脚本通常会创建一个新的子 Shell 进程去执行其中的命令，而 <code>source</code> 命令则是直接在当前 Shell 进程中执行脚本里的所有命令，这意味着：</strong></p>
+<ul>
+<li>脚本中定义的变量、函数和环境变量变更将会直接影响到当前 Shell 会话。</li>
+<li>不需要新开进程，因此不会产生子 Shell 的开销，且执行效率更高。</li>
+<li>适用于需要在当前环境下持久化配置更改的情况，比如设置环境变量、alias（别名）或加载shell初始化文件。</li>
+</ul>
+<p>使用方法如下：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">source</span> filename.sh</span><br><span class="line">. filename.sh</span><br></pre></td></tr></table></figure>
+
+<p>两种形式的效果是一样的，<code>.</code>是<code>source</code>命令的别名。假设有一个名为<code>my_config.sh</code>的脚本，其中包含了一些环境变量设置和函数定义，若想让这些设置生效于当前shell会话，就可以使用<code>source</code>命令：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">source</span> my_config.sh</span><br></pre></td></tr></table></figure>
+
+<p>这样，<code>my_config.sh</code> 中的所有命令就如同直接在命令行中逐条手动键入一样被执行，并影响当前 Shell 的环境。</p>
+<h2 id="export-命令"><a href="#export-命令" class="headerlink" title="export 命令"></a><code>export</code> 命令</h2><p>在 Linux 系统中，<code>export</code> 命令是一个用于设置或更新环境变量的关键命令。环境变量是在系统中全局可用的变量，它们对当前 Shell 及其派生的所有子 Shell 都是可见的。环境变量在执行 Shell 脚本、运行程序和执行命令时提供了一种配置系统行为的方法。<br><strong><code>export</code> 命令的基本用途和语法：</strong></p>
+<ul>
+<li><strong>设置环境变量</strong>： 使用 <code>export</code> 命令，你可以创建一个新的环境变量或将现有的 Shell 变量提升为环境变量。语法如下 <code>export VARNAME=value</code></li>
+<li><strong>修改环境变量</strong>： 已经存在的环境变量也可以通过 <code>export</code> 命令修改其值：<code>export VARNAME=new_value</code></li>
+<li><strong>删除环境变量</strong>： 要从环境中移除（或取消导出）一个环境变量，可以将其值设为空：<code>export VARNAME=</code> 或使用 <code>-n</code> 参数，例如 <code>export -n VARNAME</code></li>
+<li><strong>显示所有环境变量</strong>： 要查看当前 shell 环境中所有已导出的环境变量，可以使用 <code>export -p</code> 命令</li>
+<li><strong>持久化环境变量</strong>： 在当前 shell 会话中设置的环境变量仅对该会话有效。如果你想让环境变量在每次登录时都自动生效，可以将 <code>export</code> 命令添加到适当的 Shell 配置文件中，例如对 Bash shell 来说，可以添加到 <code>~/.bashrc</code> 或 <code>~/.bash_profile</code> 文件中（Shell 启动时会自动加载这些配置文件）。</li>
+</ul>
+<p><strong>注意事项：</strong></p>
+<ul>
+<li>子进程会继承父进程的环境变量，也就是说，当你在一个 Shell 中设置了环境变量并通过 <code>fork</code> 创建新的进程时，新进程也将能看到这个环境变量。</li>
+<li>环境变量通常以大写字母命名，以区别于普通的 Shell 本地变量。</li>
+<li><code>export</code> 命令的影响范围局限于当前 Shell 及其派生的子 Shell。如果你希望改变全局（系统级）的环境变量，通常需要编辑全局配置文件（如 <code>/etc/environment</code> 或者特定服务的启动脚本）。</li>
+</ul>
+
+      </div>
+      
+        <div class="prev-or-next">
+          <div class="post-foot-next">
+            
+              <a href="/2024/04/01/%E5%85%B3%E4%BA%8E%E8%B7%91%E6%AD%A5/%E8%AE%AD%E7%BB%83%E6%97%A5%E8%AE%B0/2024-04-01/" target="_self">
+                <i class="iconfont icon-chevronleft"></i>
+                <span>上一页</span>
+              </a>
+            
+          </div>
+          <div class="post-attach">
+            <span class="post-pubtime">
+              <i class="iconfont icon-updatetime mr-10" title="更新时间"></i>
+              2024-04-03 11:04:55
+            </span>
+            
+                  <span class="post-categories">
+                    <i class="iconfont icon-bookmark" title="分类"></i>
+                    
+                    <span class="span--category">
+                      <a href="/categories/%E6%8A%80%E6%9C%AF/" title="技术">
+                        <b>#</b> 技术
+                      </a>
+                    </span>
+                    
+                  </span>
+              
+                  <span class="post-tags">
+                    <i class="iconfont icon-tags mr-10" title="标签"></i>
+                    
+                    <span class="span--tag mr-8">
+                      <a href="/tags/Linux%E7%B3%BB%E7%BB%9F/" title="Linux系统">
+                        #Linux系统
+                      </a>
+                    </span>
+                    
+                  </span>
+              
+          </div>
+          <div class="post-foot-prev">
+            
+              <a href="/2024/04/11/%E8%AF%BB%E4%B8%87%E5%8D%B7%E4%B9%A6/%E9%9D%A2%E7%BA%B1/" target="_self">
+                <span>下一页</span>
+                <i class="iconfont icon-chevronright"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+    </div>
+    
+  <div id="btn-catalog" class="btn-catalog">
+    <i class="iconfont icon-catalog"></i>
+  </div>
+  <div class="post-catalog hidden" id="catalog">
+    <div class="title">目录</div>
+    <div class="catalog-content">
+      
+        <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#Linux-Shell-%E4%BB%8B%E7%BB%8D"><span class="toc-text">Linux Shell 介绍</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%90%AF%E5%8A%A8%E5%92%8C%E9%85%8D%E7%BD%AE"><span class="toc-text">启动和配置</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#Shell-%E7%9A%84%E5%90%AF%E5%8A%A8"><span class="toc-text">Shell 的启动</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Shell-%E7%9A%84%E9%85%8D%E7%BD%AE"><span class="toc-text">Shell 的配置</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#source-%E5%91%BD%E4%BB%A4"><span class="toc-text">source 命令</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#export-%E5%91%BD%E4%BB%A4"><span class="toc-text">export 命令</span></a></li></ol>
+      
+    </div>
+  </div>
+
+  
+<script src="/js/catalog.js"></script>
+
+
+
+
+    
+      <div class="comments-container">
+        
+
+
+
+
+
+
+
+      </div>
+    
+  </div>
+
+
+        
+<div class="footer">
+  <div class="social">
+    <ul>
+      
+        <li>
+          
+              <a title="github" target="_blank" rel="noopener" href="https://github.com/zchengsite/hexo-theme-oranges">
+                <i class="iconfont icon-github"></i>
+              </a>
+              
+        </li>
+        
+    </ul>
+  </div>
+  
+    
+    <div class="footer-more">
+      
+        <a target="_blank" rel="noopener" href="https://github.com/zchengsite/hexo-theme-oranges">Copyright © 2024 Oranges</a>
+        
+    </div>
+  
+    
+    <div class="footer-more">
+      
+        <a target="_blank" rel="noopener" href="https://github.com/zchengsite/hexo-theme-oranges">Theme by Oranges | Powered by Hexo</a>
+        
+    </div>
+  
+  
+</div>
+
+      </div>
+
+      <div class="tools-bar">
+        <div class="back-to-top tools-bar-item hidden">
+  <a href="javascript: void(0)">
+    <i class="iconfont icon-chevronup"></i>
+  </a>
+</div>
+
+
+<script src="/js/backtotop.js"></script>
+
+
+
+        
+  <div class="search-icon tools-bar-item" id="search-icon">
+    <a href="javascript: void(0)">
+      <i class="iconfont icon-search"></i>
+    </a>
+  </div>
+
+  <div class="search-overlay hidden">
+    <div class="search-content" tabindex="0">
+      <div class="search-title">
+        <span class="search-icon-input">
+          <a href="javascript: void(0)">
+            <i class="iconfont icon-search"></i>
+          </a>
+        </span>
+        
+          <input type="text" class="search-input" id="search-input" placeholder="搜索...">
+        
+        <span class="search-close-icon" id="search-close-icon">
+          <a href="javascript: void(0)">
+            <i class="iconfont icon-close"></i>
+          </a>
+        </span>
+      </div>
+      <div class="search-result" id="search-result"></div>
+    </div>
+  </div>
+
+  <script type="text/javascript">
+    var inputArea = document.querySelector("#search-input")
+    var searchOverlayArea = document.querySelector(".search-overlay")
+
+    inputArea.onclick = function() {
+      getSearchFile()
+      this.onclick = null
+    }
+
+    inputArea.onkeydown = function() {
+      if(event.keyCode == 13)
+        return false
+    }
+
+    function openOrHideSearchContent() {
+      let isHidden = searchOverlayArea.classList.contains('hidden')
+      if (isHidden) {
+        searchOverlayArea.classList.remove('hidden')
+        document.body.classList.add('hidden')
+        // inputArea.focus()
+      } else {
+        searchOverlayArea.classList.add('hidden')
+        document.body.classList.remove('hidden')
+      }
+    }
+
+    function blurSearchContent(e) {
+      if (e.target === searchOverlayArea) {
+        openOrHideSearchContent()
+      }
+    }
+
+    document.querySelector("#search-icon").addEventListener("click", openOrHideSearchContent, false)
+    document.querySelector("#search-close-icon").addEventListener("click", openOrHideSearchContent, false)
+    searchOverlayArea.addEventListener("click", blurSearchContent, false)
+
+    var searchFunc = function (path, search_id, content_id) {
+      'use strict';
+      var $input = document.getElementById(search_id);
+      var $resultContent = document.getElementById(content_id);
+      $resultContent.innerHTML = "<ul><span class='local-search-empty'>首次搜索，正在载入索引文件，请稍后……<span></ul>";
+      $.ajax({
+        // 0x01. load xml file
+        url: path,
+        dataType: "xml",
+        success: function (xmlResponse) {
+          // 0x02. parse xml file
+          var datas = $("entry", xmlResponse).map(function () {
+            return {
+              title: $("title", this).text(),
+              content: $("content", this).text(),
+              url: $("url", this).text()
+            };
+          }).get();
+          $resultContent.innerHTML = "";
+
+          $input.addEventListener('input', function () {
+            // 0x03. parse query to keywords list
+            var str = '<ul class=\"search-result-list\">';
+            var keywords = this.value.trim().toLowerCase().split(/[\s\-]+/);
+            $resultContent.innerHTML = "";
+            if (this.value.trim().length <= 0) {
+              return;
+            }
+            // 0x04. perform local searching
+            datas.forEach(function (data) {
+              var isMatch = true;
+              var content_index = [];
+              if (!data.title || data.title.trim() === '') {
+                data.title = "Untitled";
+              }
+              var orig_data_title = data.title.trim();
+              var data_title = orig_data_title.toLowerCase();
+              var orig_data_content = data.content.trim().replace(/<[^>]+>/g, "");
+              var data_content = orig_data_content.toLowerCase();
+              var data_url = data.url;
+              var index_title = -1;
+              var index_content = -1;
+              var first_occur = -1;
+              // only match artiles with not empty contents
+              if (data_content !== '') {
+                keywords.forEach(function (keyword, i) {
+                  index_title = data_title.indexOf(keyword);
+                  index_content = data_content.indexOf(keyword);
+
+                  if (index_title < 0 && index_content < 0) {
+                    isMatch = false;
+                  } else {
+                    if (index_content < 0) {
+                      index_content = 0;
+                    }
+                    if (i == 0) {
+                      first_occur = index_content;
+                    }
+                    // content_index.push({index_content:index_content, keyword_len:keyword_len});
+                  }
+                });
+              } else {
+                isMatch = false;
+              }
+              // 0x05. show search results
+              if (isMatch) {
+                str += "<li><a href='" + data_url + "' class='search-result-title'>" + orig_data_title + "</a>";
+                var content = orig_data_content;
+                if (first_occur >= 0) {
+                  // cut out 100 characters
+                  var start = first_occur - 20;
+                  var end = first_occur + 80;
+
+                  if (start < 0) {
+                    start = 0;
+                  }
+
+                  if (start == 0) {
+                    end = 100;
+                  }
+
+                  if (end > content.length) {
+                    end = content.length;
+                  }
+
+                  var match_content = content.substr(start, end);
+
+                  // highlight all keywords
+                  keywords.forEach(function (keyword) {
+                    var regS = new RegExp(keyword, "gi");
+                    match_content = match_content.replace(regS, "<span class=\"search-keyword\">" + keyword + "</span>");
+                  });
+
+                  str += "<p class=\"search-result-abstract\">" + match_content + "...</p>"
+                }
+                str += "</li>";
+              }
+            });
+            str += "</ul>";
+            if (str.indexOf('<li>') === -1) {
+              return $resultContent.innerHTML = "<ul><span class='local-search-empty'>没有找到内容，请尝试更换检索词。<span></ul>";
+            }
+            $resultContent.innerHTML = str;
+          });
+        },
+        error: function(xhr, status, error) {
+          $resultContent.innerHTML = ""
+          if (xhr.status === 404) {
+            $resultContent.innerHTML = "<ul><span class='local-search-empty'>未找到search.xml文件，具体请参考：<a href='https://github.com/zchengsite/hexo-theme-oranges#configuration' target='_black'>configuration</a><span></ul>";
+          } else {
+            $resultContent.innerHTML = "<ul><span class='local-search-empty'>请求失败，尝试重新刷新页面或稍后重试。<span></ul>";
+          }
+        }
+      });
+      $(document).on('click', '#search-close-icon', function() {
+        $('#search-input').val('');
+        $('#search-result').html('');
+      });
+    }
+
+    var getSearchFile = function() {
+        var path = "/search.xml";
+        searchFunc(path, 'search-input', 'search-result');
+    }
+  </script>
+
+
+
+
+        
+  <div class="tools-bar-item theme-icon" id="switch-color-scheme">
+    <a href="javascript: void(0)">
+      <i id="theme-icon" class="iconfont icon-moon"></i>
+    </a>
+  </div>
+
+  
+<script src="/js/colorscheme.js"></script>
+
+
+
+
+
+        
+  
+    <div class="share-icon tools-bar-item">
+      <a href="javascript: void(0)" id="share-icon">
+        <i class="iconfont iconshare"></i>
+      </a>
+      <div class="share-content hidden">
+        
+          <a class="share-item" href="https://twitter.com/intent/tweet?text=' + Linux%20Shell%E6%80%BB%E7%BB%93 + '&url=' + http%3A%2F%2Fexample.com%2F2024%2F04%2F02%2F%25E6%258A%2580%25E6%259C%25AF%25E7%259B%25B8%25E5%2585%25B3%2FLinux%25E7%25B3%25BB%25E7%25BB%259F%2FLinux%2520shell%25E6%2580%25BB%25E7%25BB%2593%2F + '" target="_blank" title="Twitter">
+            <i class="iconfont icon-twitter"></i>
+          </a>
+        
+        
+          <a class="share-item" href="https://www.facebook.com/sharer.php?u=http://example.com/2024/04/02/%E6%8A%80%E6%9C%AF%E7%9B%B8%E5%85%B3/Linux%E7%B3%BB%E7%BB%9F/Linux%20shell%E6%80%BB%E7%BB%93/" target="_blank" title="Facebook">
+            <i class="iconfont icon-facebooksquare"></i>
+          </a>
+        
+      </div>
+    </div>
+  
+  
+<script src="/js/shares.js"></script>
+
+
+
+      </div>
+    </div>
+  </body>
+</html>

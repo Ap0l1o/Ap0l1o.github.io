@@ -161,7 +161,7 @@
       <div class="post-attach">
         <span class="post-pubtime">
           <i class="iconfont icon-updatetime mr-10" title="更新时间"></i>
-          2024-03-28 11:05:57
+          2024-03-29 15:11:40
         </span>
         
               <span class="post-categories">
@@ -198,14 +198,14 @@
 <h3 id="上电自检（Power-on-Self-Test，POST）"><a href="#上电自检（Power-on-Self-Test，POST）" class="headerlink" title="上电自检（Power on Self Test，POST）"></a>上电自检（Power on Self Test，POST）</h3><p>Linux 的 POST 自检并不是 Linux 本身的功能，而是计算机硬件启动流程的一个早期步骤，与具体的操作系统无关。POST 自检是由计算机主板上的固件负责执行的，这个固件可能是基本上输入输出系统（Basic Input Output System，BIOS）。<br>当计算机接通电源后，POST 自检是开机启动的第一个环节，它会立即自动运行，对计算机的硬件设备进行一系列基本的测试和初始化，确保它们能够正常工作。POST 自检的内容包括但不限于以下几个方面：  </p>
 <ul>
 <li>检测 CPU 和其他核心硬件组件的存在和功能完整性；</li>
-<li>测试内存（RAM）的基本可用性；</li>
+<li>测试内存的基本可用性；</li>
 <li>初始化并检测系统总线和 I/O 设备；</li>
 <li> CMOS 中系统配置的校验；</li>
 <li>检测和初始化显卡以便显示基本的视频输出；</li>
 <li>检查和初始化其他关键硬件，如键盘、磁盘驱动器等；</li>
 </ul>
 <p>只有当 POST 自检成功完成，表明硬件层面没有致命错误时，计算机才会继续启动流程，寻找并加载操作系统引导程序，进而启动 Linux 内核或其他操作系统。如果 POST 过程中发现任何错误，系统通常会通过声音提示（蜂鸣声）、屏幕显示错误代码或信息来告知用户存在问题。  </p>
-<h3 id="BIOS-UEFI-引导阶段"><a href="#BIOS-UEFI-引导阶段" class="headerlink" title="BIOS/UEFI 引导阶段"></a>BIOS/UEFI 引导阶段</h3><p>BIOS（Basic Input/Output System，基本输入输出系统）和 UEFI（Unified Extensible Firmware Interface，统一的可扩展固件接口）都是计算机启动过程中用于初始化硬件并加载操作系统的固件接口，负责查找并加载启动设备上的引导加载程序。<br>两者之间存在的差异如下所示：</p>
+<h3 id="BIOS-UEFI-引导阶段"><a href="#BIOS-UEFI-引导阶段" class="headerlink" title="BIOS/UEFI 引导阶段"></a>BIOS/UEFI 引导阶段</h3><p>BIOS（Basic Input/Output System，基本输入输出系统）和 UEFI（Unified Extensible Firmware Interface，统一的可扩展固件接口）都是计算机启动过程中用于初始化硬件并加载操作系统的固件接口，<strong>负责查找并加载启动设备上的引导加载程序</strong>。<br>两者之间存在的差异如下所示：</p>
 <ul>
 <li>架构和编程模型：<ul>
 <li>BIOS：基于16位实模式下的代码，受限于1MB地址空间，功能有限。</li>
@@ -314,7 +314,7 @@
           <div class="post-attach">
             <span class="post-pubtime">
               <i class="iconfont icon-updatetime mr-10" title="更新时间"></i>
-              2024-03-28 11:05:57
+              2024-03-29 15:11:40
             </span>
             
                   <span class="post-categories">
